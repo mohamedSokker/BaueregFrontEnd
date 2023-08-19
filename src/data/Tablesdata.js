@@ -1,0 +1,218 @@
+import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
+import { IoMdGrid } from "react-icons/io";
+import { GiCrane, GiCargoCrane } from "react-icons/gi";
+import { TiShoppingCart } from "react-icons/ti";
+import { SiLinuxcontainers } from "react-icons/si";
+import { AiOutlineTable } from "react-icons/ai";
+import { RiBookLine } from "react-icons/ri";
+import { BiListPlus, BiTestTube } from "react-icons/bi";
+import { Cookies } from "react-cookie";
+import jwt from "jwt-decode";
+
+import { AllTables } from "./AllTables";
+
+// import { MdKeyboardArrowDown } from "react-icons/md";
+
+import {
+  EditTables,
+  Equipments,
+  Locations,
+  Orders,
+  Stocks,
+  Dashboard,
+  Catalogues,
+  ManageUsers,
+  Kanban,
+  ManageKanban,
+  OilSamples,
+  OilSamplesAnalyzed,
+} from "../pages";
+
+const cookies = new Cookies();
+const token = cookies?.get("token");
+
+export const allDataTitles = [
+  "Dashboard",
+  "Kanban",
+  "Sites",
+  "Equipments",
+  "Orders",
+  "Stocks",
+  "StocksList",
+  "Tables",
+  "Catalogues",
+  "OilSamples",
+  "OilSamplesAnalyzed",
+  "ManageUsers",
+];
+
+export const links = [
+  {
+    title: "Dashboard",
+    name: "Dashboard",
+    dest: "/dashboard",
+    elem: <Dashboard />,
+    icon: <IoMdGrid />,
+  },
+  {
+    title: "Task Manager",
+    name: "Kanban",
+    dest: "/kanban",
+    elem: <ManageKanban />,
+    icon: <BiListPlus />,
+  },
+  {
+    title: "Sites",
+    name: "Sites",
+    dest: "/sites",
+    elem: <Locations />,
+    icon: <GiCrane />,
+    data: [],
+  },
+  {
+    title: "Equipments",
+    name: "Equipments",
+    dest: "/equipments",
+    elem: <Equipments />,
+    icon: <GiCargoCrane />,
+    data: [],
+  },
+  {
+    title: "Orders",
+    name: "Orders",
+    dest: "/orders",
+    elem: <Orders />,
+    icon: <TiShoppingCart />,
+    data: [],
+  },
+  {
+    title: "Stocks",
+    name: "Stocks",
+    dest: "/stocks",
+    elem: <Stocks />,
+    icon: <SiLinuxcontainers />,
+    data: [],
+  },
+  {
+    title: "Tables",
+    name: "Tables",
+    dest: "/Tables",
+    elem: <EditTables />,
+    icon: <AiOutlineTable />,
+    data: [],
+  },
+  {
+    title: "Catalogues",
+    name: "Catalogues",
+    dest: "/catalogues",
+    elem: <Catalogues />,
+    icon: <RiBookLine />,
+    data: [],
+  },
+  {
+    title: "Oil Samples",
+    name: "OilSamples",
+    dest: "/OilSamples",
+    elem: <OilSamples />,
+    icon: <BiTestTube />,
+  },
+  {
+    title: "Oil Samples Analyzed",
+    name: "OilSamplesAnalyzed",
+    dest: "/OilSamplesAnalyzed",
+    elem: <OilSamplesAnalyzed />,
+    icon: <BiTestTube />,
+  },
+  {
+    title: "Manage Users",
+    name: "ManageUsers",
+    dest: "/ManageUsers",
+    elem: <ManageUsers />,
+    icon: <FiUserCheck />,
+    data: [
+      {
+        name: "Add User",
+        dest: "/addUser",
+        icon: <FiUserPlus />,
+      },
+      {
+        name: "Edit User",
+        dest: "/editUser",
+        icon: <FiUserCheck />,
+      },
+      {
+        name: "Delete User",
+        dest: "/deleteUser",
+        icon: <FiUserMinus />,
+      },
+    ],
+  },
+];
+
+export const AllStocks = [
+  "Main",
+  "Store20",
+  "Store1",
+  "Store10",
+  "Store11",
+  "Store12",
+  "Store13",
+  "Store14",
+  "Store15",
+  "Store16",
+  "Store17",
+  "Store18",
+  "Store19",
+  "Store2",
+  "Store21",
+  "Store22",
+  "Store23",
+  "Store24",
+  "Store25",
+  "Store26",
+  "Store27",
+  "Store28",
+  "Store29",
+  "Store3",
+  "Store30",
+  "Store31",
+  "Store32",
+  "Store4",
+  "Store5",
+  "Store6",
+  "Store7",
+  "Store8",
+  "Store9",
+  "TransitMain",
+  "TransitStore1",
+  "TransitStore10",
+  "TransitStore12",
+  "TransitStore13",
+  "TransitStore14",
+  "TransitStore15",
+  "TransitStore16",
+  "TransitStore17",
+  "TransitStore18",
+  "TransitStore19",
+  "TransitStore2",
+  "TransitStore20",
+  "TransitStore21",
+  "TransitStore22",
+  "TransitStore23",
+  "TransitStore24",
+  "TransitStore25",
+  "TransitStore26",
+  "TransitStore27",
+  "TransitStore28",
+  "TransitStore29",
+  "TransitStore3",
+  "TransitStore30",
+  "TransitStore31",
+  "TransitStore32",
+  "TransitStore4",
+  "TransitStore6",
+  "TransitStore7",
+  "TransitStore9",
+  "Transit",
+  "Tashghilat_Elnasser",
+];

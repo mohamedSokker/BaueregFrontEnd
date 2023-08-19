@@ -1,0 +1,111 @@
+@import url("https://cdn.syncfusion.com/ej2/material.css");
+
+/* .e-grid .e-toolbar,
+.e-grid .e-toolbar .e-toolbar-items,
+.e-grid .e-toolbar .e-toolbar-items .e-toolbar-item,
+.e-grid .e-toolbar .e-toolbar-items .e-toolbar-item button {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.e-grid .e-groupdroparea {
+  background-color: rgba(0, 0, 0, 0.8);
+} */
+
+.e-grid {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.sidebar {
+  box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
+}
+
+.CategoryActive {
+  background-color: rgb(0, 74, 128);
+  color: white;
+}
+
+.CategoryActive:is(.dark) {
+  background-color: rgb(0, 0, 0, 0.5);
+  color: white;
+}
+
+.nav-item,
+.navbar {
+  z-index: 10000;
+  /* max-height: 100px; */
+}
+
+.toggleMode-in {
+  transform: translateX(12px);
+  transition: all 0.5s ease-in-out;
+}
+
+.toggleMode-out {
+  transform: translateX(0px);
+  transition: all 0.5s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .Window--Page {
+    max-width: calc(100% - 288px);
+  }
+}
+
+@media (max-width: 767px) {
+  .Header {
+    margin-top: 100px;
+  }
+}
+
+@media (max-width: 767px) {
+  .Main--Content {
+    margin-top: 70px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .sidebar {
+    z-index: 10000000;
+  }
+}
+
+.e-dlg-center-center,
+.e-quick-popup-wrapper.e-device {
+  z-index: 1000000 !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(216, 216, 216);
+  border-radius: 40px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* color-picker style  */
+
+#preview {
+  background: transparent
+    url("https://ej2.syncfusion.com/react/demos/src/color-picker/images/pen.png")
+    no-repeat;
+  display: inline-block;
+  height: 80px;
+  margin: 10px 0;
+  min-width: 300px;
+  max-width: 600px;
+  background-color: #008000;
+}
+
+.e-input-group:not(.e-float-icon-left),
+.e-input-group.e-success:not(.e-float-icon-left),
+.e-input-group.e-warning:not(.e-float-icon-left),
+.e-input-group.e-error:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-success:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left) {
+  border: none;
+}
