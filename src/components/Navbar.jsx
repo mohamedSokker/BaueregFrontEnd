@@ -60,9 +60,9 @@ const Navbar = () => {
     // const cookies = new Cookies();
     // const token = cookies.get("token");
     // const decodedtoken = jwt(token);
-    setImgPath(`${process.env.REACT_APP_BASE_URL}/${usersData?.img}`);
-    setUser(usersData?.username);
-  }, []);
+    setImgPath(`${process.env.REACT_APP_BASE_URL}/${usersData[0]?.img}`);
+    setUser(usersData[0]?.username);
+  }, [usersData]);
 
   const handleUploadData = async () => {
     setLoading(true);
