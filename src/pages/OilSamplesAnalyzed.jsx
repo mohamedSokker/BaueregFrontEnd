@@ -129,7 +129,7 @@ const OilSamplesAnalyzed = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.type === "file") {
-          let targetFile = `${baseURL}/${path}/${e.target.dataset.filename.replaceAll(
+          let targetFile = `${baseURL}/${relPath}/${e.target.dataset.filename.replaceAll(
             "#",
             "%23"
           )}`;

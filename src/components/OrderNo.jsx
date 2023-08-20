@@ -128,7 +128,7 @@ const OrderNo = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.type === "file") {
-          let targetFile = `${baseURL}/${path}/${e.target.dataset.filename}`;
+          let targetFile = `${baseURL}/${relPath}/${e.target.dataset.filename}`;
           window.open(targetFile, "_blank").focus();
           setLoading(false);
         } else {
