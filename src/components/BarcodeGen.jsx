@@ -23,7 +23,11 @@ const BarcodeGen = () => {
 
   const pageStyle = `
     @page {
-      size: 50mm 38mm
+      size: 38.1mm 25.4mm;
+      margin-left: 0;
+      margin-right: 0;
+      margin-top: 0;
+      margin-bottom: 0;
     };
 
     @media all {
@@ -62,9 +66,16 @@ const BarcodeGen = () => {
           Generate Code
         </button>
       </div>
-      <Barcode width={1} height={40} ref={ref} value={value} />
+      <div ref={ref} className={`barcode flex justify-center items-center`}>
+        <Barcode width={1} height={40} value={value} />
+      </div>
+
       <ReactToPrint
-        trigger={() => <button>Print</button>}
+        trigger={() => (
+          <button className="bg-logoColor rounded-md text-white p-2 mt-4">
+            Print
+          </button>
+        )}
         content={() => ref.current}
         pageStyle={pageStyle}
       />
