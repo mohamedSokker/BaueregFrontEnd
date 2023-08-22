@@ -8,6 +8,7 @@ import { MdOutlineDownloadForOffline } from "react-icons/md";
 const BarcodeGen = () => {
   const [value, setValue] = useState("Not Found");
   const [textValue, setTextValue] = useState("");
+  const [textSabValue, setTextSabValue] = useState("");
   const [file, setFile] = useState("");
   // const { inputRef } = useBarcode({
   //   value: value,
@@ -54,9 +55,15 @@ const BarcodeGen = () => {
       <div className="flex md:flex-row flex-col justify-start md:items-center items-start mb-10">
         <input
           className=" border-b-2 border-gray-400 outline-none mr-4 pl-4 md:w-400 w-[200px] md:mb-0 mb-4"
-          placeholder="Enter Part No and Description Here"
+          placeholder="Enter Code Here"
           type="text"
           onChange={(e) => setTextValue(e.target.value)}
+        />
+        <input
+          className=" border-b-2 border-gray-400 outline-none mr-4 pl-4 md:w-400 w-[200px] md:mb-0 mb-4"
+          placeholder="Enter Sabcode Here"
+          type="text"
+          onChange={(e) => setTextSabValue(e.target.value)}
         />
         <button
           type="button"
@@ -66,8 +73,18 @@ const BarcodeGen = () => {
           Generate Code
         </button>
       </div>
-      <div ref={ref} className={`barcode flex justify-center items-center`}>
-        <Barcode width={1} height={40} value={value} />
+      <div
+        ref={ref}
+        className={`barcode flex flex-col justify-center items-center`}
+      >
+        <input type="text" value={textSabValue} className="text-center" />
+        <Barcode
+          width={1}
+          height={40}
+          value={value}
+          fontSize={16}
+          textMargin={8}
+        />
       </div>
 
       <ReactToPrint
