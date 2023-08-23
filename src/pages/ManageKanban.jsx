@@ -21,21 +21,14 @@ import { Link } from "react-router-dom";
 
 import { Spinner } from "../components";
 import { Header } from "../components";
-// import { bodyData } from "../Functions/bodydata";
 import { useNavContext } from "../contexts/NavContext";
 import { KanbanGrid } from "../data/Kanban/Kanban";
 import { bodyDataKanban } from "../Functions/bodydata";
-import { socket } from "../socket/socket";
-// import { kanbanGrid } from "../data/Kanban";
 
-const ManageKanban = () => {
-  //   const { tableName } = useParams();
+const ManageKanban = ({ socket }) => {
   const [tableData, setTableData] = useState([]);
   const [tableAllData, setTableAllData] = useState([]);
-  const [tableGrid, setTableGrid] = useState([]);
   const [loading, setLoading] = useState(true);
-  //   const [selectedRow, setSelectedRow] = useState({});
-  //   const [selectedIndex, setSelectedIndex] = useState({});
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const { closeSmallSidebar } = useNavContext();
@@ -54,13 +47,11 @@ const ManageKanban = () => {
 
   useEffect(() => {
     let interval;
-    // if (realTime) {
     interval = setInterval(() => {
       let currentDate = new Date(Date.now()).toISOString();
       tableAllData.map(async (item) => {
         let taskStart = new Date(item.TaskStart).toISOString();
         let taskEnd = new Date(item.TaskEnd).toISOString();
-        // console.log(item.TaskStart, currentDate);
         if (currentDate >= taskStart && item.Status === "Open") {
           let body = {
             ResponsibleEngineerImg: item.ResponsibleEngineerImg,
@@ -233,7 +224,6 @@ const ManageKanban = () => {
     <div
       className={`p-2 md:p-10 bg-white rounded-xl Main--Page dark:bg-background-logoColor`}
       onClick={closeSmallSidebar}
-      // style={{ maxWidth: "calc(100% - 288px)" }}
     >
       {error ? (
         <div

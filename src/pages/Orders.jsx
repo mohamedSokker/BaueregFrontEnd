@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavContext } from "../contexts/NavContext";
 import { useParams } from "react-router-dom";
 import { OrderNo, Quotation, Confirmation, Invoice } from "../components";
@@ -18,14 +18,7 @@ const Orders = () => {
     }
   };
 
-  return (
-    <div
-      // className="p-2 md:p-10 bg-white rounded-xl Main--Content flex items-center justify-center dark:bg-background-logoColor"
-      onClick={closeSmallSidebar}
-    >
-      {renderPage()}
-    </div>
-  );
+  return <div onClick={closeSmallSidebar}>{renderPage()}</div>;
 };
 
 export default Orders;

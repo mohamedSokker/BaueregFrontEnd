@@ -10,7 +10,6 @@ import { PageLoading } from "./";
 
 const AddUser = () => {
   const [allDatas, setAllDatas] = useState([]);
-  const [allDatasWithName, setAllDatasWithName] = useState([]);
   const cookies = new Cookies();
   const [loading, setLoading] = useState(false);
   const [imageAsset, setImageAsset] = useState(null);
@@ -59,9 +58,7 @@ const AddUser = () => {
       .then((data) => {
         setAllDatas(data);
         allDataWithName()
-          .then((data) => {
-            setAllDatasWithName(data);
-          })
+          .then((data) => {})
           .catch((err) => console.log(err));
         setLoading(false);
       })
@@ -117,8 +114,6 @@ const AddUser = () => {
       }
     }
   };
-
-  console.log(roles);
 
   const handleSaveUser = (e) => {
     setLoading(true);
@@ -198,12 +193,7 @@ const AddUser = () => {
               ) : (
                 <div className="relative h-full">
                   <form hidden onSubmit={handleSaveUser}>
-                    <input
-                      id="formSubmit"
-                      type="submit"
-                      hidden
-                      // onClick={handleSaveUser}
-                    />
+                    <input id="formSubmit" type="submit" hidden />
                   </form>
                   <img
                     src={URL.createObjectURL(imageAsset)}
@@ -265,7 +255,6 @@ const AddUser = () => {
                   setRules((prev) => ({
                     ...prev,
                     Admin: !prev.Admin,
-                    // Editor: allDatasWithName,
                   }));
                 }}
               />

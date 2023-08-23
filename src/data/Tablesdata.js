@@ -7,11 +7,6 @@ import { AiOutlineTable } from "react-icons/ai";
 import { RiBookLine } from "react-icons/ri";
 import { BiListPlus, BiTestTube } from "react-icons/bi";
 import { Cookies } from "react-cookie";
-import jwt from "jwt-decode";
-
-import { AllTables } from "./AllTables";
-
-// import { MdKeyboardArrowDown } from "react-icons/md";
 
 import {
   EditTables,
@@ -22,7 +17,6 @@ import {
   Dashboard,
   Catalogues,
   ManageUsers,
-  Kanban,
   ManageKanban,
   OilSamples,
   OilSamplesAnalyzed,

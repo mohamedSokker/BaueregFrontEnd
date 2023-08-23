@@ -16,9 +16,10 @@ const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
+  const [errorBody, setErrorBody] = useState("");
+
   const handleSubmit = (e) => {
     setLoading(true);
-    console.log(`username: ${userName}`);
     e.preventDefault();
     fetch(`${process.env.REACT_APP_BASE_URL}/handleLoginapp`, {
       method: "POST",
@@ -29,7 +30,6 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         const cookies = new Cookies();
         const token = cookies.get("token");
         if (!token) {
@@ -43,8 +43,9 @@ const Login = () => {
       })
       .catch((err) => {
         setError(true);
+        setErrorBody(err.message);
         setLoading(false);
-        setInterval(() => setError(false), 3000);
+        setInterval(() => setError(false), 5000);
       });
   };
   return (
@@ -73,18 +74,16 @@ const Login = () => {
                 style={{ color: "red", width: "90%" }}
               >
                 <CiWarning className="text-xl" />
-                <p className="ml-5 text-xl">Invalid Login</p>
+                <p className="ml-5 text-xl">{errorBody}</p>
               </div>
             )}
             <img
               src={logo}
               className=" md:mb-10 mb-32 rounded-md md:h-20% h-10% opacity-70"
               alt="logo"
-              // style={{ height: "20%" }}
             />
             <input
               className="md:mb-4 mb-8 rounded-lg pl-3 md:w-50% md:h-10% w-90% h-5% text-black"
-              // style={{ width: "50%", color: "black", height: "10%" }}
               type="text"
               name="username"
               placeholder="Username"
@@ -95,7 +94,6 @@ const Login = () => {
             />
             <input
               className="md:mb-10 rounded-lg pl-3 md:w-50% md:h-10% w-90% h-5%"
-              // style={{ width: "50%", height: "10%" }}
               type="password"
               name="password"
               placeholder="Password"
@@ -106,7 +104,6 @@ const Login = () => {
             />
             <input
               className="mb-2 md:mt-0 mt-20 bg-yellow-500 md:rounded-3xl rounded-lg hover:cursor-pointer md:w-50% md:h-10% w-90% h-5% text-white"
-              // style={{ color: "white"}}
               type="submit"
               value="Log in"
             />

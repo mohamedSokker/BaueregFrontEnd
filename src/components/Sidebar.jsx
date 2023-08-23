@@ -6,21 +6,14 @@ import {
 } from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Link, useNavigate } from "react-router-dom";
-import { BiListPlus } from "react-icons/bi";
+import { BiLogOut } from "react-icons/bi";
 import { Cookies } from "react-cookie";
 
 import { useNavContext } from "../contexts/NavContext";
 import logo from "../assets/logo.jpg";
-import { logoColor } from "../BauerColors";
 import { links } from "../data/Tablesdata";
-import { Login } from "../pages";
-import { userInfo } from "../Functions/getuserdata";
-// import { usersData } from "../data/Tablesdata";
-import { allDataWithName } from "../data/allRoles";
-import { socket } from "../socket/socket";
 
 const Sidebar = () => {
-  // console.log(usersData);
   const navigate = useNavigate();
   const {
     setActiveMenu,
@@ -28,24 +21,15 @@ const Sidebar = () => {
     activeMenu,
     screenSize,
     usersData,
-    // setUsersData,
+    token,
     getUsersData,
   } = useNavContext();
   const cookies = new Cookies();
-  // const usersData = userInfo();
-  const [catActive, setCatActive] = useState(false);
-  // const [usersData, setUsersData] = useState([]);
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    if (!socket.connected) socket.connect();
-  });
-
-  useEffect(() => {
     getUsersData();
-  }, []);
-
-  console.log(usersData[0]?.roles?.Editor);
+  }, [token]);
 
   const handleCloseSidebar = () => {
     if (activeMenu && screenSize <= 900) {
@@ -84,7 +68,7 @@ const Sidebar = () => {
           </button>
         </TooltipComponent>
       </div>
-      <div className="mt-10 flex flex-col items-center">
+      <div className="mt-10 flex flex-col items-center border-b-1 border-gray-500 pb-4">
         {links.map((item, i) => {
           return (
             isUserAllowedCategory(item.name, usersData) && (
@@ -97,7 +81,7 @@ const Sidebar = () => {
                 >
                   <button
                     id={`${item.title}-sidebar`}
-                    className="flex flex-row items-center w-full h-8 p-4 font-semibold"
+                    className="flex flex-row items-center w-full h-8 p-4 font-semibold text-[25px]"
                     onClick={(e) => {
                       links.map((link) => {
                         if (document.getElementById(`${link.title}-side`)) {
@@ -131,7 +115,7 @@ const Sidebar = () => {
                     }}
                   >
                     {item.icon}
-                    <span className="ml-4">{item.title}</span>
+                    <span className="ml-4 text-[16px]">{item.title}</span>
                   </button>
                   {item?.data &&
                     (document
@@ -183,6 +167,20 @@ const Sidebar = () => {
             )
           );
         })}
+      </div>
+      <div
+        className={`flex flex-row items-center justify-between w-full mb-2 shadow-sm cursor-pointer rounded-md h-12 pr-2`}
+      >
+        <button
+          className="flex flex-row items-center w-full h-8 p-4 font-semibold text-[25px]"
+          onClick={() => {
+            cookies.remove("token");
+            navigate("/Login");
+          }}
+        >
+          <BiLogOut />
+          <span className="ml-4 text-[16px]">Logout</span>
+        </button>
       </div>
     </div>
   );

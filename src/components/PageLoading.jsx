@@ -1,6 +1,5 @@
 import React from "react";
 import { ColorRing } from "react-loader-spinner";
-import { logoColor } from "../BauerColors";
 
 const PageLoading = ({ message }) => {
   return (
@@ -10,11 +9,9 @@ const PageLoading = ({ message }) => {
     >
       <ColorRing
         type="ColorRing"
-        // color={logoColor}
         colors={["White", "White", "White", "White", "White"]}
         height={50}
         width={200}
-        // className="m-5"
       />
       <p className="text-lg text-center px-2 text-white font-bold">{message}</p>
     </div>

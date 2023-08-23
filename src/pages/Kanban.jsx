@@ -6,8 +6,7 @@ import {
 } from "@syncfusion/ej2-react-kanban";
 import { BiSend } from "react-icons/bi";
 import { BsMic } from "react-icons/bs";
-import { Cookies, useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import { Cookies } from "react-cookie";
 import { CiWarning } from "react-icons/ci";
 
 import { kanbanGrid } from "../data/Kanban";
@@ -16,11 +15,8 @@ import { useNavContext } from "../contexts/NavContext";
 import { logoColor } from "../BauerColors";
 import { PageLoading, KanbanTemplate } from "../components";
 import { bodyDataKanban } from "../Functions/bodydata";
-import { Login } from "../pages";
-import { socket } from "../socket/socket";
 
-const Kanban = () => {
-  const navigate = useNavigate();
+const Kanban = ({ socket }) => {
   const { closeSmallSidebar, token } = useNavContext();
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState("Arabic");
@@ -34,14 +30,10 @@ const Kanban = () => {
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const [fetchData, setFetchData] = useState(false);
-  // const [engineerImg, setEngineerImg] = useState("");
-  // const [techImg, setTechImg] = useState("");
   const [users, setUsers] = useState([]);
   const [realTime, setRealTime] = useState(true);
   const [tableAllData, setTableAllData] = useState([]);
-  // const [cookies] = useCookies(["token"]);
   const cookies = new Cookies();
-  // const [engineers, setEngineers] = useState([]);
 
   const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -54,13 +46,11 @@ const Kanban = () => {
 
   useEffect(() => {
     let interval;
-    // if (realTime) {
     interval = setInterval(() => {
       let currentDate = new Date(Date.now()).toISOString();
       tableAllData.map(async (item) => {
         let taskStart = new Date(item.TaskStart).toISOString();
         let taskEnd = new Date(item.TaskEnd).toISOString();
-        // console.log(item.TaskStart, currentDate);
         if (currentDate >= taskStart && item.Status === "Open") {
           let body = {
             ResponsibleEngineerImg: item.ResponsibleEngineerImg,
@@ -224,7 +214,6 @@ const Kanban = () => {
       .then((res) => res.json())
       .then((data) => {
         setUsers(data);
-        // console.log(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -236,7 +225,6 @@ const Kanban = () => {
 
   useEffect(() => {
     const token = cookies.get("token");
-    // console.log(token);
     setLoading(true);
     fetch(`${baseURL}/api/v1/AdminTasks`, {
       headers: {
@@ -263,8 +251,6 @@ const Kanban = () => {
       const micbtn = document.getElementById("mic-btn");
       const txtarea = document.getElementById("textarea");
       if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-        // console.log("no");
-        // return <h1>Browser Doesn't Support Speech Recognition</h1>;
       } else {
         const SpeechRecognition =
           window.SpeechRecognition || window.webkitSpeechRecognition;

@@ -2,23 +2,11 @@ import React, { useRef, useState } from "react";
 import Barcode from "react-barcode";
 
 import ReactToPrint from "react-to-print";
-// import { useBarcode } from "@createnextapp/react-barcode";
-import { MdOutlineDownloadForOffline } from "react-icons/md";
 
 const BarcodeGen = () => {
   const [value, setValue] = useState("Not Found");
   const [textValue, setTextValue] = useState("");
   const [textSabValue, setTextSabValue] = useState("");
-  const [file, setFile] = useState("");
-  // const { inputRef } = useBarcode({
-  //   value: value,
-  //   options: {
-  //     width: 2,
-  //     height: 100,
-  //     // displayValue: false,
-  //     // customations here
-  //   },
-  // });
 
   const ref = useRef();
 
@@ -43,12 +31,6 @@ const BarcodeGen = () => {
       }
     }
   `;
-
-  // const handleDownload = (e) => {
-  //   e.stopPropagation();
-  //   let img = document.getElementById("img");
-  //   setFile(img.src);
-  // };
 
   return (
     <div className="flex flex-col w-full h-full p-2 bg-gray-100">
@@ -96,20 +78,6 @@ const BarcodeGen = () => {
         content={() => ref.current}
         pageStyle={pageStyle}
       />
-      {/* <div className="mb-10 flex flex-row  items-center">
-        <img ref={inputRef} id="img" alt="bar-code" className="" />
-        <a
-          className="bg-logoColor rounded-full font-bold text-white p-2 text-center mr-4 hover:cursor-pointer ml-4 flex flex-row items-center gap-1"
-          onClick={handleDownload}
-          href={`${file}`}
-          target="_blank"
-          rel="noreferrer"
-          download
-        >
-          <MdOutlineDownloadForOffline />
-          Download
-        </a>
-      </div> */}
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
-import { Cookies } from "react-cookie";
 
 import { useNavContext } from "../contexts/NavContext";
 import filespic from "../assets/files.jpg";
@@ -18,8 +17,6 @@ const Quotation = () => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const [update, setUpdate] = useState(false);
-
-  const cookies = new Cookies();
 
   useEffect(() => {
     fetch(`${baseURL}/AppGetFiles?fullpath=${path}`)
@@ -96,15 +93,9 @@ const Quotation = () => {
     setLoading(true);
     e.preventDefault();
     const data = new FormData();
-    // const copyFiles = [];
     files.map((file) => {
       data.append("files", file);
-      // console.log(file);
-      // copyFiles.push(file);
     });
-    // console.log(copyFiles);
-
-    console.log(data);
     fetch(`${baseURL}/AppUploadItems?url=${path}`, {
       method: "POST",
       body: data,
@@ -121,7 +112,6 @@ const Quotation = () => {
   };
 
   const goToFolder = (e) => {
-    // console.log(e.target.dataset.filename);
     let targetpath = `${path}/${e.target.dataset.filename}`;
     setLoading(true);
     fetch(`${baseURL}/AppCheck?path=${targetpath}`)
@@ -137,8 +127,6 @@ const Quotation = () => {
           setUpdate((prev) => !prev);
           setLoading(false);
         }
-        // setFilesItems(data.data);
-        // console.log(data.type);
       })
       .catch((err) => {
         console.log(err.message);

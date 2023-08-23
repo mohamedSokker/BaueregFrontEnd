@@ -17,6 +17,7 @@ const OilSamplesAnalyzed = () => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const [update, setUpdate] = useState(false);
+
   useEffect(() => {
     fetch(`${baseURL}/AppGetFiles?fullpath=${path}`)
       .then((res) => res.json())
@@ -29,97 +30,7 @@ const OilSamplesAnalyzed = () => {
       });
   }, [update]);
 
-  const createFolder = () => {
-    let folderName = prompt("Enter Folder Name", "New Folder");
-    if (folderName === "") {
-      return alert("Folder Can't be empty");
-    }
-    console.log(folderName);
-    setLoading(true);
-    fetch(`${baseURL}/AppCreateFolder?fullpath=${path}/${folderName}`)
-      .then((res) => {})
-      .then((data) => {
-        setUpdate((prev) => !prev);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setLoading(false);
-      });
-  };
-
-  const deleteItem = (e) => {
-    const targetfile = e.target.dataset.filename;
-    setLoading(true);
-    fetch(`${baseURL}/AppDeleteFolder?oldpath=${path}/${targetfile}`)
-      .then((res) => {})
-      .then((data) => {
-        setUpdate((prev) => !prev);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setLoading(false);
-      });
-  };
-
-  const renameItem = (e) => {
-    let oldFileName = e.target.dataset.filename;
-    let newFileName = prompt("Enter New Name", oldFileName);
-    if (newFileName === "") {
-      return alert("Folder or File Can't be Empty");
-    }
-    setLoading(true);
-    fetch(
-      `${baseURL}/AppRenameFolder?oldpath=${path}/${oldFileName}&newpath=${path}/${newFileName}`
-    )
-      .then((res) => {})
-      .then((data) => {
-        setUpdate((prev) => !prev);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setLoading(false);
-      });
-  };
-
-  const uploadFiles = (e) => {
-    setFiles(Array.from(e.target.files));
-    console.log(Array.from(e.target.files[0]));
-  };
-
-  const uploadItem = (e) => {
-    setLoading(true);
-    e.preventDefault();
-    const data = new FormData();
-    // const copyFiles = [];
-    files.map((file) => {
-      data.append("files", file);
-      // console.log(file);
-      // copyFiles.push(file);
-    });
-    // console.log(copyFiles);
-
-    console.log(data);
-    fetch(`${baseURL}/AppUploadItems?url=${path}`, {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => {})
-      .then((data) => {
-        setUpdate((prev) => !prev);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  };
-
   const goToFolder = (e) => {
-    // console.log(e.target.dataset.filename);
-    console.log(`${e.target.dataset.filename.replaceAll("#", "%23")}`);
     let targetpath = `${path}/${e.target.dataset.filename.replaceAll(
       "#",
       "%23"
@@ -143,8 +54,6 @@ const OilSamplesAnalyzed = () => {
           setUpdate((prev) => !prev);
           setLoading(false);
         }
-        // setFilesItems(data.data);
-        // console.log(data.type);
       })
       .catch((err) => {
         console.log(err.message);

@@ -1,6 +1,5 @@
-import React, { useContext, createContext, useState, useEffect } from "react";
+import React, { useContext, createContext, useState } from "react";
 import { Cookies } from "react-cookie";
-import io from "socket.io-client";
 
 import { userInfo } from "../Functions/getuserdata";
 import { allDataWithName } from "../data/allRoles";
@@ -34,7 +33,6 @@ export const ContextProvider = ({ children }) => {
       }
     });
   };
-  console.log(usersData);
 
   const CheckEditorRole = (tableName, usersData) => {
     let flag = false;

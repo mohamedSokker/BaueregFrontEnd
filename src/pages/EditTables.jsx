@@ -40,7 +40,6 @@ const EditTables = () => {
   const baseURL = process.env.REACT_APP_BASE_URL;
 
   let grid;
-  let queryClone;
 
   const toolbarClick = (args) => {
     if (grid) {
@@ -101,7 +100,6 @@ const EditTables = () => {
     <div
       className={`p-2 md:p-10 bg-white rounded-xl Main--Page dark:bg-background-logoColor`}
       onClick={closeSmallSidebar}
-      // style={{ maxWidth: "calc(100% - 288px)" }}
     >
       {error ? (
         <div
@@ -156,7 +154,6 @@ const EditTables = () => {
                   "DELETE",
                   "delete"
                 );
-                // grid.refresh();
               } else if (
                 args.action === "edit" &&
                 args.requestType === "save"
@@ -169,7 +166,6 @@ const EditTables = () => {
                   "PUT",
                   "update"
                 );
-                // grid.refresh();
               } else if (args.action === "add" && args.requestType === "save") {
                 bodyData(
                   `${baseURL}/api/v1/${tableName}`,
@@ -177,7 +173,6 @@ const EditTables = () => {
                   "POST",
                   "add"
                 );
-                // grid.refresh();
               }
             }}
           >

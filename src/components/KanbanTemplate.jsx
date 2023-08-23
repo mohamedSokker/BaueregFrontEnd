@@ -1,23 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { extend } from "@syncfusion/ej2-base";
-import { TextBox } from "@syncfusion/ej2-react-inputs";
 
-const KanbanTemplate = (
-  props
-  //   {
-  //   ID,
-  //   ResponsibleEnginnername,
-  //   ResponsibleTechName,
-  //   Site,
-  //   Title,
-  //   Status,
-  //   Summary,
-  //   TaskStart,
-  //   Duration,
-  //   TaskFor,
-  // }
-) => {
+const KanbanTemplate = (props) => {
   const [state, setState] = React.useState(extend({}, {}, props, true));
   function onChange(args) {
     let key = args.target.name;
@@ -27,15 +12,10 @@ const KanbanTemplate = (
     } else {
       value = args.target.value;
     }
-    console.log(key, value);
-
     setState((prev) => ({ ...prev, [key]: value }));
-
-    // setState({ [key]: value });
   }
 
   const getDate = (date) => {
-    console.log(date);
     const dt = new Date(date);
     dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
     return dt.toISOString().slice(0, 16);
@@ -84,7 +64,6 @@ const KanbanTemplate = (
                   name="Summary"
                   className="e-field"
                   value={data.Summary}
-                  // onChange={(e) => (Summary = e.target.value)}
                   onChange={onChange.bind(this)}
                 >
                   {/* {Summary} */}
@@ -101,7 +80,6 @@ const KanbanTemplate = (
                   name="ResponsibleEnginnername"
                   type="text"
                   className="e-field"
-                  // onChange={(e) => (ResponsibleEnginnername = e.target.value)}
                   value={data.ResponsibleEnginnername}
                   onChange={onChange.bind(this)}
                 />
@@ -117,7 +95,6 @@ const KanbanTemplate = (
                   name="ResponsibleTechName"
                   type="text"
                   className="e-field"
-                  // onChange={(e) => (ResponsibleTechName = e.target.value)}
                   value={data.ResponsibleTechName}
                   onChange={onChange.bind(this)}
                 />
@@ -133,7 +110,6 @@ const KanbanTemplate = (
                   name="Site"
                   type="text"
                   className="e-field"
-                  // onChange={(e) => (Site = e.target.value)}
                   value={data.Site}
                   onChange={onChange.bind(this)}
                 />
@@ -149,7 +125,6 @@ const KanbanTemplate = (
                   name="Title"
                   type="text"
                   className="e-field"
-                  // onChange={(e) => (Title = e.target.value)}
                   value={data.Title}
                   onChange={onChange.bind(this)}
                 />
@@ -165,13 +140,8 @@ const KanbanTemplate = (
                   name="TaskStart"
                   type="datetime-local"
                   className="e-field"
-                  // onChange={(e) => (TaskStart = e.target.value)}
                   value={getDate(data.TaskStart)}
-                  // value={new Date(data.TaskStart).toISOString().slice(0, 16)}
                   onChange={onChange.bind(this)}
-                  // onChange={(e) => {
-                  //   e.target.value = TaskStart;
-                  // }}
                 />
               </div>
             </td>
@@ -185,7 +155,6 @@ const KanbanTemplate = (
                   name="Duration"
                   type="text"
                   className="e-field"
-                  // onChange={(e) => (Duration = e.target.value)}
                   value={data.Duration}
                   onChange={onChange.bind(this)}
                 />
@@ -201,7 +170,6 @@ const KanbanTemplate = (
                   name="TaskFor"
                   type="text"
                   className="e-field"
-                  // onChange={(e) => (TaskFor = e.target.value)}
                   value={data.TaskFor}
                   onChange={onChange.bind(this)}
                 />

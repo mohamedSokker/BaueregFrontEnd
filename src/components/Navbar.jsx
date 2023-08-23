@@ -5,15 +5,11 @@ import { BsChatLeft } from "react-icons/bs";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { FiUploadCloud } from "react-icons/fi";
-import { Cookies } from "react-cookie";
-import jwt from "jwt-decode";
 
 import { useNavContext } from "../contexts/NavContext";
 import { logoColor } from "../BauerColors";
 import { ToggleMode, PageLoading } from "../components";
 import { AllTables } from "../data/AllTables";
-// import profile from "../assets/profile.jpg";
-// import { usersData } from "../data/Tablesdata";
 
 const NavButton = ({ title, customFunc, icon, color, dotColor, size }) => (
   <TooltipComponent content={title} position="BottomCenter">
@@ -57,9 +53,6 @@ const Navbar = () => {
   }, [screenSize, setActiveMenu]);
 
   useEffect(() => {
-    // const cookies = new Cookies();
-    // const token = cookies.get("token");
-    // const decodedtoken = jwt(token);
     setImgPath(`${process.env.REACT_APP_BASE_URL}/${usersData[0]?.img}`);
     setUser(usersData[0]?.username);
   }, [usersData]);
@@ -68,37 +61,11 @@ const Navbar = () => {
     setLoading(true);
     for (let i = 0; i <= AllTables.length - 1; i++) {
       setCurrentTable(AllTables[i]);
-      console.log(AllTables[i]);
       await fetch(
         `${process.env.REACT_APP_BASE_URL}/api/v1/mongoBackup?tableName=${AllTables[i]}`
       );
     }
     setLoading(false);
-    // return Promise.all(
-    //   AllTables.map(async (table) => {
-    //     console.log(table);
-    //     // setLoading(true);
-    //     // try {
-    //     return fetch(
-    //       `${process.env.REACT_APP_BASE_URL}/api/v1/mongoBackup?tableName=${table}`,
-    //       {
-    //         method: `GET`,
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //           // Authorization: `Bearer ${token}`,
-    //         },
-    //         // body: JSON.stringify(bodyData),
-    //       }
-    //     )
-    //       .then(async (res) => await res.json())
-    //       .then((data) => console.log(data));
-    //     // setLoading(false);
-    //     // } catch (error) {
-    //     //   console.log(error);
-    //     //   setLoading(false);
-    //     // }
-    //   })
-    // );
   };
 
   return (
@@ -109,7 +76,6 @@ const Navbar = () => {
           title="Menu"
           className="dark:text-white text-logoColor"
           size={`text-xl`}
-          // color={logoColor}
           icon={<AiOutlineMenu />}
           customFunc={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)}
         />
@@ -118,10 +84,8 @@ const Navbar = () => {
             <NavButton
               title="Upload to cloud"
               className="text-logoColor dark:text-white"
-              // color={logoColor}
               size={`text-xl`}
               dotPosition={`2`}
-              // dotColor={logoColor}
               icon={<FiUploadCloud />}
               customFunc={handleUploadData}
             />
@@ -130,7 +94,6 @@ const Navbar = () => {
           <NavButton
             title="chat"
             className="text-logoColor dark:text-white"
-            // color={logoColor}
             size={`text-xl`}
             dotPosition={`2`}
             dotColor={logoColor}
@@ -141,10 +104,8 @@ const Navbar = () => {
             <NavButton
               title="notification"
               className="text-logoColor dark:text-white"
-              // color={logoColor}
               size={`text-2xl`}
               dotPosition={`2`}
-              // dotColor={logoColor}
               icon={<IoMdNotificationsOutline />}
               customFunc={() => {
                 setNotificationOpen((prev) => !prev);

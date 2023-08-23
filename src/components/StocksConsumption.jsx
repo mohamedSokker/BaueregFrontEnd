@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CiWarning } from "react-icons/ci";
-import { Cookies, useCookies } from "react-cookie";
+import { Cookies } from "react-cookie";
 import {
   GridComponent,
   ColumnsDirective,
@@ -19,7 +19,6 @@ import {
   PdfExport,
 } from "@syncfusion/ej2-react-grids";
 
-import { useNavContext } from "../contexts/NavContext";
 import { Header } from "../components";
 import { Spinner } from "../components";
 
@@ -29,7 +28,6 @@ const StocksConsumption = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
-  const { closeSmallSidebar } = useNavContext();
   const cookies = new Cookies();
 
   const baseURL = process.env.REACT_APP_BASE_URL;
@@ -38,7 +36,6 @@ const StocksConsumption = () => {
     setLoading(true);
     setError(false);
     setTableData([]);
-    // let dataArray = [];
     const token = cookies.get("token");
     await fetch(
       `${baseURL}/api/v1/Maintenance_Stocks?fullquery=SELECT DISTINCT Maintenance_Stocks.SparePart_Code, Stocks.Item FROM Maintenance_Stocks JOIN Stocks ON (Maintenance_Stocks.SparePart_Code LIKE Stocks.Code)`,
@@ -76,7 +73,6 @@ const StocksConsumption = () => {
               ]);
             });
         });
-        // setTableGrid([]);
         setTableGrid([
           {
             field: "SparePart_Code",
@@ -94,17 +90,6 @@ const StocksConsumption = () => {
             textAlign: "Center",
           },
         ]);
-        // Object.keys(data[0]).map((item) => {
-        //   setTableGrid((prev) => [
-        //     ...prev,
-        //     {
-        //       field: item,
-        //       headerText: item,
-        //       // width: "100",
-        //       textAlign: "Center",
-        //     },
-        //   ]);
-        // });
         setLoading(false);
       })
       .catch((err) => {

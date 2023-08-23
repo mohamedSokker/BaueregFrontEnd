@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import { BsMic } from "react-icons/bs";
-import { IoMdPause, IoMdPlay } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
 
 const Voice1 = () => {
   const [audioRecords, setAudioRecords] = useState([]);
