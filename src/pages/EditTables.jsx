@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Cookies, useCookies } from "react-cookie";
+import { Cookies } from "react-cookie";
 import { CiWarning } from "react-icons/ci";
 import {
   GridComponent,
@@ -24,6 +24,7 @@ import { Spinner } from "../components";
 import { Header } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 import { bodyData } from "../Functions/bodydata";
+import { CheckEditorRole } from "../Functions/checkEditorRole";
 
 const EditTables = () => {
   const { tableName } = useParams();
@@ -34,7 +35,7 @@ const EditTables = () => {
   const [selectedIndex, setSelectedIndex] = useState({});
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
-  const { closeSmallSidebar, CheckEditorRole, usersData } = useNavContext();
+  const { closeSmallSidebar, usersData } = useNavContext();
   const cookies = new Cookies();
 
   const baseURL = process.env.REACT_APP_BASE_URL;

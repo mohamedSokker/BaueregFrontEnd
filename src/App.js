@@ -20,16 +20,38 @@ import {
 import Voice from "./Voice/Voice";
 import Voice1 from "./Voice/Voice1";
 import Video from "./Video/Video";
+import { isUserAllowedCategory } from "./Functions/isUserAllowedCategory";
+import { userInfo } from "./Functions/getuserdata";
+import { allDataWithName } from "./data/allRoles";
 
 function App() {
   const navigate = useNavigate();
 
-  const { currentMode, activeMenu, isUserAllowedCategory, token, usersData } =
+  const { currentMode, activeMenu, token, usersData, setUsersData } =
     useNavContext();
 
   useEffect(() => {
     if (!socket.connected) socket.connect();
   }, [socket, token]);
+
+  useEffect(() => {
+    const getUsersData = () => {
+      let userData;
+      userInfo().then((data) => {
+        userData = data;
+        if (userData[0].roles.Admin) {
+          allDataWithName().then((data1) => {
+            let copUserData = userData;
+            copUserData[0].roles.Editor = data1;
+            setUsersData(copUserData);
+          });
+        } else {
+          setUsersData(userData);
+        }
+      });
+    };
+    getUsersData();
+  }, [token]);
 
   const cookies = new Cookies();
 

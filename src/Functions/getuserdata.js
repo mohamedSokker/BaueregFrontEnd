@@ -2,8 +2,6 @@ import { Cookies } from "react-cookie";
 import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 import jwt from "jwt-decode";
 
-import { allDataWithName } from "../data/allRoles";
-
 export const userInfo = async () => {
   let cookies = new Cookies();
   const token = cookies?.get("token");

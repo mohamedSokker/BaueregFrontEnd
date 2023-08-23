@@ -12,24 +12,14 @@ import { Cookies } from "react-cookie";
 import { useNavContext } from "../contexts/NavContext";
 import logo from "../assets/logo.jpg";
 import { links } from "../data/Tablesdata";
+import { isUserAllowedCategory } from "../Functions/isUserAllowedCategory";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const {
-    setActiveMenu,
-    isUserAllowedCategory,
-    activeMenu,
-    screenSize,
-    usersData,
-    token,
-    getUsersData,
-  } = useNavContext();
+  const { setActiveMenu, activeMenu, screenSize, usersData, token } =
+    useNavContext();
   const cookies = new Cookies();
   const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    getUsersData();
-  }, [token]);
 
   const handleCloseSidebar = () => {
     if (activeMenu && screenSize <= 900) {
