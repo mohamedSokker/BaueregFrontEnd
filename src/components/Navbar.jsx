@@ -71,7 +71,7 @@ const Navbar = () => {
   return (
     <>
       {loading && <PageLoading message={`Backup Table ${currentTable}`} />}
-      <div className="flex justify-between p-2 md:mx-6 relative dark:text-white">
+      <div className=" w-full flex justify-between p-2 md:mx-6 relative dark:text-white">
         <NavButton
           title="Menu"
           className="dark:text-white text-logoColor"
@@ -167,7 +167,7 @@ const Navbar = () => {
               />
             </div>
             <p>
-              <span className="text-gray-400 font-bold ml-1 text-14">
+              <span className="text-gray-400 font-bold ml-1 md:text-14 text-[10px]">
                 {user}
               </span>
             </p>

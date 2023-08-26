@@ -84,12 +84,15 @@ function App() {
           }`}
         >
           {/* Navbar */}
-          <div className="fixed md:static dark:bg-background-logoColor bg-main-bg w-full navbar">
+          <div className="fixed md:static flex dark:bg-background-logoColor bg-main-bg w-full items-center md:h-[8%] navbar">
             <Navbar />
           </div>
 
           {/* Main page */}
-          <div id="Main--Page" className=" dark:bg-background-logoColor">
+          <div
+            id="Main--Page"
+            className=" dark:bg-background-logoColor md:h-[92%]"
+          >
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/Dashboard" element={<Dashboard />} />
