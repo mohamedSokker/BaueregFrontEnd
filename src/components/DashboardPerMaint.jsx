@@ -13,7 +13,7 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 
 import { logoColor } from "../BauerColors";
-const DashboardPerMaint = ({ name, percentage, getChildData, cardsData }) => {
+const DashboardPerMaint = ({ name, getChildData, cardsData }) => {
   const [dateValue, setDateValue] = useState(
     new Date(
       new Date().setMinutes(

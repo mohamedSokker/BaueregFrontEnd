@@ -187,7 +187,7 @@ const Dashboard = () => {
         <DashboardCard
           name="Fuel Consumption"
           title="FuelConsumption"
-          value={`${fieldsData.FuelConsumption}`}
+          value={`${fieldsData.FuelConsumption} L`}
           percentage={fieldsPerData.FuelConsumption}
           getChildData={getChildData}
           cardsData={cardsData}
@@ -195,7 +195,7 @@ const Dashboard = () => {
         <DashboardCard
           name="Oil Consumption"
           title="OilConsumption"
-          value={`${fieldsData.OilConsumption}`}
+          value={`${fieldsData.OilConsumption} L`}
           percentage={fieldsPerData.OilConsumption}
           getChildData={getChildData}
           cardsData={cardsData}
