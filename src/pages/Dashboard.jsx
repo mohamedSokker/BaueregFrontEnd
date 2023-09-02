@@ -11,6 +11,7 @@ const Dashboard = () => {
   const { usersData, token } = useNavContext();
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
+  const [loading, setLoading] = useState(false);
   const [cardsData, setCardsData] = useState([]);
   const [sites, setSites] = useState([]);
   const [locURL, setLocURL] = useState(null);
