@@ -3,6 +3,7 @@ import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 
 import { AllTables } from "./AllTables";
 import { AllStocks } from "./Tablesdata";
+import fetchDataOnly from "../Functions/fetchDataOnly";
 
 let allEqs = [];
 let allSites = [];
@@ -14,37 +15,60 @@ let allSitesWithName = [];
 const allSitesEqsdata = async () => {
   const cookies = new Cookies();
   const token = cookies?.get("token");
-  await fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/Location_Bauer`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      allSites = [];
-      allSitesWithName = [];
-      data.map((item) => {
-        allSites.push(item.Location);
-        allSitesWithName.push({ name: item.Location });
-      });
-    })
-    .catch((err) => {
-      return [];
+  try {
+    const url = `${process.env.REACT_APP_BASE_URL}/api/v1/Location_Bauer`;
+    const data = await fetchDataOnly(url, "GET", token);
+    allSites = [];
+    allSitesWithName = [];
+    data.map((item) => {
+      allSites.push(item.Location);
+      allSitesWithName.push({ name: item.Location });
     });
-
-  await fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-    .then((res) => res.json())
-    .then((dataEq) => {
-      allEqs = [];
-      allEqsWithName = [];
-      dataEq.map((item) => {
-        allEqs.push(item.Equipment);
-        allEqsWithName.push({ name: item.Equipment });
-      });
-    })
-    .catch((err) => {
-      return [];
+  } catch (error) {
+    return [];
+  }
+  // await fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/Location_Bauer`, {
+  //   headers: { Authorization: `Bearer ${token}` },
+  // })
+  //   .then((res) => res.json())
+  //   .then((data) => {
+  //     allSites = [];
+  //     allSitesWithName = [];
+  //     data.map((item) => {
+  //       allSites.push(item.Location);
+  //       allSitesWithName.push({ name: item.Location });
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     return [];
+  //   });
+  try {
+    const eqsURL = `${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`;
+    const dataEq = await fetchDataOnly(eqsURL, "GET", token);
+    allEqs = [];
+    allEqsWithName = [];
+    dataEq.map((item) => {
+      allEqs.push(item.Equipment);
+      allEqsWithName.push({ name: item.Equipment });
     });
+  } catch (error) {
+    return [];
+  }
+  // await fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`, {
+  //   headers: { Authorization: `Bearer ${token}` },
+  // })
+  //   .then((res) => res.json())
+  //   .then((dataEq) => {
+  //     allEqs = [];
+  //     allEqsWithName = [];
+  //     dataEq.map((item) => {
+  //       allEqs.push(item.Equipment);
+  //       allEqsWithName.push({ name: item.Equipment });
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     return [];
+  //   });
 };
 
 export const allData = async () => {

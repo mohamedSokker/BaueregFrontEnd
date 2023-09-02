@@ -24,17 +24,25 @@ export const bodyData = (url, body, method, methodText) => {
   return "Canceled";
 };
 
-export const bodyDataKanban = async (url, body, method) => {
-  const cookies = new Cookies();
-  const token = cookies.get("token");
-  let bodyData = body;
-  delete bodyData.ID;
-  await fetch(url, {
-    method: method,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(bodyData),
-  });
+export const bodyDataKanban = async (url, body, method, token) => {
+  try {
+    let bodyData = body;
+    delete bodyData.ID;
+    const res = await fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(bodyData),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message);
+    } else {
+      return data;
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };

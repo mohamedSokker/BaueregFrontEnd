@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   MdOutlineCancel,
   MdKeyboardArrowDown,
@@ -16,8 +16,7 @@ import { isUserAllowedCategory } from "../Functions/isUserAllowedCategory";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { setActiveMenu, activeMenu, screenSize, usersData, token } =
-    useNavContext();
+  const { setActiveMenu, activeMenu, screenSize, usersData } = useNavContext();
   const cookies = new Cookies();
   const [active, setActive] = useState(false);
 
@@ -40,10 +39,7 @@ const Sidebar = () => {
           <img src={logo} className="w-16 h-16 rounded-md" alt="logo" />
           <span>
             Bauer{" "}
-            <span
-              className=" text-logoColor dark:text-black/80 text-lg ml-2"
-              // style={{ color: logoColor, fontSize: "16px" }}
-            >
+            <span className=" text-logoColor dark:text-black/80 text-lg ml-2">
               Egypt
             </span>
           </span>
@@ -67,11 +63,11 @@ const Sidebar = () => {
                   id={`${item.title}-side`}
                   key={item}
                   data-cat={item.title}
-                  className={`flex flex-row items-center justify-between w-full mb-2 shadow-sm cursor-pointer rounded-md h-12 pr-2`}
+                  className={`flex flex-row items-center justify-between w-full mb-2 shadow-sm cursor-pointer rounded-md h-12`}
                 >
                   <button
                     id={`${item.title}-sidebar`}
-                    className="flex flex-row items-center w-full h-8 p-4 font-semibold text-[25px]"
+                    className="flex flex-row items-center justify-between w-full h-full p-4 font-semibold text-[25px]"
                     onClick={(e) => {
                       links.map((link) => {
                         if (document.getElementById(`${link.title}-side`)) {
@@ -89,11 +85,19 @@ const Sidebar = () => {
                       document.getElementById(
                         `${item.title}-side`
                       ).style.color = "white";
-                      if (!e.target.classList.contains("Active")) {
-                        e.target.classList.add("Active");
+                      if (
+                        !document
+                          .getElementById(`${item.title}-sidebar`)
+                          .classList.contains("Active")
+                      ) {
+                        document
+                          .getElementById(`${item.title}-sidebar`)
+                          .classList.add("Active");
                         setActive((prev) => !prev);
                       } else {
-                        e.target.classList.remove("Active");
+                        document
+                          .getElementById(`${item.title}-sidebar`)
+                          .classList.remove("Active");
                         setActive((prev) => !prev);
                       }
                       if (!item?.data) {
@@ -104,17 +108,19 @@ const Sidebar = () => {
                       !item?.data ? navigate(`${item.name}`) : doNothing();
                     }}
                   >
-                    {item.icon}
-                    <span className="ml-4 text-[16px]">{item.title}</span>
+                    <div className="flex flex-row items-center">
+                      {item.icon}
+                      <span className="ml-4 text-[16px]">{item.title}</span>
+                    </div>
+                    {item?.data &&
+                      (document
+                        ?.getElementById(`${item.title}-sidebar`)
+                        ?.classList?.contains("Active") ? (
+                        <MdKeyboardArrowUp className="abolute right-0 font-light text-[16px]" />
+                      ) : (
+                        <MdKeyboardArrowDown className="abolute right-0 font-light text-[16px]" />
+                      ))}
                   </button>
-                  {item?.data &&
-                    (document
-                      ?.getElementById(`${item.title}-sidebar`)
-                      ?.classList?.contains("Active") ? (
-                      <MdKeyboardArrowUp className="abolute right-0" />
-                    ) : (
-                      <MdKeyboardArrowDown className="abolute right-0" />
-                    ))}
                 </div>
                 {document
                   ?.getElementById(`${item.title}-sidebar`)

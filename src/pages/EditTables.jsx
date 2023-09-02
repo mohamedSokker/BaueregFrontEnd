@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Cookies } from "react-cookie";
 import { CiWarning } from "react-icons/ci";
 import {
   GridComponent,
@@ -25,6 +24,7 @@ import { Header } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 import { bodyData } from "../Functions/bodydata";
 import { CheckEditorRole } from "../Functions/checkEditorRole";
+import fetchDataOnly from "../Functions/fetchDataOnly";
 
 const EditTables = () => {
   const { tableName } = useParams();
@@ -35,8 +35,7 @@ const EditTables = () => {
   const [selectedIndex, setSelectedIndex] = useState({});
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
-  const { closeSmallSidebar, usersData } = useNavContext();
-  const cookies = new Cookies();
+  const { closeSmallSidebar, usersData, token } = useNavContext();
 
   const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -62,17 +61,12 @@ const EditTables = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
-    const token = cookies.get("token");
-    fetch(`${baseURL}/api/v1/${tableName}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        setError(false);
+        const url = `${baseURL}/api/v1/${tableName}`;
+        const data = await fetchDataOnly(url, "GET", token);
         setTableData(data);
         setTableGrid([]);
         Object.keys(data[0]).map((item) => {
@@ -87,14 +81,15 @@ const EditTables = () => {
           ]);
         });
         setLoading(false);
-      })
-      .catch((err) => {
-        setErrorDetails(`Unothorized Or ${err.message}`);
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
         console.log(err.message);
         setError(true);
         setLoading(false);
-      });
-  }, [tableName]);
+      }
+    };
+    getData();
+  }, [tableName, token]);
 
   if (loading) return <Spinner message={`Loading ${tableName} Data`} />;
   return (
@@ -104,11 +99,11 @@ const EditTables = () => {
     >
       {error ? (
         <div
-          className=" bg-yellow-200 h-20 flex justify-center items-center flex-row mb-5 mt-2"
+          className=" bg-yellow-200 h-20 flex justify-center items-center flex-row mb-5 mt-2 rounded-lg"
           style={{ color: "red", width: "90%" }}
         >
-          <CiWarning className="text-xl" />
-          <p className="ml-5 text-xl">{errorDetails}</p>
+          <CiWarning className="text-[40px] font-extrabold" />
+          <p className="ml-5 text-xl font-semibold">{errorDetails}</p>
         </div>
       ) : (
         <>

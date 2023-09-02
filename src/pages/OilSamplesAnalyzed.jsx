@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import { CiWarning } from "react-icons/ci";
 
 import { useNavContext } from "../contexts/NavContext";
 import filespic from "../assets/files.jpg";
 import folderpic from "../assets/folder.jpg";
 import { PageLoading } from "../components";
+import fetchDataOnly from "../Functions/fetchDataOnly";
 
 const OilSamplesAnalyzed = () => {
   const baseURL = process.env.REACT_APP_BASE_URL;
-  const { closeSmallSidebar } = useNavContext();
+  const { closeSmallSidebar, token } = useNavContext();
   const abspath = process.env.REACT_APP_OILSAMPLESANALYZED_ABS_PATH;
   const relativepath = process.env.REACT_APP_OILSAMPLESANALYZED_REL_PATH;
   const [path, setPath] = useState(abspath);
@@ -17,17 +19,25 @@ const OilSamplesAnalyzed = () => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const [update, setUpdate] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorDetails, setErrorDetails] = useState("");
 
   useEffect(() => {
-    fetch(`${baseURL}/AppGetFiles?fullpath=${path}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/AppGetFiles?fullpath=${path}`;
+        const data = await fetchDataOnly(url, "GET", token);
         setFilesItems(data.data);
-        console.log(data.data);
-      })
-      .catch((err) => {
+        setLoading(false);
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
         console.log(err.message);
-      });
+        setError(true);
+        setLoading(false);
+      }
+    };
+    getData();
   }, [update]);
 
   const goToFolder = (e) => {
@@ -35,10 +45,11 @@ const OilSamplesAnalyzed = () => {
       "#",
       "%23"
     )}`;
-    setLoading(true);
-    fetch(`${baseURL}/AppCheck?path=${targetpath}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/AppCheck?path=${targetpath}`;
+        const data = await fetchDataOnly(url, "GET", token);
         if (data.type === "file") {
           let targetFile = `${baseURL}/${relPath}/${e.target.dataset.filename.replaceAll(
             "#",
@@ -52,13 +63,16 @@ const OilSamplesAnalyzed = () => {
             `${relPath}/${e.target.dataset.filename.replaceAll("#", "%23")}`
           );
           setUpdate((prev) => !prev);
-          setLoading(false);
         }
-      })
-      .catch((err) => {
-        console.log(err.message);
         setLoading(false);
-      });
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
+        console.log(err.message);
+        setError(true);
+        setLoading(false);
+      }
+    };
+    getData();
   };
 
   const goBack = () => {
@@ -68,15 +82,31 @@ const OilSamplesAnalyzed = () => {
     copiedabspathArray.pop();
     let copiedrelpath = copiedrelpathArray.join("/");
     let copiedabspath = copiedabspathArray.join("/").replaceAll("#", "%23");
-    fetch(`${baseURL}/${copiedrelpath}`)
-      .then((res) => res.text())
-      .then((data) => {
-        if (data !== "401 Access Denied") {
-          setRelPath(copiedrelpath);
-          setPath(copiedabspath);
-          setUpdate((prev) => !prev);
-        }
-      });
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/${copiedrelpath}`;
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error(`Unauthorized to see this folder`);
+        setRelPath(copiedrelpath);
+        setPath(copiedabspath);
+        setUpdate((prev) => !prev);
+        // }
+        setLoading(false);
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
+        console.log(err.message);
+        setError(true);
+        setLoading(false);
+      }
+    };
+    getData();
   };
 
   return (
@@ -95,27 +125,6 @@ const OilSamplesAnalyzed = () => {
               index Of {` ${relPath.replaceAll("%23", "#")}`}
             </h2>
           </div>
-          {/* <button
-            className="mr-4 bg-logoColor rounded-md text-white p-2"
-            onClick={createFolder}
-          >
-            Create Folder
-          </button>
-          <form action="" onSubmit={uploadItem} className="pl-4 pr-4">
-            <input
-              type="file"
-              multiple
-              name="files"
-              className="mr-4"
-              onChange={uploadFiles}
-            />
-          </form> */}
-          {/* <button
-            className="mr-4 bg-logoColor rounded-md text-white p-2"
-            onClick={uploadItem}
-          >
-            Upload
-          </button> */}
         </div>
         <div className="flex flex-col justify-center">
           {filesItems.map((file, i) => (
@@ -134,25 +143,15 @@ const OilSamplesAnalyzed = () => {
                   {file.file}
                 </span>
               </div>
-              {/* <div className="flex flex-row items-center">
-                <button
-                  className="mr-4 bg-logoColor rounded-md text-white p-1 pr-2 pl-2"
-                  data-filename={file.file}
-                  onClick={renameItem}
-                >
-                  remane
-                </button>
-                <button
-                  data-filename={file.file}
-                  className="mr-4 bg-logoColor rounded-md text-white p-1 pl-2 pr-2"
-                  onClick={deleteItem}
-                >
-                  delete
-                </button>
-              </div> */}
             </div>
           ))}
         </div>
+        {error && (
+          <div className=" w-full h-14 bg-red-600 text-white flex justify-center items-center absolute bottom-0 left-0 flex-row border-t-1 border-gray-400">
+            <CiWarning className="text-[40px] font-extrabold" />
+            <p className="ml-5 text-xl font-semibold">{errorDetails}</p>
+          </div>
+        )}
       </div>
     </>
   );

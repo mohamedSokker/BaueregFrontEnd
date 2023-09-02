@@ -26,8 +26,9 @@ import { allDataWithName } from "./data/allRoles";
 
 function App() {
   const navigate = useNavigate();
+  const cookies = new Cookies();
 
-  const { currentMode, activeMenu, token, usersData, setUsersData } =
+  const { currentMode, activeMenu, token, usersData, setUsersData, setToken } =
     useNavContext();
 
   useEffect(() => {
@@ -53,11 +54,13 @@ function App() {
     getUsersData();
   }, [token]);
 
-  const cookies = new Cookies();
-
   useEffect(() => {
     if (!cookies.get("token")) {
+      socket.disconnect();
+      cookies.remove("token");
       navigate("/Login");
+    } else {
+      setToken(cookies?.get("token"));
     }
   }, [token]);
 
@@ -91,7 +94,7 @@ function App() {
           {/* Main page */}
           <div
             id="Main--Page"
-            className=" dark:bg-background-logoColor md:h-[92%]"
+            className=" dark:bg-background-logoColor md:h-[92%] relative"
           >
             <Routes>
               <Route path="/" element={<Dashboard />} />

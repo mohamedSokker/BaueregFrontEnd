@@ -6,7 +6,6 @@ import {
 } from "@syncfusion/ej2-react-kanban";
 import { BiSend } from "react-icons/bi";
 import { BsMic } from "react-icons/bs";
-import { Cookies } from "react-cookie";
 import { CiWarning } from "react-icons/ci";
 
 import { kanbanGrid } from "../data/Kanban";
@@ -15,6 +14,7 @@ import { useNavContext } from "../contexts/NavContext";
 import { logoColor } from "../BauerColors";
 import { PageLoading, KanbanTemplate } from "../components";
 import { bodyDataKanban } from "../Functions/bodydata";
+import fetchDataOnly from "../Functions/fetchDataOnly";
 
 const Kanban = ({ socket }) => {
   const { closeSmallSidebar, token } = useNavContext();
@@ -33,7 +33,6 @@ const Kanban = ({ socket }) => {
   const [users, setUsers] = useState([]);
   const [realTime, setRealTime] = useState(true);
   const [tableAllData, setTableAllData] = useState([]);
-  const cookies = new Cookies();
 
   const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -49,106 +48,110 @@ const Kanban = ({ socket }) => {
     interval = setInterval(() => {
       let currentDate = new Date(Date.now()).toISOString();
       tableAllData.map(async (item) => {
-        let taskStart = new Date(item.TaskStart).toISOString();
-        let taskEnd = new Date(item.TaskEnd).toISOString();
-        if (currentDate >= taskStart && item.Status === "Open") {
-          let body = {
-            ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-            ResponsibleEnginnername: item.ResponsibleEnginnername,
-            ResponsibleTechImg: item.ResponsibleTechImg,
-            ResponsibleTechName: item.ResponsibleTechName,
-            Site: item.Site,
-            Title: item.Title,
-            Status: "InProgress",
-            Summary: item.Summary,
-            DateCreated: item.DateCreated,
-            TaskStart: new Date(item.TaskStart).toISOString(),
-            Duration: item.Duration,
-            TaskEnd: new Date(item.TaskEnd).toISOString(),
-            TaskFor: item.TaskFor,
-            Color: item.Color,
-            ClassName: item.ClassName,
-          };
-          await bodyDataKanban(
-            `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-            body,
-            "PUT",
-            "update"
-          );
-          socket?.emit("TaskEdited", "TaskUpdated");
-        } else if (currentDate < taskStart && item.Status === "InProgress") {
-          let body = {
-            ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-            ResponsibleEnginnername: item.ResponsibleEnginnername,
-            ResponsibleTechImg: item.ResponsibleTechImg,
-            ResponsibleTechName: item.ResponsibleTechName,
-            Site: item.Site,
-            Title: item.Title,
-            Status: "Open",
-            Summary: item.Summary,
-            DateCreated: item.DateCreated,
-            TaskStart: new Date(item.TaskStart).toISOString(),
-            Duration: item.Duration,
-            TaskEnd: new Date(
-              new Date(item.TaskStart).setDate(
-                new Date(item.TaskStart).getDate() + Number(item.Duration)
-              )
-            ),
-            TaskFor: item.TaskFor,
-            Color: item.Color,
-            ClassName: item.ClassName,
-          };
-          await bodyDataKanban(
-            `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-            body,
-            "PUT",
-            "update"
-          );
-          socket?.emit("TaskEdited", "TaskUpdated");
-        } else if (
-          currentDate >= taskStart &&
-          item.Status === "InProgress" &&
-          currentDate > taskEnd
-        ) {
-          let body = {
-            ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-            ResponsibleEnginnername: item.ResponsibleEnginnername,
-            ResponsibleTechImg: item.ResponsibleTechImg,
-            ResponsibleTechName: item.ResponsibleTechName,
-            Site: item.Site,
-            Title: item.Title,
-            Status: "Delayed",
-            Summary: item.Summary,
-            DateCreated: item.DateCreated,
-            TaskStart: new Date(item.TaskStart).toISOString(),
-            Duration: item.Duration,
-            TaskEnd: new Date(
-              new Date(item.TaskStart).setDate(
-                new Date(item.TaskStart).getDate() + Number(item.Duration)
-              )
-            ),
-            TaskFor: item.TaskFor,
-            Color: item.Color,
-            ClassName: item.ClassName,
-          };
-          await bodyDataKanban(
-            `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-            body,
-            "PUT",
-            "update"
-          );
-          socket?.emit("TaskEdited", "TaskUpdated");
+        try {
+          let taskStart = new Date(item.TaskStart).toISOString();
+          let taskEnd = new Date(item.TaskEnd).toISOString();
+          if (currentDate >= taskStart && item.Status === "Open") {
+            let body = {
+              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
+              ResponsibleEnginnername: item.ResponsibleEnginnername,
+              ResponsibleTechImg: item.ResponsibleTechImg,
+              ResponsibleTechName: item.ResponsibleTechName,
+              Site: item.Site,
+              Title: item.Title,
+              Status: "InProgress",
+              Summary: item.Summary,
+              DateCreated: item.DateCreated,
+              TaskStart: new Date(item.TaskStart).toISOString(),
+              Duration: item.Duration,
+              TaskEnd: new Date(item.TaskEnd).toISOString(),
+              TaskFor: item.TaskFor,
+              Color: item.Color,
+              ClassName: item.ClassName,
+            };
+            await bodyDataKanban(
+              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
+              body,
+              "PUT",
+              token
+            );
+            socket?.emit("TaskEdited", "TaskUpdated");
+          } else if (currentDate < taskStart && item.Status === "InProgress") {
+            let body = {
+              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
+              ResponsibleEnginnername: item.ResponsibleEnginnername,
+              ResponsibleTechImg: item.ResponsibleTechImg,
+              ResponsibleTechName: item.ResponsibleTechName,
+              Site: item.Site,
+              Title: item.Title,
+              Status: "Open",
+              Summary: item.Summary,
+              DateCreated: item.DateCreated,
+              TaskStart: new Date(item.TaskStart).toISOString(),
+              Duration: item.Duration,
+              TaskEnd: new Date(
+                new Date(item.TaskStart).setDate(
+                  new Date(item.TaskStart).getDate() + Number(item.Duration)
+                )
+              ),
+              TaskFor: item.TaskFor,
+              Color: item.Color,
+              ClassName: item.ClassName,
+            };
+            await bodyDataKanban(
+              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
+              body,
+              "PUT",
+              token
+            );
+            socket?.emit("TaskEdited", "TaskUpdated");
+          } else if (
+            currentDate >= taskStart &&
+            item.Status === "InProgress" &&
+            currentDate > taskEnd
+          ) {
+            let body = {
+              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
+              ResponsibleEnginnername: item.ResponsibleEnginnername,
+              ResponsibleTechImg: item.ResponsibleTechImg,
+              ResponsibleTechName: item.ResponsibleTechName,
+              Site: item.Site,
+              Title: item.Title,
+              Status: "Delayed",
+              Summary: item.Summary,
+              DateCreated: item.DateCreated,
+              TaskStart: new Date(item.TaskStart).toISOString(),
+              Duration: item.Duration,
+              TaskEnd: new Date(
+                new Date(item.TaskStart).setDate(
+                  new Date(item.TaskStart).getDate() + Number(item.Duration)
+                )
+              ),
+              TaskFor: item.TaskFor,
+              Color: item.Color,
+              ClassName: item.ClassName,
+            };
+            await bodyDataKanban(
+              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
+              body,
+              "PUT",
+              token
+            );
+            socket?.emit("TaskEdited", "TaskUpdated");
+          }
+        } catch (err) {
+          console.log(err.message);
+          setErrorDetails(err.message);
+          setError(true);
         }
       });
       setRealTime((prev) => !prev);
-    }, 3000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [realTime]);
 
   useEffect(() => {
-    const token = cookies.get("token");
-
     let txtarea = document.getElementById("textarea");
     if (txtarea.value.indexOf("@") !== -1) {
       let text = txtarea.value.length;
@@ -157,26 +160,26 @@ const Kanban = ({ socket }) => {
       if (targetString === "") {
         setLoading(true);
         if (copyEqs.length === 0 && copySites.length === 0) {
-          fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              setEqs(data);
-              setCopyEqs(data);
-            })
-            .then(() => {
-              fetch(`${baseURL}/api/v1/Location_Bauer`, {
-                headers: { Authorization: `Bearer ${token}` },
-              })
-                .then((res) => res.json())
-                .then((data) => {
-                  setSites(data);
-                  setCopySites(data);
-                  setIsDownList(true);
-                  setLoading(false);
-                });
-            });
+          const getData = async () => {
+            try {
+              const eqsURL = `${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`;
+              const eqsData = await fetchDataOnly(eqsURL, "GET", token);
+              setEqs(eqsData);
+              setCopyEqs(eqsData);
+              const siteURL = `${baseURL}/api/v1/Location_Bauer`;
+              const siteData = await fetchDataOnly(siteURL, "GET", token);
+              setSites(siteData);
+              setCopySites(siteData);
+              setIsDownList(true);
+              setLoading(false);
+            } catch (error) {
+              setError(true);
+              setErrorDetails(error.message);
+              console.log(error.message);
+              setLoading(false);
+            }
+          };
+          getData();
         } else {
           let neweqs = copyEqs.filter((eq) =>
             eq.Equipment.startsWith(targetString)
@@ -202,49 +205,62 @@ const Kanban = ({ socket }) => {
     } else {
       setIsDownList(false);
     }
-  }, [TextField]);
+  }, [TextField, token]);
 
   useEffect(() => {
-    fetch(`${baseURL}/api/v1/manageUsers`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/api/v1/manageUsers`;
+        const data = await fetchDataOnly(url, "GET", token);
         setUsers(data);
         setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
+      } catch (error) {
         setError(true);
+        setErrorDetails(error.message);
+        console.log(error.message);
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+    getData();
+  }, [token]);
 
   useEffect(() => {
-    const token = cookies.get("token");
-    setLoading(true);
-    fetch(`${baseURL}/api/v1/AdminTasks`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/api/v1/AdminTasks`;
+        const data = await fetchDataOnly(url, "GET", token);
         setTableAllData(data);
         setTaskData(data);
         setLoading(false);
-      })
-      .catch((err) => {
-        setErrorDetails(`Unothorized Or ${err.message}`);
-        console.log(err.message);
+      } catch (error) {
         setError(true);
+        setErrorDetails(error.message);
+        console.log(error.message);
         setLoading(false);
-      });
-  }, [fetchData]);
+      }
+    };
+    getData();
+    // fetch(`${baseURL}/api/v1/AdminTasks`, {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setTableAllData(data);
+    //     setTaskData(data);
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     setErrorDetails(`Unothorized Or ${err.message}`);
+    //     console.log(err.message);
+    //     setError(true);
+    //     setLoading(false);
+    //   });
+  }, [fetchData, token]);
 
   useEffect(() => {
     if (!loading) {
@@ -380,169 +396,176 @@ const Kanban = ({ socket }) => {
                 }}
                 enablePersistence={true}
                 actionComplete={async (arg) => {
-                  if (arg.requestType === "cardCreated") {
-                    console.log(arg.addedRecords[0]);
-                    setLoading(true);
-                    const ResEngImg = users?.find(
-                      (user) =>
-                        user.UserName ===
-                        arg.addedRecords[0]["ResponsibleEnginnername"]
-                    );
-                    console.log(ResEngImg);
-                    const ResTechImg = users?.find(
-                      (user) =>
-                        user.UserName ===
-                        arg.addedRecords[0]["ResponsibleTechName"]
-                    );
-                    let body = {
-                      ResponsibleEngineerImg: ResEngImg?.ProfileImg,
-                      ResponsibleEnginnername:
-                        arg.addedRecords[0]["ResponsibleEnginnername"],
-                      ResponsibleTechImg: ResTechImg?.ProfileImg,
-                      ResponsibleTechName:
-                        arg.addedRecords[0]["ResponsibleTechName"],
-                      Site: arg.addedRecords[0]["Site"],
-                      Title: arg.addedRecords[0]["Title"],
-                      Status: arg.addedRecords[0]["Status"],
-                      Summary: arg.addedRecords[0]["Summary"],
-                      DateCreated: new Date().toISOString(),
-                      TaskStart: new Date(
-                        arg.addedRecords[0]["TaskStart"]
-                      ).toISOString(),
-                      Duration: arg.addedRecords[0]["Duration"],
-                      TaskEnd: new Date(
-                        new Date(arg.addedRecords[0]["TaskStart"]).setDate(
-                          new Date(arg.addedRecords[0]["TaskStart"]).getDate() +
-                            Number(arg.addedRecords[0]["Duration"])
-                        )
-                      ),
-                      TaskFor: arg.addedRecords[0]["TaskFor"],
-                      Color: "#673ABB",
-                      ClassName: "e-improvment e-normal e-andrew-fuller",
-                    };
-                    await bodyDataKanban(
-                      `${baseURL}/api/v1/AdminTasks`,
-                      body,
-                      "POST",
-                      "add"
-                    );
-                    setFetchData((prev) => !prev);
-                    socket?.emit("TaskEdited", "TaskUpdated");
-                    setLoading(false);
-                  } else if (arg.requestType === "cardChanged") {
-                    console.log(arg.changedRecords[0]);
-                    console.log(users);
-                    setLoading(true);
-                    const ResEngImg = users?.find(
-                      (user) =>
-                        user.UserName ===
-                        arg.changedRecords[0]["ResponsibleEnginnername"]
-                    );
-                    console.log(ResEngImg);
-                    const ResTechImg = users?.find(
-                      (user) =>
-                        user.UserName ===
-                        arg.changedRecords[0]["ResponsibleTechName"]
-                    );
-                    let body = {
-                      ResponsibleEngineerImg: ResEngImg?.ProfileImg,
-                      ResponsibleEnginnername:
-                        arg.changedRecords[0]["ResponsibleEnginnername"],
-                      ResponsibleTechImg: ResTechImg?.ProfileImg,
-                      ResponsibleTechName:
-                        arg.changedRecords[0]["ResponsibleTechName"],
-                      Site: arg.changedRecords[0]["Site"],
-                      Title: arg.changedRecords[0]["Title"],
-                      Status: arg.changedRecords[0]["Status"],
-                      Summary: arg.changedRecords[0]["Summary"],
-                      DateCreated: new Date().toISOString(),
-                      TaskStart: new Date(
-                        arg.changedRecords[0]["TaskStart"]
-                      ).toISOString(),
-                      Duration: arg.changedRecords[0]["Duration"],
-                      TaskEnd: new Date(
-                        new Date(arg.changedRecords[0]["TaskStart"]).setDate(
-                          new Date(
-                            arg.changedRecords[0]["TaskStart"]
-                          ).getDate() +
-                            Number(arg.changedRecords[0]["Duration"])
-                        )
-                      ),
-                      TaskFor: arg.changedRecords[0]["TaskFor"],
-                      Color: "#673ABB",
-                      ClassName: "e-improvment e-normal e-andrew-fuller",
-                    };
-                    console.log(arg.changedRecords[0]);
-                    console.log(
-                      new Date(
-                        new Date(arg.changedRecords[0]["TaskStart"]).setDate(
-                          new Date(
-                            arg.changedRecords[0]["TaskStart"]
-                          ).getDate() +
-                            Number(arg.changedRecords[0]["Duration"])
-                        )
-                      )
-                    );
-                    await bodyDataKanban(
-                      `${baseURL}/api/v1/AdminTasks/${arg.changedRecords[0]["ID"]}`,
-                      body,
-                      "PUT",
-                      "update"
-                    );
-                    socket?.emit("TaskEdited", "TaskUpdated");
-                    setLoading(false);
-                  } else if (arg.requestType === "cardRemoved") {
-                    setLoading(true);
-                    const ResEngImg = users?.find(
-                      (user) =>
-                        user.UserName ===
-                        arg.deletedRecords[0]["ResponsibleEnginnername"]
-                    );
-                    console.log(ResEngImg);
-                    const ResTechImg = users?.find(
-                      (user) =>
-                        user.UserName ===
-                        arg.deletedRecords[0]["ResponsibleTechName"]
-                    );
-                    let body = {
-                      ResponsibleEngineerImg: ResEngImg?.ProfileImg,
-                      ResponsibleEnginnername:
-                        arg.deletedRecords[0]["ResponsibleEnginnername"],
-                      ResponsibleTechImg: ResTechImg?.ProfileImg,
-                      ResponsibleTechName:
-                        arg.deletedRecords[0]["ResponsibleTechName"],
-                      Site: arg.deletedRecords[0]["Site"],
-                      Title: arg.deletedRecords[0]["Title"],
-                      Status: arg.deletedRecords[0]["Status"],
-                      Summary: arg.deletedRecords[0]["Summary"],
-                      DateCreated: new Date().toISOString(),
-                      TaskStart: new Date(
-                        arg.deletedRecords[0]["TaskStart"]
-                      ).toISOString(),
-                      Duration: arg.deletedRecords[0]["Duration"],
-                      TaskEnd: new Date(
-                        new Date(arg.deletedRecords[0]["TaskStart"]).setDate(
-                          new Date(
-                            arg.deletedRecords[0]["TaskStart"]
-                          ).getDate() +
-                            Number(arg.deletedRecords[0]["Duration"])
-                        )
-                      ),
-                      TaskFor: arg.deletedRecords[0]["TaskFor"],
-                      Color: "#673ABB",
-                      ClassName: "e-improvment e-normal e-andrew-fuller",
-                    };
-
-                    if (window.confirm(`sure you want to delete data`)) {
-                      await bodyDataKanban(
-                        `${baseURL}/api/v1/AdminTasks/${arg.deletedRecords[0]["ID"]}`,
-                        body,
-                        "DELETE",
-                        "delete"
+                  try {
+                    if (arg.requestType === "cardCreated") {
+                      console.log(arg.addedRecords[0]);
+                      setLoading(true);
+                      const ResEngImg = users?.find(
+                        (user) =>
+                          user.UserName ===
+                          arg.addedRecords[0]["ResponsibleEnginnername"]
                       );
+                      console.log(ResEngImg);
+                      const ResTechImg = users?.find(
+                        (user) =>
+                          user.UserName ===
+                          arg.addedRecords[0]["ResponsibleTechName"]
+                      );
+                      let body = {
+                        ResponsibleEngineerImg: ResEngImg?.ProfileImg,
+                        ResponsibleEnginnername:
+                          arg.addedRecords[0]["ResponsibleEnginnername"],
+                        ResponsibleTechImg: ResTechImg?.ProfileImg,
+                        ResponsibleTechName:
+                          arg.addedRecords[0]["ResponsibleTechName"],
+                        Site: arg.addedRecords[0]["Site"],
+                        Title: arg.addedRecords[0]["Title"],
+                        Status: arg.addedRecords[0]["Status"],
+                        Summary: arg.addedRecords[0]["Summary"],
+                        DateCreated: new Date().toISOString(),
+                        TaskStart: new Date(
+                          arg.addedRecords[0]["TaskStart"]
+                        ).toISOString(),
+                        Duration: arg.addedRecords[0]["Duration"],
+                        TaskEnd: new Date(
+                          new Date(arg.addedRecords[0]["TaskStart"]).setDate(
+                            new Date(
+                              arg.addedRecords[0]["TaskStart"]
+                            ).getDate() +
+                              Number(arg.addedRecords[0]["Duration"])
+                          )
+                        ),
+                        TaskFor: arg.addedRecords[0]["TaskFor"],
+                        Color: "#673ABB",
+                        ClassName: "e-improvment e-normal e-andrew-fuller",
+                      };
+                      await bodyDataKanban(
+                        `${baseURL}/api/v1/AdminTasks`,
+                        body,
+                        "POST",
+                        "add"
+                      );
+                      setFetchData((prev) => !prev);
+                      socket?.emit("TaskEdited", "TaskUpdated");
+                      setLoading(false);
+                    } else if (arg.requestType === "cardChanged") {
+                      console.log(arg.changedRecords[0]);
+                      console.log(users);
+                      setLoading(true);
+                      const ResEngImg = users?.find(
+                        (user) =>
+                          user.UserName ===
+                          arg.changedRecords[0]["ResponsibleEnginnername"]
+                      );
+                      console.log(ResEngImg);
+                      const ResTechImg = users?.find(
+                        (user) =>
+                          user.UserName ===
+                          arg.changedRecords[0]["ResponsibleTechName"]
+                      );
+                      let body = {
+                        ResponsibleEngineerImg: ResEngImg?.ProfileImg,
+                        ResponsibleEnginnername:
+                          arg.changedRecords[0]["ResponsibleEnginnername"],
+                        ResponsibleTechImg: ResTechImg?.ProfileImg,
+                        ResponsibleTechName:
+                          arg.changedRecords[0]["ResponsibleTechName"],
+                        Site: arg.changedRecords[0]["Site"],
+                        Title: arg.changedRecords[0]["Title"],
+                        Status: arg.changedRecords[0]["Status"],
+                        Summary: arg.changedRecords[0]["Summary"],
+                        DateCreated: new Date().toISOString(),
+                        TaskStart: new Date(
+                          arg.changedRecords[0]["TaskStart"]
+                        ).toISOString(),
+                        Duration: arg.changedRecords[0]["Duration"],
+                        TaskEnd: new Date(
+                          new Date(arg.changedRecords[0]["TaskStart"]).setDate(
+                            new Date(
+                              arg.changedRecords[0]["TaskStart"]
+                            ).getDate() +
+                              Number(arg.changedRecords[0]["Duration"])
+                          )
+                        ),
+                        TaskFor: arg.changedRecords[0]["TaskFor"],
+                        Color: "#673ABB",
+                        ClassName: "e-improvment e-normal e-andrew-fuller",
+                      };
+                      console.log(arg.changedRecords[0]);
+                      console.log(
+                        new Date(
+                          new Date(arg.changedRecords[0]["TaskStart"]).setDate(
+                            new Date(
+                              arg.changedRecords[0]["TaskStart"]
+                            ).getDate() +
+                              Number(arg.changedRecords[0]["Duration"])
+                          )
+                        )
+                      );
+                      await bodyDataKanban(
+                        `${baseURL}/api/v1/AdminTasks/${arg.changedRecords[0]["ID"]}`,
+                        body,
+                        "PUT",
+                        "update"
+                      );
+                      socket?.emit("TaskEdited", "TaskUpdated");
+                      setLoading(false);
+                    } else if (arg.requestType === "cardRemoved") {
+                      setLoading(true);
+                      const ResEngImg = users?.find(
+                        (user) =>
+                          user.UserName ===
+                          arg.deletedRecords[0]["ResponsibleEnginnername"]
+                      );
+                      console.log(ResEngImg);
+                      const ResTechImg = users?.find(
+                        (user) =>
+                          user.UserName ===
+                          arg.deletedRecords[0]["ResponsibleTechName"]
+                      );
+                      let body = {
+                        ResponsibleEngineerImg: ResEngImg?.ProfileImg,
+                        ResponsibleEnginnername:
+                          arg.deletedRecords[0]["ResponsibleEnginnername"],
+                        ResponsibleTechImg: ResTechImg?.ProfileImg,
+                        ResponsibleTechName:
+                          arg.deletedRecords[0]["ResponsibleTechName"],
+                        Site: arg.deletedRecords[0]["Site"],
+                        Title: arg.deletedRecords[0]["Title"],
+                        Status: arg.deletedRecords[0]["Status"],
+                        Summary: arg.deletedRecords[0]["Summary"],
+                        DateCreated: new Date().toISOString(),
+                        TaskStart: new Date(
+                          arg.deletedRecords[0]["TaskStart"]
+                        ).toISOString(),
+                        Duration: arg.deletedRecords[0]["Duration"],
+                        TaskEnd: new Date(
+                          new Date(arg.deletedRecords[0]["TaskStart"]).setDate(
+                            new Date(
+                              arg.deletedRecords[0]["TaskStart"]
+                            ).getDate() +
+                              Number(arg.deletedRecords[0]["Duration"])
+                          )
+                        ),
+                        TaskFor: arg.deletedRecords[0]["TaskFor"],
+                        Color: "#673ABB",
+                        ClassName: "e-improvment e-normal e-andrew-fuller",
+                      };
+
+                      if (window.confirm(`sure you want to delete data`)) {
+                        await bodyDataKanban(
+                          `${baseURL}/api/v1/AdminTasks/${arg.deletedRecords[0]["ID"]}`,
+                          body,
+                          "DELETE",
+                          "delete"
+                        );
+                      }
+                      socket?.emit("TaskEdited", "TaskUpdated");
+                      setLoading(false);
                     }
-                    socket?.emit("TaskEdited", "TaskUpdated");
-                    setLoading(false);
+                  } catch (err) {
+                    console.log(err.message);
+                    setError(true);
                   }
                 }}
               >

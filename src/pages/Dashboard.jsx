@@ -8,7 +8,9 @@ import { useNavContext } from "../contexts/NavContext";
 import { Cookies } from "react-cookie";
 
 const Dashboard = () => {
-  const { usersData } = useNavContext();
+  const { usersData, token } = useNavContext();
+  const [error, setError] = useState(false);
+  const [errorDetails, setErrorDetails] = useState("");
   const [cardsData, setCardsData] = useState([]);
   const [sites, setSites] = useState([]);
   const [locURL, setLocURL] = useState(null);
@@ -60,8 +62,6 @@ const Dashboard = () => {
   const getData = async (name, table, fullquery, DateTime) => {
     try {
       if (usersData && locURL) {
-        const cookies = new Cookies();
-        const token = cookies?.get("token");
         let per = 0;
         let perLastWeek = 0;
         let avURL = `${process.env.REACT_APP_BASE_URL}/api/v1/${table}?fullquery=${fullquery}`;
@@ -127,8 +127,11 @@ const Dashboard = () => {
           [name]: (per - perLastWeek).toFixed(1),
         }));
       }
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      setErrorDetails(`${err.message}`);
+      console.log(err.message);
+      setError(true);
+      setLoading(false);
     }
   };
 

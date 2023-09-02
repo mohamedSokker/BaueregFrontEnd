@@ -18,35 +18,37 @@ const Login = () => {
   const [error, setError] = useState(false);
   const [errorBody, setErrorBody] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    fetch(`${process.env.REACT_APP_BASE_URL}/handleLoginapp`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username: userName, password: password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const cookies = new Cookies();
-        const token = cookies.get("token");
-        if (!token) {
-          setToken(data.token);
-          cookies.set("token", data.token, { maxAge: 86400 });
-        }
-      })
-      .then(() => {
-        setLoading(false);
-        navigate("/");
-      })
-      .catch((err) => {
-        setError(true);
-        setErrorBody(err.message);
-        setLoading(false);
-        setInterval(() => setError(false), 5000);
-      });
+    try {
+      const url = `${process.env.REACT_APP_BASE_URL}/handleLoginapp`;
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: userName, password: password }),
+      };
+      const res = await fetch(url, options);
+      const success = res.ok;
+      const data = await res.json();
+      console.log(data);
+      if (!success) throw new Error(data.message);
+      const cookies = new Cookies();
+      const token = await cookies.get("token");
+      if (!token) {
+        setToken(data.token);
+        cookies.set("token", data.token, { maxAge: 86400 });
+      }
+      setLoading(false);
+      navigate("/");
+    } catch (err) {
+      setError(true);
+      setErrorBody(err.message);
+      setLoading(false);
+      setInterval(() => setError(false), 5000);
+    }
   };
   return (
     <>

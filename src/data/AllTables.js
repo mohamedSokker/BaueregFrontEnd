@@ -5,7 +5,6 @@ export const AllTables = [
   "AppPlaceOrder",
   "AdminTasks",
   "AdminUsers",
-  "AdminUsersApp",
   "AdminUsersData",
   "AdminUsersLog",
   "Availability",

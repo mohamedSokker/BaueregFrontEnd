@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import { CiWarning } from "react-icons/ci";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 
 import { useNavContext } from "../contexts/NavContext";
 import filespic from "../assets/files.jpg";
 import folderpic from "../assets/folder.jpg";
 import { PageLoading } from "../components";
+import fetchDataOnly from "../Functions/fetchDataOnly";
 
 const OrderNo = () => {
   const baseURL = process.env.REACT_APP_BASE_URL;
-  const { closeSmallSidebar, usersData } = useNavContext();
+  const { closeSmallSidebar, usersData, token } = useNavContext();
   const abspath = process.env.REACT_APP_ORDERNO_ABS_PATH;
   const relativepath = process.env.REACT_APP_ORDERNO_REL_PATH;
   const [path, setPath] = useState(abspath);
@@ -17,16 +20,28 @@ const OrderNo = () => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const [update, setUpdate] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorDetails, setErrorDetails] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
-    fetch(`${baseURL}/AppGetFiles?fullpath=${path}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setIsSuccess(false);
+        setError(false);
+        setLoading(true);
+        const url = `${baseURL}/AppGetFiles?fullpath=${path}`;
+        const data = await fetchDataOnly(url, "GET", token);
         setFilesItems(data.data);
-      })
-      .catch((err) => {
+        setLoading(false);
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
         console.log(err.message);
-      });
+        setError(true);
+        setLoading(false);
+      }
+    };
+    getData();
   }, [update]);
 
   const createFolder = () => {
@@ -34,33 +49,40 @@ const OrderNo = () => {
     if (folderName === "") {
       return alert("Folder Can't be empty");
     }
-    console.log(folderName);
-    setLoading(true);
-    fetch(`${baseURL}/AppCreateFolder?fullpath=${path}/${folderName}`)
-      .then((res) => {})
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/AppCreateFolder?fullpath=${path}/${folderName}`;
+        const data = await fetchDataOnly(url, "GET", token);
         setUpdate((prev) => !prev);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
         console.log(err.message);
+        setError(true);
         setLoading(false);
-      });
+      }
+    };
+    getData();
   };
 
   const deleteItem = (e) => {
     const targetfile = e.target.dataset.filename;
-    setLoading(true);
-    fetch(`${baseURL}/AppDeleteFolder?oldpath=${path}/${targetfile}`)
-      .then((res) => {})
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/AppDeleteFolder?oldpath=${path}/${targetfile}`;
+        await fetchDataOnly(url, "GET", token);
         setUpdate((prev) => !prev);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
         console.log(err.message);
+        setError(true);
         setLoading(false);
-      });
+      }
+    };
+    getData();
   };
 
   const renameItem = (e) => {
@@ -69,24 +91,25 @@ const OrderNo = () => {
     if (newFileName === "") {
       return alert("Folder or File Can't be Empty");
     }
-    setLoading(true);
-    fetch(
-      `${baseURL}/AppRenameFolder?oldpath=${path}/${oldFileName}&newpath=${path}/${newFileName}`
-    )
-      .then((res) => {})
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/AppRenameFolder?oldpath=${path}/${oldFileName}&newpath=${path}/${newFileName}`;
+        await fetchDataOnly(url, "GET", token);
         setUpdate((prev) => !prev);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
         console.log(err.message);
+        setError(true);
         setLoading(false);
-      });
+      }
+    };
+    getData();
   };
 
   const uploadFiles = (e) => {
     setFiles(Array.from(e.target.files));
-    console.log(Array.from(e.target.files[0]));
   };
 
   const uploadItem = (e) => {
@@ -107,17 +130,20 @@ const OrderNo = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        setErrorDetails(`${err.message}`);
+        console.log(err.message);
+        setError(true);
         setLoading(false);
       });
   };
 
   const goToFolder = (e) => {
     let targetpath = `${path}/${e.target.dataset.filename}`;
-    setLoading(true);
-    fetch(`${baseURL}/AppCheck?path=${targetpath}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/AppCheck?path=${targetpath}`;
+        const data = await fetchDataOnly(url, "GET", token);
         if (data.type === "file") {
           let targetFile = `${baseURL}/${relPath}/${e.target.dataset.filename}`;
           window.open(targetFile, "_blank").focus();
@@ -126,13 +152,16 @@ const OrderNo = () => {
           setPath(`${targetpath}`);
           setRelPath(`${relPath}/${e.target.dataset.filename}`);
           setUpdate((prev) => !prev);
-          setLoading(false);
         }
-      })
-      .catch((err) => {
-        console.log(err.message);
         setLoading(false);
-      });
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
+        console.log(err.message);
+        setError(true);
+        setLoading(false);
+      }
+    };
+    getData();
   };
 
   const goBack = () => {
@@ -143,16 +172,31 @@ const OrderNo = () => {
     let copiedrelpath = copiedrelpathArray.join("/");
     let copiedabspath = copiedabspathArray.join("/");
     let minPath = "bauereg/Orders/Bauer/Order No";
-    if (copiedrelpath >= minPath) {
-      fetch(`${baseURL}/${copiedrelpath}`)
-        .then((res) => res.text())
-        .then((data) => {
-          if (data !== "401 Access Denied") {
-            setRelPath(copiedrelpath);
-            setPath(copiedabspath);
-            setUpdate((prev) => !prev);
-          }
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/${copiedrelpath}`;
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
+        if (!res.ok) throw new Error(`Unauthorized to see this folder`);
+        setRelPath(copiedrelpath);
+        setPath(copiedabspath);
+        setUpdate((prev) => !prev);
+        setLoading(false);
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
+        console.log(err.message);
+        setError(true);
+        setLoading(false);
+      }
+    };
+    if (copiedrelpath >= minPath) {
+      getData();
     }
   };
 
@@ -160,14 +204,23 @@ const OrderNo = () => {
     setLoading(true);
     let targetpath = `${path}/${e.target.dataset.filename}`;
     targetpath = targetpath.replaceAll(" ", "%20");
-    console.log(targetpath);
-    fetch(`${baseURL}/OrdersOrderpdfAnalysis?filepath=${targetpath}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setLoading(false);
+    const getData = async () => {
+      try {
+        setError(false);
+        setLoading(true);
+        const url = `${baseURL}/OrdersOrderpdfAnalysis?filepath=${targetpath}`;
+        const data = await fetchDataOnly(url, "GET", token);
         console.log(data);
-      })
-      .catch((err) => console.log(err));
+        setLoading(false);
+        setIsSuccess(true);
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
+        console.log(err.message);
+        setError(true);
+        setLoading(false);
+      }
+    };
+    getData();
   };
 
   return (
@@ -256,6 +309,18 @@ const OrderNo = () => {
             </div>
           ))}
         </div>
+        {error && (
+          <div className=" w-full h-14 bg-red-600 text-white flex justify-center items-center absolute bottom-0 left-0 flex-row border-t-1 border-gray-400">
+            <CiWarning className="text-[40px] font-extrabold" />
+            <p className="ml-5 text-xl font-semibold">{errorDetails}</p>
+          </div>
+        )}
+        {isSuccess && (
+          <div className=" w-full h-14 bg-green-700 text-white flex justify-center items-center absolute bottom-0 left-0 flex-row border-t-1 border-gray-400">
+            <AiOutlineCheckCircle className="text-[40px] font-extrabold" />
+            <p className="ml-5 text-xl font-semibold">{`${new Date().toLocaleString()} : Successfully Analyzed`}</p>
+          </div>
+        )}
       </div>
     </>
   );

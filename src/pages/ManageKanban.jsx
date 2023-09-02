@@ -14,7 +14,6 @@ import {
   ContextMenu,
 } from "@syncfusion/ej2-react-grids";
 import { CiWarning } from "react-icons/ci";
-import { Cookies } from "react-cookie";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { BsPlus } from "react-icons/bs";
 import { Link } from "react-router-dom";
@@ -24,15 +23,16 @@ import { Header } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 import { KanbanGrid } from "../data/Kanban/Kanban";
 import { bodyDataKanban } from "../Functions/bodydata";
+import fetchDataOnly from "../Functions/fetchDataOnly";
 
 const ManageKanban = ({ socket }) => {
+  const { closeSmallSidebar, token } = useNavContext();
+
   const [tableData, setTableData] = useState([]);
   const [tableAllData, setTableAllData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
-  const { closeSmallSidebar } = useNavContext();
-  const cookies = new Cookies();
   const [fetchData, setFetchData] = useState(false);
   const [realTime, setRealTime] = useState(true);
 
@@ -50,87 +50,93 @@ const ManageKanban = ({ socket }) => {
     interval = setInterval(() => {
       let currentDate = new Date(Date.now()).toISOString();
       tableAllData.map(async (item) => {
-        let taskStart = new Date(item.TaskStart).toISOString();
-        let taskEnd = new Date(item.TaskEnd).toISOString();
-        if (currentDate >= taskStart && item.Status === "Open") {
-          let body = {
-            ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-            ResponsibleEnginnername: item.ResponsibleEnginnername,
-            ResponsibleTechImg: item.ResponsibleTechImg,
-            ResponsibleTechName: item.ResponsibleTechName,
-            Site: item.Site,
-            Title: item.Title,
-            Status: "InProgress",
-            Summary: item.Summary,
-            DateCreated: item.DateCreated,
-            TaskStart: new Date(item.TaskStart).toISOString(),
-            Duration: item.Duration,
-            TaskEnd: new Date(item.TaskEnd).toISOString(),
-            TaskFor: item.TaskFor,
-            Color: item.Color,
-            ClassName: item.ClassName,
-          };
-          await bodyDataKanban(
-            `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-            body,
-            "PUT",
-            "update"
-          );
-          socket?.emit("TaskEdited", "TaskUpdated");
-        } else if (currentDate < taskStart && item.Status === "InProgress") {
-          let body = {
-            ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-            ResponsibleEnginnername: item.ResponsibleEnginnername,
-            ResponsibleTechImg: item.ResponsibleTechImg,
-            ResponsibleTechName: item.ResponsibleTechName,
-            Site: item.Site,
-            Title: item.Title,
-            Status: "Open",
-            Summary: item.Summary,
-            DateCreated: item.DateCreated,
-            TaskStart: new Date(item.TaskStart).toISOString(),
-            Duration: item.Duration,
-            TaskEnd: new Date(item.TaskEnd).toISOString(),
-            TaskFor: item.TaskFor,
-            Color: item.Color,
-            ClassName: item.ClassName,
-          };
-          await bodyDataKanban(
-            `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-            body,
-            "PUT",
-            "update"
-          );
-          socket?.emit("TaskEdited", "TaskUpdated");
-        } else if (
-          currentDate >= taskStart &&
-          item.Status === "InProgress" &&
-          currentDate > taskEnd
-        ) {
-          let body = {
-            ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-            ResponsibleEnginnername: item.ResponsibleEnginnername,
-            ResponsibleTechImg: item.ResponsibleTechImg,
-            ResponsibleTechName: item.ResponsibleTechName,
-            Site: item.Site,
-            Title: item.Title,
-            Status: "Delayed",
-            Summary: item.Summary,
-            DateCreated: item.DateCreated,
-            TaskStart: new Date(item.TaskStart).toISOString(),
-            Duration: item.Duration,
-            TaskEnd: new Date(item.TaskEnd).toISOString(),
-            TaskFor: item.TaskFor,
-            Color: item.Color,
-            ClassName: item.ClassName,
-          };
-          await bodyDataKanban(
-            `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-            body,
-            "PUT",
-            "update"
-          );
-          socket?.emit("TaskEdited", "TaskUpdated");
+        try {
+          let taskStart = new Date(item.TaskStart).toISOString();
+          let taskEnd = new Date(item.TaskEnd).toISOString();
+          if (currentDate >= taskStart && item.Status === "Open") {
+            let body = {
+              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
+              ResponsibleEnginnername: item.ResponsibleEnginnername,
+              ResponsibleTechImg: item.ResponsibleTechImg,
+              ResponsibleTechName: item.ResponsibleTechName,
+              Site: item.Site,
+              Title: item.Title,
+              Status: "InProgress",
+              Summary: item.Summary,
+              DateCreated: item.DateCreated,
+              TaskStart: new Date(item.TaskStart).toISOString(),
+              Duration: item.Duration,
+              TaskEnd: new Date(item.TaskEnd).toISOString(),
+              TaskFor: item.TaskFor,
+              Color: item.Color,
+              ClassName: item.ClassName,
+            };
+            await bodyDataKanban(
+              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
+              body,
+              "PUT",
+              token
+            );
+            socket?.emit("TaskEdited", "TaskUpdated");
+          } else if (currentDate < taskStart && item.Status === "InProgress") {
+            let body = {
+              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
+              ResponsibleEnginnername: item.ResponsibleEnginnername,
+              ResponsibleTechImg: item.ResponsibleTechImg,
+              ResponsibleTechName: item.ResponsibleTechName,
+              Site: item.Site,
+              Title: item.Title,
+              Status: "Open",
+              Summary: item.Summary,
+              DateCreated: item.DateCreated,
+              TaskStart: new Date(item.TaskStart).toISOString(),
+              Duration: item.Duration,
+              TaskEnd: new Date(item.TaskEnd).toISOString(),
+              TaskFor: item.TaskFor,
+              Color: item.Color,
+              ClassName: item.ClassName,
+            };
+            await bodyDataKanban(
+              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
+              body,
+              "PUT",
+              token
+            );
+            socket?.emit("TaskEdited", "TaskUpdated");
+          } else if (
+            currentDate >= taskStart &&
+            item.Status === "InProgress" &&
+            currentDate > taskEnd
+          ) {
+            let body = {
+              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
+              ResponsibleEnginnername: item.ResponsibleEnginnername,
+              ResponsibleTechImg: item.ResponsibleTechImg,
+              ResponsibleTechName: item.ResponsibleTechName,
+              Site: item.Site,
+              Title: item.Title,
+              Status: "Delayed",
+              Summary: item.Summary,
+              DateCreated: item.DateCreated,
+              TaskStart: new Date(item.TaskStart).toISOString(),
+              Duration: item.Duration,
+              TaskEnd: new Date(item.TaskEnd).toISOString(),
+              TaskFor: item.TaskFor,
+              Color: item.Color,
+              ClassName: item.ClassName,
+            };
+            await bodyDataKanban(
+              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
+              body,
+              "PUT",
+              token
+            );
+            socket?.emit("TaskEdited", "TaskUpdated");
+          }
+        } catch (err) {
+          console.log(err.message);
+          setErrorDetails(err.message);
+          setError(true);
         }
       });
       setRealTime((prev) => !prev);
@@ -140,17 +146,11 @@ const ManageKanban = ({ socket }) => {
   }, [realTime]);
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
-    const token = cookies.get("token");
-    fetch(`${baseURL}/api/v1/AdminTasks`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const url = `${baseURL}/api/v1/AdminTasks`;
+        const data = await fetchDataOnly(url, "GET", token);
         setTableAllData(data);
         console.log(data);
         let gridData = [];
@@ -171,27 +171,59 @@ const ManageKanban = ({ socket }) => {
         console.log(gridData);
         setTableData(gridData);
         setLoading(false);
-      })
-      .catch((err) => {
-        setErrorDetails(`Unothorized Or ${err.message}`);
-        console.log(err.message);
+      } catch (error) {
         setError(true);
+        setErrorDetails(error.message);
+        console.log(error.message);
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+    getData();
+    // setLoading(true);
+    // setError(false);
+    // fetch(`${baseURL}/api/v1/AdminTasks`, {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setTableAllData(data);
+    //     console.log(data);
+    //     let gridData = [];
+    //     data.map((item) => {
+    //       gridData.push({
+    //         ResponsibleEngineerImg: item.ResponsibleEngineerImg,
+    //         ResponsibleEnginnername: item.ResponsibleEnginnername,
+    //         ResponsibleTechImg: item.ResponsibleTechImg,
+    //         ResponsibleTechName: item.ResponsibleTechName,
+    //         Title: item.Title,
+    //         Status: item.Status,
+    //         Summary: item.Summary,
+    //         TaskStart: new Date(item.TaskStart).toLocaleString(),
+    //         Duration: item.Duration,
+    //         TaskEnd: new Date(item.TaskEnd).toLocaleString(),
+    //       });
+    //     });
+    //     console.log(gridData);
+    //     setTableData(gridData);
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     setErrorDetails(`Unothorized Or ${err.message}`);
+    //     console.log(err.message);
+    //     setError(true);
+    //     setLoading(false);
+    //   });
+  }, [token]);
 
   useEffect(() => {
-    // setLoading(true);
-    setError(false);
-    const token = cookies.get("token");
-    fetch(`${baseURL}/api/v1/AdminTasks`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    const getData = async () => {
+      try {
+        setError(false);
+        const url = `${baseURL}/api/v1/AdminTasks`;
+        const data = await fetchDataOnly(url, "GET", token);
         setTableAllData(data);
         console.log(data);
         let gridData = [];
@@ -211,13 +243,50 @@ const ManageKanban = ({ socket }) => {
         });
         console.log(gridData);
         setTableData(gridData);
-      })
-      .catch((err) => {
-        setErrorDetails(`Unothorized Or ${err.message}`);
-        console.log(err.message);
+      } catch (error) {
         setError(true);
-      });
-  }, [fetchData]);
+        setErrorDetails(error.message);
+        console.log(error.message);
+        setLoading(false);
+      }
+    };
+    getData();
+    // setLoading(true);
+    // setError(false);
+    // fetch(`${baseURL}/api/v1/AdminTasks`, {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setTableAllData(data);
+    //     console.log(data);
+    //     let gridData = [];
+    //     data.map((item) => {
+    //       gridData.push({
+    //         ResponsibleEngineerImg: item.ResponsibleEngineerImg,
+    //         ResponsibleEnginnername: item.ResponsibleEnginnername,
+    //         ResponsibleTechImg: item.ResponsibleTechImg,
+    //         ResponsibleTechName: item.ResponsibleTechName,
+    //         Title: item.Title,
+    //         Status: item.Status,
+    //         Summary: item.Summary,
+    //         TaskStart: new Date(item.TaskStart).toLocaleString(),
+    //         Duration: item.Duration,
+    //         TaskEnd: new Date(item.TaskEnd).toLocaleString(),
+    //       });
+    //     });
+    //     console.log(gridData);
+    //     setTableData(gridData);
+    //   })
+    //   .catch((err) => {
+    //     setErrorDetails(`Unothorized Or ${err.message}`);
+    //     console.log(err.message);
+    //     setError(true);
+    //   });
+  }, [fetchData, token]);
 
   if (loading) return <Spinner message={`Loading AdminTasks Data`} />;
   return (

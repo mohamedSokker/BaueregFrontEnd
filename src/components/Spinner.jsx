@@ -4,7 +4,7 @@ import { logoColor } from "../BauerColors";
 
 const Spinner = ({ message }) => {
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full Header dark:text-white">
+    <div className="flex flex-col items-center w-full h-full Header dark:text-white">
       <MagnifyingGlass
         type="MagnifyingGlass"
         color={logoColor}

@@ -79,8 +79,8 @@ const Navbar = () => {
           icon={<AiOutlineMenu />}
           customFunc={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)}
         />
-        <div className="flex items-center dark:text-white">
-          {usersData[0]?.roles?.Admin && (
+        <div className="flex items-center dark:text-white gap-2">
+          {/* {usersData[0]?.roles?.Admin && (
             <NavButton
               title="Upload to cloud"
               className="text-logoColor dark:text-white"
@@ -89,7 +89,7 @@ const Navbar = () => {
               icon={<FiUploadCloud />}
               customFunc={handleUploadData}
             />
-          )}
+          )} */}
 
           <NavButton
             title="chat"
@@ -150,7 +150,7 @@ const Navbar = () => {
               </div>
             )}
           </div>
-          <ToggleMode />
+          {/* <ToggleMode /> */}
           <TooltipComponent
             content="profile"
             position="BottomCenter"
