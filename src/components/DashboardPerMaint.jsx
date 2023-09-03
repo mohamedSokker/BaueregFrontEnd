@@ -11,9 +11,15 @@ import {
   Resize,
   DragAndDrop,
 } from "@syncfusion/ej2-react-schedule";
+import { ColorRing } from "react-loader-spinner";
 
-import { logoColor } from "../BauerColors";
-const DashboardPerMaint = ({ name, getChildData, cardsData }) => {
+const DashboardPerMaint = ({
+  name,
+  getChildData,
+  cardsData,
+  data,
+  loading,
+}) => {
   const [dateValue, setDateValue] = useState(
     new Date(
       new Date().setMinutes(
@@ -29,11 +35,12 @@ const DashboardPerMaint = ({ name, getChildData, cardsData }) => {
 
   const changeDateValue = (e) => {
     setDateValue(e.target.value);
+    getChildData({ [name]: e.target.value }, name, "dateTime");
   };
 
   return (
     <div
-      className={`md:w-[49%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4`}
+      className={`md:w-[99%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
     >
       <div className=" h-[12%] w-full flex flex-row justify-between items-center">
         <p className=" text-[16px] font-bold pl-2">{name}</p>
@@ -60,9 +67,11 @@ const DashboardPerMaint = ({ name, getChildData, cardsData }) => {
                     name={name}
                     value={item}
                     type="radio"
-                    onChange={() => getChildData({ [name]: item }, name)}
+                    onChange={() =>
+                      getChildData({ [name]: item }, name, "filter")
+                    }
                     checked={
-                      cardsData && cardsData[name] === item ? true : false
+                      cardsData && cardsData?.filter === item ? true : false
                     }
                   />
                   <label for={item}>{item}</label>
@@ -74,24 +83,39 @@ const DashboardPerMaint = ({ name, getChildData, cardsData }) => {
       </div>
       <div className="flex flex-row h-[88%]">
         <div className=" w-[100%] h-[100%] flex flex-col">
-          <div className="h-[100%] text-lg font-bold flex items-center pl-4">
-            <ScheduleComponent
-              height="100%"
-              //   eventSettings={{ dataSource: scheduleData }}
-              selectedDate={dateValue}
-            >
-              <Inject
-                services={[
-                  Day,
-                  Week,
-                  WorkWeek,
-                  Month,
-                  Agenda,
-                  Resize,
-                  DragAndDrop,
+          <div className="h-[100%] text-lg font-bold flex items-center justify-center pl-4">
+            {loading ? (
+              <ColorRing
+                type="ColorRing"
+                colors={[
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
                 ]}
+                height={50}
+                width={200}
               />
-            </ScheduleComponent>
+            ) : (
+              <ScheduleComponent
+                height="100%"
+                eventSettings={{ dataSource: data }}
+                selectedDate={dateValue}
+              >
+                <Inject
+                  services={[
+                    Day,
+                    Week,
+                    WorkWeek,
+                    Month,
+                    Agenda,
+                    Resize,
+                    DragAndDrop,
+                  ]}
+                />
+              </ScheduleComponent>
+            )}
           </div>
         </div>
       </div>

@@ -2,15 +2,19 @@ import React, { useState } from "react";
 import { BsFilterLeft } from "react-icons/bs";
 import { BiTrendingUp, BiTrendingDown } from "react-icons/bi";
 import { SparkLineChart } from "@mui/x-charts";
+import { ColorRing } from "react-loader-spinner";
 
 import { logoColor } from "../BauerColors";
 
 const DashboardCard = ({
+  title,
   name,
   value,
   percentage,
   getChildData,
   cardsData,
+  loading,
+  perLoading,
 }) => {
   const [dateValue, setDateValue] = useState(
     new Date(
@@ -27,10 +31,11 @@ const DashboardCard = ({
 
   const changeDateValue = (e) => {
     setDateValue(e.target.value);
+    getChildData({ [title]: e.target.value }, title, "dateTime");
   };
   return (
     <div
-      className={`md:w-[24%] w-[100%] md:h-[100%] h-[160px] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4`}
+      className={`md:w-[24%] w-[100%] md:h-[100%] h-[160px] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
     >
       <div className=" h-[20%] w-full flex flex-row justify-between">
         <p className=" text-[12px] font-bold pl-2">{name}</p>
@@ -57,9 +62,11 @@ const DashboardCard = ({
                     name={name}
                     value={item}
                     type="radio"
-                    onChange={() => getChildData({ [name]: item }, name)}
+                    onChange={() =>
+                      getChildData({ [title]: item }, title, "filter")
+                    }
                     checked={
-                      cardsData && cardsData[name] === item ? true : false
+                      cardsData && cardsData?.filter === item ? true : false
                     }
                   />
                   <label for={item}>{item}</label>
@@ -72,15 +79,47 @@ const DashboardCard = ({
       <div className="flex flex-row h-[80%]">
         <div className=" w-[70%] h-[100%] flex flex-col justify-around">
           <div className="h-[90%] text-[36px] font-bold flex items-center pl-4">
-            {value}
+            {loading ? (
+              <ColorRing
+                type="ColorRing"
+                colors={[
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                ]}
+                height={30}
+                width={200}
+              />
+            ) : (
+              <p className="w-full">{value}</p>
+            )}
           </div>
           <div className="h-[10%] text-[16px] font-thin flex flex-row items-center p-2 pb-6">
             {percentage >= 0 ? (
               <div className="text-green-900 flex flex-row items-center">
                 <BiTrendingUp />
-                <p className="ml-4 text-[12px]">
+                <p className="ml-4 text-[12px] flex flex-row gap-2">
                   {`increased by `}
-                  <span>{`${percentage} %`}</span>
+                  <span>
+                    {perLoading ? (
+                      <ColorRing
+                        type="ColorRing"
+                        colors={[
+                          "rgb(3,73,124)",
+                          "rgb(3,73,124)",
+                          "rgb(3,73,124)",
+                          "rgb(3,73,124)",
+                          "rgb(3,73,124)",
+                        ]}
+                        height={20}
+                        width={30}
+                      />
+                    ) : (
+                      <p className="w-full">{`${percentage} %`}</p>
+                    )}
+                  </span>
                 </p>
               </div>
             ) : (

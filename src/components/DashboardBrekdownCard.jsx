@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BsFilterLeft } from "react-icons/bs";
 import { BiTrendingUp, BiTrendingDown } from "react-icons/bi";
 import { PieChart, SparkLineChart } from "@mui/x-charts";
-
-import { logoColor } from "../BauerColors";
+import { ColorRing } from "react-loader-spinner";
 
 const DashboardBrekdownCard = ({
   name,
@@ -11,8 +10,8 @@ const DashboardBrekdownCard = ({
   getChildData,
   cardsData,
   data,
+  loading,
 }) => {
-  console.log(data);
   const [dateValue, setDateValue] = useState(
     new Date(
       new Date().setMinutes(
@@ -28,10 +27,11 @@ const DashboardBrekdownCard = ({
 
   const changeDateValue = (e) => {
     setDateValue(e.target.value);
+    getChildData({ [name]: e.target.value }, name, "dateTime");
   };
   return (
     <div
-      className={`md:w-[49%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4`}
+      className={`md:w-[99%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
     >
       <div className=" h-[12%] w-full flex flex-row justify-between items-center">
         <p className=" text-[16px] font-bold pl-2">{name}</p>
@@ -58,9 +58,11 @@ const DashboardBrekdownCard = ({
                     name={name}
                     value={item}
                     type="radio"
-                    onChange={() => getChildData({ [name]: item }, name)}
+                    onChange={() =>
+                      getChildData({ [name]: item }, name, "filter")
+                    }
                     checked={
-                      cardsData && cardsData[name] === item ? true : false
+                      cardsData && cardsData?.filter === item ? true : false
                     }
                   />
                   <label for={item}>{item}</label>
@@ -72,24 +74,42 @@ const DashboardBrekdownCard = ({
       </div>
       <div className="flex flex-row h-[88%]">
         <div className=" w-[100%] h-[100%] flex flex-col">
-          <div className="h-[100%] text-lg font-bold flex items-center pl-4">
-            <PieChart
-              series={[
-                {
-                  data: data,
-                  paddingAngle: 5,
-                  cornerRadius: 5,
-                  startAngle: -90,
-                  endAngle: 180,
-                },
-              ]}
-              sx={{
-                "--ChartsLegend-itemWidth": "30px",
-                "--ChartsLegend-itemMarkSize": "10px",
-                "--ChartsLegend-labelSpacing": "5px",
-                "--ChartsLegend-rootSpacing": "5px",
-              }}
-            />
+          <div className="h-[100%] w-full text-lg font-bold flex items-center justify-center pl-4">
+            {loading ? (
+              <ColorRing
+                type="ColorRing"
+                colors={[
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                  "rgb(3,73,124)",
+                ]}
+                height={50}
+                width={200}
+              />
+            ) : (
+              <PieChart
+                width={500}
+                series={[
+                  {
+                    data: data,
+                    paddingAngle: 5,
+                    cornerRadius: 5,
+                    startAngle: -90,
+                    endAngle: 180,
+                  },
+                ]}
+                sx={{
+                  "--ChartsLegend-itemWidth": "30px",
+                  "--ChartsLegend-itemMarkSize": "10px",
+                  "--ChartsLegend-labelSpacing": "5px",
+                  "--ChartsLegend-rootSpacing": "5px",
+                  "--ChartsLegend-rootOffsetX": "10px",
+                  "--ChartsLegend-rootOffsetY": "0px",
+                }}
+              />
+            )}
           </div>
           {/* <div className="h-[10%] text-[16px] font-thin flex flex-row items-center p-2">
             {percentage >= 0 ? (

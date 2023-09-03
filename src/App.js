@@ -94,7 +94,7 @@ function App() {
           {/* Main page */}
           <div
             id="Main--Page"
-            className=" dark:bg-background-logoColor md:h-[92%] relative"
+            className=" dark:bg-background-logoColor md:h-[92%] relative bg-white"
           >
             <Routes>
               <Route path="/" element={<Dashboard />} />
