@@ -1,4 +1,4 @@
-const fetchDataOnly = async (url, method, token, body) => {
+const updateData = async (url, method, token, body) => {
   try {
     const res = await fetch(url, {
       method: method,
@@ -9,10 +9,12 @@ const fetchDataOnly = async (url, method, token, body) => {
       body: JSON.stringify(body),
     });
 
+    const data = await res.json();
+
     if (!res.ok) {
-      throw new Error(res.message);
+      throw new Error(data.message);
     } else {
-      return res.json();
+      return data;
     }
   } catch (error) {
     console.log(error.message);
@@ -20,4 +22,4 @@ const fetchDataOnly = async (url, method, token, body) => {
   }
 };
 
-export default fetchDataOnly;
+export default updateData;

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { CiWarning } from "react-icons/ci";
+import { BsFilterLeft } from "react-icons/bs";
 
 import DashboardCard from "../components/DashboardCard";
 import DashboardBrekdownCard from "../components/DashboardBrekdownCard";
 import DashboardPerMaint from "../components/DashboardPerMaint";
-import fetchDataOnly from "../Functions/fetchDataOnly";
+import updateData from "../Functions/updateData";
 import { useNavContext } from "../contexts/NavContext";
 
 const Dashboard = () => {
@@ -28,15 +29,32 @@ const Dashboard = () => {
     PeriodicMaintenance: true,
   });
   const [cardsData, setCardsData] = useState([]);
-  const [sites, setSites] = useState([]);
-  const [locURL, setLocURL] = useState(null);
+  const [mainCardsData, setMainCardsData] = useState([]);
   const [fieldsData, setFieldsData] = useState({
     Availability: 0,
     FuelConsumption: 0,
     OilConsumption: 0,
     Production: 0,
     Breakdowns: [],
-    PeriodicMaintenance: 0,
+    PeriodicMaintenance: [],
+  });
+  const [fieldsAllData, setFieldsAllData] = useState({
+    Availability: [],
+    FuelConsumption: [],
+    OilConsumption: [],
+    Production: [],
+  });
+  const [fieldsXData, setFieldsXData] = useState({
+    Availability: [],
+    FuelConsumption: [],
+    OilConsumption: [],
+    Production: [],
+  });
+  const [fieldsYData, setFieldsYData] = useState({
+    Availability: [],
+    FuelConsumption: [],
+    OilConsumption: [],
+    Production: [],
   });
   const [fieldsPerData, setFieldsPerData] = useState({
     Availability: 0,
@@ -44,8 +62,30 @@ const Dashboard = () => {
     OilConsumption: 0,
     Production: 0,
     Breakdowns: [],
-    PeriodicMaintenance: 0,
+    PeriodicMaintenance: [],
   });
+  const [startDate, setStartDate] = useState(
+    new Date(
+      new Date().setMinutes(
+        new Date().getMinutes() - new Date().getTimezoneOffset()
+      )
+    )
+      .toISOString()
+      .slice(0, 10)
+  );
+  const [endDate, setSEndDate] = useState(
+    new Date(
+      new Date().setMinutes(
+        new Date().getMinutes() - new Date().getTimezoneOffset()
+      )
+    )
+      .toISOString()
+      .slice(0, 10)
+  );
+  const [isFilterActive, setIsFilterActive] = useState(false);
+
+  const filters = ["All", "Trench_Cutting_Machine", "Drilling_Machine"];
+  const baseURL = process.env.REACT_APP_BASE_URL;
 
   const getChildData = (field, name, type) => {
     setCardsData((prev) => ({
@@ -54,220 +94,366 @@ const Dashboard = () => {
     }));
   };
 
-  useEffect(() => {
-    if (usersData.length > 0) {
-      setSites(
-        usersData[0]?.roles?.Editor?.Sites.concat(
-          usersData[0]?.roles?.User?.Sites
-        )
-      );
-    }
-  }, [usersData]);
-
-  useEffect(() => {
-    if (usersData) {
-      let avURL = ``;
-      for (let i = 0; i < sites.length; i++) {
-        if (i === 0) {
-          avURL += ` (Location = '${sites[i].name}'`;
-        } else if (i === sites.length - 1) {
-          avURL += ` OR Location = '${sites[i].name}')`;
-        } else {
-          avURL += ` OR Location = '${sites[i].name}'`;
-        }
-      }
-      setLocURL(avURL);
-    }
-  }, [sites]);
-
-  const getData = async (name, table, fullquery, DateTime) => {
-    try {
-      if (usersData && locURL) {
-        setFieldsLoading((prev) => ({ ...prev, [name]: true }));
-        setFieldsPerLoading((prev) => ({ ...prev, [name]: true }));
-        let per = 0;
-        let perLastWeek = 0;
-        let avURL = `${process.env.REACT_APP_BASE_URL}/api/v1/${table}?fullquery=${fullquery}`;
-        avURL += locURL;
-        switch (name) {
-          case "Breakdowns":
-            avURL += `GROUP BY Breakdown_Type
-                      HAVING COUNT(Breakdown_Type) > 0
-                      ORDER BY value DESC`;
-            break;
-          default:
-            avURL = avURL;
-        }
-        const avData = await fetchDataOnly(avURL, "GET", token);
-        let sum = avData[0].SUM;
-        if (!sum) sum = 0;
-        switch (name) {
-          case "Availability":
-            per = ((sum / avData[0].COUNT) * 100).toFixed(1);
-            break;
-          case "FuelConsumption":
-            per = sum.toFixed(0);
-            break;
-          case "OilConsumption":
-            per = sum.toFixed(0);
-            break;
-          case "Breakdowns":
-            per = avData;
-            break;
-          case "PeriodicMaintenance":
-            per = avData;
-            break;
-        }
-        console.log(avURL);
-        setFieldsData((prev) => ({
-          ...prev,
-          [name]: per,
-        }));
-
-        let avLastweekURL = `${process.env.REACT_APP_BASE_URL}/api/v1/${table}?fullquery=${fullquery}`;
-        avLastweekURL += ` ${DateTime} < GETDATE() - 7 AND`;
-        avLastweekURL += locURL;
-        switch (name) {
-          case "Breakdowns":
-            avLastweekURL += `GROUP BY Breakdown_Type
-                      HAVING COUNT(Breakdown_Type) > 0
-                      ORDER BY value DESC`;
-            break;
-          default:
-            avLastweekURL = avLastweekURL;
-        }
-        const avLastWeekData = await fetchDataOnly(avLastweekURL, "GET", token);
-        let lastWeekSum = avLastWeekData[0].SUM;
-        if (!lastWeekSum) lastWeekSum = 0;
-        switch (name) {
-          case "Availability":
-            perLastWeek = (
-              (lastWeekSum / avLastWeekData[0].COUNT) *
-              100
-            ).toFixed(1);
-            break;
-          case "FuelConsumption":
-            perLastWeek = lastWeekSum.toFixed(0);
-            break;
-          case "OilConsumption":
-            perLastWeek = lastWeekSum.toFixed(0);
-            break;
-        }
-        setFieldsPerData((prev) => ({
-          ...prev,
-          [name]: (per - perLastWeek).toFixed(1),
-        }));
-        setFieldsLoading((prev) => ({ ...prev, [name]: false }));
-        setFieldsPerLoading((prev) => ({ ...prev, [name]: false }));
-      }
-    } catch (err) {
-      setErrorDetails(`${err.message}`);
-      console.log(err.message);
-      setError(true);
-      setFieldsLoading((prev) => ({ ...prev, [name]: false }));
-      setFieldsPerLoading((prev) => ({ ...prev, [name]: false }));
-    }
+  const formatDate = (anyDate) => {
+    let dt = new Date(anyDate);
+    const year = dt.getFullYear();
+    const day = dt.getDate();
+    let month = (Number(dt.getMonth()) + 1).toString();
+    if (month.length < 2) month = `0${month}`;
+    return `${year}-${month}-${day}`;
   };
 
+  console.log(cardsData);
+
   useEffect(() => {
-    let avFullquery = ``;
-    if (cardsData.Availability?.dateTime) {
-      avFullquery = `SELECT SUM(CONVERT(float,Maintenance_Availability)) AS SUM,
-                     COUNT(Maintenance_Availability) AS COUNT FROM Availability WHERE 
-                     Date_Time >= '${cardsData.Availability.dateTime}' AND`;
-    } else {
-      avFullquery = `SELECT SUM(CONVERT(float,Maintenance_Availability)) AS SUM,
-                      COUNT(Maintenance_Availability) AS COUNT FROM Availability WHERE `;
-    }
     const getAvData = async () => {
-      await getData("Availability", "Availability", avFullquery, "Date_Time");
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, Availability: true }));
+          setFieldsPerLoading((prev) => ({ ...prev, Availability: true }));
+          const url = `${baseURL}/api/v1/dashboardAv`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.Availability?.filter === "All"
+                ? null
+                : cardsData?.Availability?.filter,
+            dateTime: cardsData?.Availability?.dateTime,
+          };
+          const result = await updateData(url, "POST", token, body);
+          let data = [];
+          result.data.map((item) => {
+            data.push({
+              x: formatDate(item.Date_Time),
+              y: Number(item.Maintenance_Availability),
+            });
+            return data;
+          });
+          setFieldsAllData((prev) => ({
+            ...prev,
+            Availability: data,
+          }));
+          let dataX = [];
+          result.data.map((item) => {
+            dataX.push(item.Date_Time);
+            return dataX;
+          });
+          setFieldsXData((prev) => ({
+            ...prev,
+            Availability: dataX,
+          }));
+          let dataY = [];
+          result.data.map((item) => {
+            dataY.push(Number(item.Maintenance_Availability));
+            return dataY;
+          });
+          setFieldsYData((prev) => ({
+            ...prev,
+            Availability: dataY,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            Availability: result.per,
+          }));
+          setFieldsPerData((prev) => ({
+            ...prev,
+            Availability: result.diff,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, Availability: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, Availability: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, Availability: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, Availability: false }));
+        }
+      }
     };
     getAvData();
-  }, [cardsData.Availability, usersData, locURL]);
+  }, [cardsData.Availability, usersData]);
 
   useEffect(() => {
-    let fuelConsFullquery = ``;
-    if (cardsData.FuelConsumption?.dateTime) {
-      fuelConsFullquery = `SELECT SUM(Quantity) AS SUM FROM FuelConsumption WHERE
-                            Date >= '${cardsData.FuelConsumption.dateTime}' AND `;
-    } else {
-      fuelConsFullquery = `SELECT SUM(Quantity) AS SUM FROM FuelConsumption WHERE `;
-    }
     const getfuelConsData = async () => {
-      await getData(
-        "FuelConsumption",
-        "FuelConsumption",
-        fuelConsFullquery,
-        "Date"
-      );
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, FuelConsumption: true }));
+          setFieldsPerLoading((prev) => ({ ...prev, FuelConsumption: true }));
+          const url = `${baseURL}/api/v1/dashboardFuel`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.FuelConsumption?.filter === "All"
+                ? null
+                : cardsData?.FuelConsumption?.filter,
+            dateTime: cardsData?.FuelConsumption?.dateTime,
+          };
+          const result = await updateData(url, "POST", token, body);
+          let data = [];
+          result.data.map((item) => {
+            data.push({ x: formatDate(item.Date), y: Number(item.Quantity) });
+            return data;
+          });
+          setFieldsAllData((prev) => ({
+            ...prev,
+            FuelConsumption: data,
+          }));
+          let dataX = [];
+          result.data.map((item) => {
+            dataX.push(formatDate(item.Date));
+            return dataX;
+          });
+          setFieldsXData((prev) => ({
+            ...prev,
+            FuelConsumption: dataX,
+          }));
+          let dataY = [];
+          result.data.map((item) => {
+            dataY.push(Number(item.Quantity));
+            return dataY;
+          });
+          setFieldsYData((prev) => ({
+            ...prev,
+            FuelConsumption: dataY,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            FuelConsumption: result.per,
+          }));
+          setFieldsPerData((prev) => ({
+            ...prev,
+            FuelConsumption: result.diff,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, FuelConsumption: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, FuelConsumption: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, FuelConsumption: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, FuelConsumption: false }));
+        }
+      }
     };
     getfuelConsData();
-  }, [cardsData.FuelConsumption, usersData, locURL]);
+  }, [cardsData.FuelConsumption, usersData]);
 
   useEffect(() => {
-    let oilConsquery = ``;
-    if (cardsData.OilConsumption?.dateTime) {
-      oilConsquery = `SELECT SUM(TotalConsumption) AS SUM FROM OilConsumption WHERE
-                      Date >= '${cardsData.OilConsumption.dateTime}' AND `;
-    } else {
-      oilConsquery = `SELECT SUM(TotalConsumption) AS SUM FROM OilConsumption WHERE `;
-    }
     const getoilConsData = async () => {
-      await getData("OilConsumption", "OilConsumption", oilConsquery, "Date");
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, OilConsumption: true }));
+          setFieldsPerLoading((prev) => ({ ...prev, OilConsumption: true }));
+          const url = `${baseURL}/api/v1/dashboardOil`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.OilConsumption?.filter === "All"
+                ? null
+                : cardsData?.OilConsumption?.filter,
+            dateTime: cardsData?.OilConsumption?.dateTime,
+          };
+          const result = await updateData(url, "POST", token, body);
+          let data = [];
+          result.data.map((item) => {
+            data.push({
+              x: formatDate(item.Date),
+              y: Number(item.TotalConsumption),
+            });
+            return data;
+          });
+          setFieldsAllData((prev) => ({
+            ...prev,
+            OilConsumption: data,
+          }));
+          let dataX = [];
+          result.data.map((item) => {
+            dataX.push(formatDate(item.Date));
+            return dataX;
+          });
+          setFieldsXData((prev) => ({
+            ...prev,
+            OilConsumption: dataX,
+          }));
+          let dataY = [];
+          result.data.map((item) => {
+            dataY.push(Number(item.TotalConsumption));
+            return dataY;
+          });
+          setFieldsYData((prev) => ({
+            ...prev,
+            OilConsumption: dataY,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            OilConsumption: result.per,
+          }));
+          setFieldsPerData((prev) => ({
+            ...prev,
+            OilConsumption: result.diff,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, OilConsumption: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, OilConsumption: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, OilConsumption: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, OilConsumption: false }));
+        }
+      }
     };
     getoilConsData();
-  }, [cardsData.OilConsumption, usersData, locURL]);
+  }, [cardsData.OilConsumption, usersData]);
 
   useEffect(() => {
-    let Breakdownsquery = ``;
-    if (cardsData.Breakdowns?.dateTime) {
-      Breakdownsquery = `SELECT DISTINCT TOP 10 Breakdown_Type AS label,
-                             COUNT(Breakdown_Type)
-                             AS value FROM Maintenance WHERE 
-                             Date_Time >= '${cardsData.Breakdowns.dateTime}' AND `;
-    } else {
-      Breakdownsquery = `SELECT DISTINCT TOP 10 Breakdown_Type AS label,
-                             COUNT(Breakdown_Type)
-                             AS value FROM Maintenance WHERE `;
-    }
     const getbreakdownData = async () => {
-      await getData("Breakdowns", "Maintenance", Breakdownsquery, "Date_Time");
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, Breakdowns: true }));
+          const url = `${baseURL}/api/v1/dashboardBreakdown`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.Breakdowns?.filter === "All"
+                ? null
+                : cardsData?.Breakdowns?.filter,
+            dateTime: cardsData?.Breakdowns?.dateTime,
+          };
+          const result = await updateData(url, "POST", token, body);
+          setFieldsData((prev) => ({
+            ...prev,
+            Breakdowns: result,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, Breakdowns: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, Breakdowns: false }));
+        }
+      }
     };
     getbreakdownData();
-  }, [cardsData.Breakdowns, usersData, locURL]);
+  }, [cardsData.Breakdowns, usersData]);
 
   useEffect(() => {
-    let PerMaintquery = ``;
-    if (cardsData.PeriodicMaintenance?.dateTime) {
-      PerMaintquery = `SELECT TOP 50 ID AS id,
-                           TimeStart AS StartTime,
-                           TimeEnd AS EndTime,
-                           Location %2B '=> ' %2B Equipment AS Location,
-                           ExpectedTask AS Subject
-                           FROM PeriodicMaintenance_Plan WHERE
-                           TimeStart >= '${cardsData.PeriodicMaintenance.dateTime}' AND `;
-    } else {
-      PerMaintquery = `SELECT TOP 50 ID AS id,
-                           TimeStart AS StartTime,
-                           TimeEnd AS EndTime,
-                           Location %2B '=> ' %2B Equipment AS Location,
-                           ExpectedTask AS Subject
-                           FROM PeriodicMaintenance_Plan WHERE `;
-    }
     const getPerMaintData = async () => {
-      await getData(
-        "PeriodicMaintenance",
-        "PeriodicMaintenance_Plan",
-        PerMaintquery,
-        "TimeStart"
-      );
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, PeriodicMaintenance: true }));
+          const url = `${baseURL}/api/v1/dashboardPerMaint`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.PeriodicMaintenance?.filter === "All"
+                ? null
+                : cardsData?.PeriodicMaintenance?.filter,
+            dateTime: cardsData?.PeriodicMaintenance?.dateTime,
+          };
+          const result = await updateData(url, "POST", token, body);
+          setFieldsData((prev) => ({
+            ...prev,
+            PeriodicMaintenance: result,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, PeriodicMaintenance: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, PeriodicMaintenance: false }));
+        }
+      }
     };
     getPerMaintData();
-  }, [cardsData.PeriodicMaintenance, usersData, locURL]);
+  }, [cardsData.PeriodicMaintenance, usersData]);
+
+  const changeDateValue = (e) => {
+    setStartDate(e.target.value);
+    setCardsData((prev) => ({
+      ...prev,
+      Availability: { ...prev["Availability"], dateTime: e.target.value },
+      FuelConsumption: { ...prev["FuelConsumption"], dateTime: e.target.value },
+      OilConsumption: { ...prev["OilConsumption"], dateTime: e.target.value },
+      Breakdowns: { ...prev["Breakdowns"], dateTime: e.target.value },
+      PeriodicMaintenance: {
+        ...prev["PeriodicMaintenance"],
+        dateTime: e.target.value,
+      },
+    }));
+  };
 
   return (
-    <div className="w-full h-auto Main--Page flex flex-col justify-around items-center overflow-y-scroll md:mt-0 mt-[58px] gap-4 relative">
-      <div className="w-full md:h-[25vh] h-[800px] flex md:flex-row flex-col flex-nowrap justify-around">
+    <div className="w-full h-auto Main--Page flex flex-col justify-around items-center overflow-y-scroll md:mt-0 mt-[58px] gap-4">
+      <div className="w-[99%] h-[3vh] bg-white p-4 flex items-center flex-row mb-2 shadow-lg rounded-md relative mt-2">
+        <input
+          className="outline-none rounded-lg mr-2 text-[14px]"
+          type="date"
+          value={startDate}
+          onChange={changeDateValue}
+        />
+        {/* <input
+          className="outline-none rounded-lg mr-2 text-[10px]"
+          type="date"
+          value={endDate}
+          onChange={changeDateValue}
+        /> */}
+        <button
+          className="text-[26px]"
+          onClick={() => setIsFilterActive((prev) => !prev)}
+        >
+          <BsFilterLeft />
+        </button>
+        {isFilterActive && (
+          <div className="absolute flex flex-col top-[3vh] left-[180px] z-10 bg-gray-200 p-2 rounded-md text-[10px]">
+            {filters.map((item) => (
+              <div key={item}>
+                <input
+                  className="mr-2"
+                  id={item}
+                  value={item}
+                  type="radio"
+                  onChange={() => {
+                    setMainCardsData({ filter: item });
+                    setCardsData((prev) => ({
+                      ...prev,
+                      Availability: {
+                        ...prev["Availability"],
+                        filter: item,
+                      },
+                      FuelConsumption: {
+                        ...prev["FuelConsumption"],
+                        filter: item,
+                      },
+                      OilConsumption: {
+                        ...prev["OilConsumption"],
+                        filter: item,
+                      },
+                      Breakdowns: {
+                        ...prev["Breakdowns"],
+                        filter: item,
+                      },
+                      PeriodicMaintenance: {
+                        ...prev["PeriodicMaintenance"],
+                        filter: item,
+                      },
+                    }));
+                    // getChildData({ [title]: item }, title, "filter");
+                    setIsFilterActive(false);
+                  }}
+                  checked={
+                    mainCardsData && mainCardsData["filter"] === item
+                      ? true
+                      : false
+                  }
+                />
+                <label htmlFor={item}>{item}</label>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="w-full md:h-[25vh] h-[800px] flex md:flex-row flex-col flex-nowrap justify-around relative">
         <DashboardCard
           name="Availability"
           title="Availability"
@@ -277,6 +463,10 @@ const Dashboard = () => {
           cardsData={cardsData?.Availability}
           loading={fieldsLoading.Availability}
           perLoading={fieldsPerLoading.Availability}
+          data={fieldsAllData.Availability}
+          xData={fieldsXData.Availability}
+          yData={fieldsYData.Availability}
+          label="Percentage"
         />
         <DashboardCard
           name="Fuel Consumption"
@@ -287,6 +477,10 @@ const Dashboard = () => {
           cardsData={cardsData?.FuelConsumption}
           loading={fieldsLoading.FuelConsumption}
           perLoading={fieldsPerLoading.FuelConsumption}
+          data={fieldsAllData.FuelConsumption}
+          xData={fieldsXData.FuelConsumption}
+          yData={fieldsYData.FuelConsumption}
+          label="Consumption"
         />
         <DashboardCard
           name="Oil Consumption"
@@ -297,6 +491,10 @@ const Dashboard = () => {
           cardsData={cardsData?.OilConsumption}
           loading={fieldsLoading.OilConsumption}
           perLoading={fieldsPerLoading.OilConsumption}
+          data={fieldsAllData.OilConsumption}
+          xData={fieldsXData.OilConsumption}
+          yData={fieldsYData.OilConsumption}
+          label="Consumption"
         />
         <DashboardCard
           name="Production"
@@ -306,9 +504,13 @@ const Dashboard = () => {
           cardsData={cardsData?.Production}
           loading={fieldsLoading.Production}
           perLoading={fieldsPerLoading.Production}
+          data={fieldsAllData.Production}
+          xData={fieldsXData.Production}
+          yData={fieldsYData.Production}
+          label="m2"
         />
       </div>
-      <div className="w-full md:h-[60vh] h-[800px] flex md:flex-row justify-around items-center">
+      <div className="w-full md:h-[56vh] h-[800px] flex md:flex-row justify-around items-center">
         <DashboardBrekdownCard
           name={`Breakdowns`}
           cardsData={cardsData?.Breakdowns}
@@ -320,6 +522,7 @@ const Dashboard = () => {
       <div className="w-full md:h-[100vh] h-[800px] flex md:flex-row justify-around items-center mb-4">
         <DashboardPerMaint
           name={`Periodic Maintenance`}
+          title={`PeriodicMaintenance`}
           cardsData={cardsData?.PeriodicMaintenance}
           getChildData={getChildData}
           data={fieldsData.PeriodicMaintenance}
@@ -327,7 +530,7 @@ const Dashboard = () => {
         />
       </div>
       {error && (
-        <div className=" w-full h-14 bg-red-600 text-white flex justify-center items-center absolute bottom-0 left-0 flex-row border-t-1 border-gray-400">
+        <div className=" w-full h-14 bg-red-600 text-white flex justify-center items-center fixed bottom-0 left-0 flex-row border-t-1 border-gray-400">
           <CiWarning className="text-[40px] font-extrabold" />
           <p className="ml-5 text-xl font-semibold">{errorDetails}</p>
         </div>

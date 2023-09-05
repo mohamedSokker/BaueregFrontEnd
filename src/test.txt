@@ -1,1 +1,435 @@
-{"columns":[{"headerText":"To Do","keyField":"Open","allowToggle":true,"isExpanded":true,"showItemCount":true,"allowDrag":true,"allowDrop":true,"showAddButton":false},{"headerText":"In Progress","keyField":"InProgress","allowToggle":true,"isExpanded":true,"showItemCount":true,"allowDrag":true,"allowDrop":true,"showAddButton":false},{"headerText":"Delayed","keyField":"Delayed","allowToggle":true,"isExpanded":true,"showItemCount":true,"allowDrag":true,"allowDrop":true,"showAddButton":false},{"headerText":"Done","keyField":"Done","allowToggle":true,"isExpanded":true,"showItemCount":true,"allowDrag":true,"allowDrop":true,"showAddButton":false}],"dataSource":[{"ID":1003,"ResponsibleEngineerImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test/test3.jpg","ResponsibleEnginnername":"Test","ResponsibleTechImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test1/test3.jpg","ResponsibleTechName":"Test1","Site":"Yard","Title":"New Task3 Title update","Status":"InProgress","Summary":"New Task 3 update1","DateCreated":"2023-06-25T12:55:38.247Z","TaskStart":"2023-06-25T21:00:00.000Z","Duration":6,"TaskEnd":"2023-07-01T21:00:00.000Z","TaskFor":"Workshop5","Color":"#673ABB","ClassName":"e-improvment e-normal e-andrew-fuller"},{"ID":1002,"ResponsibleEngineerImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test/test3.jpg","ResponsibleEnginnername":"Test","ResponsibleTechImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test1/test3.jpg","ResponsibleTechName":"Test1","Site":"Yard","Title":"New Task2 Title","Status":"Delayed","Summary":"New Task 2","DateCreated":"2023-06-25T13:06:20.087Z","TaskStart":"2023-06-19T21:00:00.000Z","Duration":1,"TaskEnd":"2023-06-20T21:00:00.000Z","TaskFor":"Workshop4","Color":"#673ABB","ClassName":"e-improvment e-normal e-andrew-fuller"},{"ID":5,"ResponsibleEngineerImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test/test3.jpg","ResponsibleEnginnername":"Test","ResponsibleTechImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test1/test3.jpg","ResponsibleTechName":"Test1","Site":"Yard","Title":"New Task1 Title","Status":"Delayed","Summary":"New Task1","DateCreated":"2023-06-03T19:56:06.833Z","TaskStart":"2023-06-05T21:00:00.000Z","Duration":5,"TaskEnd":"2023-06-10T21:00:00.000Z","TaskFor":"Workshop3","Color":"#673ABB","ClassName":"e-improvment e-normal e-andrew-fuller"},{"ID":4,"ResponsibleEngineerImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test1/test3.jpg","ResponsibleEnginnername":"Test1","ResponsibleTechImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test/test3.jpg","ResponsibleTechName":"Test","Site":"Yard","Title":"New Task Title","Status":"Done","Summary":"New Task Done","DateCreated":"2023-06-06T11:35:32.960Z","TaskStart":"2023-06-04T21:00:00.000Z","Duration":8,"TaskEnd":"2023-06-12T21:00:00.000Z","TaskFor":"Workshop2","Color":"#673ABB","ClassName":"e-improvment e-normal e-andrew-fuller"},{"ID":3,"ResponsibleEngineerImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test/test3.jpg","ResponsibleEnginnername":"Test","ResponsibleTechImg":"http://mhsokker.ddnsfree.com:5000/users/img/Test1/test3.jpg","ResponsibleTechName":"Test1","Site":"Yard","Title":"Task Title","Status":"Delayed","Summary":"Task","DateCreated":"2023-06-08T20:23:39.263Z","TaskStart":"2023-06-03T21:00:00.000Z","Duration":10,"TaskEnd":"2023-06-13T21:00:00.000Z","TaskFor":"Workshop1","Color":"#673ABB","ClassName":"e-improvment e-normal e-andrew-fuller"}],"swimlaneToggleArray":[]}
+import React, { useEffect, useState } from "react";
+import { CiWarning } from "react-icons/ci";
+
+import DashboardCard from "../components/DashboardCard";
+import DashboardBrekdownCard from "../components/DashboardBrekdownCard";
+import DashboardPerMaint from "../components/DashboardPerMaint";
+import fetchDataOnly from "../Functions/fetchDataOnly";
+import { useNavContext } from "../contexts/NavContext";
+import { encodeURL } from "../Functions/parseURL";
+
+const Dashboard = () => {
+  const { usersData, token } = useNavContext();
+  const [error, setError] = useState(false);
+  const [errorDetails, setErrorDetails] = useState("");
+  const [fieldsLoading, setFieldsLoading] = useState({
+    Availability: true,
+    FuelConsumption: true,
+    OilConsumption: true,
+    Production: true,
+    Breakdowns: true,
+    PeriodicMaintenance: true,
+  });
+  const [fieldsPerLoading, setFieldsPerLoading] = useState({
+    Availability: true,
+    FuelConsumption: true,
+    OilConsumption: true,
+    Production: true,
+    Breakdowns: true,
+    PeriodicMaintenance: true,
+  });
+  const [cardsData, setCardsData] = useState([]);
+  const [eqs, setEqs] = useState([]);
+  const [eqsAll, setEqsAll] = useState([]);
+  const [eqURL, setEqURL] = useState(null);
+  const [fieldsData, setFieldsData] = useState({
+    Availability: 0,
+    FuelConsumption: 0,
+    OilConsumption: 0,
+    Production: 0,
+    Breakdowns: [],
+    PeriodicMaintenance: 0,
+  });
+  const [fieldsPerData, setFieldsPerData] = useState({
+    Availability: 0,
+    FuelConsumption: 0,
+    OilConsumption: 0,
+    Production: 0,
+    Breakdowns: [],
+    PeriodicMaintenance: 0,
+  });
+
+  const getChildData = (field, name, type) => {
+    setCardsData((prev) => ({
+      ...prev,
+      [name]: { ...prev[name], [type]: field[name] },
+    }));
+  };
+
+  useEffect(() => {
+    const getEqs = async () => {
+      try {
+        const url = `${process.env.REACT_APP_BASE_URL}/api/v1/EqsInSite`;
+        const result = await fetchDataOnly(url, "GET", token);
+        setEqsAll(result);
+        let eqsArray = [];
+        result.map((item) => {
+          return eqsArray.push({ name: item.Equipment });
+        });
+        setEqs(eqsArray);
+      } catch (err) {
+        setErrorDetails(`${err.message}`);
+        console.log(err.message);
+        setError(true);
+      }
+    };
+    getEqs();
+  }, []);
+
+  useEffect(() => {
+    let avURL = ``;
+    for (let i = 0; i < eqs.length; i++) {
+      if (i === 0) {
+        avURL += ` (Equipment = '${eqs[i].name}'`;
+      } else if (i === eqs.length - 1) {
+        avURL += ` OR Equipment = '${eqs[i].name}')`;
+      } else {
+        avURL += ` OR Equipment = '${eqs[i].name}'`;
+      }
+    }
+    setEqURL(avURL);
+  }, [eqs]);
+
+  const getData = async (name, table, fullquery, DateTime) => {
+    try {
+      if (usersData && eqURL) {
+        setFieldsLoading((prev) => ({ ...prev, [name]: true }));
+        setFieldsPerLoading((prev) => ({ ...prev, [name]: true }));
+        let per = 0;
+        let perLastWeek = 0;
+        let avURL = `${process.env.REACT_APP_BASE_URL}/api/v1/${table}?fullquery=${fullquery}`;
+        avURL += eqURL;
+        switch (name) {
+          case "Breakdowns":
+            avURL += `GROUP BY Breakdown_Type
+                      HAVING COUNT(Breakdown_Type) > 0
+                      ORDER BY value DESC`;
+            avURL = await encodeURL(avURL);
+            break;
+          default:
+            avURL = avURL;
+            avURL = await encodeURL(avURL);
+        }
+        // console.log(avURL);
+        const avData = await fetchDataOnly(avURL, "GET", token);
+        let sum = avData[0]?.SUM;
+        if (!sum) sum = 0;
+        switch (name) {
+          case "Availability":
+            per = ((sum / avData[0]?.COUNT) * 100).toFixed(1);
+            break;
+          case "FuelConsumption":
+            per = sum.toFixed(0);
+            break;
+          case "OilConsumption":
+            per = sum.toFixed(0);
+            break;
+          case "Breakdowns":
+            per = avData;
+            break;
+          case "PeriodicMaintenance":
+            per = avData;
+            break;
+        }
+        setFieldsData((prev) => ({
+          ...prev,
+          [name]: per,
+        }));
+
+        let avLastweekURL = `${process.env.REACT_APP_BASE_URL}/api/v1/${table}?fullquery=${fullquery}`;
+        avLastweekURL += ` ${DateTime} < GETDATE() - 7 AND`;
+        avLastweekURL += eqURL;
+        switch (name) {
+          case "Breakdowns":
+            avLastweekURL += `GROUP BY Breakdown_Type
+                      HAVING COUNT(Breakdown_Type) > 0
+                      ORDER BY value DESC`;
+            avLastweekURL = await encodeURL(avLastweekURL);
+            break;
+          default:
+            avLastweekURL = avLastweekURL;
+            avLastweekURL = await encodeURL(avLastweekURL);
+        }
+        const avLastWeekData = await fetchDataOnly(avLastweekURL, "GET", token);
+        let lastWeekSum = avLastWeekData[0]?.SUM;
+        if (!lastWeekSum) lastWeekSum = 0;
+        switch (name) {
+          case "Availability":
+            perLastWeek = (
+              (lastWeekSum / avLastWeekData[0]?.COUNT) *
+              100
+            ).toFixed(1);
+            break;
+          case "FuelConsumption":
+            perLastWeek = lastWeekSum.toFixed(0);
+            break;
+          case "OilConsumption":
+            perLastWeek = lastWeekSum.toFixed(0);
+            break;
+        }
+        setFieldsPerData((prev) => ({
+          ...prev,
+          [name]: (per - perLastWeek).toFixed(1),
+        }));
+        setFieldsLoading((prev) => ({ ...prev, [name]: false }));
+        setFieldsPerLoading((prev) => ({ ...prev, [name]: false }));
+      }
+    } catch (err) {
+      setErrorDetails(`${err.message}`);
+      console.log(err.message);
+      setError(true);
+      setFieldsLoading((prev) => ({ ...prev, [name]: false }));
+      setFieldsPerLoading((prev) => ({ ...prev, [name]: false }));
+    }
+  };
+
+  useEffect(() => {
+    let avFullquery = ``;
+    let eqsData = [...eqsAll];
+    let filteredEqs = [];
+    eqsData = eqsData.filter((eq) => {
+      if (cardsData["Availability"]?.filter === "All") {
+        return eq;
+      } else {
+        return eq.Equipment_Type === cardsData["Availability"]?.filter;
+      }
+    });
+    eqsData.map((item) => {
+      return filteredEqs.push({ name: item.Equipment });
+    });
+    setEqs(filteredEqs);
+    if (cardsData.Availability?.filter && cardsData.Availability?.dateTime) {
+      avFullquery = `SELECT SUM(CONVERT(float,Maintenance_Availability)) AS SUM,
+                     COUNT(Maintenance_Availability) AS COUNT FROM Availability WHERE 
+                     Date_Time >= '${cardsData.Availability.dateTime}' AND `;
+    } else if (cardsData.Availability?.dateTime) {
+      avFullquery = `SELECT SUM(CONVERT(float,Maintenance_Availability)) AS SUM,
+                     COUNT(Maintenance_Availability) AS COUNT FROM Availability WHERE 
+                     Date_Time >= '${cardsData.Availability.dateTime}' AND `;
+    } else {
+      avFullquery = `SELECT SUM(CONVERT(float,Maintenance_Availability)) AS SUM,
+                      COUNT(Maintenance_Availability) AS COUNT FROM Availability WHERE `;
+    }
+    const getAvData = async () => {
+      await getData("Availability", "Availability", avFullquery, "Date_Time");
+    };
+    getAvData();
+  }, [cardsData.Availability, usersData, eqURL]);
+
+  useEffect(() => {
+    let fuelConsFullquery = ``;
+    if (
+      cardsData.FuelConsumption?.filter &&
+      cardsData.FuelConsumption?.dateTime
+    ) {
+      let eqsData = [...eqsAll];
+      let filteredEqs = [];
+      eqsData = eqsData.filter((eq) => {
+        if (cardsData["FuelConsumption"]?.filter === "All") {
+          return eq;
+        } else {
+          return eq.Equipment_Type === cardsData["FuelConsumption"]?.filter;
+        }
+      });
+      eqsData.map((item) => {
+        return filteredEqs.push({ name: item.Equipment });
+      });
+      setEqs(filteredEqs);
+    } else if (cardsData.FuelConsumption?.dateTime) {
+      fuelConsFullquery = `SELECT SUM(Quantity) AS SUM FROM FuelConsumption WHERE
+                            Date >= '${cardsData.FuelConsumption.dateTime}' AND `;
+    } else {
+      fuelConsFullquery = `SELECT SUM(Quantity) AS SUM FROM FuelConsumption WHERE `;
+    }
+    const getfuelConsData = async () => {
+      await getData(
+        "FuelConsumption",
+        "FuelConsumption",
+        fuelConsFullquery,
+        "Date"
+      );
+    };
+    getfuelConsData();
+  }, [cardsData.FuelConsumption, usersData, eqURL]);
+
+  useEffect(() => {
+    let oilConsquery = ``;
+    if (
+      cardsData.OilConsumption?.filter &&
+      cardsData.OilConsumption?.dateTime
+    ) {
+      let eqsData = [...eqsAll];
+      let filteredEqs = [];
+      eqsData = eqsData.filter((eq) => {
+        if (cardsData["OilConsumption"]?.filter === "All") {
+          return eq;
+        } else {
+          return eq.Equipment_Type === cardsData["OilConsumption"]?.filter;
+        }
+      });
+      eqsData.map((item) => {
+        return filteredEqs.push({ name: item.Equipment });
+      });
+      setEqs(filteredEqs);
+    } else if (cardsData.OilConsumption?.dateTime) {
+      oilConsquery = `SELECT SUM(TotalConsumption) AS SUM FROM OilConsumption WHERE
+                      Date >= '${cardsData.OilConsumption.dateTime}' AND `;
+    } else {
+      oilConsquery = `SELECT SUM(TotalConsumption) AS SUM FROM OilConsumption WHERE `;
+    }
+    const getoilConsData = async () => {
+      await getData("OilConsumption", "OilConsumption", oilConsquery, "Date");
+    };
+    getoilConsData();
+  }, [cardsData.OilConsumption, usersData, eqURL]);
+
+  useEffect(() => {
+    let Breakdownsquery = ``;
+    if (cardsData.Breakdowns?.filter && cardsData.Breakdowns?.dateTime) {
+      let eqsData = [...eqsAll];
+      let filteredEqs = [];
+      eqsData = eqsData.filter((eq) => {
+        if (cardsData["Breakdowns"]?.filter === "All") {
+          return eq;
+        } else {
+          return eq.Equipment_Type === cardsData["Breakdowns"]?.filter;
+        }
+      });
+      eqsData.map((item) => {
+        return filteredEqs.push({ name: item.Equipment });
+      });
+      setEqs(filteredEqs);
+    } else if (cardsData.Breakdowns?.dateTime) {
+      Breakdownsquery = `SELECT DISTINCT TOP 10 Breakdown_Type AS label,
+                             COUNT(Breakdown_Type)
+                             AS value FROM Maintenance WHERE 
+                             Date_Time >= '${cardsData.Breakdowns.dateTime}' AND `;
+    } else {
+      Breakdownsquery = `SELECT DISTINCT TOP 10 Breakdown_Type AS label,
+                             COUNT(Breakdown_Type)
+                             AS value FROM Maintenance WHERE `;
+    }
+    const getbreakdownData = async () => {
+      await getData("Breakdowns", "Maintenance", Breakdownsquery, "Date_Time");
+    };
+    getbreakdownData();
+  }, [cardsData.Breakdowns, usersData, eqURL]);
+
+  useEffect(() => {
+    let PerMaintquery = ``;
+    if (
+      cardsData.PeriodicMaintenance?.filter &&
+      cardsData.PeriodicMaintenance?.dateTime
+    ) {
+      let eqsData = [...eqsAll];
+      let filteredEqs = [];
+      eqsData = eqsData.filter((eq) => {
+        if (cardsData["PeriodicMaintenance"]?.filter === "All") {
+          return eq;
+        } else {
+          return eq.Equipment_Type === cardsData["PeriodicMaintenance"]?.filter;
+        }
+      });
+      eqsData.map((item) => {
+        return filteredEqs.push({ name: item.Equipment });
+      });
+      setEqs(filteredEqs);
+    } else if (cardsData.PeriodicMaintenance?.dateTime) {
+      PerMaintquery = `SELECT TOP 50 ID AS id,
+                           TimeStart AS StartTime,
+                           TimeEnd AS EndTime,
+                           Location %2B '=> ' %2B Equipment AS Location,
+                           ExpectedTask AS Subject
+                           FROM PeriodicMaintenance_Plan WHERE
+                           TimeStart >= '${cardsData.PeriodicMaintenance.dateTime}' AND `;
+    } else {
+      PerMaintquery = `SELECT TOP 50 ID AS id,
+                           TimeStart AS StartTime,
+                           TimeEnd AS EndTime,
+                           Location %2B '=> ' %2B Equipment AS Location,
+                           ExpectedTask AS Subject
+                           FROM PeriodicMaintenance_Plan WHERE `;
+    }
+    const getPerMaintData = async () => {
+      await getData(
+        "PeriodicMaintenance",
+        "PeriodicMaintenance_Plan",
+        PerMaintquery,
+        "TimeStart"
+      );
+    };
+    getPerMaintData();
+  }, [cardsData.PeriodicMaintenance, usersData, eqURL]);
+
+  return (
+    <div className="w-full h-auto Main--Page flex flex-col justify-around items-center overflow-y-scroll md:mt-0 mt-[58px] gap-4 relative">
+      <div className="w-full md:h-[25vh] h-[800px] flex md:flex-row flex-col flex-nowrap justify-around">
+        <DashboardCard
+          name="Availability"
+          title="Availability"
+          value={`${fieldsData.Availability} %`}
+          percentage={fieldsPerData.Availability}
+          getChildData={getChildData}
+          cardsData={cardsData?.Availability}
+          loading={fieldsLoading.Availability}
+          perLoading={fieldsPerLoading.Availability}
+        />
+        <DashboardCard
+          name="Fuel Consumption"
+          title="FuelConsumption"
+          value={`${fieldsData.FuelConsumption} L`}
+          percentage={fieldsPerData.FuelConsumption}
+          getChildData={getChildData}
+          cardsData={cardsData?.FuelConsumption}
+          loading={fieldsLoading.FuelConsumption}
+          perLoading={fieldsPerLoading.FuelConsumption}
+        />
+        <DashboardCard
+          name="Oil Consumption"
+          title="OilConsumption"
+          value={`${fieldsData.OilConsumption} L`}
+          percentage={fieldsPerData.OilConsumption}
+          getChildData={getChildData}
+          cardsData={cardsData?.OilConsumption}
+          loading={fieldsLoading.OilConsumption}
+          perLoading={fieldsPerLoading.OilConsumption}
+        />
+        <DashboardCard
+          name="Production"
+          value={0}
+          percentage={0}
+          getChildData={getChildData}
+          cardsData={cardsData?.Production}
+          loading={fieldsLoading.Production}
+          perLoading={fieldsPerLoading.Production}
+        />
+      </div>
+      <div className="w-full md:h-[60vh] h-[800px] flex md:flex-row justify-around items-center">
+        <DashboardBrekdownCard
+          name={`Breakdowns`}
+          cardsData={cardsData?.Breakdowns}
+          getChildData={getChildData}
+          data={fieldsData.Breakdowns}
+          loading={fieldsLoading.Breakdowns}
+        />
+      </div>
+      <div className="w-full md:h-[100vh] h-[800px] flex md:flex-row justify-around items-center mb-4">
+        <DashboardPerMaint
+          name={`Periodic Maintenance`}
+          cardsData={cardsData?.PeriodicMaintenance}
+          getChildData={getChildData}
+          data={fieldsData.PeriodicMaintenance}
+          loading={fieldsLoading.PeriodicMaintenance}
+        />
+      </div>
+      {error && (
+        <div className=" w-full h-14 bg-red-600 text-white flex justify-center items-center absolute bottom-0 left-0 flex-row border-t-1 border-gray-400">
+          <CiWarning className="text-[40px] font-extrabold" />
+          <p className="ml-5 text-xl font-semibold">{errorDetails}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;

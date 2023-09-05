@@ -15,6 +15,7 @@ import { ColorRing } from "react-loader-spinner";
 
 const DashboardPerMaint = ({
   name,
+  title,
   getChildData,
   cardsData,
   data,
@@ -35,7 +36,7 @@ const DashboardPerMaint = ({
 
   const changeDateValue = (e) => {
     setDateValue(e.target.value);
-    getChildData({ [name]: e.target.value }, name, "dateTime");
+    getChildData({ [title]: e.target.value }, title, "dateTime");
   };
 
   return (
@@ -48,7 +49,9 @@ const DashboardPerMaint = ({
           <input
             className="outline-none rounded-lg mr-2 text-[12px]"
             type="date"
-            value={dateValue}
+            value={
+              cardsData && cardsData?.dateTime ? cardsData?.dateTime : dateValue
+            }
             onChange={changeDateValue}
           />
           <button
@@ -68,7 +71,7 @@ const DashboardPerMaint = ({
                     value={item}
                     type="radio"
                     onChange={() =>
-                      getChildData({ [name]: item }, name, "filter")
+                      getChildData({ [title]: item }, title, "filter")
                     }
                     checked={
                       cardsData && cardsData?.filter === item ? true : false
@@ -101,7 +104,11 @@ const DashboardPerMaint = ({
               <ScheduleComponent
                 height="100%"
                 eventSettings={{ dataSource: data }}
-                selectedDate={dateValue}
+                selectedDate={
+                  cardsData && cardsData?.dateTime
+                    ? cardsData?.dateTime
+                    : dateValue
+                }
               >
                 <Inject
                   services={[

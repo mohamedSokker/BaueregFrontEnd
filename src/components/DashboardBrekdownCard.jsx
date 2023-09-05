@@ -39,7 +39,9 @@ const DashboardBrekdownCard = ({
           <input
             className="outline-none rounded-lg mr-2 text-[12px]"
             type="date"
-            value={dateValue}
+            value={
+              cardsData && cardsData?.dateTime ? cardsData?.dateTime : dateValue
+            }
             onChange={changeDateValue}
           />
           <button
