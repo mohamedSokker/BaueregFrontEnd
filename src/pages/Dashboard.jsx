@@ -467,6 +467,7 @@ const Dashboard = () => {
           xData={fieldsXData.Availability}
           yData={fieldsYData.Availability}
           label="Percentage"
+          isGraph={true}
         />
         <DashboardCard
           name="Fuel Consumption"
@@ -481,6 +482,7 @@ const Dashboard = () => {
           xData={fieldsXData.FuelConsumption}
           yData={fieldsYData.FuelConsumption}
           label="Consumption"
+          isGraph={true}
         />
         <DashboardCard
           name="Oil Consumption"
@@ -495,6 +497,7 @@ const Dashboard = () => {
           xData={fieldsXData.OilConsumption}
           yData={fieldsYData.OilConsumption}
           label="Consumption"
+          isGraph={true}
         />
         <DashboardCard
           name="Production"
@@ -508,6 +511,7 @@ const Dashboard = () => {
           xData={fieldsXData.Production}
           yData={fieldsYData.Production}
           label="m2"
+          isGraph={true}
         />
       </div>
       <div className="w-full md:h-[56vh] h-[800px] flex md:flex-row justify-around items-center">

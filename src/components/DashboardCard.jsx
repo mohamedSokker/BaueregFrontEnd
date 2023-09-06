@@ -44,6 +44,7 @@ const DashboardCard = ({
   xData,
   yData,
   label,
+  isGraph,
 }) => {
   const [dateValue, setDateValue] = useState(
     new Date(
@@ -87,7 +88,7 @@ const DashboardCard = ({
   // };
   return (
     <div
-      className={`md:w-[24%] w-[100%] md:h-[100%] h-[160px] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
+      className={`md:w-[24%] w-[100%] md:h-[25vh] h-[160px] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
     >
       {isData && (
         <div className="absolute top-[50px] left-[10%] md:w-[50vw] w-[85vw] h-[70vh] z-[1000] bg-gray-100 rounded-lg shadow-lg">
@@ -100,19 +101,22 @@ const DashboardCard = ({
                 {name}
               </p>
             </div>
-            <Bar
-              data={datas}
-              options={{
-                scales: {
-                  x: { grid: { display: false }, ticks: { color: "black" } },
-                  y: {
-                    grid: { display: false },
-                    ticks: { color: "black" },
-                    beginAtZero: true,
+            {isGraph && (
+              <Bar
+                data={datas}
+                options={{
+                  scales: {
+                    x: { grid: { display: false }, ticks: { color: "black" } },
+                    y: {
+                      grid: { display: false },
+                      ticks: { color: "black" },
+                      beginAtZero: true,
+                    },
                   },
-                },
-              }}
-            ></Bar>
+                }}
+              ></Bar>
+            )}
+
             {/* <ChartComponent
               id="charts"
               // primaryXAxis={barPrimaryXAxis}

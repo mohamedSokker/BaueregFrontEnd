@@ -1,4 +1,5 @@
 export const AllTables = [
+  "AppMobile",
   "AppStocks",
   "AppNotification",
   "AppStocksTransition",
