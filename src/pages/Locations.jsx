@@ -120,7 +120,7 @@ const Locations = () => {
     return `${year}-${month}-${day}`;
   };
 
-  console.log(cardsData);
+  // console.log(cardsData);
 
   useEffect(() => {
     const getAvData = async () => {
@@ -390,6 +390,68 @@ const Locations = () => {
     getPerMaintData();
   }, [cardsData.PeriodicMaintenance, usersData, tableName]);
 
+  useEffect(() => {
+    const getMachinaryData = async () => {
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, Machinary: true }));
+          const url = `${baseURL}/api/v1/sitesMachinary`;
+          const body = {
+            Location: tableName,
+          };
+          const result = await updateData(url, "POST", token, body);
+          console.log(result);
+          setFieldsAllData((prev) => ({
+            ...prev,
+            Machinary: result,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            Machinary: result.per,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, Machinary: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, Machinary: false }));
+        }
+      }
+    };
+    getMachinaryData();
+  }, [cardsData.Machinary, usersData, tableName]);
+
+  useEffect(() => {
+    const getEqsData = async () => {
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, Equipments: true }));
+          const url = `${baseURL}/api/v1/sitesEqs`;
+          const body = {
+            Location: tableName,
+          };
+          const result = await updateData(url, "POST", token, body);
+          console.log(result);
+          setFieldsAllData((prev) => ({
+            ...prev,
+            Equipments: result,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            Equipments: result.per,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, Equipments: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, Equipments: false }));
+        }
+      }
+    };
+    getEqsData();
+  }, [cardsData.Equipments, usersData, tableName]);
+
   const changeDateValue = (e) => {
     setStartDate(e.target.value);
     setCardsData((prev) => ({
@@ -488,11 +550,13 @@ const Locations = () => {
           cardsData={cardsData?.Availability}
           loading={fieldsLoading.Availability}
           perLoading={fieldsPerLoading.Availability}
-          data={fieldsAllData.Availability}
+          data={null}
           xData={fieldsXData.Availability}
           yData={fieldsYData.Availability}
           label="Percentage"
           isGraph={true}
+          isPer={true}
+          isFilter={true}
         />
         <DashboardCard
           name="Fuel Consumption"
@@ -503,11 +567,13 @@ const Locations = () => {
           cardsData={cardsData?.FuelConsumption}
           loading={fieldsLoading.FuelConsumption}
           perLoading={fieldsPerLoading.FuelConsumption}
-          data={fieldsAllData.FuelConsumption}
+          data={null}
           xData={fieldsXData.FuelConsumption}
           yData={fieldsYData.FuelConsumption}
           label="Consumption"
           isGraph={true}
+          isPer={true}
+          isFilter={true}
         />
         <DashboardCard
           name="Oil Consumption"
@@ -518,11 +584,13 @@ const Locations = () => {
           cardsData={cardsData?.OilConsumption}
           loading={fieldsLoading.OilConsumption}
           perLoading={fieldsPerLoading.OilConsumption}
-          data={fieldsAllData.OilConsumption}
+          data={null}
           xData={fieldsXData.OilConsumption}
           yData={fieldsYData.OilConsumption}
           label="Consumption"
           isGraph={true}
+          isPer={true}
+          isFilter={true}
         />
         <DashboardCard
           name="Production"
@@ -532,11 +600,13 @@ const Locations = () => {
           cardsData={cardsData?.Production}
           loading={fieldsLoading.Production}
           perLoading={fieldsPerLoading.Production}
-          data={fieldsAllData.Production}
+          data={null}
           xData={fieldsXData.Production}
           yData={fieldsYData.Production}
           label="m2"
           isGraph={true}
+          isPer={true}
+          isFilter={true}
         />
         <DashboardCard
           name="Machinary"
@@ -547,10 +617,12 @@ const Locations = () => {
           loading={fieldsLoading.Machinary}
           perLoading={fieldsPerLoading.Machinary}
           data={fieldsAllData.Machinary}
-          xData={fieldsXData.Machinary}
-          yData={fieldsYData.Machinary}
+          // xData={fieldsXData.Machinary}
+          // yData={fieldsYData.Machinary}
           label="Details Machinary"
           isGraph={false}
+          isPer={false}
+          isFilter={false}
         />
         <DashboardCard
           name="Equipments"
@@ -565,6 +637,8 @@ const Locations = () => {
           yData={fieldsYData.Equipments}
           label="Details Equipments"
           isGraph={false}
+          isPer={false}
+          isFilter={false}
         />
       </div>
       <div className="w-full md:h-[56vh] h-[800px] flex md:flex-row justify-around items-center">
