@@ -468,6 +468,8 @@ const Dashboard = () => {
           yData={fieldsYData.Availability}
           label="Percentage"
           isGraph={true}
+          isPer={true}
+          isFilter={true}
         />
         <DashboardCard
           name="Fuel Consumption"
@@ -483,6 +485,8 @@ const Dashboard = () => {
           yData={fieldsYData.FuelConsumption}
           label="Consumption"
           isGraph={true}
+          isPer={true}
+          isFilter={true}
         />
         <DashboardCard
           name="Oil Consumption"
@@ -498,6 +502,8 @@ const Dashboard = () => {
           yData={fieldsYData.OilConsumption}
           label="Consumption"
           isGraph={true}
+          isPer={true}
+          isFilter={true}
         />
         <DashboardCard
           name="Production"
@@ -512,6 +518,8 @@ const Dashboard = () => {
           yData={fieldsYData.Production}
           label="m2"
           isGraph={true}
+          isPer={true}
+          isFilter={true}
         />
       </div>
       <div className="w-full md:h-[56vh] h-[800px] flex md:flex-row justify-around items-center">

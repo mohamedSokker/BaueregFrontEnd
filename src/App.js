@@ -40,7 +40,7 @@ function App() {
       let userData;
       userInfo().then((data) => {
         userData = data;
-        if (userData[0].roles.Admin) {
+        if (userData[0]?.roles?.Admin) {
           allDataWithName().then((data1) => {
             let copUserData = userData;
             copUserData[0].roles.Editor = data1;
