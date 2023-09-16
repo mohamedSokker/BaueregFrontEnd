@@ -8,6 +8,7 @@ export { default as Equipments } from "./Equipments";
 export { default as Dashboard } from "./Dashboard";
 export { default as Catalogues } from "./Catalogues";
 export { default as ManageUsers } from "./ManageUsers";
+export { default as ManageAppUsers } from "./ManageAppUsers";
 export { default as Kanban } from "./Kanban";
 export { default as ManageKanban } from "./ManageKanban";
 export { default as Login } from "./Login";

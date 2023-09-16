@@ -8,9 +8,11 @@ import { CiWarning } from "react-icons/ci";
 
 import { PageLoading } from "../components";
 import { useNavContext } from "../contexts/NavContext";
+import { getTokenData } from "../Functions/getTokenData";
+import { allDataWithName } from "../data/allRoles";
 
 const Login = () => {
-  const { setToken } = useNavContext();
+  const { setToken, setUsersData } = useNavContext();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
@@ -39,6 +41,15 @@ const Login = () => {
       const token = await cookies.get("token");
       if (!token) {
         setToken(data.token);
+        const userInfo = await getTokenData(data.token);
+        if (userInfo[0].roles.Admin) {
+          const data1 = await allDataWithName();
+          let copUserData = userInfo;
+          copUserData[0].roles.Editor = data1;
+          setUsersData(copUserData);
+        } else {
+          setUsersData(userInfo);
+        }
         cookies.set("token", data.token, { maxAge: 86400 });
       }
       setLoading(false);

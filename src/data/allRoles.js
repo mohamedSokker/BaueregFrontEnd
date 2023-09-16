@@ -12,7 +12,7 @@ let allStocksWithName = [];
 let allEqsWithName = [];
 let allSitesWithName = [];
 
-const allSitesEqsdata = async () => {
+export const allSitesEqsdata = async () => {
   const cookies = new Cookies();
   const token = cookies?.get("token");
   try {
@@ -24,6 +24,7 @@ const allSitesEqsdata = async () => {
       allSites.push(item.Location);
       allSitesWithName.push({ name: item.Location });
     });
+    return data;
   } catch (error) {
     return [];
   }
@@ -91,6 +92,7 @@ export const allData = async () => {
     OilSamples: ["true"],
     OilSamplesAnalyzed: ["true"],
     ManageUsers: ["true"],
+    ManageAppUsers: ["true"],
   };
 };
 
@@ -138,6 +140,11 @@ export const allDataWithName = async () => {
       { name: "Add User", icon: <FiUserPlus />, dest: "AddUser" },
       { name: "Edit User", icon: <FiUserCheck />, dest: "EditUser" },
       { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteUser" },
+    ],
+    ManageAppUsers: [
+      { name: "Add User", icon: <FiUserPlus />, dest: "AddAppUser" },
+      { name: "Edit User", icon: <FiUserCheck />, dest: "EditAppUser" },
+      { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteAppUser" },
     ],
   };
 };

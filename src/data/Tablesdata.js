@@ -17,6 +17,7 @@ import {
   Dashboard,
   Catalogues,
   ManageUsers,
+  ManageAppUsers,
   ManageKanban,
   OilSamples,
   OilSamplesAnalyzed,
@@ -126,17 +127,41 @@ export const links = [
     data: [
       {
         name: "Add User",
-        dest: "/addUser",
+        dest: "/AddUser",
         icon: <FiUserPlus />,
       },
       {
         name: "Edit User",
-        dest: "/editUser",
+        dest: "/EditUser",
         icon: <FiUserCheck />,
       },
       {
         name: "Delete User",
-        dest: "/deleteUser",
+        dest: "/DeleteUser",
+        icon: <FiUserMinus />,
+      },
+    ],
+  },
+  {
+    title: "Manage App Users",
+    name: "ManageAppUsers",
+    dest: "/ManageAppUsers",
+    elem: <ManageAppUsers />,
+    icon: <FiUserCheck />,
+    data: [
+      {
+        name: "Add User",
+        dest: "/AddAppUser",
+        icon: <FiUserPlus />,
+      },
+      {
+        name: "Edit User",
+        dest: "/EditAppUser",
+        icon: <FiUserCheck />,
+      },
+      {
+        name: "Delete User",
+        dest: "/DeleteAppUser",
         icon: <FiUserMinus />,
       },
     ],
