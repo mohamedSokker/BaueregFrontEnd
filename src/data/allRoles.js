@@ -24,7 +24,6 @@ export const allSitesEqsdata = async () => {
       allSites.push(item.Location);
       allSitesWithName.push({ name: item.Location });
     });
-    return data;
   } catch (error) {
     return [];
   }
