@@ -123,7 +123,7 @@ const Dashboard = () => {
           };
           const result = await updateData(url, "POST", token, body);
           let data = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             data.push({
               x: formatDate(item.Date_Time),
               y: Number(item.Maintenance_Availability),
@@ -135,7 +135,7 @@ const Dashboard = () => {
             Availability: data,
           }));
           let dataX = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             dataX.push(item.Date_Time);
             return dataX;
           });
@@ -144,7 +144,7 @@ const Dashboard = () => {
             Availability: dataX,
           }));
           let dataY = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             dataY.push(Number(item.Maintenance_Availability));
             return dataY;
           });
@@ -191,7 +191,7 @@ const Dashboard = () => {
           };
           const result = await updateData(url, "POST", token, body);
           let data = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             data.push({ x: formatDate(item.Date), y: Number(item.Quantity) });
             return data;
           });
@@ -200,7 +200,7 @@ const Dashboard = () => {
             FuelConsumption: data,
           }));
           let dataX = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             dataX.push(formatDate(item.Date));
             return dataX;
           });
@@ -256,7 +256,7 @@ const Dashboard = () => {
           };
           const result = await updateData(url, "POST", token, body);
           let data = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             data.push({
               x: formatDate(item.Date),
               y: Number(item.TotalConsumption),
@@ -268,7 +268,7 @@ const Dashboard = () => {
             OilConsumption: data,
           }));
           let dataX = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             dataX.push(formatDate(item.Date));
             return dataX;
           });
