@@ -209,7 +209,7 @@ const Dashboard = () => {
             FuelConsumption: dataX,
           }));
           let dataY = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             dataY.push(Number(item.Quantity));
             return dataY;
           });
@@ -277,7 +277,7 @@ const Dashboard = () => {
             OilConsumption: dataX,
           }));
           let dataY = [];
-          result.data.map((item) => {
+          result?.data?.map((item) => {
             dataY.push(Number(item.TotalConsumption));
             return dataY;
           });
