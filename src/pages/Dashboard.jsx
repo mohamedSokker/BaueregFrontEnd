@@ -103,7 +103,7 @@ const Dashboard = () => {
     return `${year}-${month}-${day}`;
   };
 
-  console.log(cardsData);
+  // console.log(cardsData);
 
   useEffect(() => {
     const getAvData = async () => {
@@ -122,6 +122,7 @@ const Dashboard = () => {
             dateTime: cardsData?.Availability?.dateTime,
           };
           const result = await updateData(url, "POST", token, body);
+          console.log(result);
           let data = [];
           result?.data?.map((item) => {
             data.push({
