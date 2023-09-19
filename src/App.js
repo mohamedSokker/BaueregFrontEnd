@@ -97,8 +97,11 @@ function App() {
             className=" dark:bg-background-logoColor md:h-[92%] relative bg-white"
           >
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/Dashboard" element={<Dashboard />} />
+              <Route path="/" element={<Dashboard socket={socket} />} />
+              <Route
+                path="/Dashboard"
+                element={<Dashboard socket={socket} />}
+              />
               <Route path="/Orders" element={<Orders />} />
               <Route path="/OilSamples" element={<OilSamples />} />
               <Route

@@ -8,7 +8,7 @@ import DashboardPerMaint from "../components/DashboardPerMaint";
 import updateData from "../Functions/updateData";
 import { useNavContext } from "../contexts/NavContext";
 
-const Dashboard = () => {
+const Dashboard = ({ socket }) => {
   const { usersData, token } = useNavContext();
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
@@ -83,6 +83,10 @@ const Dashboard = () => {
       .slice(0, 10)
   );
   const [isFilterActive, setIsFilterActive] = useState(false);
+  const [realTime, setRealTime] = useState(false);
+  const [count, setCount] = useState(0);
+  const [messages, setMessages] = useState([]);
+  const [currentMessage, setCurrentMessage] = useState("");
 
   const filters = ["All", "Trench_Cutting_Machine", "Drilling_Machine"];
   const baseURL = process.env.REACT_APP_BASE_URL;
@@ -93,6 +97,71 @@ const Dashboard = () => {
       [name]: { ...prev[name], [type]: field[name] },
     }));
   };
+
+  const getDate = (date) => {
+    const dt = new Date(date);
+    dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
+    return dt.toISOString();
+  };
+
+  const getData = async () => {
+    try {
+      const url = `${baseURL}/api/v1/getMessages`;
+      const data = await updateData(url, "POST", token, {
+        usersData: usersData,
+      });
+      console.log(data);
+      // const target = data.filter((d) => d.problem_End_To === null)
+      setMessages(data);
+      setCount(0);
+    } catch (error) {
+      setError(true);
+      setErrorDetails(error.message);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
+  };
+
+  useEffect(() => {
+    let interval;
+    interval = setInterval(() => {
+      if (messages.length !== 0) {
+        if (count === messages.length) {
+          setCurrentMessage(
+            `${1} - ${messages[0]?.Equipment} Started Problem at ${new Date(
+              getDate(messages[0]?.Problem_start_From)
+            ).toLocaleString()}`
+          );
+          setCount(1);
+        } else {
+          setCurrentMessage(
+            `${count + 1} - ${
+              messages[count]?.Equipment
+            } Started Problem at ${new Date(
+              getDate(messages[count]?.Problem_start_From)
+            ).toLocaleString()}`
+          );
+          setCount((prev) => prev + 1);
+        }
+      }
+
+      setRealTime((prev) => !prev);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [realTime]);
+
+  useEffect(() => {
+    getData();
+  }, [usersData]);
+
+  useEffect(() => {
+    socket.on("appDataUpdate", getData);
+
+    return () => {
+      socket.off("appDataUpdate", getData);
+    };
+  }, []);
 
   const formatDate = (anyDate) => {
     let dt = new Date(anyDate);
@@ -543,11 +612,22 @@ const Dashboard = () => {
         />
       </div>
       {error && (
-        <div className=" w-full h-14 bg-red-600 text-white flex justify-center items-center fixed bottom-0 left-0 flex-row border-t-1 border-gray-400">
+        <div className=" w-full h-14 bg-red-600 text-white flex justify-center items-center fixed bottom-14 left-0 flex-row border-t-1 border-gray-400">
           <CiWarning className="text-[40px] font-extrabold" />
           <p className="ml-5 text-xl font-semibold">{errorDetails}</p>
         </div>
       )}
+
+      <div
+        className={[
+          `w-full h-14 text-white flex justify-center items-center fixed bottom-0 left-0 flex-row border-t-1 border-gray-400`,
+        ]}
+        style={{
+          backgroundColor: messages.length === 0 ? "white" : "orange",
+        }}
+      >
+        <p className="ml-5 text-xl font-semibold">{currentMessage}</p>
+      </div>
     </div>
   );
 };
