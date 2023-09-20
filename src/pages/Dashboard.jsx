@@ -105,14 +105,16 @@ const Dashboard = ({ socket }) => {
   };
 
   const getData = async () => {
+    console.log(`getData`);
     try {
       const url = `${baseURL}/api/v1/getMessages`;
       const data = await updateData(url, "POST", token, {
         usersData: usersData,
       });
-      console.log(data);
-      // const target = data.filter((d) => d.problem_End_To === null)
-      setMessages(data);
+      // console.log(data);
+      const target = data?.filter((d) => d.problem_End_To === null);
+      console.log(target);
+      setMessages(target);
       setCount(0);
     } catch (error) {
       setError(true);
@@ -129,16 +131,18 @@ const Dashboard = ({ socket }) => {
       if (messages.length !== 0) {
         if (count === messages.length) {
           setCurrentMessage(
-            `${1} - ${messages[0]?.Equipment} Started Problem at ${new Date(
+            `${1} - ${messages[0]?.Equipment} Started Problem ${
+              messages[0]?.Breakdown_Type.split(".")[0]
+            } at ${new Date(
               getDate(messages[0]?.Problem_start_From)
             ).toLocaleString()}`
           );
           setCount(1);
         } else {
           setCurrentMessage(
-            `${count + 1} - ${
-              messages[count]?.Equipment
-            } Started Problem at ${new Date(
+            `${count + 1} - ${messages[count]?.Equipment} Started Problem ${
+              messages[count]?.Breakdown_Type.split(".")[0]
+            } at ${new Date(
               getDate(messages[count]?.Problem_start_From)
             ).toLocaleString()}`
           );
@@ -156,12 +160,12 @@ const Dashboard = ({ socket }) => {
   }, [usersData]);
 
   useEffect(() => {
-    socket.on("appDataUpdate", getData);
+    if (socket.connected) socket.on("appDataUpdate", getData);
 
     return () => {
       socket.off("appDataUpdate", getData);
     };
-  }, []);
+  }, [socket, usersData]);
 
   const formatDate = (anyDate) => {
     let dt = new Date(anyDate);
