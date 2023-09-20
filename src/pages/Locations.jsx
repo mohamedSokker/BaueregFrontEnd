@@ -375,6 +375,7 @@ const Locations = () => {
             Location: tableName,
           };
           const result = await updateData(url, "POST", token, body);
+          console.log(result);
           setFieldsData((prev) => ({
             ...prev,
             PeriodicMaintenance: result,
@@ -401,7 +402,6 @@ const Locations = () => {
             Location: tableName,
           };
           const result = await updateData(url, "POST", token, body);
-          console.log(result);
           setFieldsAllData((prev) => ({
             ...prev,
             Machinary: result,
@@ -432,7 +432,6 @@ const Locations = () => {
             Location: tableName,
           };
           const result = await updateData(url, "POST", token, body);
-          console.log(result);
           setFieldsAllData((prev) => ({
             ...prev,
             Equipments: result,

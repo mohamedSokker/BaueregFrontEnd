@@ -195,7 +195,6 @@ const Dashboard = ({ socket }) => {
             dateTime: cardsData?.Availability?.dateTime,
           };
           const result = await updateData(url, "POST", token, body);
-          console.log(result);
           let data = [];
           result?.data?.map((item) => {
             data.push({
@@ -427,6 +426,7 @@ const Dashboard = ({ socket }) => {
             dateTime: cardsData?.PeriodicMaintenance?.dateTime,
           };
           const result = await updateData(url, "POST", token, body);
+          console.log(result);
           setFieldsData((prev) => ({
             ...prev,
             PeriodicMaintenance: result,
