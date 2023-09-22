@@ -466,6 +466,23 @@ const Dashboard = ({ socket }) => {
           value={startDate}
           onChange={changeDateValue}
         />
+        <button
+          onClick={async () => {
+            try {
+              await fetch(
+                `https://onedrive.live.com/download?cid=FAC65013E50F7D37!315&resid=FAC65013E50F7D37!315&ithint=file%2cxlsx&wdo=2&authkey=!ALh_vDOi922YiEU`
+              )
+                .then((res) => res.json())
+                .then((data) => {
+                  console.log(data);
+                });
+            } catch (error) {
+              console.log(error.message);
+            }
+          }}
+        >
+          Send
+        </button>
         {/* <input
           className="outline-none rounded-lg mr-2 text-[10px]"
           type="date"
