@@ -466,7 +466,7 @@ const Dashboard = ({ socket }) => {
           value={startDate}
           onChange={changeDateValue}
         />
-        <button
+        {/* <button
           onClick={async () => {
             try {
               await fetch(
@@ -482,7 +482,7 @@ const Dashboard = ({ socket }) => {
           }}
         >
           Send
-        </button>
+        </button> */}
         {/* <input
           className="outline-none rounded-lg mr-2 text-[10px]"
           type="date"
