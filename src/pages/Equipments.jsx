@@ -493,7 +493,7 @@ const Equipments = () => {
                 ? null
                 : cardsData?.Breakdowns?.filter,
             dateTime: cardsData?.Breakdowns?.dateTime,
-            Location: tableName,
+            Equipment: tableName,
           };
           const result = await updateData(url, "POST", token, body);
           setFieldsData((prev) => ({
@@ -525,7 +525,7 @@ const Equipments = () => {
                 ? null
                 : cardsData?.PeriodicMaintenance?.filter,
             dateTime: cardsData?.PeriodicMaintenance?.dateTime,
-            Location: tableName,
+            Equipment: tableName,
           };
           const result = await updateData(url, "POST", token, body);
           console.log(result);
