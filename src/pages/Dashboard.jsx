@@ -16,7 +16,8 @@ const Dashboard = ({ socket }) => {
     Availability: true,
     FuelConsumption: true,
     OilConsumption: true,
-    Production: true,
+    ProductionTrench: true,
+    ProductionPiles: true,
     Breakdowns: true,
     PeriodicMaintenance: true,
   });
@@ -24,7 +25,8 @@ const Dashboard = ({ socket }) => {
     Availability: true,
     FuelConsumption: true,
     OilConsumption: true,
-    Production: true,
+    ProductionTrench: true,
+    ProductionPiles: true,
     Breakdowns: true,
     PeriodicMaintenance: true,
   });
@@ -34,7 +36,8 @@ const Dashboard = ({ socket }) => {
     Availability: 0,
     FuelConsumption: 0,
     OilConsumption: 0,
-    Production: 0,
+    ProductionTrench: 0,
+    ProductionPiles: 0,
     Breakdowns: [],
     PeriodicMaintenance: [],
   });
@@ -42,25 +45,29 @@ const Dashboard = ({ socket }) => {
     Availability: [],
     FuelConsumption: [],
     OilConsumption: [],
-    Production: [],
+    ProductionTrench: [],
+    ProductionPiles: [],
   });
   const [fieldsXData, setFieldsXData] = useState({
     Availability: [],
     FuelConsumption: [],
     OilConsumption: [],
-    Production: [],
+    ProductionTrench: [],
+    ProductionPiles: [],
   });
   const [fieldsYData, setFieldsYData] = useState({
     Availability: [],
     FuelConsumption: [],
     OilConsumption: [],
-    Production: [],
+    ProductionTrench: [],
+    ProductionPiles: [],
   });
   const [fieldsPerData, setFieldsPerData] = useState({
     Availability: 0,
     FuelConsumption: 0,
     OilConsumption: 0,
-    Production: 0,
+    ProductionTrench: 0,
+    ProductionPiles: 0,
     Breakdowns: [],
     PeriodicMaintenance: [],
   });
@@ -105,7 +112,7 @@ const Dashboard = ({ socket }) => {
   };
 
   const getData = async () => {
-    console.log(`getData`);
+    // console.log(`getData`);
     try {
       const url = `${baseURL}/api/v1/getMessages`;
       const data = await updateData(url, "POST", token, {
@@ -113,7 +120,7 @@ const Dashboard = ({ socket }) => {
       });
       // console.log(data);
       const target = data?.filter((d) => d.problem_End_To === null);
-      console.log(target);
+      // console.log(target);
       setMessages(target);
       setCount(0);
     } catch (error) {
@@ -380,6 +387,146 @@ const Dashboard = ({ socket }) => {
   }, [cardsData.OilConsumption, usersData]);
 
   useEffect(() => {
+    const getProducationTrenchData = async () => {
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, ProductionTrench: true }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionTrench: true }));
+          const url = `${baseURL}/api/v1/dashboardProduction`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.ProductionTrench?.filter === "All"
+                ? null
+                : cardsData?.ProductionTrench?.filter,
+            dateTime: cardsData?.ProductionTrench?.dateTime,
+            Type: "Trench_Cutting_Machine",
+          };
+          const result = await updateData(url, "POST", token, body);
+          console.log(result);
+          let data = [];
+          result?.data?.map((item) => {
+            data.push({
+              x: formatDate(item["Pouring Finish"]),
+              y: Number(item["Actual M2"]),
+            });
+            return data;
+          });
+          setFieldsAllData((prev) => ({
+            ...prev,
+            ProductionTrench: data,
+          }));
+          let dataX = [];
+          result?.data?.map((item) => {
+            dataX.push(formatDate(item["Pouring Finish"]));
+            return dataX;
+          });
+          setFieldsXData((prev) => ({
+            ...prev,
+            ProductionTrench: dataX,
+          }));
+          let dataY = [];
+          result?.data?.map((item) => {
+            dataY.push(Number(item["Actual M2"]));
+            return dataY;
+          });
+          setFieldsYData((prev) => ({
+            ...prev,
+            ProductionTrench: dataY,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            ProductionTrench: result.per,
+          }));
+          setFieldsPerData((prev) => ({
+            ...prev,
+            ProductionTrench: result.diff,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, ProductionTrench: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionTrench: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, ProductionTrench: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionTrench: false }));
+        }
+      }
+    };
+    getProducationTrenchData();
+  }, [cardsData.ProductionTrench, usersData]);
+
+  useEffect(() => {
+    const getProducationTrenchData = async () => {
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, ProductionPiles: true }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionPiles: true }));
+          const url = `${baseURL}/api/v1/dashboardProduction`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.ProductionPiles?.filter === "All"
+                ? null
+                : cardsData?.ProductionPiles?.filter,
+            dateTime: cardsData?.ProductionPiles?.dateTime,
+            Type: "Drilling_Machine",
+          };
+          const result = await updateData(url, "POST", token, body);
+          console.log(result);
+          let data = [];
+          result?.data?.map((item) => {
+            data.push({
+              x: formatDate(item["Pouring Finish"]),
+              y: Number(item["Actual Depth"]),
+            });
+            return data;
+          });
+          setFieldsAllData((prev) => ({
+            ...prev,
+            ProductionPiles: data,
+          }));
+          let dataX = [];
+          result?.data?.map((item) => {
+            dataX.push(formatDate(item["Pouring Finish"]));
+            return dataX;
+          });
+          setFieldsXData((prev) => ({
+            ...prev,
+            ProductionPiles: dataX,
+          }));
+          let dataY = [];
+          result?.data?.map((item) => {
+            dataY.push(Number(item["Actual Depth"]));
+            return dataY;
+          });
+          setFieldsYData((prev) => ({
+            ...prev,
+            ProductionPiles: dataY,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            ProductionPiles: result.per,
+          }));
+          setFieldsPerData((prev) => ({
+            ...prev,
+            ProductionPiles: result.diff,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, ProductionPiles: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionPiles: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, ProductionPiles: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionPiles: false }));
+        }
+      }
+    };
+    getProducationTrenchData();
+  }, [cardsData.ProductionPiles, usersData]);
+
+  useEffect(() => {
     const getbreakdownData = async () => {
       if (usersData) {
         try {
@@ -460,35 +607,12 @@ const Dashboard = ({ socket }) => {
   return (
     <div className="w-full h-auto Main--Page flex flex-col justify-around items-center overflow-y-scroll md:mt-0 mt-[58px] gap-4">
       <div className="w-[99%] h-[3vh] bg-white p-4 flex items-center flex-row mb-2 shadow-lg rounded-md relative mt-2">
-        <input
+        {/* <input
           className="outline-none rounded-lg mr-2 text-[14px]"
           type="date"
           value={startDate}
           onChange={changeDateValue}
         />
-        {/* <button
-          onClick={async () => {
-            try {
-              await fetch(
-                `https://onedrive.live.com/download?cid=FAC65013E50F7D37!315&resid=FAC65013E50F7D37!315&ithint=file%2cxlsx&wdo=2&authkey=!ALh_vDOi922YiEU`
-              )
-                .then((res) => res.json())
-                .then((data) => {
-                  console.log(data);
-                });
-            } catch (error) {
-              console.log(error.message);
-            }
-          }}
-        >
-          Send
-        </button> */}
-        {/* <input
-          className="outline-none rounded-lg mr-2 text-[10px]"
-          type="date"
-          value={endDate}
-          onChange={changeDateValue}
-        /> */}
         <button
           className="text-[26px]"
           onClick={() => setIsFilterActive((prev) => !prev)}
@@ -542,9 +666,9 @@ const Dashboard = ({ socket }) => {
               </div>
             ))}
           </div>
-        )}
+        )} */}
       </div>
-      <div className="w-full md:h-[25vh] h-[800px] flex md:flex-row flex-col flex-nowrap justify-around relative">
+      <div className="w-full flex md:flex-row flex-col flex-wrap relative gap-2 p-2">
         <DashboardCard
           name="Availability"
           title="Availability"
@@ -561,6 +685,7 @@ const Dashboard = ({ socket }) => {
           isGraph={true}
           isPer={true}
           isFilter={true}
+          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
         />
         <DashboardCard
           name="Fuel Consumption"
@@ -578,6 +703,7 @@ const Dashboard = ({ socket }) => {
           isGraph={true}
           isPer={true}
           isFilter={true}
+          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
         />
         <DashboardCard
           name="Oil Consumption"
@@ -595,22 +721,43 @@ const Dashboard = ({ socket }) => {
           isGraph={true}
           isPer={true}
           isFilter={true}
+          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
         />
         <DashboardCard
-          name="Production"
-          value={0}
-          percentage={0}
+          name="Production Trench"
+          title="ProductionTrench"
+          value={`${fieldsData.ProductionTrench} M2`}
+          percentage={fieldsPerData.ProductionTrench}
           getChildData={getChildData}
-          cardsData={cardsData?.Production}
-          loading={fieldsLoading.Production}
-          perLoading={fieldsPerLoading.Production}
-          data={fieldsAllData.Production}
-          xData={fieldsXData.Production}
-          yData={fieldsYData.Production}
+          cardsData={cardsData?.ProductionTrench}
+          loading={fieldsLoading.ProductionTrench}
+          perLoading={fieldsPerLoading.ProductionTrench}
+          data={fieldsAllData.ProductionTrench}
+          xData={fieldsXData.ProductionTrench}
+          yData={fieldsYData.ProductionTrench}
           label="m2"
           isGraph={true}
           isPer={true}
           isFilter={true}
+          filters={["All", "DW", "Barrettes", "Cut-Off Wall"]}
+        />
+        <DashboardCard
+          name="Production Piles"
+          title="ProductionPiles"
+          value={`${fieldsData.ProductionPiles} Ml`}
+          percentage={fieldsPerData.ProductionPiles}
+          getChildData={getChildData}
+          cardsData={cardsData?.ProductionPiles}
+          loading={fieldsLoading.ProductionPiles}
+          perLoading={fieldsPerLoading.ProductionPiles}
+          data={fieldsAllData.ProductionPiles}
+          xData={fieldsXData.ProductionPiles}
+          yData={fieldsYData.ProductionPiles}
+          label="ml"
+          isGraph={true}
+          isPer={true}
+          isFilter={true}
+          filters={["All", "Piles"]}
         />
       </div>
       <div className="w-full md:h-[56vh] h-[800px] flex md:flex-row justify-around items-center">

@@ -38,8 +38,8 @@ const Login = () => {
       console.log(data);
       if (!success) throw new Error(data.message);
       const cookies = new Cookies();
-      const token = await cookies.get("token");
-      if (!token) {
+      // const token = await cookies.get("token");
+      if (data) {
         setToken(data.token);
         const userInfo = await getTokenData(data.token);
         if (userInfo[0].roles.Admin) {

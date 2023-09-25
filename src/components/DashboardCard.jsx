@@ -35,6 +35,7 @@ const DashboardCard = ({
   isGraph,
   isPer,
   isFilter,
+  filters,
 }) => {
   const [dateValue, setDateValue] = useState(
     new Date(
@@ -54,7 +55,7 @@ const DashboardCard = ({
 
   let itemCount = 0;
 
-  const filters = ["All", "Trench_Cutting_Machine", "Drilling_Machine"];
+  // const filters = ["All", "Trench_Cutting_Machine", "Drilling_Machine"];
 
   const changeDateValue = (e) => {
     setDateValue(e.target.value);

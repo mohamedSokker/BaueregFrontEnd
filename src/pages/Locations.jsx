@@ -19,7 +19,8 @@ const Locations = () => {
     Availability: true,
     FuelConsumption: true,
     OilConsumption: true,
-    Production: true,
+    ProductionTrench: true,
+    ProductionPiles: true,
     Breakdowns: true,
     PeriodicMaintenance: true,
     Machinary: true,
@@ -29,7 +30,8 @@ const Locations = () => {
     Availability: true,
     FuelConsumption: true,
     OilConsumption: true,
-    Production: true,
+    ProductionTrench: true,
+    ProductionPiles: true,
     Breakdowns: true,
     PeriodicMaintenance: true,
     Machinary: true,
@@ -41,7 +43,8 @@ const Locations = () => {
     Availability: 0,
     FuelConsumption: 0,
     OilConsumption: 0,
-    Production: 0,
+    ProductionTrench: 0,
+    ProductionPiles: 0,
     Breakdowns: [],
     PeriodicMaintenance: [],
     Machinary: [],
@@ -51,7 +54,8 @@ const Locations = () => {
     Availability: [],
     FuelConsumption: [],
     OilConsumption: [],
-    Production: [],
+    ProductionTrench: [],
+    ProductionPiles: [],
     Machinary: [],
     Equipments: [],
   });
@@ -59,7 +63,8 @@ const Locations = () => {
     Availability: [],
     FuelConsumption: [],
     OilConsumption: [],
-    Production: [],
+    ProductionTrench: [],
+    ProductionPiles: [],
     Machinary: [],
     Equipments: [],
   });
@@ -67,7 +72,8 @@ const Locations = () => {
     Availability: [],
     FuelConsumption: [],
     OilConsumption: [],
-    Production: [],
+    ProductionTrench: [],
+    ProductionPiles: [],
     Machinary: [],
     Equipments: [],
   });
@@ -75,7 +81,8 @@ const Locations = () => {
     Availability: 0,
     FuelConsumption: 0,
     OilConsumption: 0,
-    Production: 0,
+    ProductionTrench: 0,
+    ProductionPiles: 0,
     Breakdowns: [],
     PeriodicMaintenance: [],
     Machinary: [],
@@ -327,6 +334,146 @@ const Locations = () => {
   }, [cardsData.OilConsumption, usersData, tableName]);
 
   useEffect(() => {
+    const getProdTrenchData = async () => {
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, ProductionTrench: true }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionTrench: true }));
+          const url = `${baseURL}/api/v1/sitesProduction`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.ProductionTrench?.filter === "All"
+                ? null
+                : cardsData?.ProductionTrench?.filter,
+            dateTime: cardsData?.ProductionTrench?.dateTime,
+            Location: tableName,
+            Type: "Trench_Cutting_Machine",
+          };
+          const result = await updateData(url, "POST", token, body);
+          let data = [];
+          result.data.map((item) => {
+            data.push({
+              x: formatDate(item["Pouring Finish"]),
+              y: Number(item["Actual M2"]),
+            });
+            return data;
+          });
+          setFieldsAllData((prev) => ({
+            ...prev,
+            ProductionTrench: data,
+          }));
+          let dataX = [];
+          result.data.map((item) => {
+            dataX.push(formatDate(item["Pouring Finish"]));
+            return dataX;
+          });
+          setFieldsXData((prev) => ({
+            ...prev,
+            ProductionTrench: dataX,
+          }));
+          let dataY = [];
+          result.data.map((item) => {
+            dataY.push(Number(item["Actual M2"]));
+            return dataY;
+          });
+          setFieldsYData((prev) => ({
+            ...prev,
+            ProductionTrench: dataY,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            ProductionTrench: result.per,
+          }));
+          setFieldsPerData((prev) => ({
+            ...prev,
+            ProductionTrench: result.diff,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, ProductionTrench: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionTrench: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, ProductionTrench: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionTrench: false }));
+        }
+      }
+    };
+    getProdTrenchData();
+  }, [cardsData.ProductionTrench, usersData, tableName]);
+
+  useEffect(() => {
+    const getProdTrenchData = async () => {
+      if (usersData) {
+        try {
+          setError(false);
+          setFieldsLoading((prev) => ({ ...prev, ProductionPiles: true }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionPiles: true }));
+          const url = `${baseURL}/api/v1/sitesProduction`;
+          const body = {
+            usersData: usersData,
+            filter:
+              cardsData?.ProductionPiles?.filter === "All"
+                ? null
+                : cardsData?.ProductionPiles?.filter,
+            dateTime: cardsData?.ProductionPiles?.dateTime,
+            Location: tableName,
+            Type: "Drilling_Machine",
+          };
+          const result = await updateData(url, "POST", token, body);
+          let data = [];
+          result.data.map((item) => {
+            data.push({
+              x: formatDate(item["Pouring Finish"]),
+              y: Number(item["Actual Depth"]),
+            });
+            return data;
+          });
+          setFieldsAllData((prev) => ({
+            ...prev,
+            ProductionPiles: data,
+          }));
+          let dataX = [];
+          result.data.map((item) => {
+            dataX.push(formatDate(item["Pouring Finish"]));
+            return dataX;
+          });
+          setFieldsXData((prev) => ({
+            ...prev,
+            ProductionPiles: dataX,
+          }));
+          let dataY = [];
+          result.data.map((item) => {
+            dataY.push(Number(item["Actual Depth"]));
+            return dataY;
+          });
+          setFieldsYData((prev) => ({
+            ...prev,
+            ProductionPiles: dataY,
+          }));
+          setFieldsData((prev) => ({
+            ...prev,
+            ProductionPiles: result.per,
+          }));
+          setFieldsPerData((prev) => ({
+            ...prev,
+            ProductionPiles: result.diff,
+          }));
+          setFieldsLoading((prev) => ({ ...prev, ProductionPiles: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionPiles: false }));
+        } catch (err) {
+          setError(true);
+          setErrorDetails(err.message);
+          setFieldsLoading((prev) => ({ ...prev, ProductionPiles: false }));
+          setFieldsPerLoading((prev) => ({ ...prev, ProductionPiles: false }));
+        }
+      }
+    };
+    getProdTrenchData();
+  }, [cardsData.ProductionPiles, usersData, tableName]);
+
+  useEffect(() => {
     const getbreakdownData = async () => {
       if (usersData) {
         try {
@@ -470,29 +617,23 @@ const Locations = () => {
     <div className="w-full h-auto Main--Page flex flex-col justify-around items-center overflow-y-scroll md:mt-0 mt-[58px] gap-4">
       <div className="w-[99%] h-[3vh] bg-white p-4 flex items-center flex-row mb-2 shadow-lg rounded-md relative mt-2 justify-between">
         <div className="flex items-center flex-row w-[50%] h-full">
-          <input
+          {/* <input
             className="outline-none rounded-lg mr-2 text-[14px]"
             type="date"
             value={startDate}
             onChange={changeDateValue}
           />
-          {/* <input
-          className="outline-none rounded-lg mr-2 text-[10px]"
-          type="date"
-          value={endDate}
-          onChange={changeDateValue}
-        /> */}
           <button
             className="text-[26px]"
             onClick={() => setIsFilterActive((prev) => !prev)}
           >
             <BsFilterLeft />
-          </button>
+          </button> */}
         </div>
         <div className="font-bold text-[16px]">{tableName}</div>
         {isFilterActive && (
           <div className="absolute flex flex-col top-[3vh] left-[180px] z-10 bg-gray-200 p-2 rounded-md text-[10px]">
-            {filters.map((item) => (
+            {/* {filters.map((item) => (
               <div key={item}>
                 <input
                   className="mr-2"
@@ -535,7 +676,7 @@ const Locations = () => {
                 />
                 <label htmlFor={item}>{item}</label>
               </div>
-            ))}
+            ))} */}
           </div>
         )}
       </div>
@@ -556,6 +697,7 @@ const Locations = () => {
           isGraph={true}
           isPer={true}
           isFilter={true}
+          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
         />
         <DashboardCard
           name="Fuel Consumption"
@@ -573,6 +715,7 @@ const Locations = () => {
           isGraph={true}
           isPer={true}
           isFilter={true}
+          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
         />
         <DashboardCard
           name="Oil Consumption"
@@ -590,22 +733,43 @@ const Locations = () => {
           isGraph={true}
           isPer={true}
           isFilter={true}
+          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
         />
         <DashboardCard
-          name="Production"
-          value={0}
-          percentage={0}
+          name="Production Trench"
+          title={`ProductionTrench`}
+          value={fieldsData.ProductionTrench}
+          percentage={fieldsPerData.ProductionTrench}
           getChildData={getChildData}
-          cardsData={cardsData?.Production}
-          loading={fieldsLoading.Production}
-          perLoading={fieldsPerLoading.Production}
+          cardsData={cardsData?.ProductionTrench}
+          loading={fieldsLoading.ProductionTrench}
+          perLoading={fieldsPerLoading.ProductionTrench}
           data={null}
-          xData={fieldsXData.Production}
-          yData={fieldsYData.Production}
+          xData={fieldsXData.ProductionTrench}
+          yData={fieldsYData.ProductionTrench}
           label="m2"
           isGraph={true}
           isPer={true}
           isFilter={true}
+          filters={["All", "DW", "Barrettes", "Cut-Off Wall"]}
+        />
+        <DashboardCard
+          name="Production Piles"
+          title={`ProductionPiles`}
+          value={fieldsData.ProductionPiles}
+          percentage={fieldsPerData.ProductionPiles}
+          getChildData={getChildData}
+          cardsData={cardsData?.ProductionPiles}
+          loading={fieldsLoading.ProductionPiles}
+          perLoading={fieldsPerLoading.ProductionPiles}
+          data={null}
+          xData={fieldsXData.ProductionPiles}
+          yData={fieldsYData.ProductionPiles}
+          label="ml"
+          isGraph={true}
+          isPer={true}
+          isFilter={true}
+          filters={["All", "Piles"]}
         />
         <DashboardCard
           name="Machinary"
