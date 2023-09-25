@@ -9,7 +9,7 @@ import { CiWarning } from "react-icons/ci";
 import { PageLoading } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 import { getTokenData } from "../Functions/getTokenData";
-import { allDataWithName } from "../data/allRoles";
+import { allDataWithName } from "../data/loginAllRoles";
 
 const Login = () => {
   const { setToken, setUsersData } = useNavContext();
@@ -35,7 +35,6 @@ const Login = () => {
       const res = await fetch(url, options);
       const success = res.ok;
       const data = await res.json();
-      console.log(data);
       if (!success) throw new Error(data.message);
       const cookies = new Cookies();
       // const token = await cookies.get("token");
@@ -43,7 +42,7 @@ const Login = () => {
         setToken(data.token);
         const userInfo = await getTokenData(data.token);
         if (userInfo[0].roles.Admin) {
-          const data1 = await allDataWithName();
+          const data1 = await allDataWithName(data.token);
           let copUserData = userInfo;
           copUserData[0].roles.Editor = data1;
           setUsersData(copUserData);
