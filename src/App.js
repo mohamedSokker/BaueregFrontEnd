@@ -38,7 +38,7 @@ function App() {
   useEffect(() => {
     const getUsersData = () => {
       let userData;
-      userInfo().then((data) => {
+      userInfo(token).then((data) => {
         userData = data;
         if (userData[0]?.roles?.Admin) {
           allDataWithName().then((data1) => {

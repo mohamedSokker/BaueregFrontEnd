@@ -20,6 +20,8 @@ const Sidebar = () => {
   const cookies = new Cookies();
   const [active, setActive] = useState(false);
 
+  console.log(usersData);
+
   const handleCloseSidebar = () => {
     if (activeMenu && screenSize <= 900) {
       setActiveMenu(false);
