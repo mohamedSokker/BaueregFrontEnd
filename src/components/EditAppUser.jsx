@@ -78,7 +78,8 @@ const EditAppUser = () => {
         Role: fieldsData.roles,
         Location: fieldsData.site,
         Equipment_Type: fieldsData.eqType,
-        Equipment: fieldsData.eq,
+        Token: null,
+        // Equipment: fieldsData.eq,
       };
       const manageUserData = async () => {
         try {

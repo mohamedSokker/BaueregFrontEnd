@@ -233,6 +233,12 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
                 onChange={(e) => setRules(e.target.value)}
               >
                 <option
+                  value="Project Manager"
+                  selected={roles === "Project Manager" ? true : false}
+                >
+                  Project Manager
+                </option>
+                <option
                   value="Operator"
                   selected={roles === "Operator" ? true : false}
                 >
@@ -301,7 +307,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
                 </option>
               </select>
             </div>
-            <div className="flex flex-row mb-5 font-extrabold text-3xl gap-10">
+            {/* <div className="flex flex-row mb-5 font-extrabold text-3xl gap-10">
               <label htmlFor="eq">Equipment: </label>
 
               <select
@@ -316,7 +322,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
 
             <div className="flex items-end justify-end pb-5">
               <button
