@@ -68,7 +68,7 @@ const EditAppUser = () => {
           },
         }
       );
-      const path = `users/img/`;
+      const path = `appUsers/img/`;
       let bodyData = {
         UserName: fieldsData.userName,
         Password: fieldsData.password,
