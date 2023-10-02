@@ -30,6 +30,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const [roles, setRules] = useState("");
+  const [active, setActive] = useState(false);
 
   console.log(eqType);
   console.log(eq);
@@ -99,7 +100,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
       setEmail(userData.Email);
       setPhone(userData.Phone);
       setRules(userData.Role);
-      setSite(userData.Location);
+      setSite(JSON.parse(userData.Location));
       setEqType(userData.Equipment_Type);
       setEq(userData.Equipment);
       const getImage = async () => {
@@ -264,26 +265,71 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
                 </option>
               </select>
             </div>
-            <div className="flex flex-row mb-5 font-extrabold text-3xl gap-10">
-              <label htmlFor="site">Site: </label>
 
-              <select
-                name="site"
-                id="site"
-                className="p-2 rounded-lg text-[16px] font-normal"
-                onChange={(e) => setSite(e.target.value)}
+            {/* Site */}
+            <div className="flex flex-col justify-center items-center">
+              <button
+                id="sites"
+                className="w-full bg-gray-400 rounded-lg mb-5 flex flex-row justify-between items-center pl-3 pr-3 h-12 text-white hover:cursor-pointer dark:bg-black/80"
+                onClick={(e) => {
+                  if (!e.target.classList.contains("Active")) {
+                    e.target.classList.add("Active");
+                    setActive((prev) => !prev);
+                  } else {
+                    e.target.classList.remove("Active");
+                    setActive((prev) => !prev);
+                  }
+                }}
               >
-                {sites?.map((d) => (
-                  <option
-                    key={d}
-                    value={d}
-                    selected={site === d ? true : false}
-                  >
-                    {d}
-                  </option>
-                ))}
-              </select>
+                <h1>Sites</h1>
+                {document
+                  ?.getElementById(`sites`)
+                  ?.classList.contains("Active") ? (
+                  <MdKeyboardArrowUp />
+                ) : (
+                  <MdKeyboardArrowDown />
+                )}
+              </button>
+              {document
+                ?.getElementById(`sites`)
+                ?.classList.contains("Active") && (
+                <div
+                  className="mb-3 -mt-5 flex flex-col"
+                  style={{ width: "98%" }}
+                >
+                  {sites.map((item) => {
+                    return (
+                      <div
+                        className=" flex flex-row justify-start pl-4 text-black w-full p-2"
+                        key={item}
+                      >
+                        <input
+                          id={item}
+                          type="checkbox"
+                          name={`site`}
+                          data-title={item}
+                          className="mr-4"
+                          value={item}
+                          checked={site.includes(item) ? true : false}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSite((prev) => [...prev, item]);
+                            } else {
+                              let newSites = [...site];
+                              newSites = newSites.filter((s) => s !== item);
+                              setSite(newSites);
+                            }
+                          }}
+                        />
+                        <label htmlFor={item}>{item}</label>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+            {/* End Site */}
+
             <div className="flex flex-row mb-5 font-extrabold text-3xl gap-10">
               <label htmlFor="eqType">Equipment Type: </label>
 
@@ -307,22 +353,6 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
                 </option>
               </select>
             </div>
-            {/* <div className="flex flex-row mb-5 font-extrabold text-3xl gap-10">
-              <label htmlFor="eq">Equipment: </label>
-
-              <select
-                name="eq"
-                id="eq"
-                className="p-2 rounded-lg text-[16px] font-normal"
-                onChange={(e) => setEq(e.target.value)}
-              >
-                {eqs?.map((d) => (
-                  <option key={d} value={d} selected={eq === d ? true : false}>
-                    {d}
-                  </option>
-                ))}
-              </select>
-            </div> */}
 
             <div className="flex items-end justify-end pb-5">
               <button

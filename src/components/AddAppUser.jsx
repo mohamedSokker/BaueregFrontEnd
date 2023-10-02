@@ -39,7 +39,7 @@ const AddAppUser = () => {
         Phone: fieldsData.phone,
         ProfileImg: `${path}${fieldsData.userName}/${fieldsData.image.name}`,
         Role: fieldsData.roles,
-        Location: fieldsData.site,
+        Location: JSON.stringify(fieldsData.site),
         Equipment_Type: fieldsData.eqType,
         Token: null,
         // Equipment: fieldsData.eq,
