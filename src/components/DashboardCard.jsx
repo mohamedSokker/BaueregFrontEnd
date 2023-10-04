@@ -272,11 +272,13 @@ const DashboardCard = ({
                 className={`w-full`}
                 style={{
                   color:
-                    Number(value.split(" ")[0]) >= 90
-                      ? "green"
-                      : Number(value.split(" ")[0]) >= 80
-                      ? "yellow"
-                      : "red",
+                    value.split(" ")[1] === "%"
+                      ? Number(value.split(" ")[0]) >= 90
+                        ? "green"
+                        : Number(value.split(" ")[0]) >= 80
+                        ? "yellow"
+                        : "red"
+                      : "black",
                 }}
               >
                 {value}
