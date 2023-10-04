@@ -276,7 +276,7 @@ const DashboardCard = ({
                       ? Number(value.split(" ")[0]) >= 90
                         ? "green"
                         : Number(value.split(" ")[0]) >= 80
-                        ? "yellow"
+                        ? "orange"
                         : "red"
                       : "black",
                 }}
