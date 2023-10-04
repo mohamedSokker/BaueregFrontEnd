@@ -669,96 +669,110 @@ const Dashboard = ({ socket }) => {
         )} */}
       </div>
       <div className="w-full flex md:flex-row flex-col flex-wrap relative gap-2 p-2">
-        <DashboardCard
-          name="Availability"
-          title="Availability"
-          value={`${fieldsData.Availability} %`}
-          percentage={fieldsPerData.Availability}
-          getChildData={getChildData}
-          cardsData={cardsData?.Availability}
-          loading={fieldsLoading.Availability}
-          perLoading={fieldsPerLoading.Availability}
-          data={fieldsAllData.Availability}
-          xData={fieldsXData.Availability}
-          yData={fieldsYData.Availability}
-          label="Percentage"
-          isGraph={true}
-          isPer={true}
-          isFilter={true}
-          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
-        />
-        <DashboardCard
-          name="Fuel Consumption"
-          title="FuelConsumption"
-          value={`${fieldsData.FuelConsumption} L`}
-          percentage={fieldsPerData.FuelConsumption}
-          getChildData={getChildData}
-          cardsData={cardsData?.FuelConsumption}
-          loading={fieldsLoading.FuelConsumption}
-          perLoading={fieldsPerLoading.FuelConsumption}
-          data={fieldsAllData.FuelConsumption}
-          xData={fieldsXData.FuelConsumption}
-          yData={fieldsYData.FuelConsumption}
-          label="Consumption"
-          isGraph={true}
-          isPer={true}
-          isFilter={true}
-          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
-        />
-        <DashboardCard
-          name="Oil Consumption"
-          title="OilConsumption"
-          value={`${fieldsData.OilConsumption} L`}
-          percentage={fieldsPerData.OilConsumption}
-          getChildData={getChildData}
-          cardsData={cardsData?.OilConsumption}
-          loading={fieldsLoading.OilConsumption}
-          perLoading={fieldsPerLoading.OilConsumption}
-          data={fieldsAllData.OilConsumption}
-          xData={fieldsXData.OilConsumption}
-          yData={fieldsYData.OilConsumption}
-          label="Consumption"
-          isGraph={true}
-          isPer={true}
-          isFilter={true}
-          filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
-        />
-        <DashboardCard
-          name="Production Trench"
-          title="ProductionTrench"
-          value={`${fieldsData.ProductionTrench} M2`}
-          percentage={fieldsPerData.ProductionTrench}
-          getChildData={getChildData}
-          cardsData={cardsData?.ProductionTrench}
-          loading={fieldsLoading.ProductionTrench}
-          perLoading={fieldsPerLoading.ProductionTrench}
-          data={fieldsAllData.ProductionTrench}
-          xData={fieldsXData.ProductionTrench}
-          yData={fieldsYData.ProductionTrench}
-          label="m2"
-          isGraph={true}
-          isPer={true}
-          isFilter={true}
-          filters={["All", "DW", "Barrettes", "Cut-Off Wall"]}
-        />
-        <DashboardCard
-          name="Production Piles"
-          title="ProductionPiles"
-          value={`${fieldsData.ProductionPiles} Ml`}
-          percentage={fieldsPerData.ProductionPiles}
-          getChildData={getChildData}
-          cardsData={cardsData?.ProductionPiles}
-          loading={fieldsLoading.ProductionPiles}
-          perLoading={fieldsPerLoading.ProductionPiles}
-          data={fieldsAllData.ProductionPiles}
-          xData={fieldsXData.ProductionPiles}
-          yData={fieldsYData.ProductionPiles}
-          label="ml"
-          isGraph={true}
-          isPer={true}
-          isFilter={true}
-          filters={["All", "Piles"]}
-        />
+        {Number(fieldsData.Availability) !== 0 && (
+          <DashboardCard
+            name="Availability"
+            title="Availability"
+            value={`${fieldsData.Availability} %`}
+            percentage={fieldsPerData.Availability}
+            getChildData={getChildData}
+            cardsData={cardsData?.Availability}
+            loading={fieldsLoading.Availability}
+            perLoading={fieldsPerLoading.Availability}
+            data={fieldsAllData.Availability}
+            xData={fieldsXData.Availability}
+            yData={fieldsYData.Availability}
+            label="Percentage"
+            isGraph={true}
+            isPer={true}
+            isFilter={true}
+            filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
+          />
+        )}
+
+        {Number(fieldsData.FuelConsumption !== 0) && (
+          <DashboardCard
+            name="Fuel Consumption"
+            title="FuelConsumption"
+            value={`${fieldsData.FuelConsumption} L`}
+            percentage={fieldsPerData.FuelConsumption}
+            getChildData={getChildData}
+            cardsData={cardsData?.FuelConsumption}
+            loading={fieldsLoading.FuelConsumption}
+            perLoading={fieldsPerLoading.FuelConsumption}
+            data={fieldsAllData.FuelConsumption}
+            xData={fieldsXData.FuelConsumption}
+            yData={fieldsYData.FuelConsumption}
+            label="Consumption"
+            isGraph={true}
+            isPer={true}
+            isFilter={true}
+            filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
+          />
+        )}
+
+        {Number(fieldsData.OilConsumption !== 0) && (
+          <DashboardCard
+            name="Oil Consumption"
+            title="OilConsumption"
+            value={`${fieldsData.OilConsumption} L`}
+            percentage={fieldsPerData.OilConsumption}
+            getChildData={getChildData}
+            cardsData={cardsData?.OilConsumption}
+            loading={fieldsLoading.OilConsumption}
+            perLoading={fieldsPerLoading.OilConsumption}
+            data={fieldsAllData.OilConsumption}
+            xData={fieldsXData.OilConsumption}
+            yData={fieldsYData.OilConsumption}
+            label="Consumption"
+            isGraph={true}
+            isPer={true}
+            isFilter={true}
+            filters={["All", "Trench_Cutting_Machine", "Drilling_Machine"]}
+          />
+        )}
+
+        {Number(fieldsData.ProductionTrench) !== 0 && (
+          <DashboardCard
+            name="Production Trench"
+            title="ProductionTrench"
+            value={`${fieldsData.ProductionTrench} M2`}
+            percentage={fieldsPerData.ProductionTrench}
+            getChildData={getChildData}
+            cardsData={cardsData?.ProductionTrench}
+            loading={fieldsLoading.ProductionTrench}
+            perLoading={fieldsPerLoading.ProductionTrench}
+            data={fieldsAllData.ProductionTrench}
+            xData={fieldsXData.ProductionTrench}
+            yData={fieldsYData.ProductionTrench}
+            label="m2"
+            isGraph={true}
+            isPer={true}
+            isFilter={true}
+            filters={["All", "DW", "Barrettes", "Cut-Off Wall"]}
+          />
+        )}
+
+        {Number(fieldsData.ProductionPiles) !== 0 && (
+          <DashboardCard
+            name="Production Piles"
+            title="ProductionPiles"
+            value={`${fieldsData.ProductionPiles} Ml`}
+            percentage={fieldsPerData.ProductionPiles}
+            getChildData={getChildData}
+            cardsData={cardsData?.ProductionPiles}
+            loading={fieldsLoading.ProductionPiles}
+            perLoading={fieldsPerLoading.ProductionPiles}
+            data={fieldsAllData.ProductionPiles}
+            xData={fieldsXData.ProductionPiles}
+            yData={fieldsYData.ProductionPiles}
+            label="ml"
+            isGraph={true}
+            isPer={true}
+            isFilter={true}
+            filters={["All", "Piles"]}
+          />
+        )}
       </div>
       <div className="w-full md:h-[56vh] h-[800px] flex md:flex-row justify-around items-center">
         <DashboardBrekdownCard

@@ -268,7 +268,19 @@ const DashboardCard = ({
                 width={200}
               />
             ) : (
-              <p className="w-full">{value}</p>
+              <p
+                className={`w-full`}
+                style={{
+                  color:
+                    Number(value) >= 90
+                      ? "green"
+                      : Number(value) >= 80
+                      ? "yellow"
+                      : "red",
+                }}
+              >
+                {value}
+              </p>
             )}
           </div>
           {isPer && (
