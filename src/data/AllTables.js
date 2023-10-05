@@ -1,6 +1,6 @@
 export const AllTables = [
   "appMaint",
-  "appMaintNotification",
+  "appMaint_Notification",
   "AppMobile",
   "AppStocks",
   "AppNotification",
