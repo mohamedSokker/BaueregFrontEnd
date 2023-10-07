@@ -16,7 +16,8 @@ import { isUserAllowedCategory } from "../Functions/isUserAllowedCategory";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const { setActiveMenu, activeMenu, screenSize, usersData } = useNavContext();
+  const { setActiveMenu, activeMenu, screenSize, usersData, setToken } =
+    useNavContext();
   const cookies = new Cookies();
   const [active, setActive] = useState(false);
 
@@ -173,6 +174,7 @@ const Sidebar = () => {
           className="flex flex-row items-center w-full h-8 p-4 font-semibold text-[25px]"
           onClick={() => {
             cookies.remove("token");
+            setToken(null);
             navigate("/Login");
           }}
         >

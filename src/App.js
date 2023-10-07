@@ -26,13 +26,12 @@ import { allDataWithName } from "./data/allRoles";
 
 function App() {
   const navigate = useNavigate();
-  const cookies = new Cookies();
 
   const { currentMode, activeMenu, token, usersData, setUsersData, setToken } =
     useNavContext();
 
   useEffect(() => {
-    if (!socket.connected) socket.connect();
+    if (!socket.connected && token) socket.connect();
   }, [socket, token]);
 
   useEffect(() => {
@@ -55,6 +54,7 @@ function App() {
   }, [token]);
 
   useEffect(() => {
+    const cookies = new Cookies();
     if (!cookies.get("token")) {
       socket.disconnect();
       cookies.remove("token");
