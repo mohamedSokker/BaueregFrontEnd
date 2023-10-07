@@ -30,6 +30,9 @@ function App() {
   const { currentMode, activeMenu, token, usersData, setUsersData, setToken } =
     useNavContext();
 
+  console.log(token);
+  console.log(usersData);
+
   useEffect(() => {
     if (!socket.connected && token) socket.connect();
   }, [socket, token]);
@@ -55,13 +58,11 @@ function App() {
 
   useEffect(() => {
     const cookies = new Cookies();
-    if (!cookies.get("token")) {
+    if (!token) {
       socket.disconnect();
       cookies.remove("token");
       setToken(null);
       navigate("/Login");
-    } else {
-      setToken(cookies?.get("token"));
     }
   }, [token]);
 

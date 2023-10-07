@@ -38,19 +38,19 @@ const Login = () => {
       if (!success) throw new Error(data.message);
       const cookies = new Cookies();
       // const token = await cookies.get("token");
-      if (data) {
-        setToken(data.token);
-        const userInfo = await getTokenData(data.token);
-        if (userInfo[0].roles.Admin) {
-          const data1 = await allDataWithName(data.token);
-          let copUserData = userInfo;
-          copUserData[0].roles.Editor = data1;
-          setUsersData(copUserData);
-        } else {
-          setUsersData(userInfo);
-        }
-        cookies.set("token", data.token, { maxAge: 86400 });
+      // if (data) {
+      setToken(data?.token);
+      const userInfo = await getTokenData(data.token);
+      if (userInfo[0].roles.Admin) {
+        const data1 = await allDataWithName(data.token);
+        let copUserData = userInfo;
+        copUserData[0].roles.Editor = data1;
+        setUsersData(copUserData);
+      } else {
+        setUsersData(userInfo);
       }
+      cookies.set("token", data.token, { maxAge: 86400 });
+      // }
       setLoading(false);
       navigate("/");
     } catch (err) {
