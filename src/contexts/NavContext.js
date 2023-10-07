@@ -6,7 +6,7 @@ export const ContextProvider = ({ children }) => {
   const [activeMenu, setActiveMenu] = useState(true);
   const [currentMode, setCurrentMode] = useState("Light");
   const [screenSize, setScreenSize] = useState(undefined);
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(null);
   const [usersData, setUsersData] = useState([]);
 
   const closeSmallSidebar = () => {

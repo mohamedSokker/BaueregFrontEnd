@@ -58,6 +58,7 @@ function App() {
     if (!cookies.get("token")) {
       socket.disconnect();
       cookies.remove("token");
+      setToken(null);
       navigate("/Login");
     } else {
       setToken(cookies?.get("token"));
