@@ -66,11 +66,10 @@ function App() {
 
   return (
     <div className={currentMode === "Dark" ? "dark" : ""}>
-      {!token ? (
-        <Routes>
-          <Route path="/Login" element={<Login />} />
-        </Routes>
-      ) : (
+      <Routes>
+        <Route path="/Login" element={<Login />} />
+      </Routes>
+      {token && (
         <div className="flex w-screen h-screen relative dark:bg-main-dark-bg">
           {activeMenu ? (
             <div className="w-72 fixed sidebar dark:bg-logoColor bg-white animate-slide-in">
