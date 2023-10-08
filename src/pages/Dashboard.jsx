@@ -137,6 +137,8 @@ const Dashboard = ({ socket }) => {
       return `${Number(No / 1000000).toFixed(2)} M`;
     } else if (No >= 1000) {
       return `${Math.floor(No / 1000)} K`;
+    } else {
+      return No;
     }
   };
 

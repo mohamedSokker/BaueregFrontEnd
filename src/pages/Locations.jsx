@@ -132,6 +132,8 @@ const Locations = () => {
       return `${Number(No / 1000000).toFixed(2)} M`;
     } else if (No >= 1000) {
       return `${Math.floor(No / 1000)} K`;
+    } else {
+      return No;
     }
   };
 
@@ -531,7 +533,7 @@ const Locations = () => {
             Location: tableName,
           };
           const result = await updateData(url, "POST", token, body);
-          console.log(result);
+          // console.log(result);
           setFieldsData((prev) => ({
             ...prev,
             PeriodicMaintenance: result,
