@@ -224,6 +224,7 @@ const Locations = () => {
             Location: tableName,
           };
           const result = await updateData(url, "POST", token, body);
+          console.log(result);
           let data = [];
           result.data.map((item) => {
             data.push({ x: formatDate(item.Date), y: Number(item.Quantity) });
