@@ -195,7 +195,7 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     const getAvData = async () => {
-      if (usersData) {
+      if (usersData.length > 0) {
         try {
           setError(false);
           setFieldsLoading((prev) => ({ ...prev, Availability: true }));
@@ -263,7 +263,7 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     const getfuelConsData = async () => {
-      if (usersData) {
+      if (usersData.length > 0) {
         try {
           setError(false);
           setFieldsLoading((prev) => ({ ...prev, FuelConsumption: true }));
@@ -328,7 +328,7 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     const getoilConsData = async () => {
-      if (usersData) {
+      if (usersData.length > 0) {
         try {
           setError(false);
           setFieldsLoading((prev) => ({ ...prev, OilConsumption: true }));
@@ -396,7 +396,7 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     const getProducationTrenchData = async () => {
-      if (usersData) {
+      if (usersData.length > 0) {
         try {
           setError(false);
           setFieldsLoading((prev) => ({ ...prev, ProductionTrench: true }));
@@ -466,7 +466,7 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     const getProducationTrenchData = async () => {
-      if (usersData) {
+      if (usersData.length > 0) {
         try {
           setError(false);
           setFieldsLoading((prev) => ({ ...prev, ProductionPiles: true }));
@@ -536,7 +536,7 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     const getbreakdownData = async () => {
-      if (usersData) {
+      if (usersData.length > 0) {
         try {
           setError(false);
           setFieldsLoading((prev) => ({ ...prev, Breakdowns: true }));
@@ -567,7 +567,7 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     const getPerMaintData = async () => {
-      if (usersData) {
+      if (usersData.length > 0) {
         try {
           setError(false);
           setFieldsLoading((prev) => ({ ...prev, PeriodicMaintenance: true }));
