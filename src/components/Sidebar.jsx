@@ -39,13 +39,13 @@ const Sidebar = () => {
           onClick={() => setActiveMenu(false)}
           className="items-center gap-3 ml-3 mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
         >
-          <img src={logo} className="w-16 h-16 rounded-md" alt="logo" />
-          <span>
+          <img src={logo} className="w-32 h-32 rounded-md" alt="logo" />
+          {/* <span>
             Bauer{" "}
             <span className=" text-logoColor dark:text-black/80 text-lg ml-2">
               Egypt
             </span>
-          </span>
+          </span> */}
         </Link>
         <TooltipComponent content="Close" position="BottomCenter">
           <button

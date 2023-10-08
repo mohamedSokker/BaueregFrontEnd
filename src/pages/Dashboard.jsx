@@ -132,6 +132,14 @@ const Dashboard = ({ socket }) => {
     }
   };
 
+  const formatNo = (No) => {
+    if (No >= 1000) {
+      return `${Math.floor(No / 1000)} K`;
+    } else if (No >= 1000000) {
+      return `${Math.floor(No / 1000000)} M`;
+    }
+  };
+
   useEffect(() => {
     let interval;
     interval = setInterval(() => {
@@ -299,7 +307,7 @@ const Dashboard = ({ socket }) => {
           }));
           setFieldsData((prev) => ({
             ...prev,
-            FuelConsumption: result.per,
+            FuelConsumption: formatNo(result.per),
           }));
           setFieldsPerData((prev) => ({
             ...prev,
@@ -367,7 +375,7 @@ const Dashboard = ({ socket }) => {
           }));
           setFieldsData((prev) => ({
             ...prev,
-            OilConsumption: result.per,
+            OilConsumption: formatNo(result.per),
           }));
           setFieldsPerData((prev) => ({
             ...prev,
@@ -437,7 +445,7 @@ const Dashboard = ({ socket }) => {
           }));
           setFieldsData((prev) => ({
             ...prev,
-            ProductionTrench: result.per,
+            ProductionTrench: formatNo(result.per),
           }));
           setFieldsPerData((prev) => ({
             ...prev,
@@ -507,7 +515,7 @@ const Dashboard = ({ socket }) => {
           }));
           setFieldsData((prev) => ({
             ...prev,
-            ProductionPiles: result.per,
+            ProductionPiles: formatNo(result.per),
           }));
           setFieldsPerData((prev) => ({
             ...prev,
@@ -761,7 +769,7 @@ const Dashboard = ({ socket }) => {
           <DashboardCard
             name="Production Piles"
             title="ProductionPiles"
-            value={`${fieldsData.ProductionPiles} Ml`}
+            value={`${fieldsData.ProductionPiles} M.L`}
             percentage={fieldsPerData.ProductionPiles}
             getChildData={getChildData}
             cardsData={cardsData?.ProductionPiles}
