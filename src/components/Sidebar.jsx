@@ -33,13 +33,13 @@ const Sidebar = () => {
 
   return (
     <div className="ml-3 h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto p-4 pl-0 pb-10 dark:text-white">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-center">
         <Link
           to="/"
           onClick={() => setActiveMenu(false)}
-          className="items-center gap-3 ml-3 mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
+          className="items-center gap-3 mt-4 flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
         >
-          <img src={logo} className="w-32 h-32 rounded-md" alt="logo" />
+          <img src={logo} className="w-56 h-56" alt="logo" />
           {/* <span>
             Bauer{" "}
             <span className=" text-logoColor dark:text-black/80 text-lg ml-2">
@@ -57,7 +57,7 @@ const Sidebar = () => {
           </button>
         </TooltipComponent>
       </div>
-      <div className="mt-10 flex flex-col items-center border-b-1 border-gray-500 pb-4">
+      <div className="mt-3 flex flex-col items-center border-b-1 border-gray-500 pb-4">
         {links.map((item, i) => {
           return (
             isUserAllowedCategory(item.name, usersData) && (
