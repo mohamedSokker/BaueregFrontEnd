@@ -38,9 +38,11 @@ function App() {
   }, [socket, token]);
 
   useEffect(() => {
+    const cookies = new Cookies();
+    const tokenCookie = cookies.get("token");
     const getUsersData = () => {
       let userData;
-      userInfo(token).then((data) => {
+      userInfo(tokenCookie).then((data) => {
         userData = data;
         if (userData[0]?.roles?.Admin) {
           allDataWithName().then((data1) => {
@@ -53,7 +55,7 @@ function App() {
         }
       });
     };
-    if (token) getUsersData();
+    if (tokenCookie) getUsersData();
   }, [token]);
 
   useEffect(() => {
