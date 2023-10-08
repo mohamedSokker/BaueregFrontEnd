@@ -134,7 +134,7 @@ const Dashboard = ({ socket }) => {
 
   const formatNo = (No) => {
     if (No >= 1000000) {
-      return `${Math.floor(No / 1000000)} M`;
+      return `${Number(No / 1000000).toFixed(2)} M`;
     } else if (No >= 1000) {
       return `${Math.floor(No / 1000)} K`;
     }
