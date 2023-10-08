@@ -58,7 +58,7 @@ function App() {
 
   useEffect(() => {
     const cookies = new Cookies();
-    if (!cookies.get("token")) {
+    if (!cookies.get("token") && !token) {
       socket.disconnect();
       cookies.remove("token");
       setToken(null);
