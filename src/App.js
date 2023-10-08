@@ -42,6 +42,7 @@ function App() {
     const tokenCookie = cookies.get("token");
     const getUsersData = () => {
       let userData;
+      setToken(tokenCookie);
       userInfo(tokenCookie).then((data) => {
         userData = data;
         if (userData[0]?.roles?.Admin) {
