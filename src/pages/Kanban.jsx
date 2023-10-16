@@ -13,11 +13,11 @@ import { Header } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 import { logoColor } from "../BauerColors";
 import { PageLoading, KanbanTemplate } from "../components";
-import { bodyDataKanban } from "../Functions/bodydata";
-import fetchDataOnly from "../Functions/fetchDataOnly";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Kanban = ({ socket }) => {
-  const { closeSmallSidebar, token } = useNavContext();
+  const { closeSmallSidebar, token, usersData } = useNavContext();
+  const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState("Arabic");
   const [TextField, setTextField] = useState("");
@@ -34,8 +34,6 @@ const Kanban = ({ socket }) => {
   const [realTime, setRealTime] = useState(true);
   const [tableAllData, setTableAllData] = useState([]);
 
-  const baseURL = process.env.REACT_APP_BASE_URL;
-
   useEffect(() => {
     socket?.on("UpdateTask", () => {
       console.log("Here");
@@ -44,6 +42,8 @@ const Kanban = ({ socket }) => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     let interval;
     interval = setInterval(() => {
       let currentDate = new Date(Date.now()).toISOString();
@@ -53,57 +53,31 @@ const Kanban = ({ socket }) => {
           let taskEnd = new Date(item.TaskEnd).toISOString();
           if (currentDate >= taskStart && item.Status === "Open") {
             let body = {
-              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-              ResponsibleEnginnername: item.ResponsibleEnginnername,
-              ResponsibleTechImg: item.ResponsibleTechImg,
-              ResponsibleTechName: item.ResponsibleTechName,
-              Site: item.Site,
-              Title: item.Title,
+              ...item,
               Status: "InProgress",
-              Summary: item.Summary,
-              DateCreated: item.DateCreated,
               TaskStart: new Date(item.TaskStart).toISOString(),
-              Duration: item.Duration,
               TaskEnd: new Date(item.TaskEnd).toISOString(),
-              TaskFor: item.TaskFor,
-              Color: item.Color,
-              ClassName: item.ClassName,
             };
-            await bodyDataKanban(
-              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-              body,
-              "PUT",
-              token
-            );
+            await axiosPrivate(`/api/v1/AdminTasks/${item.ID}`, {
+              method: "PUT",
+              data: JSON.stringify(body),
+            });
             socket?.emit("TaskEdited", "TaskUpdated");
           } else if (currentDate < taskStart && item.Status === "InProgress") {
             let body = {
-              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-              ResponsibleEnginnername: item.ResponsibleEnginnername,
-              ResponsibleTechImg: item.ResponsibleTechImg,
-              ResponsibleTechName: item.ResponsibleTechName,
-              Site: item.Site,
-              Title: item.Title,
+              ...item,
               Status: "Open",
-              Summary: item.Summary,
-              DateCreated: item.DateCreated,
               TaskStart: new Date(item.TaskStart).toISOString(),
-              Duration: item.Duration,
               TaskEnd: new Date(
                 new Date(item.TaskStart).setDate(
                   new Date(item.TaskStart).getDate() + Number(item.Duration)
                 )
               ),
-              TaskFor: item.TaskFor,
-              Color: item.Color,
-              ClassName: item.ClassName,
             };
-            await bodyDataKanban(
-              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-              body,
-              "PUT",
-              token
-            );
+            await axiosPrivate(`/api/v1/AdminTasks/${item.ID}`, {
+              method: "PUT",
+              data: JSON.stringify(body),
+            });
             socket?.emit("TaskEdited", "TaskUpdated");
           } else if (
             currentDate >= taskStart &&
@@ -111,32 +85,19 @@ const Kanban = ({ socket }) => {
             currentDate > taskEnd
           ) {
             let body = {
-              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-              ResponsibleEnginnername: item.ResponsibleEnginnername,
-              ResponsibleTechImg: item.ResponsibleTechImg,
-              ResponsibleTechName: item.ResponsibleTechName,
-              Site: item.Site,
-              Title: item.Title,
+              ...item,
               Status: "Delayed",
-              Summary: item.Summary,
-              DateCreated: item.DateCreated,
               TaskStart: new Date(item.TaskStart).toISOString(),
-              Duration: item.Duration,
               TaskEnd: new Date(
                 new Date(item.TaskStart).setDate(
                   new Date(item.TaskStart).getDate() + Number(item.Duration)
                 )
               ),
-              TaskFor: item.TaskFor,
-              Color: item.Color,
-              ClassName: item.ClassName,
             };
-            await bodyDataKanban(
-              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-              body,
-              "PUT",
-              token
-            );
+            await axiosPrivate(`/api/v1/AdminTasks/${item.ID}`, {
+              method: "PUT",
+              data: JSON.stringify(body),
+            });
             socket?.emit("TaskEdited", "TaskUpdated");
           }
         } catch (err) {
@@ -148,10 +109,16 @@ const Kanban = ({ socket }) => {
       setRealTime((prev) => !prev);
     }, 10000);
 
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      controller.abort();
+      clearInterval(interval);
+    };
   }, [realTime]);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     let txtarea = document.getElementById("textarea");
     if (txtarea.value.indexOf("@") !== -1) {
       let text = txtarea.value.length;
@@ -162,14 +129,14 @@ const Kanban = ({ socket }) => {
         if (copyEqs.length === 0 && copySites.length === 0) {
           const getData = async () => {
             try {
-              const eqsURL = `${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`;
-              const eqsData = await fetchDataOnly(eqsURL, "GET", token);
-              setEqs(eqsData);
-              setCopyEqs(eqsData);
-              const siteURL = `${baseURL}/api/v1/Location_Bauer`;
-              const siteData = await fetchDataOnly(siteURL, "GET", token);
-              setSites(siteData);
-              setCopySites(siteData);
+              const eqsURL = `/api/v1/Bauer_Equipments`;
+              const eqsData = await axiosPrivate(eqsURL, { method: "GET" });
+              setEqs(eqsData?.data);
+              setCopyEqs(eqsData?.data);
+              const siteURL = `/api/v1/Location_Bauer`;
+              const siteData = await axiosPrivate(siteURL, { method: "GET" });
+              setSites(siteData?.data);
+              setCopySites(siteData?.data);
               setIsDownList(true);
               setLoading(false);
             } catch (error) {
@@ -205,15 +172,21 @@ const Kanban = ({ socket }) => {
     } else {
       setIsDownList(false);
     }
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [TextField, token]);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     const getData = async () => {
       try {
         setLoading(true);
-        const url = `${baseURL}/api/v1/manageUsers`;
-        const data = await fetchDataOnly(url, "GET", token);
-        setUsers(data);
+        const url = `/api/v1/manageUsers`;
+        const data = await axiosPrivate(url, { method: "GET" });
+        setUsers(data?.data);
         setLoading(false);
       } catch (error) {
         setError(true);
@@ -223,16 +196,22 @@ const Kanban = ({ socket }) => {
       }
     };
     getData();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [token]);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     const getData = async () => {
       try {
         setLoading(true);
-        const url = `${baseURL}/api/v1/AdminTasks`;
-        const data = await fetchDataOnly(url, "GET", token);
-        setTableAllData(data);
-        setTaskData(data);
+        const url = `/api/v1/AdminTasks`;
+        const data = await axiosPrivate(url, { method: "GET" });
+        setTableAllData(data?.data);
+        setTaskData(data?.data);
         setLoading(false);
       } catch (error) {
         setError(true);
@@ -242,24 +221,10 @@ const Kanban = ({ socket }) => {
       }
     };
     getData();
-    // fetch(`${baseURL}/api/v1/AdminTasks`, {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setTableAllData(data);
-    //     setTaskData(data);
-    //     setLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     setErrorDetails(`Unothorized Or ${err.message}`);
-    //     console.log(err.message);
-    //     setError(true);
-    //     setLoading(false);
-    //   });
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [fetchData, token]);
 
   useEffect(() => {
@@ -397,171 +362,139 @@ const Kanban = ({ socket }) => {
                 enablePersistence={true}
                 actionComplete={async (arg) => {
                   try {
-                    if (arg.requestType === "cardCreated") {
-                      console.log(arg.addedRecords[0]);
-                      setLoading(true);
-                      const ResEngImg = users?.find(
-                        (user) =>
-                          user.UserName ===
-                          arg.addedRecords[0]["ResponsibleEnginnername"]
-                      );
-                      console.log(ResEngImg);
-                      const ResTechImg = users?.find(
-                        (user) =>
-                          user.UserName ===
-                          arg.addedRecords[0]["ResponsibleTechName"]
-                      );
-                      let body = {
-                        ResponsibleEngineerImg: ResEngImg?.ProfileImg,
-                        ResponsibleEnginnername:
-                          arg.addedRecords[0]["ResponsibleEnginnername"],
-                        ResponsibleTechImg: ResTechImg?.ProfileImg,
-                        ResponsibleTechName:
-                          arg.addedRecords[0]["ResponsibleTechName"],
-                        Site: arg.addedRecords[0]["Site"],
-                        Title: arg.addedRecords[0]["Title"],
-                        Status: arg.addedRecords[0]["Status"],
-                        Summary: arg.addedRecords[0]["Summary"],
-                        DateCreated: new Date().toISOString(),
-                        TaskStart: new Date(
-                          arg.addedRecords[0]["TaskStart"]
-                        ).toISOString(),
-                        Duration: arg.addedRecords[0]["Duration"],
-                        TaskEnd: new Date(
-                          new Date(arg.addedRecords[0]["TaskStart"]).setDate(
-                            new Date(
-                              arg.addedRecords[0]["TaskStart"]
-                            ).getDate() +
-                              Number(arg.addedRecords[0]["Duration"])
-                          )
-                        ),
-                        TaskFor: arg.addedRecords[0]["TaskFor"],
-                        Color: "#673ABB",
-                        ClassName: "e-improvment e-normal e-andrew-fuller",
-                      };
-                      await bodyDataKanban(
-                        `${baseURL}/api/v1/AdminTasks`,
-                        body,
-                        "POST",
-                        "add"
-                      );
-                      setFetchData((prev) => !prev);
-                      socket?.emit("TaskEdited", "TaskUpdated");
-                      setLoading(false);
-                    } else if (arg.requestType === "cardChanged") {
-                      console.log(arg.changedRecords[0]);
-                      console.log(users);
-                      setLoading(true);
-                      const ResEngImg = users?.find(
-                        (user) =>
-                          user.UserName ===
-                          arg.changedRecords[0]["ResponsibleEnginnername"]
-                      );
-                      console.log(ResEngImg);
-                      const ResTechImg = users?.find(
-                        (user) =>
-                          user.UserName ===
-                          arg.changedRecords[0]["ResponsibleTechName"]
-                      );
-                      let body = {
-                        ResponsibleEngineerImg: ResEngImg?.ProfileImg,
-                        ResponsibleEnginnername:
-                          arg.changedRecords[0]["ResponsibleEnginnername"],
-                        ResponsibleTechImg: ResTechImg?.ProfileImg,
-                        ResponsibleTechName:
-                          arg.changedRecords[0]["ResponsibleTechName"],
-                        Site: arg.changedRecords[0]["Site"],
-                        Title: arg.changedRecords[0]["Title"],
-                        Status: arg.changedRecords[0]["Status"],
-                        Summary: arg.changedRecords[0]["Summary"],
-                        DateCreated: new Date().toISOString(),
-                        TaskStart: new Date(
-                          arg.changedRecords[0]["TaskStart"]
-                        ).toISOString(),
-                        Duration: arg.changedRecords[0]["Duration"],
-                        TaskEnd: new Date(
-                          new Date(arg.changedRecords[0]["TaskStart"]).setDate(
+                    if (
+                      !usersData[0]?.roles?.Admin ||
+                      !usersData[0]?.roles?.Editor?.Kanban ||
+                      !usersData[0]?.roles?.User?.Kanban
+                    ) {
+                      alert(`You Are not authorized to edit tasks`);
+                    } else {
+                      if (arg.requestType === "cardCreated") {
+                        console.log(arg.addedRecords[0]);
+                        setLoading(true);
+                        const ResEngImg = users?.find(
+                          (user) =>
+                            user.UserName ===
+                            arg.addedRecords[0]["ResponsibleEnginnername"]
+                        );
+                        console.log(ResEngImg);
+                        const ResTechImg = users?.find(
+                          (user) =>
+                            user.UserName ===
+                            arg.addedRecords[0]["ResponsibleTechName"]
+                        );
+                        let body = {
+                          ...arg.addedRecords[0],
+                          ResponsibleEngineerImg: ResEngImg?.ProfileImg,
+                          ResponsibleTechImg: ResTechImg?.ProfileImg,
+                          DateCreated: new Date().toISOString(),
+                          TaskStart: new Date(
+                            arg.addedRecords[0]["TaskStart"]
+                          ).toISOString(),
+                          TaskEnd: new Date(
+                            new Date(arg.addedRecords[0]["TaskStart"]).setDate(
+                              new Date(
+                                arg.addedRecords[0]["TaskStart"]
+                              ).getDate() +
+                                Number(arg.addedRecords[0]["Duration"])
+                            )
+                          ),
+                          Color: "#673ABB",
+                          ClassName: "e-improvment e-normal e-andrew-fuller",
+                        };
+                        await axiosPrivate(`/api/v1/AdminTasks`, {
+                          method: "POST",
+                          data: JSON.stringify(body),
+                        });
+                        setFetchData((prev) => !prev);
+                        socket?.emit("TaskEdited", "TaskUpdated");
+                        setLoading(false);
+                      } else if (arg.requestType === "cardChanged") {
+                        console.log(arg.changedRecords[0]);
+                        console.log(users);
+                        setLoading(true);
+                        const ResEngImg = users?.find(
+                          (user) =>
+                            user.UserName ===
+                            arg.changedRecords[0]["ResponsibleEnginnername"]
+                        );
+                        console.log(ResEngImg);
+                        const ResTechImg = users?.find(
+                          (user) =>
+                            user.UserName ===
+                            arg.changedRecords[0]["ResponsibleTechName"]
+                        );
+                        let body = {
+                          ...arg.changedRecords[0],
+                          ResponsibleEngineerImg: ResEngImg?.ProfileImg,
+                          ResponsibleTechImg: ResTechImg?.ProfileImg,
+                          DateCreated: new Date().toISOString(),
+                          TaskStart: new Date(
+                            arg.changedRecords[0]["TaskStart"]
+                          ).toISOString(),
+                          TaskEnd: new Date(
                             new Date(
                               arg.changedRecords[0]["TaskStart"]
-                            ).getDate() +
-                              Number(arg.changedRecords[0]["Duration"])
-                          )
-                        ),
-                        TaskFor: arg.changedRecords[0]["TaskFor"],
-                        Color: "#673ABB",
-                        ClassName: "e-improvment e-normal e-andrew-fuller",
-                      };
-                      console.log(arg.changedRecords[0]);
-                      console.log(
-                        new Date(
-                          new Date(arg.changedRecords[0]["TaskStart"]).setDate(
-                            new Date(
-                              arg.changedRecords[0]["TaskStart"]
-                            ).getDate() +
-                              Number(arg.changedRecords[0]["Duration"])
-                          )
-                        )
-                      );
-                      await bodyDataKanban(
-                        `${baseURL}/api/v1/AdminTasks/${arg.changedRecords[0]["ID"]}`,
-                        body,
-                        "PUT",
-                        "update"
-                      );
-                      socket?.emit("TaskEdited", "TaskUpdated");
-                      setLoading(false);
-                    } else if (arg.requestType === "cardRemoved") {
-                      setLoading(true);
-                      const ResEngImg = users?.find(
-                        (user) =>
-                          user.UserName ===
-                          arg.deletedRecords[0]["ResponsibleEnginnername"]
-                      );
-                      console.log(ResEngImg);
-                      const ResTechImg = users?.find(
-                        (user) =>
-                          user.UserName ===
-                          arg.deletedRecords[0]["ResponsibleTechName"]
-                      );
-                      let body = {
-                        ResponsibleEngineerImg: ResEngImg?.ProfileImg,
-                        ResponsibleEnginnername:
-                          arg.deletedRecords[0]["ResponsibleEnginnername"],
-                        ResponsibleTechImg: ResTechImg?.ProfileImg,
-                        ResponsibleTechName:
-                          arg.deletedRecords[0]["ResponsibleTechName"],
-                        Site: arg.deletedRecords[0]["Site"],
-                        Title: arg.deletedRecords[0]["Title"],
-                        Status: arg.deletedRecords[0]["Status"],
-                        Summary: arg.deletedRecords[0]["Summary"],
-                        DateCreated: new Date().toISOString(),
-                        TaskStart: new Date(
-                          arg.deletedRecords[0]["TaskStart"]
-                        ).toISOString(),
-                        Duration: arg.deletedRecords[0]["Duration"],
-                        TaskEnd: new Date(
-                          new Date(arg.deletedRecords[0]["TaskStart"]).setDate(
+                            ).setDate(
+                              new Date(
+                                arg.changedRecords[0]["TaskStart"]
+                              ).getDate() +
+                                Number(arg.changedRecords[0]["Duration"])
+                            )
+                          ),
+                          Color: "#673ABB",
+                          ClassName: "e-improvment e-normal e-andrew-fuller",
+                        };
+                        await axiosPrivate(
+                          `/api/v1/AdminTasks/${arg.changedRecords[0]["ID"]}`,
+                          { method: "PUT", data: JSON.stringify(body) }
+                        );
+                        socket?.emit("TaskEdited", "TaskUpdated");
+                        setLoading(false);
+                      } else if (arg.requestType === "cardRemoved") {
+                        setLoading(true);
+                        const ResEngImg = users?.find(
+                          (user) =>
+                            user.UserName ===
+                            arg.deletedRecords[0]["ResponsibleEnginnername"]
+                        );
+                        console.log(ResEngImg);
+                        const ResTechImg = users?.find(
+                          (user) =>
+                            user.UserName ===
+                            arg.deletedRecords[0]["ResponsibleTechName"]
+                        );
+                        let body = {
+                          ...arg.deletedRecords[0],
+                          ResponsibleEngineerImg: ResEngImg?.ProfileImg,
+                          ResponsibleTechImg: ResTechImg?.ProfileImg,
+                          DateCreated: new Date().toISOString(),
+                          TaskStart: new Date(
+                            arg.deletedRecords[0]["TaskStart"]
+                          ).toISOString(),
+                          TaskEnd: new Date(
                             new Date(
                               arg.deletedRecords[0]["TaskStart"]
-                            ).getDate() +
-                              Number(arg.deletedRecords[0]["Duration"])
-                          )
-                        ),
-                        TaskFor: arg.deletedRecords[0]["TaskFor"],
-                        Color: "#673ABB",
-                        ClassName: "e-improvment e-normal e-andrew-fuller",
-                      };
+                            ).setDate(
+                              new Date(
+                                arg.deletedRecords[0]["TaskStart"]
+                              ).getDate() +
+                                Number(arg.deletedRecords[0]["Duration"])
+                            )
+                          ),
+                          Color: "#673ABB",
+                          ClassName: "e-improvment e-normal e-andrew-fuller",
+                        };
 
-                      if (window.confirm(`sure you want to delete data`)) {
-                        await bodyDataKanban(
-                          `${baseURL}/api/v1/AdminTasks/${arg.deletedRecords[0]["ID"]}`,
-                          body,
-                          "DELETE",
-                          "delete"
-                        );
+                        if (window.confirm(`sure you want to delete data`)) {
+                          await axiosPrivate(
+                            `/api/v1/AdminTasks/${arg.deletedRecords[0]["ID"]}`,
+                            { method: "DELETE", data: JSON.stringify(body) }
+                          );
+                        }
+                        socket?.emit("TaskEdited", "TaskUpdated");
+                        setLoading(false);
                       }
-                      socket?.emit("TaskEdited", "TaskUpdated");
-                      setLoading(false);
                     }
                   } catch (err) {
                     console.log(err.message);

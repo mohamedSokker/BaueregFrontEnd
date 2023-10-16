@@ -22,11 +22,11 @@ import { Spinner } from "../components";
 import { Header } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 import { KanbanGrid } from "../data/Kanban/Kanban";
-import { bodyDataKanban } from "../Functions/bodydata";
-import fetchDataOnly from "../Functions/fetchDataOnly";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const ManageKanban = ({ socket }) => {
   const { closeSmallSidebar, token } = useNavContext();
+  const axiosPrivate = useAxiosPrivate();
 
   const [tableData, setTableData] = useState([]);
   const [tableAllData, setTableAllData] = useState([]);
@@ -36,8 +36,6 @@ const ManageKanban = ({ socket }) => {
   const [fetchData, setFetchData] = useState(false);
   const [realTime, setRealTime] = useState(true);
 
-  const baseURL = process.env.REACT_APP_BASE_URL;
-
   useEffect(() => {
     socket.on("UpdateTask", () => {
       console.log("Here");
@@ -46,6 +44,8 @@ const ManageKanban = ({ socket }) => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     let interval;
     interval = setInterval(() => {
       let currentDate = new Date(Date.now()).toISOString();
@@ -55,53 +55,28 @@ const ManageKanban = ({ socket }) => {
           let taskEnd = new Date(item.TaskEnd).toISOString();
           if (currentDate >= taskStart && item.Status === "Open") {
             let body = {
-              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-              ResponsibleEnginnername: item.ResponsibleEnginnername,
-              ResponsibleTechImg: item.ResponsibleTechImg,
-              ResponsibleTechName: item.ResponsibleTechName,
-              Site: item.Site,
-              Title: item.Title,
+              ...item,
               Status: "InProgress",
-              Summary: item.Summary,
-              DateCreated: item.DateCreated,
               TaskStart: new Date(item.TaskStart).toISOString(),
-              Duration: item.Duration,
               TaskEnd: new Date(item.TaskEnd).toISOString(),
-              TaskFor: item.TaskFor,
-              Color: item.Color,
-              ClassName: item.ClassName,
             };
-            await bodyDataKanban(
-              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-              body,
-              "PUT",
-              token
-            );
+
+            await axiosPrivate(`/api/v1/AdminTasks/${item.ID}`, {
+              method: "PUT",
+              data: JSON.stringify(body),
+            });
             socket?.emit("TaskEdited", "TaskUpdated");
           } else if (currentDate < taskStart && item.Status === "InProgress") {
             let body = {
-              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-              ResponsibleEnginnername: item.ResponsibleEnginnername,
-              ResponsibleTechImg: item.ResponsibleTechImg,
-              ResponsibleTechName: item.ResponsibleTechName,
-              Site: item.Site,
-              Title: item.Title,
+              ...item,
               Status: "Open",
-              Summary: item.Summary,
-              DateCreated: item.DateCreated,
               TaskStart: new Date(item.TaskStart).toISOString(),
-              Duration: item.Duration,
               TaskEnd: new Date(item.TaskEnd).toISOString(),
-              TaskFor: item.TaskFor,
-              Color: item.Color,
-              ClassName: item.ClassName,
             };
-            await bodyDataKanban(
-              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-              body,
-              "PUT",
-              token
-            );
+            await axiosPrivate(`/api/v1/AdminTasks/${item.ID}`, {
+              method: "PUT",
+              data: JSON.stringify(body),
+            });
             socket?.emit("TaskEdited", "TaskUpdated");
           } else if (
             currentDate >= taskStart &&
@@ -109,28 +84,15 @@ const ManageKanban = ({ socket }) => {
             currentDate > taskEnd
           ) {
             let body = {
-              ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-              ResponsibleEnginnername: item.ResponsibleEnginnername,
-              ResponsibleTechImg: item.ResponsibleTechImg,
-              ResponsibleTechName: item.ResponsibleTechName,
-              Site: item.Site,
-              Title: item.Title,
+              ...item,
               Status: "Delayed",
-              Summary: item.Summary,
-              DateCreated: item.DateCreated,
               TaskStart: new Date(item.TaskStart).toISOString(),
-              Duration: item.Duration,
               TaskEnd: new Date(item.TaskEnd).toISOString(),
-              TaskFor: item.TaskFor,
-              Color: item.Color,
-              ClassName: item.ClassName,
             };
-            await bodyDataKanban(
-              `${baseURL}/api/v1/AdminTasks/${item.ID}`,
-              body,
-              "PUT",
-              token
-            );
+            await axiosPrivate(`/api/v1/AdminTasks/${item.ID}`, {
+              method: "PUT",
+              data: JSON.stringify(body),
+            });
             socket?.emit("TaskEdited", "TaskUpdated");
           }
         } catch (err) {
@@ -142,33 +104,30 @@ const ManageKanban = ({ socket }) => {
       setRealTime((prev) => !prev);
     }, 3000);
 
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      controller.abort();
+      clearInterval(interval);
+    };
   }, [realTime]);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     const getData = async () => {
       try {
         setLoading(true);
-        const url = `${baseURL}/api/v1/AdminTasks`;
-        const data = await fetchDataOnly(url, "GET", token);
-        setTableAllData(data);
-        console.log(data);
+        const url = `/api/v1/AdminTasks`;
+        const data = await axiosPrivate(url, { method: "GET" });
+        setTableAllData(data?.data);
         let gridData = [];
-        data.map((item) => {
+        data?.data?.map((item) => {
           gridData.push({
-            ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-            ResponsibleEnginnername: item.ResponsibleEnginnername,
-            ResponsibleTechImg: item.ResponsibleTechImg,
-            ResponsibleTechName: item.ResponsibleTechName,
-            Title: item.Title,
-            Status: item.Status,
-            Summary: item.Summary,
+            ...item,
             TaskStart: new Date(item.TaskStart).toLocaleString(),
-            Duration: item.Duration,
             TaskEnd: new Date(item.TaskEnd).toLocaleString(),
           });
         });
-        console.log(gridData);
         setTableData(gridData);
         setLoading(false);
       } catch (error) {
@@ -179,69 +138,29 @@ const ManageKanban = ({ socket }) => {
       }
     };
     getData();
-    // setLoading(true);
-    // setError(false);
-    // fetch(`${baseURL}/api/v1/AdminTasks`, {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setTableAllData(data);
-    //     console.log(data);
-    //     let gridData = [];
-    //     data.map((item) => {
-    //       gridData.push({
-    //         ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-    //         ResponsibleEnginnername: item.ResponsibleEnginnername,
-    //         ResponsibleTechImg: item.ResponsibleTechImg,
-    //         ResponsibleTechName: item.ResponsibleTechName,
-    //         Title: item.Title,
-    //         Status: item.Status,
-    //         Summary: item.Summary,
-    //         TaskStart: new Date(item.TaskStart).toLocaleString(),
-    //         Duration: item.Duration,
-    //         TaskEnd: new Date(item.TaskEnd).toLocaleString(),
-    //       });
-    //     });
-    //     console.log(gridData);
-    //     setTableData(gridData);
-    //     setLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     setErrorDetails(`Unothorized Or ${err.message}`);
-    //     console.log(err.message);
-    //     setError(true);
-    //     setLoading(false);
-    //   });
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [token]);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     const getData = async () => {
       try {
         setError(false);
-        const url = `${baseURL}/api/v1/AdminTasks`;
-        const data = await fetchDataOnly(url, "GET", token);
-        setTableAllData(data);
-        console.log(data);
+        const url = `/api/v1/AdminTasks`;
+        const data = await axiosPrivate(url, { method: "GET" });
+        setTableAllData(data?.data);
         let gridData = [];
-        data.map((item) => {
+        data?.data?.map((item) => {
           gridData.push({
-            ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-            ResponsibleEnginnername: item.ResponsibleEnginnername,
-            ResponsibleTechImg: item.ResponsibleTechImg,
-            ResponsibleTechName: item.ResponsibleTechName,
-            Title: item.Title,
-            Status: item.Status,
-            Summary: item.Summary,
+            ...item,
             TaskStart: new Date(item.TaskStart).toLocaleString(),
-            Duration: item.Duration,
             TaskEnd: new Date(item.TaskEnd).toLocaleString(),
           });
         });
-        console.log(gridData);
         setTableData(gridData);
       } catch (error) {
         setError(true);
@@ -251,41 +170,10 @@ const ManageKanban = ({ socket }) => {
       }
     };
     getData();
-    // setLoading(true);
-    // setError(false);
-    // fetch(`${baseURL}/api/v1/AdminTasks`, {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setTableAllData(data);
-    //     console.log(data);
-    //     let gridData = [];
-    //     data.map((item) => {
-    //       gridData.push({
-    //         ResponsibleEngineerImg: item.ResponsibleEngineerImg,
-    //         ResponsibleEnginnername: item.ResponsibleEnginnername,
-    //         ResponsibleTechImg: item.ResponsibleTechImg,
-    //         ResponsibleTechName: item.ResponsibleTechName,
-    //         Title: item.Title,
-    //         Status: item.Status,
-    //         Summary: item.Summary,
-    //         TaskStart: new Date(item.TaskStart).toLocaleString(),
-    //         Duration: item.Duration,
-    //         TaskEnd: new Date(item.TaskEnd).toLocaleString(),
-    //       });
-    //     });
-    //     console.log(gridData);
-    //     setTableData(gridData);
-    //   })
-    //   .catch((err) => {
-    //     setErrorDetails(`Unothorized Or ${err.message}`);
-    //     console.log(err.message);
-    //     setError(true);
-    //   });
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [fetchData, token]);
 
   if (loading) return <Spinner message={`Loading AdminTasks Data`} />;

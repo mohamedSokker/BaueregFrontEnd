@@ -53,7 +53,8 @@ const Navbar = () => {
   }, [screenSize, setActiveMenu]);
 
   useEffect(() => {
-    setImgPath(`${process.env.REACT_APP_BASE_URL}/${usersData[0]?.img}`);
+    if (usersData.length > 0)
+      setImgPath(`${process.env.REACT_APP_BASE_URL}/${usersData[0]?.img}`);
     setUser(usersData[0]?.username);
   }, [usersData]);
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Cookies } from "react-cookie";
+import { useNavigate, useLocation } from "react-router-dom";
+// import { Cookies } from "react-cookie";
 import logo from "../assets/logo.jpg";
 import cover from "../assets/Cover.jpg";
 
@@ -10,49 +10,65 @@ import { PageLoading } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 import { getTokenData } from "../Functions/getTokenData";
 import { allDataWithName } from "../data/loginAllRoles";
+import axios from "../api/axios";
 
 const Login = () => {
   const { setToken, setUsersData } = useNavContext();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [errorBody, setErrorBody] = useState("");
 
+  console.log(location);
+
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
     try {
       const url = `${process.env.REACT_APP_BASE_URL}/handleLoginapp`;
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username: userName, password: password }),
-      };
-      const res = await fetch(url, options);
-      const success = res.ok;
-      const data = await res.json();
-      if (!success) throw new Error(data.message);
-      const cookies = new Cookies();
+      const data = await axios.post(
+        url,
+        JSON.stringify({ username: userName, password: password }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      // const options = {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   credentials: "include",
+      //   body: JSON.stringify({ username: userName, password: password }),
+      // };
+      // const res = await fetch(url, options);
+      // const success = res.ok;
+      // const data = await res.json();
+      // if (!success) throw new Error(data.message);
+      // const cookies = new Cookies();
       // const token = await cookies.get("token");
       // if (data) {
-      setToken(data?.token);
-      const userInfo = await getTokenData(data.token);
+      console.log(data);
+      setToken(data?.data?.token);
+      const userInfo = await getTokenData(data?.data?.token);
       if (userInfo[0].roles.Admin) {
-        const data1 = await allDataWithName(data.token);
+        const data1 = await allDataWithName(data?.data?.token);
         let copUserData = userInfo;
         copUserData[0].roles.Editor = data1;
         setUsersData(copUserData);
       } else {
         setUsersData(userInfo);
       }
-      cookies.set("token", data.token, { maxAge: 86400 });
+      // cookies.set("token", data.token, { maxAge: 86400 });
+      // cookies.set("token", data.token, { maxAge: 10 });
       // }
       setLoading(false);
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (err) {
       setError(true);
       setErrorBody(err.message);

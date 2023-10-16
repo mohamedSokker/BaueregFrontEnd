@@ -22,9 +22,8 @@ import {
 import { Spinner } from "../components";
 import { Header } from "../components";
 import { useNavContext } from "../contexts/NavContext";
-import { bodyData } from "../Functions/bodydata";
 import { CheckEditorRole } from "../Functions/checkEditorRole";
-import fetchDataOnly from "../Functions/fetchDataOnly";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const EditTables = () => {
   const { tableName } = useParams();
@@ -36,8 +35,7 @@ const EditTables = () => {
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const { closeSmallSidebar, usersData, token } = useNavContext();
-
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const axiosPrivate = useAxiosPrivate();
 
   let grid;
 
@@ -61,15 +59,17 @@ const EditTables = () => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     const getData = async () => {
       try {
         setLoading(true);
         setError(false);
-        const url = `${baseURL}/api/v1/${tableName}`;
-        const data = await fetchDataOnly(url, "GET", token);
-        setTableData(data);
+        const url = `/api/v1/${tableName}`;
+        const data = await axiosPrivate(url, { method: "GET" });
+        setTableData(data?.data);
         setTableGrid([]);
-        Object.keys(data[0]).map((item) => {
+        Object.keys(data?.data[0]).map((item) => {
           setTableGrid((prev) => [
             ...prev,
             {
@@ -89,6 +89,10 @@ const EditTables = () => {
       }
     };
     getData();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [tableName, token]);
 
   if (loading) return <Spinner message={`Loading ${tableName} Data`} />;
@@ -140,35 +144,50 @@ const EditTables = () => {
             }}
             allowExcelExport={true}
             allowPdfExport={true}
-            actionComplete={(args) => {
-              if (args.requestType === "delete") {
-                bodyData(
-                  `${baseURL}/api/v1/${tableName}/${
-                    JSON.parse(selectedRow)[0]["ID"]
-                  }`,
-                  JSON.parse(selectedRow)[0],
-                  "DELETE",
-                  "delete"
-                );
-              } else if (
-                args.action === "edit" &&
-                args.requestType === "save"
-              ) {
-                bodyData(
-                  `${baseURL}/api/v1/${tableName}/${
-                    JSON.parse(selectedRow)[0]["ID"]
-                  }`,
-                  grid.currentViewData[selectedIndex],
-                  "PUT",
-                  "update"
-                );
-              } else if (args.action === "add" && args.requestType === "save") {
-                bodyData(
-                  `${baseURL}/api/v1/${tableName}`,
-                  grid.currentViewData[0],
-                  "POST",
-                  "add"
-                );
+            actionComplete={async (args) => {
+              try {
+                if (
+                  !usersData[0]?.roles?.Admin ||
+                  !usersData[0]?.roles?.Editor?.Kanban ||
+                  !usersData[0]?.roles?.User?.Kanban
+                ) {
+                  alert(`You Are not authorized to edit tasks`);
+                } else {
+                  if (args.requestType === "delete") {
+                    await axiosPrivate(
+                      `/api/v1/${tableName}/${
+                        JSON.parse(selectedRow)[0]["ID"]
+                      }`,
+                      { method: "DELETE", data: selectedRow[0] }
+                    );
+                  } else if (
+                    args.action === "edit" &&
+                    args.requestType === "save"
+                  ) {
+                    axiosPrivate(
+                      `/api/v1/${tableName}/${
+                        JSON.parse(selectedRow)[0]["ID"]
+                      }`,
+                      {
+                        method: "PUT",
+                        data: JSON.stringify(
+                          grid.currentViewData[selectedIndex]
+                        ),
+                      }
+                    );
+                  } else if (
+                    args.action === "add" &&
+                    args.requestType === "save"
+                  ) {
+                    axiosPrivate(`/api/v1/${tableName}`, {
+                      method: "POST",
+                      data: JSON.stringify(grid.currentViewData[0]),
+                    });
+                  }
+                }
+              } catch (error) {
+                setError(true);
+                setErrorDetails(error.message);
               }
             }}
           >

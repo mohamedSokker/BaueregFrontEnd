@@ -6,12 +6,15 @@ import { BrowserRouter as Router } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import { ContextProvider } from "./contexts/NavContext";
+import { DashboardContextProvider } from "./contexts/DashboardContext";
 
 ReactDOM.render(
   <Router>
     <ContextProvider>
-      {/* <CookiesProvider> */}
-      <App />
+      <DashboardContextProvider>
+        {/* <CookiesProvider> */}
+        <App />
+      </DashboardContextProvider>
       {/* </CookiesProvider> */}
     </ContextProvider>
   </Router>,

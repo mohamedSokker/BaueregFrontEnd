@@ -20,7 +20,7 @@ export const userInfo = async (token) => {
   }
 };
 
-const handleManageUsers = (user) => {
+export const handleManageUsers = (user) => {
   if (user.roles.Editor.ManageUsers) {
     user.roles.Editor["ManageUsers"] = [
       { name: "Add User", icon: <FiUserPlus />, dest: "AddUser" },

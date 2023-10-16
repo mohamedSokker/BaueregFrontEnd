@@ -5,7 +5,7 @@ import {
   MdKeyboardArrowUp,
 } from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
 import { Cookies } from "react-cookie";
 
@@ -13,20 +13,27 @@ import { useNavContext } from "../contexts/NavContext";
 import logo from "../assets/logo.jpg";
 import { links } from "../data/Tablesdata";
 import { isUserAllowedCategory } from "../Functions/isUserAllowedCategory";
+import useLogout from "../hooks/useLogout";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const logout = useLogout();
+  // const from = location.state?.from?.pathname || "/";
   const { setActiveMenu, activeMenu, screenSize, usersData, setToken } =
     useNavContext();
   const cookies = new Cookies();
   const [active, setActive] = useState(false);
 
-  console.log(usersData);
-
   const handleCloseSidebar = () => {
     if (activeMenu && screenSize <= 900) {
       setActiveMenu(false);
     }
+  };
+
+  const signOut = async () => {
+    await logout();
+    navigate("/Login", { state: { from: location }, replace: true });
   };
 
   const doNothing = () => {};
@@ -61,7 +68,7 @@ const Sidebar = () => {
         {links.map((item, i) => {
           return (
             isUserAllowedCategory(item.name, usersData) && (
-              <>
+              <React.Fragment key={i}>
                 <div
                   id={`${item.title}-side`}
                   key={item}
@@ -162,7 +169,7 @@ const Sidebar = () => {
                 ) : (
                   <div key={i} className="h-0 pb-2"></div>
                 )}
-              </>
+              </React.Fragment>
             )
           );
         })}
@@ -172,11 +179,7 @@ const Sidebar = () => {
       >
         <button
           className="flex flex-row items-center w-full h-8 p-4 font-semibold text-[25px]"
-          onClick={() => {
-            cookies.remove("token");
-            setToken(null);
-            navigate("/Login");
-          }}
+          onClick={signOut}
         >
           <BiLogOut />
           <span className="ml-4 text-[16px]">Logout</span>

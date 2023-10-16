@@ -62,6 +62,17 @@ const DashboardCard = ({
     getChildData({ [title]: e.target.value }, title, "dateTime");
   };
 
+  const getDate = (date) => {
+    const dt = new Date(date);
+    dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+    return dt.toISOString().slice(0, 10);
+  };
+
+  useEffect(() => {
+    if (data && data[data?.length - 1]?.x)
+      setDateValue(getDate(data[data?.length - 1]?.x));
+  }, [data]);
+
   const datas = {
     labels: xData,
     datasets: [
@@ -85,13 +96,6 @@ const DashboardCard = ({
           targetArray.push(item.Machinery_Type);
           return targetArray;
         });
-        // targetArray.map((item) => {
-        //   data.data.map((d) => {
-        //     if(d["Machinery_Type"] === item) {
-
-        //     }
-        //   })
-        // });
       } else {
         setKeyItem("Equipment_Type");
         setItemName("Equipment");
@@ -317,7 +321,7 @@ const DashboardCard = ({
                   <BiTrendingDown />
                   <p className="ml-4 text-[12px]">
                     {`decreased by `}
-                    <span>{`${Math.abs(percentage)} %`}</span>
+                    <span>{percentage}</span>
                   </p>
                 </div>
               )}

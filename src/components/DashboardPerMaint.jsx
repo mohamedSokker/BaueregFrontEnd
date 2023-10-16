@@ -39,6 +39,16 @@ const DashboardPerMaint = ({
     getChildData({ [title]: e.target.value }, title, "dateTime");
   };
 
+  const OnEventRendered = (args) => {
+    var categoryColor;
+    if (args.data.color == "green") {
+      categoryColor = "green";
+    } else if (args.data.color == "blue") {
+      categoryColor = "blue";
+    }
+    args.element.style.backgroundColor = categoryColor;
+  };
+
   return (
     <div
       className={`md:w-[99%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
@@ -109,6 +119,8 @@ const DashboardPerMaint = ({
                     ? cardsData?.dateTime
                     : dateValue
                 }
+                currentView="Month"
+                eventRendered={OnEventRendered}
               >
                 <Inject
                   services={[

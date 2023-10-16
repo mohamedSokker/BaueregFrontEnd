@@ -7,11 +7,13 @@ import { useNavContext } from "../contexts/NavContext";
 import filespic from "../assets/files.jpg";
 import folderpic from "../assets/folder.jpg";
 import { PageLoading } from "../components";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import fetchDataOnly from "../Functions/fetchDataOnly";
 
 const OilSamples = () => {
   const baseURL = process.env.REACT_APP_BASE_URL;
   const { closeSmallSidebar, usersData, token } = useNavContext();
+  const axiosPrivate = useAxiosPrivate();
   const abspath = process.env.REACT_APP_OILSAMPLES_ABS_PATH;
   const relativepath = process.env.REACT_APP_OILSAMPLES_REL_PATH;
   const [path, setPath] = useState(abspath);
@@ -25,14 +27,16 @@ const OilSamples = () => {
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     const getData = async () => {
       try {
         setIsSuccess(false);
         setError(false);
         setLoading(true);
-        const url = `${baseURL}/AppGetFiles?fullpath=${path}`;
-        const data = await fetchDataOnly(url, "GET", token);
-        setFilesItems(data.data);
+        const url = `/AppGetFiles?fullpath=${path}`;
+        const data = await axiosPrivate(url, { method: "GET" });
+        setFilesItems(data?.data?.data);
         setLoading(false);
       } catch (err) {
         setErrorDetails(`${err.message}`);
@@ -42,6 +46,10 @@ const OilSamples = () => {
       }
     };
     getData();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [update]);
 
   const createFolder = () => {
@@ -53,8 +61,8 @@ const OilSamples = () => {
     const getData = async () => {
       try {
         setLoading(true);
-        const url = `${baseURL}/AppCreateFolder?fullpath=${path}/${folderName}`;
-        const data = await fetchDataOnly(url, "GET", token);
+        const url = `/AppCreateFolder?fullpath=${path}/${folderName}`;
+        const data = await axiosPrivate(url, { method: "GET" });
         setUpdate((prev) => !prev);
         setLoading(false);
       } catch (err) {
@@ -72,8 +80,8 @@ const OilSamples = () => {
     const getData = async () => {
       try {
         setLoading(true);
-        const url = `${baseURL}/AppDeleteFolder?oldpath=${path}/${targetfile}`;
-        await fetchDataOnly(url, "GET", token);
+        const url = `/AppDeleteFolder?oldpath=${path}/${targetfile}`;
+        await axiosPrivate(url, { method: "GET" });
         setUpdate((prev) => !prev);
         setLoading(false);
       } catch (err) {
@@ -95,8 +103,8 @@ const OilSamples = () => {
     const getData = async () => {
       try {
         setLoading(true);
-        const url = `${baseURL}/AppRenameFolder?oldpath=${path}/${oldFileName}&newpath=${path}/${newFileName}`;
-        await fetchDataOnly(url, "GET", token);
+        const url = `/AppRenameFolder?oldpath=${path}/${oldFileName}&newpath=${path}/${newFileName}`;
+        await axiosPrivate(url, { method: "GET" });
         setUpdate((prev) => !prev);
         setLoading(false);
       } catch (err) {
@@ -113,29 +121,26 @@ const OilSamples = () => {
     setFiles(Array.from(e.target.files));
   };
 
-  const uploadItem = (e) => {
+  const uploadItem = async (e) => {
     setLoading(true);
     e.preventDefault();
     const data = new FormData();
     files.map((file) => {
       data.append("files", file);
     });
-
-    fetch(`${baseURL}/AppUploadItems?url=${path}`, {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => {})
-      .then((data) => {
-        setUpdate((prev) => !prev);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setErrorDetails(`${err.message}`);
-        console.log(err.message);
-        setError(true);
-        setLoading(false);
+    try {
+      await fetch(`${baseURL}/AppUploadItems?url=${path}`, {
+        method: "POST",
+        body: data,
       });
+      setUpdate((prev) => !prev);
+      setLoading(false);
+    } catch (err) {
+      setErrorDetails(`${err.message}`);
+      console.log(err.message);
+      setError(true);
+      setLoading(false);
+    }
   };
 
   const goToFolder = (e) => {
@@ -153,8 +158,8 @@ const OilSamples = () => {
           setPath(`${targetpath}`);
           setRelPath(`${relPath}/${e.target.dataset.filename}`);
           setUpdate((prev) => !prev);
+          setLoading(false);
         }
-        setLoading(false);
       } catch (err) {
         setErrorDetails(`${err.message}`);
         console.log(err.message);
@@ -171,8 +176,8 @@ const OilSamples = () => {
       try {
         setError(false);
         setLoading(true);
-        const url = `${baseURL}/pdfAnalysis?filepath=${path}/${targetfile}`;
-        await fetchDataOnly(url, "GET", token);
+        const url = `/pdfAnalysis?filepath=${path}/${targetfile}`;
+        await axiosPrivate(url, { method: "GET" });
         setLoading(false);
         setIsSuccess(true);
       } catch (err) {
@@ -196,15 +201,8 @@ const OilSamples = () => {
       try {
         setIsSuccess(false);
         setLoading(true);
-        const url = `${baseURL}/${copiedrelpath}`;
-        const res = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!res.ok) throw new Error(`Unauthorized to see this folder`);
+        const url = `/${copiedrelpath}`;
+        await axiosPrivate(url, { method: "GET" });
         setError(false);
         setRelPath(copiedrelpath);
         setPath(copiedabspath);
