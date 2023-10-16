@@ -147,8 +147,8 @@ const EditTables = () => {
             actionComplete={async (args) => {
               try {
                 if (
-                  !usersData[0]?.roles?.Admin ||
-                  !usersData[0]?.roles?.Editor?.Kanban ||
+                  !usersData[0]?.roles?.Admin &&
+                  !usersData[0]?.roles?.Editor?.Kanban &&
                   !usersData[0]?.roles?.User?.Kanban
                 ) {
                   alert(`You Are not authorized to edit tasks`);
