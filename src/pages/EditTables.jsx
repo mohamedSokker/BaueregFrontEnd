@@ -158,7 +158,7 @@ const EditTables = () => {
                       `/api/v1/${tableName}/${
                         JSON.parse(selectedRow)[0]["ID"]
                       }`,
-                      { method: "DELETE", data: selectedRow[0] }
+                      { method: "DELETE" }
                     );
                   } else if (
                     args.action === "edit" &&
