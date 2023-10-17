@@ -63,13 +63,13 @@ const Dashboard = ({ socket }) => {
   }, [usersData]);
 
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+    // let isMounted = true;
+    // const controller = new AbortController();
     if (socket.connected) socket.on("appDataUpdate", getData(controller));
 
     return () => {
-      isMounted = false;
-      controller.abort();
+      // isMounted = false;
+      // controller.abort();
       socket.off("appDataUpdate", getData(controller));
     };
   }, [socket, usersData]);

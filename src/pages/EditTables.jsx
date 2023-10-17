@@ -40,13 +40,13 @@ const EditTables = ({ socket }) => {
   let grid;
 
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+    // let isMounted = true;
+    // const controller = new AbortController();
     if (socket.connected) socket.on("appDataUpdate", getData());
 
     return () => {
-      isMounted = false;
-      controller.abort();
+      // isMounted = false;
+      // controller.abort();
       socket.off("appDataUpdate", getData(controller));
     };
   }, [socket, usersData]);
