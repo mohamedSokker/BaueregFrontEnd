@@ -47,7 +47,7 @@ const EditTables = ({ socket }) => {
     return () => {
       // isMounted = false;
       // controller.abort();
-      socket.off("appDataUpdate", getData(controller));
+      socket.off("appDataUpdate", getData());
     };
   }, [socket, usersData]);
 
