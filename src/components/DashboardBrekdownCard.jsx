@@ -29,6 +29,8 @@ const DashboardBrekdownCard = ({
     setDateValue(e.target.value);
     getChildData({ [name]: e.target.value }, name, "dateTime");
   };
+
+  const customFormat = (data) => `${data.data} times`;
   return (
     <div
       className={`md:w-[99%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
@@ -100,6 +102,7 @@ const DashboardBrekdownCard = ({
                     cornerRadius: 5,
                     startAngle: -90,
                     endAngle: 180,
+                    valueFormatter: customFormat,
                   },
                 ]}
                 sx={{
