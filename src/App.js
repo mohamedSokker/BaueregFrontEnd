@@ -90,7 +90,10 @@ function App() {
                   />
                   <Route path="/Orders/:tableName" element={<Orders />} />
                   <Route path="/Stocks/:tableName" element={<Stocks />} />
-                  <Route path="/Tables/:tableName" element={<EditTables />} />
+                  <Route
+                    path="/Tables/:tableName"
+                    element={<EditTables socket={socket} />}
+                  />
                   <Route
                     path="/Catalogues/:tableName"
                     element={<Catalogues />}

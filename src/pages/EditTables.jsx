@@ -25,7 +25,7 @@ import { useNavContext } from "../contexts/NavContext";
 import { CheckEditorRole } from "../Functions/checkEditorRole";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
-const EditTables = () => {
+const EditTables = ({ socket }) => {
   const { tableName } = useParams();
   const [tableData, setTableData] = useState({});
   const [tableGrid, setTableGrid] = useState([]);
@@ -38,6 +38,18 @@ const EditTables = () => {
   const axiosPrivate = useAxiosPrivate();
 
   let grid;
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    if (socket.connected) socket.on("appDataUpdate", getData());
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+      socket.off("appDataUpdate", getData(controller));
+    };
+  }, [socket, usersData]);
 
   const toolbarClick = (args) => {
     if (grid) {
@@ -58,36 +70,37 @@ const EditTables = () => {
     }
   };
 
+  const getData = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const url = `/api/v1/${tableName}`;
+      const data = await axiosPrivate(url, { method: "GET" });
+      setTableData(data?.data);
+      setTableGrid([]);
+      Object.keys(data?.data[0]).map((item) => {
+        setTableGrid((prev) => [
+          ...prev,
+          {
+            field: item,
+            headerText: item,
+            width: "100",
+            textAlign: "Center",
+          },
+        ]);
+      });
+      setLoading(false);
+    } catch (err) {
+      setErrorDetails(`${err.message}`);
+      console.log(err.message);
+      setError(true);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    const getData = async () => {
-      try {
-        setLoading(true);
-        setError(false);
-        const url = `/api/v1/${tableName}`;
-        const data = await axiosPrivate(url, { method: "GET" });
-        setTableData(data?.data);
-        setTableGrid([]);
-        Object.keys(data?.data[0]).map((item) => {
-          setTableGrid((prev) => [
-            ...prev,
-            {
-              field: item,
-              headerText: item,
-              width: "100",
-              textAlign: "Center",
-            },
-          ]);
-        });
-        setLoading(false);
-      } catch (err) {
-        setErrorDetails(`${err.message}`);
-        console.log(err.message);
-        setError(true);
-        setLoading(false);
-      }
-    };
     getData();
     return () => {
       isMounted = false;
