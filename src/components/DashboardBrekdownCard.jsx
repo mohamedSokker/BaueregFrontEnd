@@ -40,7 +40,9 @@ const DashboardBrekdownCard = ({
 
   const customFormat = (d) => {
     // console.log(d);
-    return `${d.data} times \n ${Number(d.data) / totalSum}`;
+    return `${d.data} times \n (${((Number(d.data) / totalSum) * 100).toFixed(
+      2
+    )} %)`;
   };
   return (
     <div
