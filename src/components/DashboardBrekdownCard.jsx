@@ -30,7 +30,10 @@ const DashboardBrekdownCard = ({
     getChildData({ [name]: e.target.value }, name, "dateTime");
   };
 
-  const customFormat = (data) => `${data.data} times`;
+  const customFormat = (data) => {
+    console.log(data);
+    return `${data.data} times`;
+  };
   return (
     <div
       className={`md:w-[99%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
