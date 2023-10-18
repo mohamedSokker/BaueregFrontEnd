@@ -22,6 +22,7 @@ const DashboardBrekdownCard = ({
       .slice(0, 10)
   );
   const [isFilterActive, setIsFilterActive] = useState(false);
+  const [totalSum, setTotalSum] = useState(0);
 
   const filters = ["All", "Trench_Cutting_Machine", "Drilling_Machine"];
 
@@ -30,9 +31,13 @@ const DashboardBrekdownCard = ({
     getChildData({ [name]: e.target.value }, name, "dateTime");
   };
 
-  const customFormat = (data) => {
-    console.log(data);
-    return `${data.data} times`;
+  useEffect(() => {
+    data.map((d) => setTotalSum((prev) => prev + d.value));
+  }, []);
+
+  const customFormat = (d) => {
+    console.log(d);
+    return `${d.data} times \n ${Number(d.data) / totalSum}`;
   };
   return (
     <div
