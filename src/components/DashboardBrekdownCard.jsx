@@ -107,6 +107,18 @@ const DashboardBrekdownCard = ({
               />
             ) : (
               <PieChart
+                colors={[
+                  "#156E84",
+                  "#88D3E5",
+                  "#AE4F46",
+                  "#CD8880",
+                  "#A39547",
+                  "#CFC99D",
+                  "#3AAE61",
+                  "#96D6AB",
+                  "#613A67",
+                  "#7F608F",
+                ]}
                 width={500}
                 series={[
                   {
