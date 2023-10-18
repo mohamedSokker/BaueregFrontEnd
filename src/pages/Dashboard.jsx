@@ -177,7 +177,7 @@ const Dashboard = ({ socket }) => {
             name="Oil Consumption"
             title="OilConsumption"
             value={`${fieldsData.OilConsumption} L`}
-            percentage={fieldsPerData.OilConsumption}
+            percentage={`${fieldsPerData.OilConsumption} L`}
             getChildData={getChildData}
             cardsData={cardsData?.OilConsumption}
             loading={fieldsLoading.OilConsumption}
@@ -199,7 +199,7 @@ const Dashboard = ({ socket }) => {
             name="Production Trench"
             title="ProductionTrench"
             value={`${fieldsData.ProductionTrench} M2`}
-            percentage={fieldsPerData.ProductionTrench}
+            percentage={`${fieldsPerData.ProductionTrench} %`}
             getChildData={getChildData}
             cardsData={cardsData?.ProductionTrench}
             loading={fieldsLoading.ProductionTrench}
@@ -221,7 +221,7 @@ const Dashboard = ({ socket }) => {
             name="Production Piles"
             title="ProductionPiles"
             value={`${fieldsData.ProductionPiles} M.L`}
-            percentage={fieldsPerData.ProductionPiles}
+            percentage={`${fieldsPerData.ProductionPiles} %`}
             getChildData={getChildData}
             cardsData={cardsData?.ProductionPiles}
             loading={fieldsLoading.ProductionPiles}

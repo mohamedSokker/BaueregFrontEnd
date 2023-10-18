@@ -291,10 +291,10 @@ const DashboardCard = ({
           </div>
           {isPer && (
             <div className="h-[10%] text-[16px] font-thin flex flex-row items-center p-2 pb-6">
-              {percentage >= 0 ? (
+              {Number(percentage.split(" ")[0]) >= 0 ? (
                 <div className="text-green-900 flex flex-row items-center">
                   <BiTrendingUp />
-                  <p className="ml-4 text-[12px] flex flex-row gap-2">
+                  <div className="ml-4 text-[12px] flex flex-row gap-2">
                     {`increased by `}
                     <span>
                       {perLoading ? (
@@ -311,10 +311,10 @@ const DashboardCard = ({
                           width={30}
                         />
                       ) : (
-                        <p className="w-full">{`${percentage} %`}</p>
+                        <p className="w-full">{percentage}</p>
                       )}
                     </span>
-                  </p>
+                  </div>
                 </div>
               ) : (
                 <div className="text-red-600 flex flex-row items-center">
