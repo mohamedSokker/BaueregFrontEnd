@@ -32,11 +32,14 @@ const DashboardBrekdownCard = ({
   };
 
   useEffect(() => {
+    setTotalSum(0);
     data.map((d) => setTotalSum((prev) => prev + d.value));
-  }, []);
+  }, [data]);
+
+  console.log(totalSum);
 
   const customFormat = (d) => {
-    console.log(d);
+    // console.log(d);
     return `${d.data} times \n ${Number(d.data) / totalSum}`;
   };
   return (
