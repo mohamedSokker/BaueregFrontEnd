@@ -39,15 +39,40 @@ const EditTables = ({ socket }) => {
 
   let grid;
 
+  const getDataWithoutLoading = async () => {
+    try {
+      setError(false);
+      const url = `/api/v1/${tableName}`;
+      const data = await axiosPrivate(url, { method: "GET" });
+      setTableData(data?.data);
+      setTableGrid([]);
+      Object.keys(data?.data[0]).map((item) => {
+        setTableGrid((prev) => [
+          ...prev,
+          {
+            field: item,
+            headerText: item,
+            width: "100",
+            textAlign: "Center",
+          },
+        ]);
+      });
+    } catch (err) {
+      setErrorDetails(`${err.message}`);
+      console.log(err.message);
+      setError(true);
+    }
+  };
+
   useEffect(() => {
     // let isMounted = true;
     // const controller = new AbortController();
-    socket.on("appDataUpdate", getData);
+    socket.on("appDataUpdate", getDataWithoutLoading);
 
     return () => {
       // isMounted = false;
       // controller.abort();
-      socket.off("appDataUpdate", getData);
+      socket.off("appDataUpdate", getDataWithoutLoading);
     };
   }, [socket, usersData]);
 
