@@ -65,6 +65,7 @@ const EditTables = ({ socket }) => {
   };
 
   useEffect(() => {
+    console.log(socket?.connected);
     // let isMounted = true;
     // const controller = new AbortController();
     socket.on("appDataUpdate", getDataWithoutLoading);
