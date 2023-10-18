@@ -65,7 +65,7 @@ const Dashboard = ({ socket }) => {
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
-    if (socket.connected) socket.on("appDataUpdate", () => getData(controller));
+    socket.on("appDataUpdate", () => getData(controller));
 
     return () => {
       isMounted = false;

@@ -42,7 +42,7 @@ const EditTables = ({ socket }) => {
   useEffect(() => {
     // let isMounted = true;
     // const controller = new AbortController();
-    if (socket.connected) socket.on("appDataUpdate", getData);
+    socket.on("appDataUpdate", getData);
 
     return () => {
       // isMounted = false;
