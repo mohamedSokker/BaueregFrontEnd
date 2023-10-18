@@ -68,10 +68,10 @@ const DashboardCard = ({
     return dt.toISOString().slice(0, 10);
   };
 
-  useEffect(() => {
-    if (data && data[data?.length - 1]?.x)
-      setDateValue(getDate(data[data?.length - 1]?.x));
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data[data?.length - 1]?.x)
+  //     setDateValue(getDate(data[data?.length - 1]?.x));
+  // }, [data]);
 
   const datas = {
     labels: xData,
