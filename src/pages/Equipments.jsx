@@ -90,7 +90,7 @@ const Equipments = () => {
         <div className="flex items-center flex-row w-[50%] h-full">
           <div className="mr-2 text-[14px] flex flex-row gap-2">
             <span className=" font-extrabold">From</span>
-            <p>2023-01-01</p>
+            <p>01/01/2023</p>
             <span className="font-extrabold">To</span>
           </div>
           <input

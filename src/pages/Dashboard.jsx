@@ -117,7 +117,7 @@ const Dashboard = ({ socket }) => {
       <div className="w-[99%] h-[3vh] bg-white p-4 flex items-center flex-row mb-2 shadow-lg rounded-md relative mt-2">
         <div className="mr-2 text-[14px] flex flex-row gap-2">
           <span className=" font-extrabold">From</span>
-          <p>2023-01-01</p>
+          <p>01/01/2023</p>
           <span className="font-extrabold">To</span>
         </div>
         <input
