@@ -111,7 +111,7 @@ const Locations = () => {
             name="Availability"
             title="Availability"
             value={`${fieldsData.Availability} %`}
-            percentage={fieldsPerData.Availability}
+            percentage={`${fieldsPerData.Availability} %`}
             getChildData={getChildData}
             cardsData={cardsData?.Availability}
             loading={fieldsLoading.Availability}
@@ -132,7 +132,7 @@ const Locations = () => {
             name="Fuel Consumption"
             title="FuelConsumption"
             value={`${fieldsData.FuelConsumption} L`}
-            percentage={fieldsPerData.FuelConsumption}
+            percentage={`${fieldsPerData.FuelConsumption} L`}
             getChildData={getChildData}
             cardsData={cardsData?.FuelConsumption}
             loading={fieldsLoading.FuelConsumption}
@@ -153,7 +153,7 @@ const Locations = () => {
             name="Oil Consumption"
             title="OilConsumption"
             value={`${fieldsData.OilConsumption} L`}
-            percentage={fieldsPerData.OilConsumption}
+            percentage={`${fieldsPerData.OilConsumption} L`}
             getChildData={getChildData}
             cardsData={cardsData?.OilConsumption}
             loading={fieldsLoading.OilConsumption}
@@ -174,7 +174,7 @@ const Locations = () => {
             name="Production Trench"
             title={`ProductionTrench`}
             value={`${fieldsData.ProductionTrench} M2`}
-            percentage={fieldsPerData.ProductionTrench}
+            percentage={`${fieldsPerData.ProductionTrench} %`}
             getChildData={getChildData}
             cardsData={cardsData?.ProductionTrench}
             loading={fieldsLoading.ProductionTrench}
@@ -195,7 +195,7 @@ const Locations = () => {
             name="Production Piles"
             title={`ProductionPiles`}
             value={`${fieldsData.ProductionPiles} M.L`}
-            percentage={fieldsPerData.ProductionPiles}
+            percentage={`${fieldsPerData.ProductionPiles} %`}
             getChildData={getChildData}
             cardsData={cardsData?.ProductionPiles}
             loading={fieldsLoading.ProductionPiles}
@@ -214,7 +214,7 @@ const Locations = () => {
         <DashboardCard
           name="Machinary"
           value={`${fieldsData.Machinary}`}
-          percentage={fieldsLoading.Machinary}
+          percentage={`${fieldsLoading.Machinary} %`}
           getChildData={getChildData}
           cardsData={cardsData?.Machinary}
           loading={fieldsLoading.Machinary}
@@ -230,7 +230,7 @@ const Locations = () => {
         <DashboardCard
           name="Equipments"
           value={`${fieldsData.Equipments}`}
-          percentage={fieldsPerData.Equipments}
+          percentage={`${fieldsPerData.Equipments} %`}
           getChildData={getChildData}
           cardsData={cardsData?.Equipments}
           loading={fieldsLoading.Equipments}

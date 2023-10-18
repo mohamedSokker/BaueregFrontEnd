@@ -108,7 +108,7 @@ const Equipments = () => {
             name="Availability"
             title="Availability"
             value={`${fieldsData.Availability} %`}
-            percentage={fieldsPerData.Availability}
+            percentage={`${fieldsPerData.Availability} %`}
             getChildData={getChildData}
             cardsData={cardsData?.Availability}
             loading={fieldsLoading.Availability}
@@ -129,7 +129,7 @@ const Equipments = () => {
             name="Fuel Consumption"
             title="FuelConsumption"
             value={`${fieldsData.FuelConsumption} L`}
-            percentage={fieldsPerData.FuelConsumption}
+            percentage={`${fieldsPerData.FuelConsumption} L`}
             getChildData={getChildData}
             cardsData={cardsData?.FuelConsumption}
             loading={fieldsLoading.FuelConsumption}
@@ -150,7 +150,7 @@ const Equipments = () => {
             name="Oil Consumption"
             title="OilConsumption"
             value={`${fieldsData.OilConsumption} L`}
-            percentage={fieldsPerData.OilConsumption}
+            percentage={`${fieldsPerData.OilConsumption} L`}
             getChildData={getChildData}
             cardsData={cardsData?.OilConsumption}
             loading={fieldsLoading.OilConsumption}
@@ -171,7 +171,7 @@ const Equipments = () => {
             name="Production Trench"
             title={`ProductionTrench`}
             value={fieldsData.ProductionTrench}
-            percentage={fieldsPerData.ProductionTrench}
+            percentage={`${fieldsPerData.ProductionTrench} %`}
             getChildData={getChildData}
             cardsData={cardsData?.ProductionTrench}
             loading={fieldsLoading.ProductionTrench}
@@ -192,7 +192,7 @@ const Equipments = () => {
             name="Production Piles"
             title={`ProductionPiles`}
             value={fieldsData.ProductionPiles}
-            percentage={fieldsPerData.ProductionPiles}
+            percentage={`${fieldsPerData.ProductionPiles} %`}
             getChildData={getChildData}
             cardsData={cardsData?.ProductionPiles}
             loading={fieldsLoading.ProductionPiles}
