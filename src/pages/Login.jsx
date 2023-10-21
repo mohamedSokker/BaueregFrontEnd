@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 // import { Cookies } from "react-cookie";
 import logo from "../assets/logo.jpg";
 import cover from "../assets/Cover.jpg";
