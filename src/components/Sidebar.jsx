@@ -20,8 +20,7 @@ const Sidebar = () => {
   const location = useLocation();
   const logout = useLogout();
   // const from = location.state?.from?.pathname || "/";
-  const { setActiveMenu, activeMenu, screenSize, usersData, setToken } =
-    useNavContext();
+  const { setActiveMenu, activeMenu, screenSize, usersData } = useNavContext();
   const cookies = new Cookies();
   const [active, setActive] = useState(false);
 
