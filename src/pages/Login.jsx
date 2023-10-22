@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 // import { Cookies } from "react-cookie";
 import logo from "../assets/logo.jpg";
 import cover from "../assets/Cover.jpg";
@@ -38,34 +39,41 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      // const options = {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   credentials: "include",
-      //   body: JSON.stringify({ username: userName, password: password }),
-      // };
-      // const res = await fetch(url, options);
-      // const success = res.ok;
-      // const data = await res.json();
-      // if (!success) throw new Error(data.message);
-      // const cookies = new Cookies();
-      // const token = await cookies.get("token");
-      // if (data) {
       console.log(data);
       setToken(data?.data?.token);
-      const userInfo = await getTokenData(data?.data?.token);
-      if (userInfo[0].roles.Admin) {
-        const data1 = await allDataWithName(data?.data?.token);
-        let copUserData = userInfo;
-        copUserData[0].roles.Editor = data1;
-        setUsersData(copUserData);
+      const user = { ...data?.data?.user };
+      if (user.roles.Editor.ManageUsers) {
+        user.roles.Editor["ManageUsers"] = [
+          { name: "Add User", icon: <FiUserPlus />, dest: "AddUser" },
+          { name: "Edit User", icon: <FiUserCheck />, dest: "EditUser" },
+          { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteUser" },
+        ];
+        user.roles.User["ManageUsers"] = [];
       } else {
-        setUsersData(userInfo);
+        user.roles.Editor["ManageUsers"] = [];
+        user.roles.User["ManageUsers"] = [];
       }
-      // cookies.set("token", data.token, { maxAge: 86400 });
-      // cookies.set("token", data.token, { maxAge: 10 });
+      if (user.roles.Editor.ManageAppUsers) {
+        user.roles.Editor["ManageAppUsers"] = [
+          { name: "Add User", icon: <FiUserPlus />, dest: "AddAppUser" },
+          { name: "Edit User", icon: <FiUserCheck />, dest: "EditAppUser" },
+          { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteAppUser" },
+        ];
+        user.roles.User["ManageAppUsers"] = [];
+      } else {
+        user.roles.Editor["ManageAppUsers"] = [];
+        user.roles.User["ManageAppUsers"] = [];
+      }
+
+      setUsersData([user]);
+      // const userInfo = await getTokenData(data?.data?.token);
+      // if (userInfo[0].roles.Admin) {
+      //   const data1 = await allDataWithName(data?.data?.token);
+      //   let copUserData = userInfo;
+      //   copUserData[0].roles.Editor = data1;
+      //   setUsersData(copUserData);
+      // } else {
+      //   setUsersData(userInfo);
       // }
       setLoading(false);
       navigate(from, { replace: true });
