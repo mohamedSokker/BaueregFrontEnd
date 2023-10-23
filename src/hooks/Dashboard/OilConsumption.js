@@ -69,8 +69,8 @@ const useOilConsumption = () => {
           let data = [];
           result?.data?.data?.map((item) => {
             data.push({
-              x: formatDate(item.Date),
-              y: Number(item.TotalConsumption),
+              x: formatDate(item["Date"]),
+              y: Number(item["TOTAL (L)"]),
             });
             return data;
           });
@@ -80,7 +80,7 @@ const useOilConsumption = () => {
           }));
           let dataX = [];
           result?.data?.data?.map((item) => {
-            dataX.push(formatDate(item.Date));
+            dataX.push(formatDate(item["Date"]));
             return dataX;
           });
           setFieldsXData((prev) => ({
@@ -89,7 +89,7 @@ const useOilConsumption = () => {
           }));
           let dataY = [];
           result?.data?.data?.map((item) => {
-            dataY.push(Number(item.TotalConsumption));
+            dataY.push(Number(item["TOTAL (L)"]));
             return dataY;
           });
           setFieldsYData((prev) => ({

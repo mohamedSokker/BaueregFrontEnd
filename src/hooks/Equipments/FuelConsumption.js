@@ -67,7 +67,10 @@ const useFuelConsumption = (tableName) => {
           });
           let data = [];
           result?.data?.data?.map((item) => {
-            data.push({ x: formatDate(item.Date), y: Number(item.Quantity) });
+            data.push({
+              x: formatDate(item["Date "]),
+              y: Number(item["Fuel Consumption Quantity (Liter)"]),
+            });
             return data;
           });
           setFieldsAllData((prev) => ({
@@ -76,7 +79,7 @@ const useFuelConsumption = (tableName) => {
           }));
           let dataX = [];
           result?.data?.data?.map((item) => {
-            dataX.push(formatDate(item.Date));
+            dataX.push(formatDate(item["Date "]));
             return dataX;
           });
           setFieldsXData((prev) => ({
@@ -85,7 +88,7 @@ const useFuelConsumption = (tableName) => {
           }));
           let dataY = [];
           result?.data?.data?.map((item) => {
-            dataY.push(Number(item.Quantity));
+            dataY.push(Number(item["Fuel Consumption Quantity (Liter)"]));
             return dataY;
           });
           setFieldsYData((prev) => ({
