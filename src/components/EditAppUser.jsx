@@ -4,11 +4,9 @@ import { MdDelete } from "react-icons/md";
 import { CiWarning } from "react-icons/ci";
 import { MdArrowBackIosNew } from "react-icons/md";
 
-import { allData } from "../data/allRoles";
 import { PageLoading } from "./";
 import { useNavContext } from "../contexts/NavContext";
 import { changeData } from "../Functions/changeData";
-import { AllStocks, allDataTitles } from "../data/Tablesdata";
 import UserAppForm from "./UserAppForm";
 import fetchDataOnly from "../Functions/fetchDataOnly";
 

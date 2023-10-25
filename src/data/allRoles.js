@@ -1,4 +1,3 @@
-import { Cookies } from "react-cookie";
 import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 
 import { AllTables } from "./AllTables";
@@ -12,67 +11,53 @@ let allStocksWithName = [];
 let allEqsWithName = [];
 let allSitesWithName = [];
 
-export const allSitesEqsdata = async () => {
-  const cookies = new Cookies();
-  const token = cookies?.get("token");
+export const allSitesEqsdata = async (token) => {
   try {
     const url = `${process.env.REACT_APP_BASE_URL}/api/v1/Location_Bauer`;
     const data = await fetchDataOnly(url, "GET", token);
     allSites = [];
     allSitesWithName = [];
-    data.map((item) => {
-      allSites.push(item.Location);
-      allSitesWithName.push({ name: item.Location });
-    });
-  } catch (error) {
-    return [];
-  }
-  // await fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/Location_Bauer`, {
-  //   headers: { Authorization: `Bearer ${token}` },
-  // })
-  //   .then((res) => res.json())
-  //   .then((data) => {
-  //     allSites = [];
-  //     allSitesWithName = [];
-  //     data.map((item) => {
-  //       allSites.push(item.Location);
-  //       allSitesWithName.push({ name: item.Location });
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     return [];
-  //   });
-  try {
+    for (let i = 0; i < data.length; i++) {
+      allSites.push(data[i].Location);
+      allSitesWithName.push({ name: data[i].Location });
+    }
+    // data.map((item) => {
+    //   allSites.push(item.Location);
+    //   allSitesWithName.push({ name: item.Location });
+    // });
+
     const eqsURL = `${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`;
     const dataEq = await fetchDataOnly(eqsURL, "GET", token);
     allEqs = [];
     allEqsWithName = [];
-    dataEq.map((item) => {
-      allEqs.push(item.Equipment);
-      allEqsWithName.push({ name: item.Equipment });
-    });
+    for (let j = 0; j < dataEq.length; j++) {
+      allSites.push(dataEq[i].Location);
+      allSitesWithName.push({ name: dataEq[i].Location });
+    }
+    // dataEq.map((item) => {
+    //   allEqs.push(item.Equipment);
+    //   allEqsWithName.push({ name: item.Equipment });
+    // });
   } catch (error) {
     return [];
   }
-  // await fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`, {
-  //   headers: { Authorization: `Bearer ${token}` },
-  // })
-  //   .then((res) => res.json())
-  //   .then((dataEq) => {
-  //     allEqs = [];
-  //     allEqsWithName = [];
-  //     dataEq.map((item) => {
-  //       allEqs.push(item.Equipment);
-  //       allEqsWithName.push({ name: item.Equipment });
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     return [];
+
+  // try {
+  //   const eqsURL = `${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`;
+  //   const dataEq = await fetchDataOnly(eqsURL, "GET", token);
+  //   allEqs = [];
+  //   allEqsWithName = [];
+  //   dataEq.map((item) => {
+  //     allEqs.push(item.Equipment);
+  //     allEqsWithName.push({ name: item.Equipment });
   //   });
+  // } catch (error) {
+  //   return [];
+  // }
 };
 
-export const allData = async () => {
-  await allSitesEqsdata();
+export const allData = async (token) => {
+  await allSitesEqsdata(token);
   return {
     Dashboard: ["true"],
     Kanban: ["true"],

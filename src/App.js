@@ -69,12 +69,15 @@ function App() {
           >
             <Routes>
               <Route element={<PersistLogin />}>
-                <Route element={<RequiredAuth />}>
+                <Route element={<RequiredAuth allowedRole={"Dashboard"} />}>
                   <Route path="/" element={<Dashboard socket={socket} />} />
                   <Route
                     path="/Dashboard"
                     element={<Dashboard socket={socket} />}
                   />
+                </Route>
+
+                <Route element={<RequiredAuth allowedRole={"Kanban"} />}>
                   <Route
                     path="/Kanban"
                     element={<ManageKanban socket={socket} />}
@@ -83,30 +86,54 @@ function App() {
                     path="/ManageKanban"
                     element={<Kanban socket={socket} />}
                   />
+                </Route>
+                <Route element={<RequiredAuth allowedRole={"Sites"} />}>
                   <Route path="/Sites/:tableName" element={<Locations />} />
+                </Route>
+                <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
                   <Route
                     path="/Equipments/:tableName"
                     element={<Equipments />}
                   />
+                </Route>
+                <Route element={<RequiredAuth allowedRole={"Orders"} />}>
                   <Route path="/Orders/:tableName" element={<Orders />} />
+                </Route>
+                <Route element={<RequiredAuth allowedRole={"Stocks"} />}>
                   <Route path="/Stocks/:tableName" element={<Stocks />} />
+                </Route>
+                <Route element={<RequiredAuth allowedRole={"Tables"} />}>
                   <Route
                     path="/Tables/:tableName"
                     element={<EditTables socket={socket} />}
                   />
+                </Route>
+                <Route element={<RequiredAuth allowedRole={"Catalogues"} />}>
                   <Route
                     path="/Catalogues/:tableName"
                     element={<Catalogues />}
                   />
+                </Route>
+                <Route element={<RequiredAuth allowedRole={"OilSamples"} />}>
                   <Route path="/OilSamples" element={<OilSamples />} />
+                </Route>
+                <Route
+                  element={<RequiredAuth allowedRole={"OilSamplesAnalyzed"} />}
+                >
                   <Route
                     path="/OilSamplesAnalyzed"
                     element={<OilSamplesAnalyzed />}
                   />
+                </Route>
+                <Route element={<RequiredAuth allowedRole={"ManageUsers"} />}>
                   <Route
                     path="/ManageUsers/:tableName"
                     element={<ManageUsers />}
                   />
+                </Route>
+                <Route
+                  element={<RequiredAuth allowedRole={"ManageAppUsers"} />}
+                >
                   <Route
                     path="/ManageAppUsers/:tableName"
                     element={<ManageAppUsers />}

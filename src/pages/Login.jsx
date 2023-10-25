@@ -9,8 +9,6 @@ import { CiWarning } from "react-icons/ci";
 
 import { PageLoading } from "../components";
 import { useNavContext } from "../contexts/NavContext";
-import { getTokenData } from "../Functions/getTokenData";
-import { allDataWithName } from "../data/loginAllRoles";
 import axios from "../api/axios";
 
 const Login = () => {

@@ -7,7 +7,6 @@ import {
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
-import { Cookies } from "react-cookie";
 
 import { useNavContext } from "../contexts/NavContext";
 import logo from "../assets/logo.jpg";
@@ -21,7 +20,6 @@ const Sidebar = () => {
   const logout = useLogout();
   // const from = location.state?.from?.pathname || "/";
   const { setActiveMenu, activeMenu, screenSize, usersData } = useNavContext();
-  const cookies = new Cookies();
   const [active, setActive] = useState(false);
 
   const handleCloseSidebar = () => {

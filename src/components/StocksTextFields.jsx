@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { MdErrorOutline } from "react-icons/md";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 
-import { allData } from "../data/allRoles";
-
 const TextFields = ({ count, eq }) => {
   const [error, setError] = useState(true);
 

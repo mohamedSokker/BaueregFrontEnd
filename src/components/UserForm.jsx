@@ -10,8 +10,11 @@ import { CiWarning } from "react-icons/ci";
 import { AllStocks, allDataTitles } from "../data/Tablesdata";
 import { allData } from "../data/allRoles";
 import { PageLoading } from "./";
+import { useNavContext } from "../contexts/NavContext";
 
 const UserForm = ({ handleSaveUser, getChildData, userData }) => {
+  const { token } = useNavContext();
+
   const [allDatas, setAllDatas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
@@ -78,7 +81,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
     const getData = async () => {
       try {
         setLoading(true);
-        const data = await allData();
+        const data = await allData(token);
         setAllDatas(data);
         setLoading(false);
       } catch (err) {

@@ -7,8 +7,6 @@ import {
 } from "react-icons/md";
 import { CiWarning } from "react-icons/ci";
 
-import { AllStocks, allDataTitles } from "../data/Tablesdata";
-import { allData, allSitesEqsdata } from "../data/allRoles";
 import { PageLoading } from "./";
 import fetchDataOnly from "../Functions/fetchDataOnly";
 import { useNavContext } from "../contexts/NavContext";
