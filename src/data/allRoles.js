@@ -31,8 +31,8 @@ export const allSitesEqsdata = async (token) => {
     allEqs = [];
     allEqsWithName = [];
     for (let j = 0; j < dataEq.length; j++) {
-      allSites.push(dataEq[i].Location);
-      allSitesWithName.push({ name: dataEq[i].Location });
+      allSites.push(dataEq[j].Location);
+      allSitesWithName.push({ name: dataEq[j].Location });
     }
     // dataEq.map((item) => {
     //   allEqs.push(item.Equipment);
