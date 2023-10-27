@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 // import { CookiesProvider } from "react-cookie";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import "./index.css";
 import App from "./App";
@@ -9,14 +9,16 @@ import { ContextProvider } from "./contexts/NavContext";
 import { DashboardContextProvider } from "./contexts/DashboardContext";
 
 ReactDOM.render(
-  <Router>
+  <BrowserRouter>
     <ContextProvider>
       <DashboardContextProvider>
         {/* <CookiesProvider> */}
-        <App />
+        <Routes>
+          <Route path="/*" element={<App />} />
+        </Routes>
       </DashboardContextProvider>
       {/* </CookiesProvider> */}
     </ContextProvider>
-  </Router>,
+  </BrowserRouter>,
   document.getElementById("root")
 );
