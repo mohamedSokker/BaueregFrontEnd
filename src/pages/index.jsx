@@ -1,5 +1,6 @@
 export { default as Locations } from "./Locations";
 export { default as EditTables } from "./EditTables";
+export { default as DataEntry } from "./DataEntry";
 export { default as Orders } from "./Orders";
 export { default as OilSamples } from "./OilSamples";
 export { default as OilSamplesAnalyzed } from "./OilSamplesAnalyzed";

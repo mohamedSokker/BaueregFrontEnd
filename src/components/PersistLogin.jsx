@@ -30,10 +30,10 @@ const PersistLogin = () => {
     return () => (isMounted = false);
   }, []);
 
-  useEffect(() => {
-    console.log(`isLoading: ${isLoading}`);
-    console.log(`aT: ${JSON.stringify(token)}`);
-  }, [isLoading]);
+  // useEffect(() => {
+  //   console.log(`isLoading: ${isLoading}`);
+  //   console.log(`aT: ${JSON.stringify(token)}`);
+  // }, [isLoading]);
 
   return <>{isLoading ? <Spinner message={`Page Loading`} /> : <Outlet />}</>;
 };

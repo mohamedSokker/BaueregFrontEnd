@@ -1,19 +1,13 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom";
+import React from "react";
+import { CiWarning } from "react-icons/ci";
 
 import { useNavContext } from "../contexts/NavContext";
 import { Navbar, Sidebar } from "../components";
-import UnAuthorized from "../pages/UnAuthorized";
 
-const RequiredAuth = ({ allowedRole }) => {
-  const { usersData, currentMode, activeMenu } = useNavContext();
-  const location = useLocation();
+const UnAuthorized = () => {
+  const { currentMode, activeMenu } = useNavContext();
 
-  // console.log(usersData.length);
-
-  return usersData[0]?.roles.Editor[allowedRole] === true ||
-    usersData[0]?.roles.Editor[allowedRole].length > 0 ||
-    usersData[0]?.roles.User[allowedRole] === true ||
-    usersData[0]?.roles.User[allowedRole].length > 0 ? (
+  return (
     <div className={currentMode === "Dark" ? "dark" : ""}>
       <div className="flex w-screen h-screen relative dark:bg-main-dark-bg m-0 p-0">
         {activeMenu ? (
@@ -45,16 +39,22 @@ const RequiredAuth = ({ allowedRole }) => {
             className=" dark:bg-background-logoColor md:h-[92%] relative bg-white overflow-x-hidden"
             style={{ width: "calc(100vw - 18rem)" }}
           >
-            <Outlet />
+            <div className="w-full h-full p-4">
+              <div
+                className=" bg-red-600 h-20 flex justify-center items-center flex-row mb-5 mt-2 rounded-lg"
+                style={{ color: "white", width: "90%" }}
+              >
+                <CiWarning className="text-[40px] font-extrabold" />
+                <p className="ml-5 text-xl font-semibold">
+                  Unauthorized to see this page!
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  ) : usersData.length > 0 ? (
-    <UnAuthorized />
-  ) : (
-    <Navigate to="/Login" state={{ from: location }} replace />
   );
 };
 
-export default RequiredAuth;
+export default UnAuthorized;

@@ -5,6 +5,7 @@ import { TiShoppingCart } from "react-icons/ti";
 import { SiLinuxcontainers } from "react-icons/si";
 import { AiOutlineTable } from "react-icons/ai";
 import { RiBookLine } from "react-icons/ri";
+import { BsDatabaseAdd } from "react-icons/bs";
 import { BiListPlus, BiTestTube } from "react-icons/bi";
 import { Cookies } from "react-cookie";
 
@@ -21,6 +22,7 @@ import {
   ManageKanban,
   OilSamples,
   OilSamplesAnalyzed,
+  DataEntry,
 } from "../pages";
 
 const cookies = new Cookies();
@@ -95,6 +97,19 @@ export const links = [
     elem: <EditTables />,
     icon: <AiOutlineTable />,
     data: [],
+  },
+  {
+    title: "Data Entry",
+    name: "DataEntry",
+    dest: "/DataEntry",
+    elem: <DataEntry />,
+    icon: <BsDatabaseAdd />,
+    data: [
+      { name: "Maintenance" },
+      { name: "PeriodicMaintenance" },
+      { name: "EquipmentsLocation" },
+      { name: "Machinary" },
+    ],
   },
   {
     title: "Catalogues",

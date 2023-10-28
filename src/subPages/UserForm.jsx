@@ -9,7 +9,7 @@ import { CiWarning } from "react-icons/ci";
 
 import { AllStocks, allDataTitles } from "../data/Tablesdata";
 import { allData } from "../data/allRoles";
-import { PageLoading } from "./";
+import { PageLoading } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 
 const UserForm = ({ handleSaveUser, getChildData, userData }) => {

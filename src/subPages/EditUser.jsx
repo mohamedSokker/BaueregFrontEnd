@@ -4,7 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { CiWarning } from "react-icons/ci";
 import { MdArrowBackIosNew } from "react-icons/md";
 
-import { PageLoading } from "./";
+import { PageLoading } from "../components";
 import { useNavContext } from "../contexts/NavContext";
 import { changeData } from "../Functions/changeData";
 import UserForm from "./UserForm";

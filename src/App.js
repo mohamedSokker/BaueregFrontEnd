@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 
-// import { Navbar, Sidebar } from "./components";
+import { Navbar, Sidebar } from "./components";
 
 import { useNavContext } from "./contexts/NavContext";
 import "./App.css";
@@ -21,9 +21,11 @@ import {
   Catalogues,
   ManageUsers,
   ManageAppUsers,
+  DataEntry,
 } from "./pages";
 import RequiredAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
+import UnAuthorized from "./pages/UnAuthorized";
 
 function App() {
   const { token } = useNavContext();
@@ -35,6 +37,7 @@ function App() {
   return (
     <Routes>
       <Route path="/Login" element={<Login />} />
+      <Route path="/UnAuthorized" element={<UnAuthorized />} />
       <Route element={<PersistLogin />}>
         <Route element={<RequiredAuth allowedRole={"Dashboard"} />}>
           <Route path="/" element={<Dashboard socket={socket} />} />
@@ -61,6 +64,12 @@ function App() {
           <Route
             path="/Tables/:tableName"
             element={<EditTables socket={socket} />}
+          />
+        </Route>
+        <Route element={<RequiredAuth allowedRole={"DataEntry"} />}>
+          <Route
+            path="/DataEntry/:tableName"
+            element={<DataEntry socket={socket} />}
           />
         </Route>
         <Route element={<RequiredAuth allowedRole={"Catalogues"} />}>

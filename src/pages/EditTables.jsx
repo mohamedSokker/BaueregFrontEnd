@@ -137,7 +137,7 @@ const EditTables = ({ socket }) => {
   if (loading) return <Spinner message={`Loading ${tableName} Data`} />;
   return (
     <div
-      className={`p-2 md:p-10 bg-white rounded-xl Main--Page dark:bg-background-logoColor`}
+      className={`w-full p-2 md:p-10 bg-white rounded-xl Main--Page dark:bg-background-logoColor h-full`}
       onClick={closeSmallSidebar}
     >
       {error ? (
@@ -149,7 +149,7 @@ const EditTables = ({ socket }) => {
           <p className="ml-5 text-xl font-semibold">{errorDetails}</p>
         </div>
       ) : (
-        <>
+        <React.Fragment className="w-full">
           <div className="flex flex-row items-center justify-between Header mb-10 ">
             <Header category="" title={tableName ? tableName : "Test"} />
           </div>
@@ -157,7 +157,7 @@ const EditTables = ({ socket }) => {
             dataSource={tableData}
             allowPaging
             allowSorting
-            height={250}
+            // height={250}
             allowResizing={true}
             pageSettings={{ pageSize: 50 }}
             autoFit={true}
@@ -251,7 +251,7 @@ const EditTables = ({ socket }) => {
               ]}
             />
           </GridComponent>
-        </>
+        </React.Fragment>
       )}
     </div>
   );

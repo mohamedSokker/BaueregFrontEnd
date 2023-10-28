@@ -37,7 +37,7 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      console.log(data);
+      // console.log(data);
       setToken(data?.data?.token);
       const user = { ...data?.data?.user };
       if (user.roles.Editor.ManageUsers) {
@@ -61,6 +61,18 @@ const Login = () => {
       } else {
         user.roles.Editor["ManageAppUsers"] = [];
         user.roles.User["ManageAppUsers"] = [];
+      }
+      if (user.roles.Editor.DataEntry) {
+        user.roles.Editor["DataEntry"] = [
+          { name: "Maintenance" },
+          { name: "PeriodicMaintenance" },
+          { name: "EquipmentsLocation" },
+          { name: "Machinary" },
+        ];
+        user.roles.User["DataEntry"] = [];
+      } else {
+        user.roles.Editor["DataEntry"] = [];
+        user.roles.User["DataEntry"] = [];
       }
 
       setUsersData([user]);

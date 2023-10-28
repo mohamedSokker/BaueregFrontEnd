@@ -7,7 +7,7 @@ import {
 } from "react-icons/md";
 import { CiWarning } from "react-icons/ci";
 
-import { PageLoading } from "./";
+import { PageLoading } from "../components";
 import fetchDataOnly from "../Functions/fetchDataOnly";
 import { useNavContext } from "../contexts/NavContext";
 
