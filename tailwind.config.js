@@ -87,16 +87,28 @@ module.exports = {
           },
         },
 
+        // "slide-in": {
+        //   "0%": {
+        //     width: "0",
+        //     // "-webkit-transform": "translateX(-288px)",
+        //     // transform: "translateX(-288px)",
+        //   },
+        //   "100%": {
+        //     width: "288px",
+        //     // "-webkit-transform": "translateX(0px)",
+        //     // transform: "translateX(0px)",
+        //   },
+        // },
         "slide-in": {
           "0%": {
-            width: "0",
-            // "-webkit-transform": "translateX(-288px)",
-            // transform: "translateX(-288px)",
+            // width: "0",
+            "-webkit-transform": "translateX(50%)",
+            transform: "translateX(50%)",
           },
           "100%": {
-            width: "288px",
-            // "-webkit-transform": "translateX(0px)",
-            // transform: "translateX(0px)",
+            // width: "288px",
+            "-webkit-transform": "translateX(0)",
+            transform: "translateX(0)",
           },
         },
 

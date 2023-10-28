@@ -36,7 +36,7 @@ const Sidebar = () => {
   const doNothing = () => {};
 
   return (
-    <div className="ml-3 h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto p-4 pl-0 pb-10 dark:text-white">
+    <div className="h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto p-4 pl-0 pb-10 dark:text-white relative shadow-lg">
       <div className="flex items-center justify-center">
         <Link
           to="/"
@@ -51,17 +51,17 @@ const Sidebar = () => {
             </span>
           </span> */}
         </Link>
-        <TooltipComponent content="Close" position="BottomCenter">
-          <button
-            type="button"
-            onClick={() => setActiveMenu(false)}
-            className="text-xl rounded-full p-3 hover:bg-light-gray mt-4 block md:hidden"
-          >
-            <MdOutlineCancel />
-          </button>
-        </TooltipComponent>
+        {/* <TooltipComponent content="Close" position="BottomCenter"> */}
+        <button
+          type="button"
+          onClick={() => setActiveMenu(false)}
+          className=" text-[12px] font-bold text-gray-400 hover:text-black rounded-md p-2 w-8 h-8 flex items-center justify-center bg-gray-100 mt-4 absolute top-2 right-2"
+        >
+          X{/* <MdOutlineCancel /> */}
+        </button>
+        {/* </TooltipComponent> */}
       </div>
-      <div className="flex flex-col items-center border-b-1 border-gray-500 pb-4">
+      <div className="flex flex-col items-center border-b-1 border-gray-500 pb-4 pl-3">
         {links.map((item, i) => {
           return (
             isUserAllowedCategory(item.name, usersData) && (

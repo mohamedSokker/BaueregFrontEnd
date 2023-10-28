@@ -110,7 +110,7 @@ const EditTables = ({ socket }) => {
           {
             field: item,
             headerText: item,
-            width: "100",
+            width: "200",
             textAlign: "Center",
           },
         ]);
@@ -133,6 +133,8 @@ const EditTables = ({ socket }) => {
       controller.abort();
     };
   }, [tableName, token]);
+
+  const filterOptions = { ignoreAccent: true, type: "Menu" };
 
   if (loading) return <Spinner message={`Loading ${tableName} Data`} />;
   return (
@@ -157,9 +159,11 @@ const EditTables = ({ socket }) => {
             dataSource={tableData}
             allowPaging
             allowSorting
+            allowFiltering={true}
+            filterSettings={filterOptions}
             // height={250}
             allowResizing={true}
-            pageSettings={{ pageSize: 50 }}
+            pageSettings={{ pageSize: 7 }}
             autoFit={true}
             rowSelected={rowsSelected}
             ref={(g) => (grid = g)}

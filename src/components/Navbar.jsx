@@ -11,13 +11,30 @@ import { logoColor } from "../BauerColors";
 import { ToggleMode, PageLoading } from "../components";
 import { AllTables } from "../data/AllTables";
 
-const NavButton = ({ title, customFunc, icon, color, dotColor, size }) => (
+const NavButton = ({
+  title,
+  customFunc,
+  icon,
+  color,
+  dotColor,
+  size,
+  frame,
+}) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button
       type="button"
       onClick={customFunc}
       // style={{ color }}
-      className={`relative ${size} rounded-full p-3 hover:bg-gray-200 dark:text-white text-logoColor`}
+      className={`relative ${size} rounded-lg dark:text-white text-logoColor`}
+      style={
+        frame
+          ? {
+              borderWidth: 1,
+              borderColor: "rgba(0,74,128,0.5)",
+              padding: "6px",
+            }
+          : { padding: "12px" }
+      }
     >
       <span
         style={{ background: dotColor }}
@@ -44,13 +61,13 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [setScreenSize]);
 
-  useEffect(() => {
-    if (screenSize <= 900) {
-      setActiveMenu(false);
-    } else {
-      setActiveMenu(true);
-    }
-  }, [screenSize, setActiveMenu]);
+  // useEffect(() => {
+  //   if (screenSize <= 900) {
+  //     setActiveMenu(false);
+  //   } else {
+  //     setActiveMenu(true);
+  //   }
+  // }, [screenSize, setActiveMenu]);
 
   useEffect(() => {
     if (usersData.length > 0)
@@ -72,13 +89,14 @@ const Navbar = () => {
   return (
     <>
       {loading && <PageLoading message={`Backup Table ${currentTable}`} />}
-      <div className=" w-full flex justify-between p-2 md:mx-6 relative dark:text-white">
+      <div className=" w-full flex items-center justify-between p-2 md:mx-6 relative dark:text-white">
         <NavButton
           title="Menu"
           className="dark:text-white text-logoColor"
           size={`text-xl`}
           icon={<AiOutlineMenu />}
           customFunc={() => setActiveMenu((prevActiveMenu) => !prevActiveMenu)}
+          frame={true}
         />
         <div className="flex items-center dark:text-white gap-2">
           {/* {usersData[0]?.roles?.Admin && (
@@ -100,11 +118,13 @@ const Navbar = () => {
             dotColor={logoColor}
             icon={<BsChatLeft />}
             customFunc={() => {}}
+            frame={false}
           />
           <div className="relative">
             <NavButton
               title="notification"
               className="text-logoColor dark:text-white"
+              frame={false}
               size={`text-2xl`}
               dotPosition={`2`}
               icon={<IoMdNotificationsOutline />}

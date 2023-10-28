@@ -3,7 +3,7 @@ import React, { useContext, createContext, useState } from "react";
 const navContext = createContext();
 
 export const ContextProvider = ({ children }) => {
-  const [activeMenu, setActiveMenu] = useState(true);
+  const [activeMenu, setActiveMenu] = useState(false);
   const [currentMode, setCurrentMode] = useState("Light");
   const [screenSize, setScreenSize] = useState(undefined);
   const [token, setToken] = useState(null);
