@@ -10,9 +10,9 @@ export const ContextProvider = ({ children }) => {
   const [usersData, setUsersData] = useState([]);
 
   const closeSmallSidebar = () => {
-    if (screenSize <= 900) {
-      setActiveMenu(false);
-    }
+    // if (screenSize <= 900) {
+    setActiveMenu(false);
+    // }
   };
 
   return (

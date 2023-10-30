@@ -23,7 +23,7 @@ const DataEntry = () => {
 
   return (
     <div
-      className="bg-white rounded-xl Main--Content flex items-center justify-center dark:bg-background-logoColor"
+      className="w-full bg-white rounded-xl h-[100%] Main--Content flex items-center justify-center dark:bg-background-logoColor"
       onClick={closeSmallSidebar}
     >
       {renderPage()}
