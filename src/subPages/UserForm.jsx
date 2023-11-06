@@ -134,6 +134,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
   };
 
   const handleCheckboxChange = (e) => {
+    console.log(e);
     let category = e.target.dataset.cat;
     let title = e.target.dataset.title;
     if (typeof roles[category][title] === "boolean") {
@@ -146,12 +147,12 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       }));
     } else {
       if (e.target.checked) {
-        if (!roles[category][title]?.includes(e?.target?.value)) {
+        if (!roles[category][title].includes(e.target.value)) {
           setRules((prev) => ({
             ...prev,
             [category]: {
               ...prev[category],
-              [title]: [...prev[category][title], { name: e?.target?.value }],
+              [title]: [...prev[category][title], { name: e.target.value }],
             },
           }));
         }
