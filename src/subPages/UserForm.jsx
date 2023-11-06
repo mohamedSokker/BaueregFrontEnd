@@ -149,7 +149,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       }));
     } else {
       if (e.target.checked) {
-        if (!roles[category][title].includes(e.target.value)) {
+        if (
+          roles[category][title] &&
+          !roles[category][title].includes(e.target.value)
+        ) {
           setRules((prev) => ({
             ...prev,
             [category]: {
@@ -158,6 +161,14 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
             },
           }));
         }
+      } else if (!roles[category][title]) {
+        setRules((prev) => ({
+          ...prev,
+          [category]: {
+            ...prev[category],
+            [title]: [{ name: e.target.value }],
+          },
+        }));
       } else {
         let newRoles = { ...roles };
         newRoles = newRoles[category][title].filter(
