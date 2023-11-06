@@ -146,7 +146,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       }));
     } else {
       if (e.target.checked) {
-        if (!roles[category][title].includes(e.target.value)) {
+        if (!roles[category][title]?.includes(e.target.value)) {
           setRules((prev) => ({
             ...prev,
             [category]: {

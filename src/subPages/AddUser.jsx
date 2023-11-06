@@ -39,6 +39,7 @@ const AddUser = () => {
         Phone: fieldsData.phone,
         ProfileImg: `${path}${fieldsData.userName}/${fieldsData.image.name}`,
         UserRole: JSON.stringify(fieldsData.roles),
+        Token: "",
       };
       const manageUserData = async () => {
         try {
