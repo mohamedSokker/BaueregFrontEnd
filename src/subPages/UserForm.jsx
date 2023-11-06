@@ -153,6 +153,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
           roles[category][title] &&
           !roles[category][title].includes(e.target.value)
         ) {
+          console.log(`Set rules from First`);
           setRules((prev) => ({
             ...prev,
             [category]: {
@@ -160,16 +161,18 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
               [title]: [...prev[category][title], { name: e.target.value }],
             },
           }));
+        } else if (!roles[category][title]) {
+          console.log(`Set rules from Second`);
+          setRules((prev) => ({
+            ...prev,
+            [category]: {
+              ...prev[category],
+              [title]: [{ name: e.target.value }],
+            },
+          }));
         }
-      } else if (!roles[category][title]) {
-        setRules((prev) => ({
-          ...prev,
-          [category]: {
-            ...prev[category],
-            [title]: [{ name: e.target.value }],
-          },
-        }));
       } else {
+        console.log(`Set rules from Third`);
         let newRoles = { ...roles };
         newRoles = newRoles[category][title].filter(
           (role) => role.name !== e.target.value
