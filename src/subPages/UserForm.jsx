@@ -134,9 +134,11 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
   };
 
   const handleCheckboxChange = (e) => {
-    console.log(e);
+    console.log(e.target.value);
     let category = e.target.dataset.cat;
     let title = e.target.dataset.title;
+    console.log(category);
+    console.log(title);
     if (typeof roles[category][title] === "boolean") {
       setRules((prev) => ({
         ...prev,
