@@ -15,7 +15,7 @@ const Maintenance = () => {
 
   return (
     <div
-      className={`w-full flex flex-col bg-main-bg Main--Page dark:bg-background-logoColor h-full`}
+      className={`w-full flex flex-col bg-main-bg Main--Page dark:bg-background-logoColor h-full relative`}
       onClick={closeSmallSidebar}
     >
       <div className="flex flex-row justify-around h-[10%]">

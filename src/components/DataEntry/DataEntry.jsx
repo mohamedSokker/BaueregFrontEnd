@@ -2,6 +2,15 @@ import React, { useState } from "react";
 
 import Dropdown from "../Dropdown";
 import { AllStocks } from "../../data/Tablesdata";
+import BC250 from "./BC250";
+import BC1000 from "./BC1000";
+import BC2000 from "./BC2000";
+import BG250 from "./BG250";
+import BG1000 from "./BG1000";
+import BG2000 from "./BG2000";
+import MC250 from "./MC250";
+import MC1000 from "./MC1000";
+import MC2000 from "./MC2000";
 
 const equipmentTypes = [
   { Equipment_Type: "Trench_Cutting_Machine" },
@@ -46,10 +55,27 @@ const initialData = {
   Store: "",
   "Spare Part": "",
 };
+
+const initialPerMaintData = {};
+const initialSaved = {
+  BC250: false,
+  BC1000: false,
+  BC2000: false,
+  BG250: false,
+  BG1000: false,
+  BG2000: false,
+  MC250: false,
+  MC1000: false,
+  MC2000: false,
+};
 const DataEntry = () => {
   const [data, setData] = useState(initialData);
+  const [perMaintData, setPerMaintData] = useState(initialPerMaintData);
+  const [saved, setSaved] = useState(initialSaved);
 
-  console.log(data);
+  // console.log(data);
+  console.log(perMaintData);
+  // console.log(saved);
 
   const getChildData = (label, value) => {
     setData((prev) => ({ ...prev, [label]: value }));
@@ -162,6 +188,98 @@ const DataEntry = () => {
           </button>
         </div>
       </div>
+      {data[`Periodic Maintenance Interval`] === "250" &&
+        data[`Equipment Model`].startsWith("BC") &&
+        !saved.BC250 && (
+          <BC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+        )}
+      {data[`Periodic Maintenance Interval`] === "1000" &&
+        data[`Equipment Model`].startsWith("BC") && (
+          <>
+            {!saved.BC250 && (
+              <BC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.BC1000 && (
+              <BC1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+          </>
+        )}
+      {data[`Periodic Maintenance Interval`] === "2000" &&
+        data[`Equipment Model`].startsWith("BC") && (
+          <>
+            {!saved.BC250 && (
+              <BC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.BC1000 && (
+              <BC1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.BC2000 && (
+              <BC2000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+          </>
+        )}
+
+      {data[`Periodic Maintenance Interval`] === "250" &&
+        data[`Equipment Model`].startsWith("MC") &&
+        !saved.MC250 && (
+          <MC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+        )}
+      {data[`Periodic Maintenance Interval`] === "1000" &&
+        data[`Equipment Model`].startsWith("MC") && (
+          <>
+            {!saved.MC250 && (
+              <MC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.MC1000 && (
+              <MC1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+          </>
+        )}
+      {data[`Periodic Maintenance Interval`] === "2000" &&
+        data[`Equipment Model`].startsWith("MC") && (
+          <>
+            {!saved.MC250 && (
+              <MC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.MC1000 && (
+              <MC1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.MC2000 && (
+              <MC2000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+          </>
+        )}
+
+      {data[`Periodic Maintenance Interval`] === "250" &&
+        data[`Equipment Type`] === "Drilling_Machine" &&
+        !saved.BG250 && (
+          <BG250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+        )}
+      {data[`Periodic Maintenance Interval`] === "1000" &&
+        data[`Equipment Type`] === "Drilling_Machine" && (
+          <>
+            {!saved.BG250 && (
+              <BG250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.BG1000 && (
+              <BG1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+          </>
+        )}
+      {data[`Periodic Maintenance Interval`] === "2000" &&
+        data[`Equipment Type`] === "Drilling_Machine" && (
+          <>
+            {!saved.BG250 && (
+              <BG250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.BG1000 && (
+              <BG1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+            {!saved.BG2000 && (
+              <BG2000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+            )}
+          </>
+        )}
     </div>
   );
 };
