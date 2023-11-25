@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import PageLoading from "../PageLoading";
 
+const path = process.env.REACT_APP_PERMAINT_ABS_PATH;
+
 const BC2000 = ({ setPerMaintData, setSaved }) => {
   const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ const BC2000 = ({ setPerMaintData, setSaved }) => {
     const getData = async () => {
       try {
         setPerMaintData({});
-        const url = `/readExcel?path=c:/xampp/htdocs/bauereg/PeriodicMaint.xlsx&sheet=BC2000`;
+        const url = `/readExcel?path=${path}/PeriodicMaint.xlsx&sheet=BC2000`;
         const excelData = await axiosPrivate(url, { method: "GET" });
         setData(excelData?.data);
         setDataTitles(Object.keys(excelData?.data));
