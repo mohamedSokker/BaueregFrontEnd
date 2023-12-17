@@ -8,6 +8,8 @@ export const ContextProvider = ({ children }) => {
   const [screenSize, setScreenSize] = useState(undefined);
   const [token, setToken] = useState(null);
   const [usersData, setUsersData] = useState([]);
+  const [error, setError] = useState(false);
+  const [errorData, setErrorData] = useState([]);
 
   const closeSmallSidebar = () => {
     // if (screenSize <= 900) {
@@ -29,6 +31,10 @@ export const ContextProvider = ({ children }) => {
         setToken,
         usersData,
         setUsersData,
+        error,
+        setError,
+        errorData,
+        setErrorData,
       }}
     >
       {children}

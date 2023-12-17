@@ -3,10 +3,17 @@ import { useLocation, Navigate, Outlet } from "react-router-dom";
 import { useNavContext } from "../contexts/NavContext";
 import { Navbar, Sidebar } from "../components";
 import UnAuthorized from "../pages/UnAuthorized";
+import Error from "../components/Error";
 
 const RequiredAuth = ({ allowedRole }) => {
-  const { usersData, currentMode, activeMenu, closeSmallSidebar } =
-    useNavContext();
+  const {
+    usersData,
+    currentMode,
+    activeMenu,
+    closeSmallSidebar,
+    error,
+    errorData,
+  } = useNavContext();
   const location = useLocation();
 
   return usersData[0]?.roles.Editor[allowedRole] === true ||
@@ -31,6 +38,23 @@ const RequiredAuth = ({ allowedRole }) => {
         >
           <Sidebar />
         </div>
+        <div
+          className="fixed dark:bg-logoColor z-[11] left-0 bottom-4 px-4 flex flex-col gap-4"
+          style={
+            error
+              ? {
+                  transform: "translate(0)",
+                  transition: "all 0.5s ease-in-out",
+                }
+              : {
+                  transform: "translate(-100%)",
+                  transition: "all 0.5s ease-in-out",
+                }
+          }
+        >
+          <Error errorData={errorData} error={error} />
+        </div>
+
         {/* Navbar + MainPage */}
         <div
           className={`dark:bg-background-logoColor bg-main-bg min-h-screen w-full `}

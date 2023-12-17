@@ -4,27 +4,36 @@ import PageLoading from "../PageLoading";
 
 const path = process.env.REACT_APP_PERMAINT_ABS_PATH;
 
-const BC1000 = ({ setPerMaintData, setSaved }) => {
+const PerMaint = ({
+  setPerMaintData,
+  setSaved,
+  mainStyle,
+  loadingStyle,
+  style,
+  Type,
+}) => {
   const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [dataTitles, setDataTitles] = useState([]);
   const [selectedData, setSelectedData] = useState({});
 
-  //   console.log(selectedData);
+  // console.log(selectedData);
 
   useEffect(() => {
     const getData = async () => {
       try {
         setPerMaintData({});
-        const url = `/readExcel?path=${path}/PeriodicMaint.xlsx&sheet=BC1000`;
+        const url = `/readExcel?path=${path}/PeriodicMaint.xlsx&sheet=${Type}`;
         const excelData = await axiosPrivate(url, { method: "GET" });
         setData(excelData?.data);
         setDataTitles(Object.keys(excelData?.data));
         Object.keys(excelData?.data).map((title) => {
-          setSelectedData((prev) => ({ ...prev, [title]: [] }));
+          setSelectedData((prev) => ({
+            ...prev,
+            [title]: { Task: [] },
+          }));
         });
-        // console.log(Object.keys(excelData?.data));
         setLoading(false);
       } catch (err) {
         console.log(
@@ -39,42 +48,68 @@ const BC1000 = ({ setPerMaintData, setSaved }) => {
   }, []);
 
   // useEffect(() => {
-  //   setPerMaintData((prev) => ({ ...prev, BC1000: selectedData }));
+  //   setPerMaintData((prev) => ({ ...prev, MC2000: selectedData }));
   // }, [selectedData]);
+
+  const handleOilTypeChange = (e) => {
+    let title = e.target.dataset.title;
+    setSelectedData((prev) => ({
+      ...prev,
+      [title]: { ...prev[title], OilType: e.target.value },
+    }));
+  };
 
   const handleCheckbox = (e) => {
     let title = e.target.dataset.title;
     if (e.target.checked) {
       setSelectedData((prev) => ({
         ...prev,
-        [title]: [...prev[title], e.target.value],
+        [title]: {
+          ...prev[title],
+          Task: [...prev[title][`Task`], e.target.value],
+        },
       }));
     } else {
       let newData = { ...selectedData };
-      newData = newData[title].filter((data) => data !== e.target.value);
-      setSelectedData((prev) => ({ ...prev, [title]: newData }));
+      newData = newData[title][`Task`].filter(
+        (data) => data !== e.target.value
+      );
+      setSelectedData((prev) => ({
+        ...prev,
+        [title]: { Task: newData, OilType: selectedData[title][`OilType`] },
+      }));
     }
   };
+
   const handleSave = () => {
     let newData = {};
     dataTitles.map((title) => {
-      if (selectedData[title].length !== 0) {
+      if (selectedData[title][`Task`].length !== 0) {
         newData = { ...newData, [title]: selectedData[title] };
       }
     });
-    setPerMaintData((prev) => ({ ...prev, BC1000: newData }));
-    setSaved((prev) => ({ ...prev, BC1000: true }));
+    if (Object.keys(newData).length > 0) {
+      setPerMaintData((prev) => ({ ...prev, [Type]: newData }));
+    }
+
+    setSaved((prev) => ({ ...prev, [Type]: true }));
   };
   return (
-    <div className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] flex items-center justify-center z-8">
+    <div
+      className="absolute top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] flex items-center justify-center"
+      style={mainStyle}
+    >
       {loading ? (
-        <div className="p-4 mt-10">
+        <div className="p-4" style={loadingStyle}>
           <PageLoading message={`Loading View`} />
         </div>
       ) : (
-        <div className="p-4 mt-10 flex flex-nowrap whitespace-nowrap text-white flex-col bg-logoColor rounded-md gap-4 border-1 border-white w-[60%] max-h-[60%] overflow-y-auto">
+        <div
+          className="p-4 flex flex-nowrap whitespace-nowrap text-white flex-col bg-logoColor rounded-md gap-4 border-1 border-white w-[60%] max-h-[80%] overflow-y-auto"
+          style={style}
+        >
           <div className="flex justify-center items-center w-full text-orange-500 font-extrabold text-[20px] mt-auto">
-            <p>BC1000 Periodic Maintenance Interval</p>
+            <p>{Type} Periodic Maintenance Interval</p>
           </div>
           {dataTitles?.map((d, i) => (
             <div
@@ -87,12 +122,35 @@ const BC1000 = ({ setPerMaintData, setSaved }) => {
                   key={i1}
                   className=" px-6 flex flex-row justify-between items-center w-full gap-6"
                 >
-                  <p className="text-[16px]">{`${i1 + 1} - ${" "} ${d1}`}</p>
+                  <p className="text-[16px]">{`${i1 + 1} - ${" "} ${
+                    d1.Task
+                  }`}</p>
+                  {d1?.OilType && d1?.OilType?.split(",")?.length > 0 && (
+                    <select
+                      className="px-8 bg-white border-1 border-orange-500 rounded-md "
+                      style={{
+                        color: "black",
+                      }}
+                      data-title={d}
+                      onChange={handleOilTypeChange}
+                    >
+                      {d1?.OilType?.split(",").map((type, i) => (
+                        <React.Fragment key={i}>
+                          <option hidden disabled selected value>
+                            {""}
+                          </option>
+                          <option>{type}</option>
+                        </React.Fragment>
+                      ))}
+                    </select>
+                  )}
                   <input
                     type="checkbox"
-                    value={d1}
+                    value={d1.Task}
                     data-title={d}
-                    checked={selectedData[d].includes(d1) ? true : false}
+                    checked={
+                      selectedData[d]?.Task?.includes(d1.Task) ? true : false
+                    }
                     onChange={handleCheckbox}
                   />
                 </div>
@@ -114,4 +172,4 @@ const BC1000 = ({ setPerMaintData, setSaved }) => {
   );
 };
 
-export default BC1000;
+export default PerMaint;

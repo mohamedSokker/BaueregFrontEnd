@@ -1,34 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ColorRing } from "react-loader-spinner";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { AiOutlineCaretDown } from "react-icons/ai";
 
-const Dropdown = ({ label, URL, column, local, localData, getChildData }) => {
+const Dropdown = ({
+  label,
+  URL,
+  column,
+  local,
+  localData,
+  getChildData,
+  condition,
+}) => {
   const axiosPrivate = useAxiosPrivate();
   const [datas, setDatas] = useState([]);
   const [data, setData] = useState("");
   const [datasLoading, setDatasLoading] = useState(false);
 
+  useEffect(() => {
+    setDatas([]);
+  }, [localData]);
+
+  // console.log(label);
+  // console.log(datas);
+  // console.log(localData);
+  // console.log(condition);
+
   const handledatasClick = async () => {
-    if (datas.length === 0) {
-      if (!local) {
-        try {
-          setDatasLoading(true);
-          const url = URL;
-          const result = await axiosPrivate(url, {
-            //   signal: controller.signal,
-            method: "GET",
-          });
-          setDatas(result?.data);
-        } catch (error) {
-          console.log(error.message);
-        } finally {
-          setDatasLoading(false);
-        }
-      } else {
+    try {
+      if (!condition) throw new Error(`Can't choose this right away`);
+      if (local) {
+        setDatasLoading(true);
         setDatas(localData);
+        setDatasLoading(false);
+      } else if (datas.length === 0) {
+        setDatasLoading(true);
+        const url = URL;
+        const result = await axiosPrivate(url, {
+          //   signal: controller.signal,
+          method: "GET",
+        });
+        setDatas(result?.data);
       }
+    } catch (err) {
+      alert(
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message
+      );
+    } finally {
+      setDatasLoading(false);
     }
   };
 
@@ -46,12 +68,13 @@ const Dropdown = ({ label, URL, column, local, localData, getChildData }) => {
           style={{ color: datas.length === 0 ? "rgb(156 163 175)" : "black" }}
           onClick={handledatasClick}
           onChange={handledatasChange}
+          value={datas.length === 0 ? `Select ${label}` : data}
         >
           {datas.length === 0 ? (
             <option>{`Select ${label}`}</option>
           ) : (
             <>
-              <option hidden disabled selected value>
+              <option hidden selected>
                 {""}
               </option>
               {datas?.map((site, i) => (

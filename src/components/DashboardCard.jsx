@@ -86,7 +86,8 @@ const DashboardCard = ({
   };
 
   useEffect(() => {
-    if (data?.data) {
+    console.log(data?.data);
+    if (data?.data && data?.data?.length > 0) {
       const array = Object.keys(data?.data[0]);
       let targetArray = [];
       if (array.includes("Machinery_Type")) {

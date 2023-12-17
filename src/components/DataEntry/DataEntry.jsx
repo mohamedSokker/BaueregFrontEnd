@@ -1,16 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Dropdown from "../Dropdown";
 import { AllStocks } from "../../data/Tablesdata";
-import BC250 from "./BC250";
-import BC1000 from "./BC1000";
-import BC2000 from "./BC2000";
-import BG250 from "./BG250";
-import BG1000 from "./BG1000";
-import BG2000 from "./BG2000";
-import MC250 from "./MC250";
-import MC1000 from "./MC1000";
-import MC2000 from "./MC2000";
+import PerMaint from "./PerMaint";
+import PageLoading from "../PageLoading";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useNavContext } from "../../contexts/NavContext";
 
 const equipmentTypes = [
   { Equipment_Type: "Trench_Cutting_Machine" },
@@ -33,6 +28,14 @@ const stocksList = () => {
   return stocks;
 };
 
+const jsonifyArray = (array, name) => {
+  let arr = [];
+  for (let i = 0; i < array?.length; i++) {
+    arr.push({ [name]: array[i] });
+  }
+  return arr;
+};
+
 const getDate = (date) => {
   const dt = new Date(date);
   dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
@@ -49,8 +52,8 @@ const initialData = {
   "Periodic Maintenance Interval": "",
   Problem: "",
   Action: "",
-  "Problem Start From": "",
-  "Problem End To": "",
+  "Problem Start From": new Date(),
+  "Problem End To": new Date(),
   "Site QC Time": "",
   Store: "",
   "Spare Part": "",
@@ -68,13 +71,149 @@ const initialSaved = {
   MC1000: false,
   MC2000: false,
 };
+const initialAllData = {
+  sites: [],
+  eqsModel: [],
+  eqsType: [],
+  eqs: [],
+  store: [],
+};
 const DataEntry = () => {
+  const { usersData } = useNavContext();
   const [data, setData] = useState(initialData);
   const [perMaintData, setPerMaintData] = useState(initialPerMaintData);
   const [saved, setSaved] = useState(initialSaved);
+  const [loading, setLoading] = useState(true);
+  const [siteData, setSiteData] = useState([]);
+  const [sites, setSites] = useState([]);
+  const [allData, setAllData] = useState(initialAllData);
 
-  // console.log(data);
-  console.log(perMaintData);
+  const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const url = `/api/v1/getActiveData`;
+        const result = await axiosPrivate(url, {
+          method: "POST",
+          data: JSON.stringify({ username: "Mohamed Atef" }),
+        });
+        setSiteData(result?.data);
+        setLoading(false);
+      } catch (err) {
+        alert(
+          err?.response?.data?.message
+            ? err?.response?.data?.message
+            : err?.message
+        );
+        setLoading(false);
+      }
+    };
+    getData();
+    setAllData((prev) => ({
+      ...prev,
+      store: jsonifyArray(AllStocks, `stock`),
+    }));
+  }, []);
+
+  useEffect(() => {
+    let sites = [];
+
+    sites = siteData?.usersResult
+      ? siteData?.usersResult[0]?.Locations?.split(",")
+      : [];
+    if (sites)
+      sites = sites?.filter(
+        (value, index, array) => array.indexOf(value) === index
+      );
+    setSites(sites);
+    setAllData((prev) => ({
+      ...prev,
+      sites: jsonifyArray(sites, "Location"),
+      eqsType: [],
+      eqsModel: [],
+      eqs: [],
+    }));
+  }, [siteData]);
+
+  useEffect(() => {
+    let eqType = [];
+    const sitesFilter = siteData?.sitesResult
+      ? siteData?.sitesResult?.filter((site) => site?.Location === data?.Site)
+      : [];
+    sitesFilter?.map((d) => {
+      eqType.push(d.Equipment_Type);
+    });
+
+    if (eqType)
+      eqType = eqType?.filter(
+        (value, index, array) => array.indexOf(value) === index
+      );
+    setAllData((prev) => ({
+      ...prev,
+      eqsType: jsonifyArray(eqType, "Equipment_Type"),
+      eqsModel: [],
+      eqs: [],
+    }));
+    setData((prev) => ({
+      ...prev,
+      "Equipment Type": "",
+      "Equipment Model": "",
+      Equipment: "",
+    }));
+  }, [data?.Site]);
+
+  useEffect(() => {
+    let eqModel = [];
+    const sitesFilter = siteData?.sitesResult
+      ? siteData?.sitesResult?.filter(
+          (site) =>
+            site?.Location === data?.Site &&
+            site?.Equipment_Type === data["Equipment Type"]
+        )
+      : [];
+    sitesFilter?.map((d) => {
+      eqModel.push(d.Equipment_Model);
+    });
+    if (eqModel)
+      eqModel = eqModel?.filter(
+        (value, index, array) => array.indexOf(value) === index
+      );
+    setAllData((prev) => ({
+      ...prev,
+      eqsModel: jsonifyArray(eqModel, "Equipment_Model"),
+      eqs: [],
+    }));
+    setData((prev) => ({
+      ...prev,
+      "Equipment Model": "",
+      Equipment: "",
+    }));
+  }, [data["Equipment Type"]]);
+
+  useEffect(() => {
+    let eq = [];
+    const sitesFilter = siteData?.sitesResult
+      ? siteData?.sitesResult?.filter(
+          (site) =>
+            site?.Location === data?.Site &&
+            site?.Equipment_Type === data["Equipment Type"] &&
+            site?.Equipment_Model === data["Equipment Model"]
+        )
+      : [];
+    sitesFilter?.map((d) => {
+      eq.push(d.Equipment);
+    });
+
+    if (eq)
+      eq = eq?.filter((value, index, array) => array.indexOf(value) === index);
+    setAllData((prev) => ({ ...prev, eqs: jsonifyArray(eq, "Equipment") }));
+    // console.log(eq);
+  }, [data["Equipment Model"]]);
+
+  console.log(data);
+  // console.log(perMaintData);
+  // console.log(allData);
   // console.log(saved);
 
   const getChildData = (label, value) => {
@@ -83,33 +222,48 @@ const DataEntry = () => {
 
   return (
     <div className="w-full h-full flex flex-col justify-around">
+      {loading && (
+        <div className="p-4">
+          <PageLoading message={`Loading Selection Data`} />
+        </div>
+      )}
       <div className="w-[100%] h-[100%] flex flex-row flex-wrap justify-start items-start overflow-auto">
         <Dropdown
           label="Site"
-          URL="/api/v1/Location_Bauer"
+          // URL="/api/v1/Location_Bauer"
           column="Location"
-          local={false}
+          condition={true}
+          local={true}
+          localData={allData?.sites}
           getChildData={getChildData}
         />
         <Dropdown
           label="Breakdown"
           URL="/api/v1/Bauer_Breakdown"
-          column="Trench_Cutting_Machine"
+          column={data["Equipment Type"]}
+          condition={data["Equipment Type"] !== ""}
           local={false}
           getChildData={getChildData}
         />
         <div className="p-2 flex flex-row justify-start items-center">
           <input
             type="datetime-local"
-            value={getDate(new Date())}
+            value={getDate(data["Problem Start From"])}
             className="w-[30vw] border-1 border-logoColor rounded-md outline-none p-2"
+            onChange={(e) =>
+              setData((prev) => ({
+                ...prev,
+                "Problem Start From": new Date(e?.target?.value),
+              }))
+            }
           />
         </div>
         <Dropdown
           label="Equipment Type"
           local={true}
-          localData={equipmentTypes}
+          localData={allData?.eqsType}
           column="Equipment_Type"
+          condition={data?.Site !== ""}
           getChildData={getChildData}
         />
         <Dropdown
@@ -117,6 +271,7 @@ const DataEntry = () => {
           local={true}
           localData={perMaintPlan}
           column="plan"
+          condition={data?.Breakdown === `Periodic Maintenance`}
           getChildData={getChildData}
         />
         <div className="p-2 flex flex-row justify-start items-center">
@@ -124,13 +279,18 @@ const DataEntry = () => {
             type="text"
             placeholder="Site QC Time"
             className="w-[30vw] border-1 border-logoColor rounded-md outline-none p-2"
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, "Site QC Time": e.target.value }))
+            }
           />
         </div>
         <Dropdown
           label="Equipment Model"
-          URL="/api/v1/Bauer_Equipments"
-          local={false}
+          // URL="/api/v1/Bauer_Equipments"
+          local={true}
+          localData={allData?.eqsModel}
           column="Equipment_Model"
+          condition={data?.Site !== "" && data["Equipment Type"] !== ""}
           getChildData={getChildData}
         />
         <div className="p-2 flex flex-row justify-start items-center">
@@ -138,20 +298,30 @@ const DataEntry = () => {
             type="text"
             placeholder="Problem"
             className="w-[30vw] border-1 border-logoColor rounded-md outline-none p-2"
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, Problem: e.target.value }))
+            }
           />
         </div>
         <Dropdown
           label="Store"
           local={true}
-          localData={stocksList()}
+          localData={allData?.store}
           column="stock"
+          condition={data?.Site !== ""}
           getChildData={getChildData}
         />
         <Dropdown
           label="Equipment"
-          URL="/api/v1/Bauer_Equipments"
+          // URL="/api/v1/Bauer_Equipments"
           column="Equipment"
-          local={false}
+          condition={
+            data?.Site !== "" &&
+            data["Equipment Type"] !== "" &&
+            data["Equipment Model"] !== ""
+          }
+          local={true}
+          localData={allData?.eqs}
           getChildData={getChildData}
         />
         <div className="p-2 flex flex-row justify-start items-center">
@@ -159,6 +329,9 @@ const DataEntry = () => {
             type="text"
             placeholder="Action"
             className="w-[30vw] border-1 border-logoColor rounded-md outline-none p-2"
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, Action: e.target.value }))
+            }
           />
         </div>
         <div className="p-2 flex flex-row justify-start items-center">
@@ -166,6 +339,9 @@ const DataEntry = () => {
             type="text"
             placeholder="Spare Part"
             className="w-[30vw] border-1 border-logoColor rounded-md outline-none p-2"
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, "Spare Part": e.target.value }))
+            }
           />
         </div>
         <div className="p-2 flex flex-row justify-start items-center">
@@ -173,13 +349,22 @@ const DataEntry = () => {
             type="text"
             placeholder="Working Hours"
             className="w-[30vw] border-1 border-logoColor rounded-md outline-none p-2"
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, "Working Hours": e.target.value }))
+            }
           />
         </div>
         <div className="p-2 flex flex-row justify-start items-center">
           <input
             type="datetime-local"
-            value={getDate(new Date())}
+            value={getDate(data["Problem End To"])}
             className="w-[30vw] border-1 border-logoColor rounded-md outline-none p-2"
+            onChange={(e) =>
+              setData((prev) => ({
+                ...prev,
+                "Problem End To": new Date(e?.target?.value),
+              }))
+            }
           />
         </div>
         <div className="w-[100%] h-[20%] text-white font-bold text-[16px] flex items-center p-2">
@@ -191,16 +376,37 @@ const DataEntry = () => {
       {data[`Periodic Maintenance Interval`] === "250" &&
         data[`Equipment Model`].startsWith("BC") &&
         !saved.BC250 && (
-          <BC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+          <PerMaint
+            setPerMaintData={setPerMaintData}
+            setSaved={setSaved}
+            Type={`BC250`}
+            mainStyle={{ zIndex: 7 }}
+            loadingStyle={{}}
+            style={{}}
+          />
         )}
       {data[`Periodic Maintenance Interval`] === "1000" &&
         data[`Equipment Model`].startsWith("BC") && (
           <>
             {!saved.BC250 && (
-              <BC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BC250`}
+                mainStyle={{ zIndex: 7 }}
+                loadingStyle={{}}
+                style={{}}
+              />
             )}
             {!saved.BC1000 && (
-              <BC1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BC1000`}
+                mainStyle={{ zIndex: 8 }}
+                loadingStyle={{ marginTop: `40px` }}
+                style={{ marginTop: `40px` }}
+              />
             )}
           </>
         )}
@@ -208,13 +414,34 @@ const DataEntry = () => {
         data[`Equipment Model`].startsWith("BC") && (
           <>
             {!saved.BC250 && (
-              <BC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BC250`}
+                mainStyle={{ zIndex: 7 }}
+                loadingStyle={{}}
+                style={{}}
+              />
             )}
             {!saved.BC1000 && (
-              <BC1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BC1000`}
+                mainStyle={{ zIndex: 8 }}
+                loadingStyle={{ marginTop: `40px` }}
+                style={{ marginTop: `40px` }}
+              />
             )}
             {!saved.BC2000 && (
-              <BC2000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BC2000`}
+                mainStyle={{ zIndex: 9 }}
+                loadingStyle={{ marginTop: `80px` }}
+                style={{ marginTop: `80px` }}
+              />
             )}
           </>
         )}
@@ -222,16 +449,37 @@ const DataEntry = () => {
       {data[`Periodic Maintenance Interval`] === "250" &&
         data[`Equipment Model`].startsWith("MC") &&
         !saved.MC250 && (
-          <MC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+          <PerMaint
+            setPerMaintData={setPerMaintData}
+            setSaved={setSaved}
+            Type={`MC250`}
+            mainStyle={{ zIndex: 7 }}
+            loadingStyle={{}}
+            style={{}}
+          />
         )}
       {data[`Periodic Maintenance Interval`] === "1000" &&
         data[`Equipment Model`].startsWith("MC") && (
           <>
             {!saved.MC250 && (
-              <MC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`MC250`}
+                mainStyle={{ zIndex: 7 }}
+                loadingStyle={{}}
+                style={{}}
+              />
             )}
             {!saved.MC1000 && (
-              <MC1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`MC1000`}
+                mainStyle={{ zIndex: 8 }}
+                loadingStyle={{ marginTop: `40px` }}
+                style={{ marginTop: `40px` }}
+              />
             )}
           </>
         )}
@@ -239,13 +487,34 @@ const DataEntry = () => {
         data[`Equipment Model`].startsWith("MC") && (
           <>
             {!saved.MC250 && (
-              <MC250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`MC250`}
+                mainStyle={{ zIndex: 7 }}
+                loadingStyle={{}}
+                style={{}}
+              />
             )}
             {!saved.MC1000 && (
-              <MC1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`MC1000`}
+                mainStyle={{ zIndex: 8 }}
+                loadingStyle={{ marginTop: `40px` }}
+                style={{ marginTop: `40px` }}
+              />
             )}
             {!saved.MC2000 && (
-              <MC2000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`MC2000`}
+                mainStyle={{ zIndex: 9 }}
+                loadingStyle={{ marginTop: `80px` }}
+                style={{ marginTop: `80px` }}
+              />
             )}
           </>
         )}
@@ -253,16 +522,37 @@ const DataEntry = () => {
       {data[`Periodic Maintenance Interval`] === "250" &&
         data[`Equipment Type`] === "Drilling_Machine" &&
         !saved.BG250 && (
-          <BG250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+          <PerMaint
+            setPerMaintData={setPerMaintData}
+            setSaved={setSaved}
+            Type={`BG250`}
+            mainStyle={{ zIndex: 7 }}
+            loadingStyle={{}}
+            style={{}}
+          />
         )}
       {data[`Periodic Maintenance Interval`] === "1000" &&
         data[`Equipment Type`] === "Drilling_Machine" && (
           <>
             {!saved.BG250 && (
-              <BG250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BG250`}
+                mainStyle={{ zIndex: 7 }}
+                loadingStyle={{}}
+                style={{}}
+              />
             )}
             {!saved.BG1000 && (
-              <BG1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BG1000`}
+                mainStyle={{ zIndex: 8 }}
+                loadingStyle={{ marginTop: `40px` }}
+                style={{ marginTop: `40px` }}
+              />
             )}
           </>
         )}
@@ -270,13 +560,34 @@ const DataEntry = () => {
         data[`Equipment Type`] === "Drilling_Machine" && (
           <>
             {!saved.BG250 && (
-              <BG250 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BG250`}
+                mainStyle={{ zIndex: 7 }}
+                loadingStyle={{}}
+                style={{}}
+              />
             )}
             {!saved.BG1000 && (
-              <BG1000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BG1000`}
+                mainStyle={{ zIndex: 8 }}
+                loadingStyle={{ marginTop: `40px` }}
+                style={{ marginTop: `40px` }}
+              />
             )}
             {!saved.BG2000 && (
-              <BG2000 setPerMaintData={setPerMaintData} setSaved={setSaved} />
+              <PerMaint
+                setPerMaintData={setPerMaintData}
+                setSaved={setSaved}
+                Type={`BG2000`}
+                mainStyle={{ zIndex: 9 }}
+                loadingStyle={{ marginTop: `80px` }}
+                style={{ marginTop: `80px` }}
+              />
             )}
           </>
         )}
