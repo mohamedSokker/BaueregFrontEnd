@@ -15,6 +15,7 @@ const useAvailability = (tableName) => {
     setFieldsLoading,
     setFieldsPerLoading,
     setFieldsAllData,
+    setFieldsAllResults,
     setFieldsXData,
     setFieldsYData,
     setFieldsData,
@@ -55,6 +56,10 @@ const useAvailability = (tableName) => {
             method: "POST",
             data: JSON.stringify(body),
           });
+          setFieldsAllResults((prev) => ({
+            ...prev,
+            Availability: result?.data?.data,
+          }));
           let data = [];
           result?.data?.data.map((item) => {
             data.push({

@@ -15,6 +15,7 @@ const useProductionTrench = (tableName) => {
     setFieldsLoading,
     setFieldsPerLoading,
     setFieldsAllData,
+    setFieldsAllResults,
     setFieldsXData,
     setFieldsYData,
     setFieldsData,
@@ -66,6 +67,10 @@ const useProductionTrench = (tableName) => {
             method: "POST",
             data: JSON.stringify(body),
           });
+          setFieldsAllResults((prev) => ({
+            ...prev,
+            ProductionTrench: result?.data?.data,
+          }));
           let data = [];
           result?.data?.data?.map((item) => {
             data.push({

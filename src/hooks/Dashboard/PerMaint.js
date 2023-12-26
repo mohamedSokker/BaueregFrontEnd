@@ -16,6 +16,7 @@ const usePerMaint = () => {
     setErrorDetails,
     setFieldsLoading,
     setFieldsData,
+    setFieldsAllResults,
     cardsData,
   } = useDashboardContext();
 
@@ -44,6 +45,7 @@ const usePerMaint = () => {
             method: "POST",
             data: JSON.stringify(body),
           });
+          setFieldsAllResults(result?.data);
           // console.log(result);
           let targetData = [];
           result?.data?.map((d) => {

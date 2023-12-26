@@ -15,6 +15,7 @@ const useFuelConsumption = (tableName) => {
     setFieldsLoading,
     setFieldsPerLoading,
     setFieldsAllData,
+    setFieldsAllResults,
     setFieldsXData,
     setFieldsYData,
     setFieldsData,
@@ -65,6 +66,7 @@ const useFuelConsumption = (tableName) => {
             method: "POST",
             data: JSON.stringify(body),
           });
+          setFieldsAllResults(result?.data);
           let data = [];
           result?.data?.data?.map((item) => {
             data.push({

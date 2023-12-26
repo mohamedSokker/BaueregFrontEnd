@@ -16,6 +16,7 @@ const useBreakdown = () => {
     setErrorDetails,
     setFieldsLoading,
     setFieldsData,
+    setFieldsAllResults,
     cardsData,
   } = useDashboardContext();
 
@@ -41,9 +42,13 @@ const useBreakdown = () => {
             method: "POST",
             data: JSON.stringify(body),
           });
+          setFieldsAllResults((prev) => ({
+            ...prev,
+            Breakdowns: result?.data?.data,
+          }));
           setFieldsData((prev) => ({
             ...prev,
-            Breakdowns: result?.data,
+            Breakdowns: result?.data?.graphData,
           }));
           setFieldsLoading((prev) => ({ ...prev, Breakdowns: false }));
         } catch (err) {

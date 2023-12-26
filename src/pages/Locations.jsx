@@ -28,6 +28,7 @@ const Locations = () => {
     setCardsData,
     fieldsData,
     fieldsAllData,
+    fieldsAllResults,
     fieldsXData,
     fieldsYData,
     fieldsPerData,
@@ -117,6 +118,7 @@ const Locations = () => {
             loading={fieldsLoading.Availability}
             perLoading={fieldsPerLoading.Availability}
             data={fieldsAllData.Availability}
+            result={fieldsAllResults.Availability}
             xData={fieldsXData.Availability}
             yData={fieldsYData.Availability}
             label="Percentage"
@@ -138,6 +140,7 @@ const Locations = () => {
             loading={fieldsLoading.FuelConsumption}
             perLoading={fieldsPerLoading.FuelConsumption}
             data={fieldsAllData.FuelConsumption}
+            result={fieldsAllResults.FuelConsumption}
             xData={fieldsXData.FuelConsumption}
             yData={fieldsYData.FuelConsumption}
             label="Consumption"
@@ -159,6 +162,7 @@ const Locations = () => {
             loading={fieldsLoading.OilConsumption}
             perLoading={fieldsPerLoading.OilConsumption}
             data={fieldsAllData.OilConsumption}
+            result={fieldsAllResults.OilConsumption}
             xData={fieldsXData.OilConsumption}
             yData={fieldsYData.OilConsumption}
             label="Consumption"
@@ -180,6 +184,7 @@ const Locations = () => {
             loading={fieldsLoading.ProductionTrench}
             perLoading={fieldsPerLoading.ProductionTrench}
             data={fieldsAllData.ProductionTrench}
+            result={fieldsAllResults.ProductionTrench}
             xData={fieldsXData.ProductionTrench}
             yData={fieldsYData.ProductionTrench}
             label="m2"
@@ -201,6 +206,7 @@ const Locations = () => {
             loading={fieldsLoading.ProductionPiles}
             perLoading={fieldsPerLoading.ProductionPiles}
             data={fieldsAllData.ProductionPiles}
+            result={fieldsAllResults.ProductionPiles}
             xData={fieldsXData.ProductionPiles}
             yData={fieldsYData.ProductionPiles}
             label="ml"
@@ -250,6 +256,7 @@ const Locations = () => {
           cardsData={cardsData?.Breakdowns}
           getChildData={getChildData}
           data={fieldsData.Breakdowns}
+          result={fieldsAllResults.Breakdowns}
           loading={fieldsLoading.Breakdowns}
         />
       </div>

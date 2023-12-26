@@ -15,6 +15,7 @@ const useProductionPiles = (tableName) => {
     setFieldsLoading,
     setFieldsPerLoading,
     setFieldsAllData,
+    setFieldsAllResults,
     setFieldsXData,
     setFieldsYData,
     setFieldsData,
@@ -66,6 +67,7 @@ const useProductionPiles = (tableName) => {
             method: "POST",
             data: JSON.stringify(body),
           });
+          setFieldsAllResults(result?.data);
           let data = [];
           result?.data?.data?.map((item) => {
             data.push({

@@ -17,6 +17,7 @@ const useAvailability = () => {
     setFieldsLoading,
     setFieldsPerLoading,
     setFieldsAllData,
+    setFieldsAllResults,
     setFieldsXData,
     setFieldsYData,
     setFieldsData,
@@ -55,7 +56,6 @@ const useAvailability = () => {
             signal: controller.signal,
             method: "POST",
             data: JSON.stringify(body),
-            // body: JSON.stringify(body),
           });
           console.log(result);
           let data = [];
@@ -66,6 +66,10 @@ const useAvailability = () => {
             });
             return data;
           });
+          setFieldsAllResults((prev) => ({
+            ...prev,
+            Availability: result?.data?.data,
+          }));
           setFieldsAllData((prev) => ({
             ...prev,
             Availability: data,

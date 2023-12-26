@@ -40,6 +40,13 @@ export const DashboardContextProvider = ({ children }) => {
     ProductionTrench: [],
     ProductionPiles: [],
   });
+  const [fieldsAllResults, setFieldsAllResults] = useState({
+    Availability: [],
+    FuelConsumption: [],
+    OilConsumption: [],
+    ProductionTrench: [],
+    ProductionPiles: [],
+  });
   const [fieldsXData, setFieldsXData] = useState({
     Availability: [],
     FuelConsumption: [],
@@ -87,6 +94,8 @@ export const DashboardContextProvider = ({ children }) => {
         setFieldsData,
         fieldsAllData,
         setFieldsAllData,
+        fieldsAllResults,
+        setFieldsAllResults,
         fieldsXData,
         setFieldsXData,
         fieldsYData,

@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { BsFilterLeft } from "react-icons/bs";
-import { BiTrendingUp, BiTrendingDown } from "react-icons/bi";
+import { MdOutlineCancel } from "react-icons/md";
+import { FaDatabase } from "react-icons/fa";
 import { PieChart, SparkLineChart } from "@mui/x-charts";
 import { ColorRing } from "react-loader-spinner";
+import {
+  GridComponent,
+  ColumnsDirective,
+  ColumnDirective,
+  Page,
+  Selection,
+  Inject,
+  Edit,
+  Toolbar,
+  Sort,
+  Filter,
+  Search,
+  Resize,
+  ContextMenu,
+  ExcelExport,
+  PdfExport,
+} from "@syncfusion/ej2-react-grids";
 
 const DashboardBrekdownCard = ({
   name,
@@ -10,6 +28,7 @@ const DashboardBrekdownCard = ({
   getChildData,
   cardsData,
   data,
+  result,
   loading,
 }) => {
   const [dateValue, setDateValue] = useState(
@@ -23,6 +42,58 @@ const DashboardBrekdownCard = ({
   );
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [totalSum, setTotalSum] = useState(0);
+  const [isResult, setIsResult] = useState(false);
+  const [tableData, setTableData] = useState({});
+  const [tableGrid, setTableGrid] = useState([]);
+  const [selectedRow, setSelectedRow] = useState({});
+  const [selectedIndex, setSelectedIndex] = useState({});
+
+  let grid;
+
+  const getData = async () => {
+    try {
+      setTableData(result);
+      setTableGrid([]);
+      Object.keys(result[0]).map((item) => {
+        setTableGrid((prev) => [
+          ...prev,
+          {
+            field: item,
+            headerText: item,
+            width: "200",
+            textAlign: "Center",
+          },
+        ]);
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  useEffect(() => {
+    if (result) getData();
+  }, [result]);
+
+  const filterOptions = { ignoreAccent: true, type: "Menu" };
+
+  const toolbarClick = (args) => {
+    if (grid) {
+      if (args.item.text === "PDF Export") {
+        grid.pdfExport();
+      } else if (args.item.text === "Excel Export") {
+        grid.excelExport();
+      }
+    }
+  };
+
+  const rowsSelected = () => {
+    if (grid) {
+      const selectedrowindex = grid.getSelectedRowIndexes();
+      const selectedrecords = grid.getSelectedRecords();
+      setSelectedIndex(selectedrowindex);
+      setSelectedRow(JSON.stringify(selectedrecords));
+    }
+  };
 
   const filters = ["All", "Trench_Cutting_Machine", "Drilling_Machine"];
 
@@ -32,7 +103,8 @@ const DashboardBrekdownCard = ({
   };
 
   useEffect(() => {
-    setTotalSum(0);
+    console.log(data);
+    if (data) setTotalSum(0);
     data.map((d) => setTotalSum((prev) => prev + d.value));
   }, [data]);
 
@@ -48,6 +120,63 @@ const DashboardBrekdownCard = ({
     <div
       className={`md:w-[99%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
     >
+      {isResult && (
+        <div className="absolute top-[20px] left-[2.5vw] md:w-[95vw] w-[85vw] h-[80vh] z-[1000] bg-gray-100 rounded-lg shadow-lg">
+          <div className="w-full h-full relative flex flex-col p-2">
+            <div className="w-full flex items-center justify-center h-[10%]">
+              <p className="flex justify-center text-[16px] font-bold">
+                {name}
+              </p>
+            </div>
+            <div className="w-full h-[90%] relative flex items-center overflow-x-auto flex-nowrap whitespace-nowrap">
+              <GridComponent
+                style={{ marginLeft: `auto` }}
+                dataSource={tableData}
+                allowPaging
+                allowSorting
+                allowFiltering={true}
+                filterSettings={filterOptions}
+                // height={250}
+                allowResizing={true}
+                pageSettings={{ pageSize: 7 }}
+                autoFit={true}
+                rowSelected={rowsSelected}
+                ref={(g) => (grid = g)}
+                toolbar={["ExcelExport", "PdfExport", "Search"]}
+                toolbarClick={toolbarClick}
+                allowExcelExport={true}
+                allowPdfExport={true}
+              >
+                <ColumnsDirective>
+                  {tableGrid.map((item, index) => (
+                    <ColumnDirective key={index} {...item} />
+                  ))}
+                </ColumnsDirective>
+                <Inject
+                  services={[
+                    Page,
+                    Toolbar,
+                    Selection,
+                    Sort,
+                    Filter,
+                    Search,
+                    Resize,
+                    ContextMenu,
+                    ExcelExport,
+                    PdfExport,
+                  ]}
+                />
+              </GridComponent>
+            </div>
+            <div
+              className="absolute right-2 top-2 w-4 h-4 rounded-full cursor-pointer"
+              onClick={() => setIsResult(false)}
+            >
+              <MdOutlineCancel />
+            </div>
+          </div>
+        </div>
+      )}
       <div className=" h-[12%] w-full flex flex-row justify-between items-center">
         <p className=" text-[16px] font-bold pl-2">{name}</p>
         <div className="flex justify-end relative">
@@ -60,10 +189,13 @@ const DashboardBrekdownCard = ({
             onChange={changeDateValue}
           />
           <button
-            className="text-[20px]"
+            className="text-[20px] mr-2"
             onClick={() => setIsFilterActive((prev) => !prev)}
           >
             <BsFilterLeft />
+          </button>
+          <button className="text-[15px]" onClick={() => setIsResult(true)}>
+            <FaDatabase />
           </button>
           {isFilterActive && (
             <div className="absolute flex flex-col top-0 -left-[60px] z-10 bg-gray-200 p-2 rounded-md text-[10px]">

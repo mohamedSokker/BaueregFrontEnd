@@ -17,6 +17,7 @@ const useProductionPiles = () => {
     setFieldsLoading,
     setFieldsPerLoading,
     setFieldsAllData,
+    setFieldsAllResults,
     setFieldsXData,
     setFieldsYData,
     setFieldsData,
@@ -67,6 +68,10 @@ const useProductionPiles = () => {
             method: "POST",
             data: JSON.stringify(body),
           });
+          setFieldsAllResults((prev) => ({
+            ...prev,
+            ProductionPiles: result?.data?.data,
+          }));
           console.log(result);
           let data = [];
           result?.data?.data?.map((item) => {
