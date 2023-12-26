@@ -56,7 +56,10 @@ const useAvailability = (tableName) => {
             method: "POST",
             data: JSON.stringify(body),
           });
-          setFieldsAllResults(result?.data);
+          setFieldsAllResults((prev) => ({
+            ...prev,
+            Availability: result?.data?.data,
+          }));
           let data = [];
           result?.data?.data?.map((item) => {
             data.push({
