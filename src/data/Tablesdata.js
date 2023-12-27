@@ -1,6 +1,7 @@
 import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 import { IoMdGrid } from "react-icons/io";
 import { GiCrane, GiCargoCrane } from "react-icons/gi";
+import { TbTransferIn } from "react-icons/tb";
 import { TiShoppingCart } from "react-icons/ti";
 import { SiLinuxcontainers } from "react-icons/si";
 import { AiOutlineTable } from "react-icons/ai";
@@ -24,6 +25,7 @@ import {
   OilSamplesAnalyzed,
   DataEntry,
 } from "../pages";
+import Transportaions from "../pages/Transportaions";
 
 const cookies = new Cookies();
 const token = cookies?.get("token");
@@ -57,6 +59,13 @@ export const links = [
     dest: "/kanban",
     elem: <ManageKanban />,
     icon: <BiListPlus />,
+  },
+  {
+    title: "Transportations",
+    name: "Transportations",
+    dest: "/Transportations",
+    elem: <Transportaions />,
+    icon: <TbTransferIn />,
   },
   {
     title: "Sites",

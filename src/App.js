@@ -26,6 +26,7 @@ import {
 import RequiredAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
 import UnAuthorized from "./pages/UnAuthorized";
+import Transportaions from "./pages/Transportaions";
 
 function App() {
   const { token } = useNavContext();
@@ -47,6 +48,12 @@ function App() {
         <Route element={<RequiredAuth allowedRole={"Kanban"} />}>
           <Route path="/Kanban" element={<ManageKanban socket={socket} />} />
           <Route path="/ManageKanban" element={<Kanban socket={socket} />} />
+        </Route>
+        <Route element={<RequiredAuth allowedRole={"Transportations"} />}>
+          <Route
+            path="/Transportations"
+            element={<Transportaions socket={socket} />}
+          />
         </Route>
         <Route element={<RequiredAuth allowedRole={"Sites"} />}>
           <Route path="/Sites/:tableName" element={<Locations />} />

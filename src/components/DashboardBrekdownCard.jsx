@@ -123,7 +123,7 @@ const DashboardBrekdownCard = ({
       className={`md:w-[99%] w-[100%] h-[100%] bg-white rounded-lg flex flex-col p-1 md:mb-0 mb-4 shadow-lg`}
     >
       {isResult && (
-        <div className="absolute top-[20px] left-[2.5vw] md:w-[95vw] w-[85vw] h-[80vh] z-[1000] bg-gray-100 rounded-lg shadow-lg">
+        <div className="absolute top-[-20px] left-[2.5vw] md:w-[95vw] w-[85vw] h-[80vh] z-[1000] bg-gray-100 rounded-lg shadow-lg">
           <div className="w-full h-full relative flex flex-col p-2">
             <div className="w-full flex items-center justify-center h-[10%]">
               <p className="flex justify-center text-[16px] font-bold">

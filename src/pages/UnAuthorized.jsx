@@ -5,30 +5,53 @@ import { useNavContext } from "../contexts/NavContext";
 import { Navbar, Sidebar } from "../components";
 
 const UnAuthorized = () => {
-  const { currentMode, activeMenu } = useNavContext();
+  const { currentMode, activeMenu, error, errorData, closeSmallSidebar } =
+    useNavContext();
 
   return (
     <div className={currentMode === "Dark" ? "dark" : ""}>
       <div className="flex w-screen h-screen relative dark:bg-main-dark-bg m-0 p-0">
-        {activeMenu ? (
-          <div className="w-72 fixed sidebar dark:bg-logoColor bg-white animate-slide-in">
-            <Sidebar />
-          </div>
-        ) : (
-          <div className="w-0 dark:bg-logoColor animate-slide-out">
-            <Sidebar />
-          </div>
-        )}
+        <div
+          className="w-72 fixed sidebar dark:bg-logoColor bg-white z-10"
+          style={
+            activeMenu
+              ? {
+                  transform: "translate(0)",
+                  transition: "all 0.5s ease-in-out",
+                }
+              : {
+                  transform: "translate(-100%)",
+                  transition: "all 0.5s ease-in-out",
+                }
+          }
+        >
+          <Sidebar />
+        </div>
+
+        <div
+          className="fixed dark:bg-logoColor z-[11] left-0 bottom-4 px-4 flex flex-col gap-4"
+          style={
+            error
+              ? {
+                  transform: "translate(0)",
+                  transition: "all 0.5s ease-in-out",
+                }
+              : {
+                  transform: "translate(-100%)",
+                  transition: "all 0.5s ease-in-out",
+                }
+          }
+        >
+          <Error errorData={errorData} error={error} />
+        </div>
         {/* Navbar + MainPage */}
         <div
-          className={`dark:bg-background-logoColor bg-main-bg min-h-screen w-full ${
-            activeMenu ? "md:ml-72" : "flex-2"
-          }`}
+          className={`dark:bg-background-logoColor bg-main-bg min-h-screen w-full `}
         >
           {/* Navbar */}
           <div
-            className="fixed md:static flex dark:bg-background-logoColor bg-main-bg items-center md:h-[8%] navbar"
-            style={{ width: "calc(100vw - 18rem)" }}
+            className="fixed md:static flex dark:bg-background-logoColor bg-main-bg items-center h-[8vh] navbar"
+            style={{ width: "100vw" }}
           >
             <Navbar />
           </div>
@@ -36,8 +59,12 @@ const UnAuthorized = () => {
           {/* Main page */}
           <div
             id="Main--Page"
-            className=" dark:bg-background-logoColor md:h-[92%] relative bg-white overflow-x-hidden"
-            style={{ width: "calc(100vw - 18rem)" }}
+            className=" dark:bg-background-logoColor relative bg-white overflow-x-hidden"
+            style={{
+              width: "100vw",
+              height: "92vh",
+            }}
+            onClick={closeSmallSidebar}
           >
             <div className="w-full h-full p-4">
               <div

@@ -250,7 +250,7 @@ const Locations = () => {
           isFilter={false}
         />
       </div>
-      <div className="w-full md:h-[56vh] h-[800px] flex md:flex-row justify-around items-center">
+      <div className="w-full md:h-[56vh] h-[800px] flex md:flex-row justify-around items-center relative">
         <DashboardBrekdownCard
           name={`Breakdowns`}
           cardsData={cardsData?.Breakdowns}
