@@ -3,6 +3,7 @@ import { CiWarning } from "react-icons/ci";
 
 import { useNavContext } from "../contexts/NavContext";
 import { Navbar, Sidebar } from "../components";
+import Error from "../components/Error";
 
 const UnAuthorized = () => {
   const { currentMode, activeMenu, error, errorData, closeSmallSidebar } =
