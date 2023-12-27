@@ -104,8 +104,10 @@ const DashboardBrekdownCard = ({
 
   useEffect(() => {
     console.log(data);
-    if (data) setTotalSum(0);
-    data.map((d) => setTotalSum((prev) => prev + d.value));
+    if (data) {
+      setTotalSum(0);
+      data.map((d) => setTotalSum((prev) => prev + d.value));
+    }
   }, [data]);
 
   console.log(totalSum);

@@ -47,7 +47,7 @@ const useBreakdown = (tableName) => {
           }));
           setFieldsData((prev) => ({
             ...prev,
-            Breakdowns: result?.data,
+            Breakdowns: result?.data?.graphData,
           }));
           setFieldsLoading((prev) => ({ ...prev, Breakdowns: false }));
         } catch (err) {
