@@ -296,32 +296,20 @@ function StoreList({ name, items, id }) {
           </button>
           {extended?.name && name === extended?.name && extended?.isExtend && (
             <div className="items-container">
-              {items.map((item, index) =>
-                item.Status === `` ? (
-                  <Draggable draggableId={item.id} index={index} key={index}>
-                    {(provided) => (
-                      <div
-                        className="item-container"
-                        {...provided.dragHandleProps}
-                        {...provided.draggableProps}
-                        ref={provided.innerRef}
-                      >
-                        <h4>{item.name}</h4>
-                      </div>
-                    )}
-                  </Draggable>
-                ) : (
-                  <div
-                    key={index}
-                    className="item-container"
-                    style={{
-                      backgroundColor: item.Status === "New" ? "green" : "red",
-                    }}
-                  >
-                    <h4>{item.name}</h4>
-                  </div>
-                )
-              )}
+              {items.map((item, index) => (
+                <Draggable draggableId={item.id} index={index} key={index}>
+                  {(provided) => (
+                    <div
+                      className="item-container"
+                      {...provided.dragHandleProps}
+                      {...provided.draggableProps}
+                      ref={provided.innerRef}
+                    >
+                      <h4>{item.name}</h4>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
               {provided.placeholder}
             </div>
           )}
