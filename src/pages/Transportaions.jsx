@@ -52,37 +52,37 @@ const Transportaions = () => {
         setLoading(true);
         const url = `/api/v1/transportGetActiveSites`;
         const data = await axiosPrivate(url, { method: "POST" });
-        let eqsTrans = data?.data.eqsTrans;
+        // let eqsTrans = data?.data.eqsTrans;
         let result = {};
         let resultArray = [];
-        let flagObj = {};
+        // let flagObj = {};
         data?.data?.eqsLoc.map((d) => {
-          let status = ``;
-          let eqsTransData = {};
-          eqsTrans.map((eqsTransd) => {
-            status = ``;
-            eqsTransData = {};
-            if (
-              eqsTransd.Location === d.Location &&
-              !flagObj[eqsTransd?.Equipment]
-            ) {
-              flagObj[eqsTransd?.Equipment] = eqsTransd.Location;
-              status = ``;
-              eqsTransData = {
-                id: eqsTransd?.ID.toString(),
-                name: eqsTransd?.Equipment,
-                UnderCarrage_Type: eqsTransd?.UnderCarrage_Type,
-                Equipment_Type: eqsTransd?.Equipment_Type,
-                Status: `New`,
-              };
-              //   eqsTrans = eqsTrans.filter((d) => d.ID !== eqsTransd.ID);
-            } else if (
-              eqsTransd.Equipment === d.Equipment &&
-              eqsTransd.Location !== d.Location
-            ) {
-              status = `Removed`;
-            }
-          });
+          //   let status = ``;
+          //   let eqsTransData = {};
+          //   eqsTrans.map((eqsTransd) => {
+          //     status = ``;
+          //     eqsTransData = {};
+          //     if (
+          //       eqsTransd.Location === d.Location &&
+          //       !flagObj[eqsTransd?.Equipment]
+          //     ) {
+          //       flagObj[eqsTransd?.Equipment] = eqsTransd.Location;
+          //       status = ``;
+          //       eqsTransData = {
+          //         id: eqsTransd?.ID.toString(),
+          //         name: eqsTransd?.Equipment,
+          //         UnderCarrage_Type: eqsTransd?.UnderCarrage_Type,
+          //         Equipment_Type: eqsTransd?.Equipment_Type,
+          //         Status: `New`,
+          //       };
+          //       //   eqsTrans = eqsTrans.filter((d) => d.ID !== eqsTransd.ID);
+          //     } else if (
+          //       eqsTransd.Equipment === d.Equipment &&
+          //       eqsTransd.Location !== d.Location
+          //     ) {
+          //       status = `Removed`;
+          //     }
+          //   });
           result[d.Location]
             ? (result[d.Location] = [
                 ...result[d.Location],
@@ -104,8 +104,8 @@ const Transportaions = () => {
                 },
               ]);
 
-          eqsTransData.Status &&
-            (result[d.Location] = [eqsTransData, ...result[d.Location]]);
+          //   eqsTransData.Status &&
+          //     (result[d.Location] = [eqsTransData, ...result[d.Location]]);
         });
         Object.keys(result).map((r, i) => {
           resultArray.push({ id: i.toString(), name: r, items: result[r] });
