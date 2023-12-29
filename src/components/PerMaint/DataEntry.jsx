@@ -59,7 +59,7 @@ const DataEntry = () => {
         ]);
         setTimeout(() => {
           setError(false);
-        }, 3000);
+        }, 5000);
         setLoading(false);
       }
     };

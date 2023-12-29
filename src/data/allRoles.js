@@ -61,6 +61,7 @@ export const allData = async (token) => {
   return {
     Dashboard: ["true"],
     Kanban: ["true"],
+    Transportations: ["true"],
     Sites: allSites,
     Equipments: allEqs,
     Orders: ["Order", "Quotation", "Confirmation", "Invoice"],
@@ -101,6 +102,7 @@ export const allDataWithName = async () => {
   return {
     Dashboard: true,
     Kanban: true,
+    Transportations: true,
     Sites: allSitesWithName,
     Equipments: allEqsWithName,
     Orders: [

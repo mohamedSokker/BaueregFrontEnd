@@ -165,7 +165,7 @@ module.exports = {
         },
       },
       animation: {
-        "in-out": "in-out 3s ease-in-out",
+        "in-out": "in-out 5s ease-in-out",
         "slide-in-tr": "slide-in-tr 0.5 ease-in-out",
         "slide-in": "slide-in 0.5s ease-in-out",
         "slide-out": "slide-out 0.5s ease-in-out",

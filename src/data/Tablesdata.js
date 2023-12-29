@@ -33,6 +33,7 @@ const token = cookies?.get("token");
 export const allDataTitles = [
   "Dashboard",
   "Kanban",
+  "Transportations",
   "Sites",
   "Equipments",
   "Orders",
