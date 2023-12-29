@@ -91,7 +91,7 @@ const Transportaions = () => {
                   name: d?.Equipment,
                   UnderCarrage_Type: d?.UnderCarrage_Type,
                   Equipment_Type: d?.Equipment_Type,
-                  Status: status,
+                  //   Status: status,
                 },
               ])
             : (result[d.Location] = [
@@ -100,7 +100,7 @@ const Transportaions = () => {
                   name: d?.Equipment,
                   UnderCarrage_Type: d?.UnderCarrage_Type,
                   Equipment_Type: d?.Equipment_Type,
-                  Status: status,
+                  //   Status: status,
                 },
               ]);
 
