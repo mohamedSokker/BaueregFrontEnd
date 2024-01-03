@@ -32,9 +32,9 @@ const EditTables = ({ socket }) => {
   const [loading, setLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState({});
   const [selectedIndex, setSelectedIndex] = useState({});
-  const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
-  const { closeSmallSidebar, usersData, token } = useNavContext();
+  const { closeSmallSidebar, usersData, token, setError, setErrorData } =
+    useNavContext();
   const axiosPrivate = useAxiosPrivate();
 
   let grid;
@@ -58,9 +58,20 @@ const EditTables = ({ socket }) => {
         ]);
       });
     } catch (err) {
-      setErrorDetails(`${err.message}`);
-      console.log(err.message);
       setError(true);
+      setErrorData((prev) => [
+        ...prev,
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message,
+      ]);
+      setTimeout(() => {
+        setError(false);
+        setTimeout(() => {
+          setErrorData([]);
+        }, 1000);
+      }, 5000);
+      setLoading(false);
     }
   };
 
@@ -117,9 +128,19 @@ const EditTables = ({ socket }) => {
       });
       setLoading(false);
     } catch (err) {
-      setErrorDetails(`${err.message}`);
-      console.log(err.message);
       setError(true);
+      setErrorData((prev) => [
+        ...prev,
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message,
+      ]);
+      setTimeout(() => {
+        setError(false);
+        setTimeout(() => {
+          setErrorData([]);
+        }, 1000);
+      }, 5000);
       setLoading(false);
     }
   };
@@ -181,9 +202,21 @@ const EditTables = ({ socket }) => {
             }
             toolbarClick={toolbarClick}
             editSettings={{
-              allowDeleting: true,
-              allowEditing: true,
-              allowAdding: true,
+              allowDeleting:
+                usersData[0]?.roles?.Admin ||
+                usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+                  ? true
+                  : false,
+              allowEditing:
+                usersData[0]?.roles?.Admin ||
+                usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+                  ? true
+                  : false,
+              allowAdding:
+                usersData[0]?.roles?.Admin ||
+                usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+                  ? true
+                  : false,
             }}
             allowExcelExport={true}
             allowPdfExport={true}
@@ -194,7 +227,7 @@ const EditTables = ({ socket }) => {
                   !usersData[0]?.roles?.Editor?.Kanban &&
                   !usersData[0]?.roles?.User?.Kanban
                 ) {
-                  alert(`You Are not authorized to edit tasks`);
+                  throw new Error(`You Are not authorized to edit tasks`);
                 } else {
                   if (args.requestType === "delete") {
                     await axiosPrivate(
@@ -228,9 +261,21 @@ const EditTables = ({ socket }) => {
                     });
                   }
                 }
-              } catch (error) {
+              } catch (err) {
                 setError(true);
-                setErrorDetails(error.message);
+                setErrorData((prev) => [
+                  ...prev,
+                  err?.response?.data?.message
+                    ? err?.response?.data?.message
+                    : err?.message,
+                ]);
+                setTimeout(() => {
+                  setError(false);
+                  setTimeout(() => {
+                    setErrorData([]);
+                  }, 1000);
+                }, 5000);
+                setLoading(false);
               }
             }}
           >

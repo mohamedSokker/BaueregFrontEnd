@@ -58,7 +58,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       Catalogues: [],
     },
   });
-  const [active, setActive] = useState(false);
+  // const [active, setActive] = useState(false);
 
   useEffect(() => {
     getChildData({
@@ -302,10 +302,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
                 onClick={(e) => {
                   if (!e.target.classList.contains("Active")) {
                     e.target.classList.add("Active");
-                    setActive((prev) => !prev);
+                    // setActive((prev) => !prev);
                   } else {
                     e.target.classList.remove("Active");
-                    setActive((prev) => !prev);
+                    // setActive((prev) => !prev);
                   }
                 }}
               >
@@ -372,10 +372,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
                   onClick={(e) => {
                     if (!e.target.classList.contains("Active")) {
                       e.target.classList.add("Active");
-                      setActive((prev) => !prev);
+                      // setActive((prev) => !prev);
                     } else {
                       e.target.classList.remove("Active");
-                      setActive((prev) => !prev);
+                      // setActive((prev) => !prev);
                     }
                   }}
                 >
@@ -446,10 +446,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
                   onClick={(e) => {
                     if (!e.target.classList.contains("Active")) {
                       e.target.classList.add("Active");
-                      setActive((prev) => !prev);
+                      // setActive((prev) => !prev);
                     } else {
                       e.target.classList.remove("Active");
-                      setActive((prev) => !prev);
+                      // setActive((prev) => !prev);
                     }
                   }}
                 >

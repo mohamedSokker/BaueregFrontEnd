@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import {
   MdDelete,
@@ -13,10 +13,10 @@ import { useNavContext } from "../contexts/NavContext";
 
 const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
   const { token } = useNavContext();
-  const [allDatas, setAllDatas] = useState([]);
+  // const [allDatas, setAllDatas] = useState([]);
   const [eqType, setEqType] = useState("");
   const [eq, setEq] = useState([]);
-  const [eqs, setEqs] = useState([]);
+  // const [eqs, setEqs] = useState([]);
   const [site, setSite] = useState([]);
   const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -28,12 +28,29 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const [roles, setRules] = useState("");
-  const [active, setActive] = useState(false);
+  // const [active, setActive] = useState(false);
 
-  console.log(eqType);
-  console.log(eq);
-  console.log(site);
-  console.log(roles);
+  // console.log(eqType);
+  // console.log(eq);
+  // console.log(site);
+  // console.log(roles);
+
+  const checkEmptyFields = () => {
+    if (
+      userName === "" ||
+      password === "" ||
+      email === "" ||
+      phone === "" ||
+      image === "" ||
+      roles === "" ||
+      eqType === "" ||
+      eq === "" ||
+      site === ""
+    ) {
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     getChildData({
@@ -55,7 +72,20 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
       setImage: setImage,
       checkEmptyFields: checkEmptyFields,
     });
-  }, [roles, userName, password, email, phone, image, eq, eqType, site]);
+  }, [
+    roles,
+    userName,
+    password,
+    email,
+    phone,
+    image,
+    eq,
+    eqType,
+    site,
+    error,
+    errorDetails,
+    getChildData,
+  ]);
 
   useEffect(() => {
     const getData = async () => {
@@ -63,7 +93,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
         setLoading(true);
         const url = `${process.env.REACT_APP_BASE_URL}/api/v1/getAllEq`;
         const data = await fetchDataOnly(url, "GET", token);
-        setAllDatas(data);
+        // setAllDatas(data);
         let targetEqs = [];
         let targetSites = [];
         const targetData = data.filter(
@@ -74,6 +104,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
         targetData.map((item) => {
           targetEqs.push(item.Equipment);
           targetSites.push(item.Location);
+          return targetSites;
         });
         targetEqs = targetEqs.filter(
           (value, index, array) => array.indexOf(value) === index
@@ -81,7 +112,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
         targetSites = targetSites.filter(
           (value, index, array) => array.indexOf(value) === index
         );
-        setEqs(targetEqs);
+        // setEqs(targetEqs);
         setSites(targetSites);
         setLoading(false);
       } catch (err) {
@@ -115,27 +146,10 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
       };
       getImage();
     }
-  }, []);
+  }, [token, userData]);
 
   const uploadImage = (e) => {
     setImage(e.target.files[0]);
-  };
-
-  const checkEmptyFields = () => {
-    if (
-      userName === "" ||
-      password === "" ||
-      email === "" ||
-      phone === "" ||
-      image === "" ||
-      roles === "" ||
-      eqType === "" ||
-      eq === "" ||
-      site === ""
-    ) {
-      return true;
-    }
-    return false;
   };
 
   return (
@@ -272,10 +286,10 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
                 onClick={(e) => {
                   if (!e.target.classList.contains("Active")) {
                     e.target.classList.add("Active");
-                    setActive((prev) => !prev);
+                    // setActive((prev) => !prev);
                   } else {
                     e.target.classList.remove("Active");
-                    setActive((prev) => !prev);
+                    // setActive((prev) => !prev);
                   }
                 }}
               >

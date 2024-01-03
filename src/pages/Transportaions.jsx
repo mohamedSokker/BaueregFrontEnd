@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { AiOutlineCaretDown, AiOutlineCaretUp } from "react-icons/ai";
+import { GiConfirmed } from "react-icons/gi";
+import { CiEdit } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 import "../Transport.css";
 import { PageLoading } from "../components";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavContext } from "../contexts/NavContext";
+import ConfirmData from "../components/Transport/ConfirmData";
+import AddSite from "../components/Transport/AddSite";
 
 const DATA = [
   {
@@ -37,11 +43,35 @@ const DATA = [
   },
 ];
 
+const formatDate = (anyDate) => {
+  let dt = new Date(anyDate);
+  const year = dt.getFullYear();
+  let day = dt.getDate().toString();
+  let month = (Number(dt.getMonth()) + 1).toString();
+  if (month.length < 2) month = `0${month}`;
+  if (day.length < 2) day = `0${day}`;
+  return `${year}-${month}-${day}`;
+};
+
 const Transportaions = () => {
   const { usersData, setError, setErrorData } = useNavContext();
 
+  const [initStores, setInitStores] = useState([]);
   const [stores, setStores] = useState([]);
+  const [transData, setTransData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  // const [isCanceled, setIsCanceled] = useState(false);
+  const [isDragged, setIsDragged] = useState(false);
+  const [bodyData, setBodyData] = useState({});
+  const [message, setMessage] = useState(``);
+  const [startDate, setStartDate] = useState(formatDate(new Date()));
+  const [endDate, setEndDate] = useState(formatDate(new Date()));
+  const [isAddSite, setIsAddSite] = useState(false);
+
+  // console.log(startDate, typeof startDate);
+
+  console.log(stores);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -53,36 +83,37 @@ const Transportaions = () => {
         const url = `/api/v1/transportGetActiveSites`;
         const data = await axiosPrivate(url, { method: "POST" });
         // let eqsTrans = data?.data.eqsTrans;
+        setTransData(data?.data.eqsTrans);
         let result = {};
         let resultArray = [];
         // let flagObj = {};
         data?.data?.eqsLoc.map((d) => {
-          //   let status = ``;
-          //   let eqsTransData = {};
-          //   eqsTrans.map((eqsTransd) => {
+          // let status = ``;
+          // let eqsTransData = {};
+          // eqsTrans.map((eqsTransd) => {
+          //   status = ``;
+          //   eqsTransData = {};
+          //   if (
+          //     eqsTransd.Location === d.Location &&
+          //     !flagObj[eqsTransd?.Equipment]
+          //   ) {
+          //     flagObj[eqsTransd?.Equipment] = eqsTransd.Location;
           //     status = ``;
-          //     eqsTransData = {};
-          //     if (
-          //       eqsTransd.Location === d.Location &&
-          //       !flagObj[eqsTransd?.Equipment]
-          //     ) {
-          //       flagObj[eqsTransd?.Equipment] = eqsTransd.Location;
-          //       status = ``;
-          //       eqsTransData = {
-          //         id: eqsTransd?.ID.toString(),
-          //         name: eqsTransd?.Equipment,
-          //         UnderCarrage_Type: eqsTransd?.UnderCarrage_Type,
-          //         Equipment_Type: eqsTransd?.Equipment_Type,
-          //         Status: `New`,
-          //       };
-          //       //   eqsTrans = eqsTrans.filter((d) => d.ID !== eqsTransd.ID);
-          //     } else if (
-          //       eqsTransd.Equipment === d.Equipment &&
-          //       eqsTransd.Location !== d.Location
-          //     ) {
-          //       status = `Removed`;
-          //     }
-          //   });
+          //     eqsTransData = {
+          //       id: eqsTransd?.ID.toString(),
+          //       name: eqsTransd?.Equipment,
+          //       UnderCarrage_Type: eqsTransd?.UnderCarrage_Type,
+          //       Equipment_Type: eqsTransd?.Equipment_Type,
+          //       Status: `New`,
+          //     };
+          //     //   eqsTrans = eqsTrans.filter((d) => d.ID !== eqsTransd.ID);
+          //   } else if (
+          //     eqsTransd.Equipment === d.Equipment &&
+          //     eqsTransd.Location !== d.Location
+          //   ) {
+          //     status = `Removed`;
+          //   }
+          // });
           result[d.Location]
             ? (result[d.Location] = [
                 ...result[d.Location],
@@ -91,7 +122,7 @@ const Transportaions = () => {
                   name: d?.Equipment,
                   UnderCarrage_Type: d?.UnderCarrage_Type,
                   Equipment_Type: d?.Equipment_Type,
-                  //   Status: status,
+                  Status: "",
                 },
               ])
             : (result[d.Location] = [
@@ -100,13 +131,14 @@ const Transportaions = () => {
                   name: d?.Equipment,
                   UnderCarrage_Type: d?.UnderCarrage_Type,
                   Equipment_Type: d?.Equipment_Type,
-                  //   Status: status,
+                  Status: "",
                 },
               ]);
 
-          //   eqsTransData.Status &&
-          //     (result[d.Location] = [eqsTransData, ...result[d.Location]]);
+          // eqsTransData.Status &&
+          //   (result[d.Location] = [eqsTransData, ...result[d.Location]]);
         });
+
         Object.keys(result).map((r, i) => {
           resultArray.push({ id: i.toString(), name: r, items: result[r] });
         });
@@ -122,6 +154,9 @@ const Transportaions = () => {
         ]);
         setTimeout(() => {
           setError(false);
+          setTimeout(() => {
+            setErrorData([]);
+          }, 1000);
         }, 5000);
         setLoading(false);
       }
@@ -140,17 +175,17 @@ const Transportaions = () => {
     )
       return;
 
-    // if (type === "group") {
-    //   const reorderedStores = [...stores];
+    if (type === "group") {
+      const reorderedStores = [...stores];
 
-    //   const storeSourceIndex = source.index;
-    //   const storeDestinatonIndex = destination.index;
+      const storeSourceIndex = source.index;
+      const storeDestinatonIndex = destination.index;
 
-    //   const [removedStore] = reorderedStores.splice(storeSourceIndex, 1);
-    //   reorderedStores.splice(storeDestinatonIndex, 0, removedStore);
+      const [removedStore] = reorderedStores.splice(storeSourceIndex, 1);
+      reorderedStores.splice(storeDestinatonIndex, 0, removedStore);
 
-    //   return setStores(reorderedStores);
-    // }
+      return setStores(reorderedStores);
+    }
     const itemSourceIndex = source.index;
     const itemDestinationIndex = destination.index;
 
@@ -161,15 +196,6 @@ const Transportaions = () => {
       (store) => store.id === destination.droppableId
     );
 
-    // const storeSourceItem = stores.find(
-    //   (store) => store.id === source.droppableId
-    // );
-    // const storeDestinationItem = stores.find(
-    //   (store) => store.id === destination.droppableId
-    // );
-
-    // console.log(storeSourceItem, storeDestinationItem);
-
     const newSourceItems = [...stores[storeSourceIndex].items];
     const newDestinationItems =
       source.droppableId !== destination.droppableId
@@ -177,12 +203,12 @@ const Transportaions = () => {
         : newSourceItems;
 
     const [deletedItem] = newSourceItems.splice(itemSourceIndex, 1);
-    console.log({
-      Equipment: deletedItem?.name,
-      Location: stores[storeDestinationIndex]?.name,
-      UnderCarrage_Type: deletedItem?.UnderCarrage_Type,
-      Equipment_Type: deletedItem?.Equipment_Type,
-    });
+    // console.log({
+    //   Equipment: deletedItem?.name,
+    //   Location: stores[storeDestinationIndex]?.name,
+    //   UnderCarrage_Type: deletedItem?.UnderCarrage_Type,
+    //   Equipment_Type: deletedItem?.Equipment_Type,
+    // });
     newDestinationItems.splice(itemDestinationIndex, 0, deletedItem);
 
     const newStores = [...stores];
@@ -196,76 +222,211 @@ const Transportaions = () => {
       items: newDestinationItems,
     };
 
-    setStores(newStores);
+    setBodyData({
+      Equipment: deletedItem?.name,
+      FromLocation: stores[storeSourceIndex]?.name,
+      ToLocation: stores[storeDestinationIndex]?.name,
+      UnderCarrage_Type: deletedItem?.UnderCarrage_Type,
+      Equipment_Type: deletedItem?.Equipment_Type,
+      username: usersData[0]?.username,
+    });
 
+    setMessage(
+      `Are you sure you want to transport Equipment ${deletedItem?.name} From ${stores[storeSourceIndex]?.name} to ${stores[storeDestinationIndex]?.name}`
+    );
+
+    setInitStores(newStores);
     if (storeSourceIndex === storeDestinationIndex) return;
-
-    try {
-      setError(false);
-      setLoading(true);
-      const bodyData = {
-        Equipment: deletedItem?.name,
-        Location: stores[storeDestinationIndex]?.name,
-        UnderCarrage_Type: deletedItem?.UnderCarrage_Type,
-        Equipment_Type: deletedItem?.Equipment_Type,
-        username: usersData[0]?.username,
-      };
-      const url = `/api/v1/addEquipmentTrans`;
-      const data = await axiosPrivate(url, {
-        method: "POST",
-        data: JSON.stringify(bodyData),
-      });
-      setLoading(false);
-    } catch (err) {
-      setError(true);
-      setErrorData((prev) => [
-        ...prev,
-        err?.response?.data?.message
-          ? err?.response?.data?.message
-          : err?.message,
-      ]);
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-      setLoading(false);
-    }
+    setIsDragged(true);
   };
 
+  useEffect(() => {
+    const updateDatabase = async () => {
+      try {
+        setError(false);
+        setLoading(true);
+        let body = { ...bodyData };
+        body = {
+          StartDate: startDate,
+          EndDate: endDate,
+          ...body,
+        };
+
+        const url = `/api/v1/addEquipmentTrans`;
+        const data = await axiosPrivate(url, {
+          method: "POST",
+          data: JSON.stringify(body),
+        });
+        setStores(initStores);
+        setLoading(false);
+        setIsConfirmed(false);
+      } catch (err) {
+        setError(true);
+        setErrorData((prev) => [
+          ...prev,
+          err?.response?.data?.message
+            ? err?.response?.data?.message
+            : err?.message,
+        ]);
+        setTimeout(() => {
+          setError(false);
+          setTimeout(() => {
+            setErrorData([]);
+          }, 1000);
+        }, 5000);
+        setLoading(false);
+        setIsConfirmed(false);
+      }
+    };
+    if (isConfirmed) updateDatabase();
+  }, [isConfirmed]);
+
   return (
-    <div className="layout__wrapper">
-      {loading && <PageLoading />}
-      <div className="card">
-        <DragDropContext onDragEnd={handleDragAndDrop}>
-          <div className="header">
-            <h1>Sites Equipments List</h1>
-          </div>
-          <Droppable droppableId="ROOT" type="group">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                {stores.map((store, index) => (
-                  <Draggable
-                    draggableId={store.id}
-                    index={index}
-                    key={store.id}
-                  >
-                    {(provided) => (
-                      <div
-                        {...provided.dragHandleProps}
-                        {...provided.draggableProps}
-                        ref={provided.innerRef}
-                      >
-                        <StoreList {...store} />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
+    <>
+      <div className="bg-white w-full flex flex-row justify-end items-center text-white px-6 p-2 m-auto rounded-md">
+        <TooltipComponent content={`Add Site`} position="BottomCenter">
+          <button
+            className="px-2 p-1 rounded-md bg-logoColor"
+            type="button"
+            onClick={() => setIsAddSite(true)}
+          >
+            +
+          </button>
+        </TooltipComponent>
+      </div>
+      <div
+        className="bg-white w-[95vw] px-5 p-2 m-auto my-[3rem] rounded-md"
+        style={{ boxShadow: "0 12px 16px rgba(0, 0, 0, 0.25)" }}
+      >
+        <div className="header">
+          <h1>Sites Transport Requests</h1>
+        </div>
+        <div className="w-full p-2 flex flex-row items-center justify-center">
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+            Equipment
+          </p>
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+            From Site
+          </p>
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+            To Site
+          </p>
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+            Start Date
+          </p>
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+            End Date
+          </p>
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+            User
+          </p>
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+            Action
+          </p>
+        </div>
+        {transData.map((d, i) => (
+          <div
+            className="w-full p-2 flex flex-row items-center justify-between border-b-1 border-logoColor"
+            key={i}
+          >
+            <p className="w-[calc(100%/6)] text-[14px] px-4 p-2">
+              {d.Equipment}
+            </p>
+            <p className="w-[calc(100%/6)] text-[14px] px-4 p-2">
+              {d.FromLocation}
+            </p>
+            <p className="w-[calc(100%/6)] text-[14px] px-4 p-2">
+              {d.ToLocation}
+            </p>
+            <p className="w-[calc(100%/6)] text-[14px] px-4 p-2">
+              {formatDate(d.StartDate)}
+            </p>
+            <p className="w-[calc(100%/6)] text-[14px] px-4 p-2">
+              {formatDate(d.EndDate)}
+            </p>
+            <p className="w-[calc(100%/6)] text-[14px] px-4 p-2">
+              {JSON.parse(d?.Confirmed).join(",")}
+            </p>
+            {d.Status === "UnConfirmed" ? (
+              <div className="w-[calc(100%/6)] flex flex-row items-center justify-start gap-3 px-4 p-2">
+                <TooltipComponent content={`Confirm`} position="BottomCenter">
+                  <button className="text-green-700 text-[20px]">
+                    <GiConfirmed />
+                  </button>
+                </TooltipComponent>
+                <TooltipComponent content={`Edit`} position="BottomCenter">
+                  <button className=" text-yellow-700 text-[20px]">
+                    <CiEdit />
+                  </button>
+                </TooltipComponent>
+                <TooltipComponent content={`Delete`} position="BottomCenter">
+                  <button className="text-red-500 text-[20px]">
+                    <MdDelete />
+                  </button>
+                </TooltipComponent>
+              </div>
+            ) : (
+              <div className="w-[calc(100%/6)] bg-green-700 p-2 rounded-lg px-4">
+                Confirmed
               </div>
             )}
-          </Droppable>
-        </DragDropContext>
+          </div>
+        ))}
       </div>
-    </div>
+      <div className="layout__wrapper">
+        {loading && <PageLoading />}
+        {isDragged && (
+          <ConfirmData
+            message={message}
+            setIsDragged={setIsDragged}
+            setIsConfirmed={setIsConfirmed}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+          />
+        )}
+        {isAddSite && (
+          <AddSite
+            setIsAddSite={setIsAddSite}
+            setLoading={setLoading}
+            setStores={setStores}
+            stores={stores}
+          />
+        )}
+        <div className="card">
+          <DragDropContext onDragEnd={handleDragAndDrop}>
+            <div className="header">
+              <h1>Sites Equipments List</h1>
+            </div>
+            <Droppable droppableId="ROOT" type="group">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {stores.map((store, index) => (
+                    <Draggable
+                      draggableId={store.id}
+                      index={index}
+                      key={store.id}
+                    >
+                      {(provided) => (
+                        <div
+                          {...provided.dragHandleProps}
+                          {...provided.draggableProps}
+                          ref={provided.innerRef}
+                        >
+                          <StoreList {...store} />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+      </div>
+    </>
   );
 };
 
@@ -291,16 +452,28 @@ function StoreList({ name, items, id }) {
           >
             <h3>{name}</h3>
             <div className="absolute right-2">
-              <AiOutlineCaretDown />
+              {!extended.isExtend ? (
+                <AiOutlineCaretDown />
+              ) : (
+                <AiOutlineCaretUp />
+              )}
             </div>
           </button>
           {extended?.name && name === extended?.name && extended?.isExtend && (
             <div className="items-container">
               {items.map((item, index) => (
-                <Draggable draggableId={item.id} index={index} key={index}>
+                <Draggable draggableId={item.id} index={index} key={item.id}>
                   {(provided) => (
                     <div
                       className="item-container"
+                      style={{
+                        backgroundColor:
+                          item.Status === "New"
+                            ? "green"
+                            : item.Status === "Removed"
+                            ? "red"
+                            : "white",
+                      }}
                       {...provided.dragHandleProps}
                       {...provided.draggableProps}
                       ref={provided.innerRef}
