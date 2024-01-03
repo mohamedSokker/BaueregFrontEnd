@@ -163,145 +163,122 @@ const EditTables = ({ socket }) => {
       className={`w-full p-2 md:p-10 bg-white rounded-xl Main--Page dark:bg-background-logoColor h-full`}
       onClick={closeSmallSidebar}
     >
-      {error ? (
-        <div
-          className=" bg-yellow-200 h-20 flex justify-center items-center flex-row mb-5 mt-2 rounded-lg"
-          style={{ color: "red", width: "90%" }}
-        >
-          <CiWarning className="text-[40px] font-extrabold" />
-          <p className="ml-5 text-xl font-semibold">{errorDetails}</p>
+      <React.Fragment className="w-full">
+        <div className="flex flex-row items-center justify-between Header mb-10 ">
+          <Header category="" title={tableName ? tableName : "Test"} />
         </div>
-      ) : (
-        <React.Fragment className="w-full">
-          <div className="flex flex-row items-center justify-between Header mb-10 ">
-            <Header category="" title={tableName ? tableName : "Test"} />
-          </div>
-          <GridComponent
-            dataSource={tableData}
-            allowPaging
-            allowSorting
-            allowFiltering={true}
-            filterSettings={filterOptions}
-            // height={250}
-            allowResizing={true}
-            pageSettings={{ pageSize: 7 }}
-            autoFit={true}
-            rowSelected={rowsSelected}
-            ref={(g) => (grid = g)}
-            toolbar={
-              CheckEditorRole(tableName, usersData)
-                ? [
-                    "Add",
-                    "Edit",
-                    "Delete",
-                    "Search",
-                    "ExcelExport",
-                    "PdfExport",
-                  ]
-                : ["ExcelExport", "PdfExport", "Search"]
-            }
-            toolbarClick={toolbarClick}
-            editSettings={{
-              allowDeleting:
-                usersData[0]?.roles?.Admin ||
-                usersData[0]?.roles?.Editor?.Tables.includes(tableName)
-                  ? true
-                  : false,
-              allowEditing:
-                usersData[0]?.roles?.Admin ||
-                usersData[0]?.roles?.Editor?.Tables.includes(tableName)
-                  ? true
-                  : false,
-              allowAdding:
-                usersData[0]?.roles?.Admin ||
-                usersData[0]?.roles?.Editor?.Tables.includes(tableName)
-                  ? true
-                  : false,
-            }}
-            allowExcelExport={true}
-            allowPdfExport={true}
-            actionComplete={async (args) => {
-              try {
-                if (
-                  !usersData[0]?.roles?.Admin &&
-                  !usersData[0]?.roles?.Editor?.Kanban &&
-                  !usersData[0]?.roles?.User?.Kanban
+        <GridComponent
+          dataSource={tableData}
+          allowPaging
+          allowSorting
+          allowFiltering={true}
+          filterSettings={filterOptions}
+          // height={250}
+          allowResizing={true}
+          pageSettings={{ pageSize: 7 }}
+          autoFit={true}
+          rowSelected={rowsSelected}
+          ref={(g) => (grid = g)}
+          toolbar={
+            CheckEditorRole(tableName, usersData)
+              ? ["Add", "Edit", "Delete", "Search", "ExcelExport", "PdfExport"]
+              : ["ExcelExport", "PdfExport", "Search"]
+          }
+          toolbarClick={toolbarClick}
+          editSettings={{
+            allowDeleting:
+              usersData[0]?.roles?.Admin ||
+              usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+                ? true
+                : false,
+            allowEditing:
+              usersData[0]?.roles?.Admin ||
+              usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+                ? true
+                : false,
+            allowAdding:
+              usersData[0]?.roles?.Admin ||
+              usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+                ? true
+                : false,
+          }}
+          allowExcelExport={true}
+          allowPdfExport={true}
+          actionComplete={async (args) => {
+            try {
+              if (
+                !usersData[0]?.roles?.Admin &&
+                !usersData[0]?.roles?.Editor?.Kanban &&
+                !usersData[0]?.roles?.User?.Kanban
+              ) {
+                throw new Error(`You Are not authorized to edit tasks`);
+              } else {
+                if (args.requestType === "delete") {
+                  await axiosPrivate(
+                    `/api/v1/${tableName}/${JSON.parse(selectedRow)[0]["ID"]}`,
+                    { method: "DELETE" }
+                  );
+                } else if (
+                  args.action === "edit" &&
+                  args.requestType === "save"
                 ) {
-                  throw new Error(`You Are not authorized to edit tasks`);
-                } else {
-                  if (args.requestType === "delete") {
-                    await axiosPrivate(
-                      `/api/v1/${tableName}/${
-                        JSON.parse(selectedRow)[0]["ID"]
-                      }`,
-                      { method: "DELETE" }
-                    );
-                  } else if (
-                    args.action === "edit" &&
-                    args.requestType === "save"
-                  ) {
-                    axiosPrivate(
-                      `/api/v1/${tableName}/${
-                        JSON.parse(selectedRow)[0]["ID"]
-                      }`,
-                      {
-                        method: "PUT",
-                        data: JSON.stringify(
-                          grid.currentViewData[selectedIndex]
-                        ),
-                      }
-                    );
-                  } else if (
-                    args.action === "add" &&
-                    args.requestType === "save"
-                  ) {
-                    axiosPrivate(`/api/v1/${tableName}`, {
-                      method: "POST",
-                      data: JSON.stringify(grid.currentViewData[0]),
-                    });
-                  }
+                  axiosPrivate(
+                    `/api/v1/${tableName}/${JSON.parse(selectedRow)[0]["ID"]}`,
+                    {
+                      method: "PUT",
+                      data: JSON.stringify(grid.currentViewData[selectedIndex]),
+                    }
+                  );
+                } else if (
+                  args.action === "add" &&
+                  args.requestType === "save"
+                ) {
+                  axiosPrivate(`/api/v1/${tableName}`, {
+                    method: "POST",
+                    data: JSON.stringify(grid.currentViewData[0]),
+                  });
                 }
-              } catch (err) {
-                setError(true);
-                setErrorData((prev) => [
-                  ...prev,
-                  err?.response?.data?.message
-                    ? err?.response?.data?.message
-                    : err?.message,
-                ]);
-                setTimeout(() => {
-                  setError(false);
-                  setTimeout(() => {
-                    setErrorData([]);
-                  }, 1000);
-                }, 5000);
-                setLoading(false);
               }
-            }}
-          >
-            <ColumnsDirective>
-              {tableGrid.map((item, index) => (
-                <ColumnDirective key={index} {...item} />
-              ))}
-            </ColumnsDirective>
-            <Inject
-              services={[
-                Page,
-                Toolbar,
-                Selection,
-                Edit,
-                Sort,
-                Filter,
-                Search,
-                Resize,
-                ContextMenu,
-                ExcelExport,
-                PdfExport,
-              ]}
-            />
-          </GridComponent>
-        </React.Fragment>
-      )}
+            } catch (err) {
+              setError(true);
+              setErrorData((prev) => [
+                ...prev,
+                err?.response?.data?.message
+                  ? err?.response?.data?.message
+                  : err?.message,
+              ]);
+              setTimeout(() => {
+                setError(false);
+                setTimeout(() => {
+                  setErrorData([]);
+                }, 1000);
+              }, 5000);
+              setLoading(false);
+            }
+          }}
+        >
+          <ColumnsDirective>
+            {tableGrid.map((item, index) => (
+              <ColumnDirective key={index} {...item} />
+            ))}
+          </ColumnsDirective>
+          <Inject
+            services={[
+              Page,
+              Toolbar,
+              Selection,
+              Edit,
+              Sort,
+              Filter,
+              Search,
+              Resize,
+              ContextMenu,
+              ExcelExport,
+              PdfExport,
+            ]}
+          />
+        </GridComponent>
+      </React.Fragment>
     </div>
   );
 };
