@@ -16,8 +16,11 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
   const { token } = useNavContext();
 
   const [allDatas, setAllDatas] = useState([]);
+  const [active, setActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
+  const [title, setTitle] = useState("");
+  const [department, setDepartment] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -64,6 +67,8 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
     getChildData({
       image: image,
       userName: userName,
+      title: title,
+      department: department,
       password: password,
       email: email,
       phone: phone,
@@ -77,7 +82,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       setImage: setImage,
       checkEmptyFields: checkEmptyFields,
     });
-  }, [roles, userName, password, email, phone, image]);
+  }, [roles, userName, title, department, password, email, phone, image]);
 
   useEffect(() => {
     const getData = async () => {
@@ -96,6 +101,8 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
     getData();
     if (userData) {
       setUserName(userData.UserName);
+      setTitle(userData.Title);
+      setDepartment(userData.Department);
       setPassword(userData.Password);
       setEmail(userData.Email);
       setPhone(userData.Phone);
@@ -270,6 +277,20 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
               placeholder="Enter your phone number"
               className="outline-none text-base sm:text-lg border-b-2 border-gray-200 p-2 focus:border-logoColor dark:focus:border-black dark:rounded-lg"
             />
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter your Title"
+              className="outline-none text-base sm:text-lg border-b-2 border-gray-200 p-2 focus:border-logoColor dark:focus:border-black dark:rounded-lg"
+            />
+            <input
+              type="text"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              placeholder="Enter your Department"
+              className="outline-none text-base sm:text-lg border-b-2 border-gray-200 p-2 focus:border-logoColor dark:focus:border-black dark:rounded-lg"
+            />
           </div>
         </div>
         <div className="w-full">
@@ -302,10 +323,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
                 onClick={(e) => {
                   if (!e.target.classList.contains("Active")) {
                     e.target.classList.add("Active");
-                    // setActive((prev) => !prev);
+                    setActive((prev) => !prev);
                   } else {
                     e.target.classList.remove("Active");
-                    // setActive((prev) => !prev);
+                    setActive((prev) => !prev);
                   }
                 }}
               >
@@ -372,10 +393,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
                   onClick={(e) => {
                     if (!e.target.classList.contains("Active")) {
                       e.target.classList.add("Active");
-                      // setActive((prev) => !prev);
+                      setActive((prev) => !prev);
                     } else {
                       e.target.classList.remove("Active");
-                      // setActive((prev) => !prev);
+                      setActive((prev) => !prev);
                     }
                   }}
                 >
@@ -446,10 +467,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
                   onClick={(e) => {
                     if (!e.target.classList.contains("Active")) {
                       e.target.classList.add("Active");
-                      // setActive((prev) => !prev);
+                      setActive((prev) => !prev);
                     } else {
                       e.target.classList.remove("Active");
-                      // setActive((prev) => !prev);
+                      setActive((prev) => !prev);
                     }
                   }}
                 >

@@ -34,6 +34,8 @@ const AddUser = () => {
       const path = `users/img/`;
       let bodyData = {
         UserName: fieldsData.userName,
+        Title: fieldsData.title,
+        Department: fieldsData.department,
         Password: fieldsData.password,
         Email: fieldsData.email,
         Phone: fieldsData.phone,

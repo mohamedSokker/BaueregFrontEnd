@@ -27,6 +27,7 @@ import RequiredAuth from "./hooks/useAuth";
 import PersistLogin from "./components/PersistLogin";
 import UnAuthorized from "./pages/UnAuthorized";
 import Transportaions from "./pages/Transportaions";
+import Vnc from "./pages/Vnc";
 
 function App() {
   const { token } = useNavContext();
@@ -38,6 +39,7 @@ function App() {
   return (
     <Routes>
       <Route path="/Login" element={<Login />} />
+      <Route path="/Vnc/:tableName" element={<Vnc socket={socket} />} />
       <Route path="/UnAuthorized" element={<UnAuthorized />} />
       <Route element={<PersistLogin />}>
         <Route element={<RequiredAuth allowedRole={"Dashboard"} />}>

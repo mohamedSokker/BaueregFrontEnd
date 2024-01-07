@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CiWarning } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 import DashboardCard from "../components/DashboardCard";
 import DashboardBrekdownCard from "../components/DashboardBrekdownCard";
@@ -18,6 +19,7 @@ import usePerMaint from "../hooks/Dashboard/PerMaint";
 import useMessages from "../hooks/Dashboard/Messages";
 
 const Dashboard = ({ socket }) => {
+  const navigate = useNavigate();
   const { usersData } = useNavContext();
   const {
     error,
@@ -129,6 +131,13 @@ const Dashboard = ({ socket }) => {
           value={startDate}
           onChange={changeDateValue}
         />
+        <button
+          onClick={() => {
+            navigate("/Vnc/GRC4");
+          }}
+        >
+          VNC
+        </button>
       </div>
       <div className="w-full flex md:flex-row flex-col flex-wrap relative gap-2 p-2">
         {(Number(fieldsData.Availability) !== 0 || cardsData?.Availability) && (

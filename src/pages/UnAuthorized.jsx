@@ -67,7 +67,7 @@ const UnAuthorized = () => {
             }}
             onClick={closeSmallSidebar}
           >
-            <div className="w-full h-full p-4">
+            <div className="w-full h-full flex justify-center p-4">
               <div
                 className=" bg-red-600 h-20 flex justify-center items-center flex-row mb-5 mt-2 rounded-lg"
                 style={{ color: "white", width: "90%" }}

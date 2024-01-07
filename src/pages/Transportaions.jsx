@@ -12,6 +12,7 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavContext } from "../contexts/NavContext";
 import ConfirmData from "../components/Transport/ConfirmData";
 import AddSite from "../components/Transport/AddSite";
+import EditEqsTrans from "../components/Transport/EditEqsTrans";
 
 const DATA = [
   {
@@ -55,6 +56,7 @@ const formatDate = (anyDate) => {
 
 const Transportaions = () => {
   const { usersData, setError, setErrorData } = useNavContext();
+  console.log(usersData);
 
   const [initStores, setInitStores] = useState([]);
   const [stores, setStores] = useState([]);
@@ -68,10 +70,12 @@ const Transportaions = () => {
   const [startDate, setStartDate] = useState(formatDate(new Date()));
   const [endDate, setEndDate] = useState(formatDate(new Date()));
   const [isAddSite, setIsAddSite] = useState(false);
+  const [isEditEqsTrans, setIsEditEqsTrans] = useState(false);
+  const [editEqsTransData, setEditEqsTransData] = useState({});
 
   // console.log(startDate, typeof startDate);
 
-  console.log(stores);
+  console.log(transData);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -82,38 +86,10 @@ const Transportaions = () => {
         setLoading(true);
         const url = `/api/v1/transportGetActiveSites`;
         const data = await axiosPrivate(url, { method: "POST" });
-        // let eqsTrans = data?.data.eqsTrans;
         setTransData(data?.data.eqsTrans);
         let result = {};
         let resultArray = [];
-        // let flagObj = {};
         data?.data?.eqsLoc.map((d) => {
-          // let status = ``;
-          // let eqsTransData = {};
-          // eqsTrans.map((eqsTransd) => {
-          //   status = ``;
-          //   eqsTransData = {};
-          //   if (
-          //     eqsTransd.Location === d.Location &&
-          //     !flagObj[eqsTransd?.Equipment]
-          //   ) {
-          //     flagObj[eqsTransd?.Equipment] = eqsTransd.Location;
-          //     status = ``;
-          //     eqsTransData = {
-          //       id: eqsTransd?.ID.toString(),
-          //       name: eqsTransd?.Equipment,
-          //       UnderCarrage_Type: eqsTransd?.UnderCarrage_Type,
-          //       Equipment_Type: eqsTransd?.Equipment_Type,
-          //       Status: `New`,
-          //     };
-          //     //   eqsTrans = eqsTrans.filter((d) => d.ID !== eqsTransd.ID);
-          //   } else if (
-          //     eqsTransd.Equipment === d.Equipment &&
-          //     eqsTransd.Location !== d.Location
-          //   ) {
-          //     status = `Removed`;
-          //   }
-          // });
           result[d.Location]
             ? (result[d.Location] = [
                 ...result[d.Location],
@@ -134,9 +110,6 @@ const Transportaions = () => {
                   Status: "",
                 },
               ]);
-
-          // eqsTransData.Status &&
-          //   (result[d.Location] = [eqsTransData, ...result[d.Location]]);
         });
 
         Object.keys(result).map((r, i) => {
@@ -240,45 +213,95 @@ const Transportaions = () => {
     setIsDragged(true);
   };
 
-  useEffect(() => {
-    const updateDatabase = async () => {
-      try {
-        setError(false);
-        setLoading(true);
-        let body = { ...bodyData };
-        body = {
-          StartDate: startDate,
-          EndDate: endDate,
-          ...body,
-        };
+  const addEqTrans = async (body) => {
+    try {
+      setError(false);
+      setLoading(true);
+      // let body = { ...bodyData };
+      // body = {
+      //   StartDate: startDate,
+      //   EndDate: endDate,
+      //   ...body,
+      // };
 
-        const url = `/api/v1/addEquipmentTrans`;
-        const data = await axiosPrivate(url, {
-          method: "POST",
-          data: JSON.stringify(body),
-        });
-        setStores(initStores);
-        setLoading(false);
-        setIsConfirmed(false);
-      } catch (err) {
-        setError(true);
-        setErrorData((prev) => [
-          ...prev,
-          err?.response?.data?.message
-            ? err?.response?.data?.message
-            : err?.message,
-        ]);
-        setTimeout(() => {
-          setError(false);
-          setTimeout(() => {
-            setErrorData([]);
-          }, 1000);
-        }, 5000);
-        setLoading(false);
-        setIsConfirmed(false);
+      const url = `/api/v1/addEquipmentTrans`;
+      const data = await axiosPrivate(url, {
+        method: "POST",
+        data: JSON.stringify(body),
+      });
+      let newData = [...transData];
+
+      if (data?.data?.Type === "Added") {
+        newData.push(data?.data);
+      } else {
+        newData = newData.filter((item) => data.data.ID !== item.ID);
+        newData.unshift(data.data);
       }
-    };
-    if (isConfirmed) updateDatabase();
+      setTransData(newData);
+
+      setStores(initStores);
+      setLoading(false);
+      setIsConfirmed(false);
+    } catch (err) {
+      setError(true);
+      setErrorData((prev) => [
+        ...prev,
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message,
+      ]);
+      setTimeout(() => {
+        setError(false);
+        setTimeout(() => {
+          setErrorData([]);
+        }, 1000);
+      }, 5000);
+      setLoading(false);
+      setIsConfirmed(false);
+    }
+  };
+
+  const deleteEqTrans = async (id) => {
+    try {
+      setError(false);
+      setLoading(true);
+
+      const url = `/api/v1/deleteEqsTrans/${id}`;
+      const data = await axiosPrivate(url, {
+        method: "DELETE",
+      });
+      let newData = [...transData];
+      newData = newData.filter((d) => d.ID !== id);
+      setTransData(newData);
+      setLoading(false);
+    } catch (err) {
+      setError(true);
+      setErrorData((prev) => [
+        ...prev,
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message,
+      ]);
+      setTimeout(() => {
+        setError(false);
+        setTimeout(() => {
+          setErrorData([]);
+        }, 1000);
+      }, 5000);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isConfirmed) {
+      let body = { ...bodyData };
+      body = {
+        StartDate: startDate,
+        EndDate: endDate,
+        ...body,
+      };
+      addEqTrans(body);
+    }
   }, [isConfirmed]);
 
   return (
@@ -301,26 +324,26 @@ const Transportaions = () => {
         <div className="header">
           <h1>Sites Transport Requests</h1>
         </div>
-        <div className="w-full p-2 flex flex-row items-center justify-center">
-          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+        <div className="w-full p-2 flex flex-row items-center justify-center border-b-1 border-logoColor">
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor px-4 p-2">
             Equipment
           </p>
-          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor px-4 p-2">
             From Site
           </p>
-          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor px-4 p-2">
             To Site
           </p>
-          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor px-4 p-2">
             Start Date
           </p>
-          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor px-4 p-2">
             End Date
           </p>
-          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor px-4 p-2">
             User
           </p>
-          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor border-b-1 border-logoColor px-4 p-2">
+          <p className="w-[calc(100%/7)] text-[16px] font-[800] text-logoColor px-4 p-2">
             Action
           </p>
         </div>
@@ -347,27 +370,64 @@ const Transportaions = () => {
             <p className="w-[calc(100%/6)] text-[14px] px-4 p-2">
               {JSON.parse(d?.Confirmed).join(",")}
             </p>
-            {d.Status === "UnConfirmed" ? (
+            {d.Status === "Confirmed" ? (
+              <div className="w-[calc(100%/6)]  p-2 px-4  flex justify-start items-center">
+                <p className="bg-green-700 text-white px-6 p-2 rounded-lg">
+                  Confirmed
+                </p>
+              </div>
+            ) : !JSON.parse(d?.Confirmed)?.includes(usersData[0].username) &&
+              d.UserGroup === usersData[0].department ? (
               <div className="w-[calc(100%/6)] flex flex-row items-center justify-start gap-3 px-4 p-2">
                 <TooltipComponent content={`Confirm`} position="BottomCenter">
-                  <button className="text-green-700 text-[20px]">
+                  <button
+                    className="text-green-700 text-[20px]"
+                    onClick={async () => {
+                      let body = {
+                        StartDate: d.StartDate,
+                        EndDate: d.EndDate,
+                        Equipment_Type: d.Equipment_Type,
+                        Equipment: d.Equipment,
+                        UnderCarrage_Type: d.UnderCarrage_Type,
+                        FromLocation: d.FromLocation,
+                        ToLocation: d.ToLocation,
+                        Confirmed: d.Confirmed,
+                        Status: d.Status,
+                        username: usersData[0].username,
+                      };
+                      await addEqTrans(body);
+                    }}
+                  >
                     <GiConfirmed />
                   </button>
                 </TooltipComponent>
                 <TooltipComponent content={`Edit`} position="BottomCenter">
-                  <button className=" text-yellow-700 text-[20px]">
+                  <button
+                    className=" text-yellow-700 text-[20px]"
+                    onClick={() => {
+                      setEditEqsTransData(d);
+                      setIsEditEqsTrans(true);
+                    }}
+                  >
                     <CiEdit />
                   </button>
                 </TooltipComponent>
                 <TooltipComponent content={`Delete`} position="BottomCenter">
-                  <button className="text-red-500 text-[20px]">
+                  <button
+                    className="text-red-500 text-[20px]"
+                    onClick={() => {
+                      deleteEqTrans(d?.ID);
+                    }}
+                  >
                     <MdDelete />
                   </button>
                 </TooltipComponent>
               </div>
             ) : (
-              <div className="w-[calc(100%/6)] bg-green-700 p-2 rounded-lg px-4">
-                Confirmed
+              <div className="w-[calc(100%/6)]  p-2 px-4  flex justify-start items-center">
+                <p className="bg-yellow-500 text-white px-6 p-2 rounded-lg">
+                  Pending
+                </p>
               </div>
             )}
           </div>
@@ -388,43 +448,55 @@ const Transportaions = () => {
         )}
         {isAddSite && (
           <AddSite
+            isAddSite={isAddSite}
             setIsAddSite={setIsAddSite}
             setLoading={setLoading}
             setStores={setStores}
             stores={stores}
           />
         )}
-        <div className="card">
-          <DragDropContext onDragEnd={handleDragAndDrop}>
-            <div className="header">
-              <h1>Sites Equipments List</h1>
-            </div>
-            <Droppable droppableId="ROOT" type="group">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {stores.map((store, index) => (
-                    <Draggable
-                      draggableId={store.id}
-                      index={index}
-                      key={store.id}
-                    >
-                      {(provided) => (
-                        <div
-                          {...provided.dragHandleProps}
-                          {...provided.draggableProps}
-                          ref={provided.innerRef}
-                        >
-                          <StoreList {...store} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
+        {isEditEqsTrans && (
+          <EditEqsTrans
+            setIsEditEqsTrans={setIsEditEqsTrans}
+            setLoading={setLoading}
+            item={editEqsTransData}
+            transData={transData}
+            setTransData={setTransData}
+          />
+        )}
+        {usersData[0].title === "Manager" && (
+          <div className="card">
+            <DragDropContext onDragEnd={handleDragAndDrop}>
+              <div className="header">
+                <h1>Sites Equipments List</h1>
+              </div>
+              <Droppable droppableId="ROOT" type="group">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {stores.map((store, index) => (
+                      <Draggable
+                        draggableId={store.id}
+                        index={index}
+                        key={store.id}
+                      >
+                        {(provided) => (
+                          <div
+                            {...provided.dragHandleProps}
+                            {...provided.draggableProps}
+                            ref={provided.innerRef}
+                          >
+                            <StoreList {...store} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </div>
+        )}
       </div>
     </>
   );

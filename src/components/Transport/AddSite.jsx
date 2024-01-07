@@ -4,11 +4,18 @@ import "../../Transport.css";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavContext } from "../../contexts/NavContext";
 
-const AddSite = ({ setIsAddSite, setLoading, setStores, stores }) => {
+const AddSite = ({
+  isAddSite,
+  setIsAddSite,
+  setLoading,
+  setStores,
+  stores,
+}) => {
   const { setError, setErrorData } = useNavContext();
 
   const [site, setSite] = useState(null);
   const [siteAr, setSiteAr] = useState(null);
+  const [isCanceled, setIsCanceled] = useState(false);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -48,8 +55,21 @@ const AddSite = ({ setIsAddSite, setLoading, setStores, stores }) => {
     >
       <div className="absolute  w-screen h-screen flex flex-col items-center justify-center left-0 top-0 z-[1000] overlay"></div>
       <div
-        className=" w-[25%] bg-white relative z-[1001] "
-        style={{ boxShadow: "0 12px 16px rgba(0, 0, 0, 0.7)" }}
+        className=" w-[25%] bg-white relative z-[1001]"
+        // style={{ animation: "whAnimate 3.5 ease-in-out" }}
+        style={
+          !isCanceled
+            ? {
+                boxShadow: "0 12px 16px rgba(0, 0, 0, 0.7)",
+                transform: "scale(1)",
+                transition: "all 0.5s ease-in-out",
+              }
+            : {
+                boxShadow: "0 12px 16px rgba(0, 0, 0, 0.7)",
+                transform: "scale(0)",
+                transition: "all 0.5s ease-in-out",
+              }
+        }
       >
         <div
           className="w-full bg-logoColor p-2 px-6 flex justify-center items-center text-white text-[18px] font-[800]"
@@ -67,7 +87,7 @@ const AddSite = ({ setIsAddSite, setLoading, setStores, stores }) => {
             </label>
             <input
               type="text"
-              className="border-1 border-logoColor rounded-md outline-none p-2 text-[10px]"
+              className="border-b-2 border-gray-400 focus:border-logoColor outline-none p-2 text-[12px]"
               name="site"
               value={site}
               onChange={(e) => setSite(e.target.value)}
@@ -81,7 +101,7 @@ const AddSite = ({ setIsAddSite, setLoading, setStores, stores }) => {
             </label>
             <input
               type="text"
-              className="border-1 border-logoColor rounded-md outline-none p-2 text-[10px]"
+              className="border-b-2 border-gray-400 focus:border-logoColor outline-none p-2 text-[12px]"
               name="siteArabic"
               value={siteAr}
               onChange={(e) => setSiteAr(e.target.value)}
@@ -91,16 +111,24 @@ const AddSite = ({ setIsAddSite, setLoading, setStores, stores }) => {
         <div className="w-full flex flex-row justify-between items-center p-4 px-6">
           <button
             className=" text-green-800 font-[900]"
-            onClick={() => {
-              handleConfirm();
-              setIsAddSite(false);
+            onClick={async () => {
+              await handleConfirm();
+              setIsCanceled(true);
+              setTimeout(() => {
+                setIsAddSite(false);
+              }, 500);
             }}
           >
             Confirm
           </button>
           <button
             className=" text-red-600 font-[600]"
-            onClick={() => setIsAddSite(false)}
+            onClick={() => {
+              setIsCanceled(true);
+              setTimeout(() => {
+                setIsAddSite(false);
+              }, 500);
+            }}
           >
             Cancel
           </button>

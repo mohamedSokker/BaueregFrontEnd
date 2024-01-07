@@ -163,9 +163,18 @@ module.exports = {
           "0%": { width: "100%" },
           "100%": { width: "0" },
         },
+        whAnimate: {
+          "0%": {
+            transform: "scale(1)",
+          },
+          "100%": {
+            transform: "scale(0)",
+          },
+        },
       },
       animation: {
         "in-out": "in-out 5s ease-in-out",
+        whAnimate: "in-out 3.5s ease-in-out",
         "slide-in-tr": "slide-in-tr 0.5 ease-in-out",
         "slide-in": "slide-in 0.5s ease-in-out",
         "slide-out": "slide-out 0.5s ease-in-out",

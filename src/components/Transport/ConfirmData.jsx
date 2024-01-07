@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const ConfirmData = ({
   message,
@@ -9,6 +9,7 @@ const ConfirmData = ({
   endDate,
   setEndDate,
 }) => {
+  const [isCanceled, setIsCanceled] = useState(false);
   return (
     <div
       className="fixed opacity-100 w-screen h-screen flex flex-col items-center justify-center left-0 top-0"
@@ -17,7 +18,19 @@ const ConfirmData = ({
       <div className="absolute w-screen h-screen flex flex-col items-center justify-center left-0 top-0 z-[1000] overlay"></div>
       <div
         className=" w-[25%] bg-white relative z-[1001] "
-        style={{ boxShadow: "0 12px 16px rgba(0, 0, 0, 0.7)" }}
+        style={
+          !isCanceled
+            ? {
+                boxShadow: "0 12px 16px rgba(0, 0, 0, 0.7)",
+                transform: "scale(1)",
+                transition: "all 0.5s ease-in-out",
+              }
+            : {
+                boxShadow: "0 12px 16px rgba(0, 0, 0, 0.7)",
+                transform: "scale(0)",
+                transition: "all 0.5s ease-in-out",
+              }
+        }
       >
         <div
           className="w-full bg-logoColor p-2 px-6 flex justify-center items-center text-white text-[18px] font-[800]"
@@ -35,7 +48,7 @@ const ConfirmData = ({
             </label>
             <input
               type="date"
-              className="border-1 border-logoColor rounded-md outline-none p-2 text-[10px]"
+              className="border-b-2 border-gray-400 focus:border-logoColor outline-none p-2 text-[10px]"
               name="startDate"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
@@ -49,7 +62,7 @@ const ConfirmData = ({
             </label>
             <input
               type="date"
-              className="border-1 border-logoColor rounded-md outline-none p-2 text-[10px]"
+              className="border-b-2 border-gray-400 focus:border-logoColor outline-none p-2 text-[10px]"
               name="endDate"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
@@ -61,14 +74,22 @@ const ConfirmData = ({
             className=" text-green-800 font-[900]"
             onClick={() => {
               setIsConfirmed(true);
-              setIsDragged(false);
+              setIsCanceled(true);
+              setTimeout(() => {
+                setIsDragged(false);
+              }, 500);
             }}
           >
             Confirm
           </button>
           <button
             className=" text-red-600 font-[600]"
-            onClick={() => setIsDragged(false)}
+            onClick={() => {
+              setIsCanceled(true);
+              setTimeout(() => {
+                setIsDragged(false);
+              }, 500);
+            }}
           >
             Cancel
           </button>

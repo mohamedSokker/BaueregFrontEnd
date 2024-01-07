@@ -49,3 +49,12 @@
   opacity: 0.8;
   backdrop-filter: blur(2px);
 }
+
+@keyframes whAnimate {
+  from {
+    transform: "scale(0)";
+  }
+  to {
+    transform: "scale(1)";
+  }
+}
