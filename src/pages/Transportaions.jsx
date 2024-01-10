@@ -112,6 +112,12 @@ const Transportaions = () => {
               ]);
         });
 
+        data?.data?.eqsTrans.map((d) => {
+          if (!result[d.ToLocation]) {
+            result[d.ToLocation] = [];
+          }
+        });
+
         Object.keys(result).map((r, i) => {
           resultArray.push({ id: i.toString(), name: r, items: result[r] });
         });
@@ -306,17 +312,20 @@ const Transportaions = () => {
 
   return (
     <>
-      <div className="bg-white w-full flex flex-row justify-end items-center text-white px-6 p-2 m-auto rounded-md">
-        <TooltipComponent content={`Add Site`} position="BottomCenter">
-          <button
-            className="px-2 p-1 rounded-md bg-logoColor"
-            type="button"
-            onClick={() => setIsAddSite(true)}
-          >
-            +
-          </button>
-        </TooltipComponent>
-      </div>
+      {usersData[0].department === "Civil" && (
+        <div className="bg-white w-full flex flex-row justify-end items-center text-white px-6 p-2 m-auto rounded-md">
+          <TooltipComponent content={`Add Site`} position="BottomCenter">
+            <button
+              className="px-2 p-1 rounded-md bg-logoColor"
+              type="button"
+              onClick={() => setIsAddSite(true)}
+            >
+              +
+            </button>
+          </TooltipComponent>
+        </div>
+      )}
+
       <div
         className="bg-white w-[95vw] px-5 p-2 m-auto my-[3rem] rounded-md"
         style={{ boxShadow: "0 12px 16px rgba(0, 0, 0, 0.25)" }}
@@ -464,7 +473,7 @@ const Transportaions = () => {
             setTransData={setTransData}
           />
         )}
-        {usersData[0].title === "Manager" && (
+        {usersData[0].department === "Civil" && (
           <div className="card">
             <DragDropContext onDragEnd={handleDragAndDrop}>
               <div className="header">

@@ -31,6 +31,7 @@
     "dayjs": "^1.11.10",
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^3.1.2",
+    "novnc": "^1.2.0",
     "react": "^17.0.2",
     "react-barcode": "^1.4.6",
     "react-beautiful-dnd": "^13.1.1",
