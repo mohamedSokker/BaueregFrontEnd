@@ -131,13 +131,13 @@ const Dashboard = ({ socket }) => {
           value={startDate}
           onChange={changeDateValue}
         />
-        {/* <button
+        <button
           onClick={() => {
             navigate("/Vnc/GRC4");
           }}
         >
           VNC
-        </button> */}
+        </button>
       </div>
       <div className="w-full flex md:flex-row flex-col flex-wrap relative gap-2 p-2">
         {(Number(fieldsData.Availability) !== 0 || cardsData?.Availability) && (
