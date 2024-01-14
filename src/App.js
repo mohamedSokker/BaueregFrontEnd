@@ -35,7 +35,7 @@ function App() {
   useEffect(() => {
     if (!socket.connected && token && usersData) {
       socket.connect();
-      socket.emit("userName", usersData[0].username);
+      socket.emit("userName", usersData[0]?.username);
     }
   }, [socket, token, usersData]);
 
