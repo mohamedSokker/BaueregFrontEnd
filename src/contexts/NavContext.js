@@ -7,7 +7,7 @@ export const ContextProvider = ({ children }) => {
   const [currentMode, setCurrentMode] = useState("Light");
   const [screenSize, setScreenSize] = useState(undefined);
   const [token, setToken] = useState(null);
-  const [usersData, setUsersData] = useState([]);
+  const [usersData, setUsersData] = useState(null);
   const [error, setError] = useState(false);
   const [errorData, setErrorData] = useState([]);
 
