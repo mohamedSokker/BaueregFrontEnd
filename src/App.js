@@ -30,11 +30,14 @@ import Transportaions from "./pages/Transportaions";
 import Vnc from "./pages/Vnc";
 
 function App() {
-  const { token } = useNavContext();
+  const { token, usersData } = useNavContext();
 
   useEffect(() => {
-    if (!socket.connected && token) socket.connect();
-  }, [socket, token]);
+    if (!socket.connected && token && usersData) {
+      socket.connect();
+      socket.emit("userName", usersData[0].username);
+    }
+  }, [socket, token, usersData]);
 
   return (
     <Routes>
