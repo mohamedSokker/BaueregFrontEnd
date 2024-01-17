@@ -72,20 +72,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
       setImage: setImage,
       checkEmptyFields: checkEmptyFields,
     });
-  }, [
-    roles,
-    userName,
-    password,
-    email,
-    phone,
-    image,
-    eq,
-    eqType,
-    site,
-    error,
-    errorDetails,
-    getChildData,
-  ]);
+  }, [roles, userName, password, email, phone, image, eq, eqType, site]);
 
   useEffect(() => {
     const getData = async () => {
