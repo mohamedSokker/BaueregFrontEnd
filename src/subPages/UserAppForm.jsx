@@ -28,7 +28,7 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const [roles, setRules] = useState("");
-  // const [active, setActive] = useState(false);
+  const [active, setActive] = useState(false);
 
   // console.log(eqType);
   // console.log(eq);
@@ -286,10 +286,10 @@ const UserAppForm = ({ handleSaveUser, getChildData, userData }) => {
                 onClick={(e) => {
                   if (!e.target.classList.contains("Active")) {
                     e.target.classList.add("Active");
-                    // setActive((prev) => !prev);
+                    setActive((prev) => !prev);
                   } else {
                     e.target.classList.remove("Active");
-                    // setActive((prev) => !prev);
+                    setActive((prev) => !prev);
                   }
                 }}
               >
