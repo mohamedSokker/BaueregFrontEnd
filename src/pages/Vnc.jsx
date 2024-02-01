@@ -7,27 +7,29 @@ const Vnc = ({ socket }) => {
 
   const { tableName } = useParams();
   const [image, setImage] = useState(null);
-  console.log(image);
+  // console.log(image);
+
   useEffect(() => {
     const createTunnel = async () => {
       if (!socket?.connected) socket?.connect();
       const url = `/create-tunnel/${8000}`;
       const data = await axiosPrivate(url);
       console.log(data);
-
+    };
+    createTunnel();
+  }, []);
+  useEffect(() => {
+    if (tableName && socket) {
       socket.emit("join-message", tableName);
       socket.on("screen-data", (message) => {
         setImage(message);
         socket.emit("request-image", "new Image");
       });
-    };
-    if (tableName && socket) {
-      createTunnel();
     }
   }, [tableName, socket]);
   return (
     <div className="flex justify-center items-center w-screen h-screen p-2">
-      <img src={`data:image/png;base64,${image}`} className="w-full h-full" />
+      <img src={`${image}`} className="w-full h-full" />
     </div>
   );
 };
