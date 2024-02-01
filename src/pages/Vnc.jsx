@@ -23,7 +23,7 @@ const Vnc = ({ socket }) => {
       socket.emit("join-message", tableName);
       socket.on("screen-data", (message) => {
         setImage(message);
-        socket.emit("request-image", "new Image");
+        // socket.emit("request-image", "new Image");
       });
     }
   }, [tableName, socket]);
