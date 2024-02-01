@@ -12,7 +12,8 @@ const Vnc = ({ socket }) => {
     const createTunnel = async () => {
       if (!socket?.connected) socket?.connect();
       const url = `/create-tunnel/${8000}`;
-      await axiosPrivate(url);
+      const data = await axiosPrivate(url);
+      console.log(data);
 
       socket.emit("join-message", tableName);
       socket.on("screen-data", (message) => {
