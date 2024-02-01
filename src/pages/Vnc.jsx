@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+
 const Vnc = ({ socket }) => {
+  const axiosPrivate = useAxiosPrivate();
+
   const { tableName } = useParams();
   const [image, setImage] = useState(null);
   console.log(image);
   useEffect(() => {
-    if (!socket?.connected) socket?.connect();
-    if (tableName && socket) {
+    const createTunnel = async () => {
+      if (!socket?.connected) socket?.connect();
+      const url = `/create-tunnel/${8000}`;
+      await axiosPrivate(url);
+
       socket.emit("join-message", tableName);
       socket.on("screen-data", (message) => {
         setImage(message);
         socket.emit("request-image", "new Image");
       });
+    };
+    if (tableName && socket) {
+      createTunnel();
     }
   }, [tableName, socket]);
   return (

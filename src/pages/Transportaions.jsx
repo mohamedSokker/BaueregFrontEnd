@@ -14,36 +14,6 @@ import ConfirmData from "../components/Transport/ConfirmData";
 import AddSite from "../components/Transport/AddSite";
 import EditEqsTrans from "../components/Transport/EditEqsTrans";
 
-const DATA = [
-  {
-    id: "0e2f0db1-5457-46b0-949e-8032d2f9997a",
-    name: "Walmart",
-    items: [
-      { id: "26fd50b3-3841-496e-8b32-73636f6f4197", name: "3% Milk" },
-      { id: "b0ee9d50-d0a6-46f8-96e3-7f3f0f9a2525", name: "Butter" },
-    ],
-  },
-  {
-    id: "487f68b4-1746-438c-920e-d67b7df46247",
-    name: "Indigo",
-    items: [
-      {
-        id: "95ee6a5d-f927-4579-8c15-2b4eb86210ae",
-        name: "Designing Data Intensive Applications",
-      },
-      { id: "5bee94eb-6bde-4411-b438-1c37fa6af364", name: "Atomic Habits" },
-    ],
-  },
-  {
-    id: "25daffdc-aae0-4d73-bd31-43f73101e7c0",
-    name: "Lowes",
-    items: [
-      { id: "960cbbcf-89a0-4d79-aa8e-56abbc15eacc", name: "Workbench" },
-      { id: "d3edf796-6449-4931-a777-ff66965a025b", name: "Hammer" },
-    ],
-  },
-];
-
 const formatDate = (anyDate) => {
   let dt = new Date(anyDate);
   const year = dt.getFullYear();
@@ -63,7 +33,6 @@ const Transportaions = () => {
   const [transData, setTransData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
-  // const [isCanceled, setIsCanceled] = useState(false);
   const [isDragged, setIsDragged] = useState(false);
   const [bodyData, setBodyData] = useState({});
   const [message, setMessage] = useState(``);
@@ -73,9 +42,7 @@ const Transportaions = () => {
   const [isEditEqsTrans, setIsEditEqsTrans] = useState(false);
   const [editEqsTransData, setEditEqsTransData] = useState({});
 
-  // console.log(startDate, typeof startDate);
-
-  console.log(transData);
+  // console.log(transData);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -182,12 +149,7 @@ const Transportaions = () => {
         : newSourceItems;
 
     const [deletedItem] = newSourceItems.splice(itemSourceIndex, 1);
-    // console.log({
-    //   Equipment: deletedItem?.name,
-    //   Location: stores[storeDestinationIndex]?.name,
-    //   UnderCarrage_Type: deletedItem?.UnderCarrage_Type,
-    //   Equipment_Type: deletedItem?.Equipment_Type,
-    // });
+
     newDestinationItems.splice(itemDestinationIndex, 0, deletedItem);
 
     const newStores = [...stores];
@@ -219,16 +181,10 @@ const Transportaions = () => {
     setIsDragged(true);
   };
 
-  const addEqTrans = async (body) => {
+  const addEqTrans = async (body, type) => {
     try {
       setError(false);
       setLoading(true);
-      // let body = { ...bodyData };
-      // body = {
-      //   StartDate: startDate,
-      //   EndDate: endDate,
-      //   ...body,
-      // };
 
       const url = `/api/v1/addEquipmentTrans`;
       const data = await axiosPrivate(url, {
@@ -245,7 +201,7 @@ const Transportaions = () => {
       }
       setTransData(newData);
 
-      setStores(initStores);
+      if (!type) setStores(initStores);
       setLoading(false);
       setIsConfirmed(false);
     } catch (err) {
@@ -306,7 +262,7 @@ const Transportaions = () => {
         EndDate: endDate,
         ...body,
       };
-      addEqTrans(body);
+      addEqTrans(body, undefined);
     }
   }, [isConfirmed]);
 
@@ -404,7 +360,7 @@ const Transportaions = () => {
                         Status: d.Status,
                         username: usersData[0].username,
                       };
-                      await addEqTrans(body);
+                      await addEqTrans(body, "Confirm");
                     }}
                   >
                     <GiConfirmed />
