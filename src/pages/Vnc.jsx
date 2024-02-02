@@ -20,15 +20,12 @@ const Vnc = ({ socket }) => {
   //   createTunnel();
   // }, []);
   useEffect(() => {
-    if (!socket?.connected) socket?.connect();
-    if (tableName && socket.connected) {
-      socket.emit("join-message", tableName);
-      socket.on("screen-data", (message) => {
-        setImage(message);
-        // socket.emit("request-image", "new Image");
-      });
-    }
-  }, [tableName, socket]);
+    socket.emit("join-message", tableName);
+    socket.on("screen-data", (message) => {
+      setImage(message);
+      // socket.emit("request-image", "new Image");
+    });
+  }, []);
   return (
     <div className="flex justify-center items-center w-screen h-screen p-2">
       <img src={`${image}`} className="w-full h-full" />
