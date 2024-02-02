@@ -25,6 +25,10 @@ const Vnc = ({ socket }) => {
       setImage(message);
       // socket.emit("request-image", "new Image");
     });
+
+    return () => {
+      socket.off("join-message", tableName);
+    };
   }, []);
   return (
     <div className="flex justify-center items-center w-screen h-screen p-2">
