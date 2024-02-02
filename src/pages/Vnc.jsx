@@ -19,15 +19,15 @@ const Vnc = ({ socket }) => {
   //   };
   //   createTunnel();
   // }, []);
+  const screenData = (message) => {
+    setImage(message);
+  };
   useEffect(() => {
     socket.emit("join-message", tableName);
-    socket.on("screen-data", (message) => {
-      setImage(message);
-      // socket.emit("request-image", "new Image");
-    });
+    socket.on("screen-data", screenData);
 
     return () => {
-      socket.off("join-message", tableName);
+      socket.off("screen-data", screenData);
     };
   }, []);
   return (
