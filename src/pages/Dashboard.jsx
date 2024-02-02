@@ -133,7 +133,7 @@ const Dashboard = ({ socket }) => {
         />
         <button
           onClick={() => {
-            navigate("/Vnc/GRC4");
+            navigate("/Vnc/8000");
           }}
         >
           VNC

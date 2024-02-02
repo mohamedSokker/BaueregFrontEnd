@@ -7,34 +7,31 @@ const Vnc = ({ socket }) => {
 
   const { tableName } = useParams();
   const [image, setImage] = useState(null);
-  const [data, setData] = useState(
-    <div className="flex justify-center items-center w-screen h-screen p-2"></div>
-  );
   // console.log(image);
 
-  useEffect(() => {
-    const createTunnel = async () => {
-      // if (!socket?.connected) socket?.connect();
-      const url = `/create-tunnel/${8000}`;
-      const data = await axiosPrivate(url);
-      console.log(data.data);
-      setData(data.data);
-    };
-    createTunnel();
-  }, []);
   // useEffect(() => {
-  //   if (tableName && socket) {
-  //     socket.emit("join-message", tableName);
-  //     socket.on("screen-data", (message) => {
-  //       setImage(message);
-  //       // socket.emit("request-image", "new Image");
-  //     });
-  //   }
-  // }, [tableName, socket]);
+  //   const createTunnel = async () => {
+  //     // if (!socket?.connected) socket?.connect();
+  //     const url = `/create-tunnel/${8000}`;
+  //     const data = await axiosPrivate(url);
+  //     console.log(data.data);
+  //     setData(data.data);
+  //   };
+  //   createTunnel();
+  // }, []);
+  useEffect(() => {
+    if (!socket?.connected) socket?.connect();
+    if (tableName && socket.connected) {
+      socket.emit("join-message", tableName);
+      socket.on("screen-data", (message) => {
+        setImage(message);
+        // socket.emit("request-image", "new Image");
+      });
+    }
+  }, [tableName, socket]);
   return (
     <div className="flex justify-center items-center w-screen h-screen p-2">
-      {data}
-      {/* <img src={`${image}`} className="w-full h-full" /> */}
+      <img src={`${image}`} className="w-full h-full" />
     </div>
   );
 };
