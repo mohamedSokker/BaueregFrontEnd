@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import Jimp from "jimp";
 
 const Vnc = ({ socket }) => {
   const axiosPrivate = useAxiosPrivate();
@@ -23,8 +24,23 @@ const Vnc = ({ socket }) => {
     if (!socket?.connected) socket?.connect();
     if (tableName && socket.connected) {
       socket.emit("join-message", tableName);
-      socket.on("screen-data", (message) => {
-        setImage(message);
+      socket.on("screen-data", ({ width, height, data }) => {
+        new Jimp(
+          {
+            width: width,
+            height: height,
+            data: data,
+          },
+          async (err, image) => {
+            if (err) {
+              console.log(`Image Error: ${err.message}`);
+            }
+
+            imageBuffer = await image.getBase64Async(Jimp.MIME_JPEG);
+            setImage(message);
+            // socket.emit("screen-data", imageBuffer);
+          }
+        );
         // socket.emit("request-image", "new Image");
       });
     }
