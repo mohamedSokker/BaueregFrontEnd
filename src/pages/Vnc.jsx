@@ -36,8 +36,8 @@ const Vnc = ({ socket }) => {
               console.log(`Image Error: ${err.message}`);
             }
 
-            imageBuffer = await image.getBase64Async(Jimp.MIME_JPEG);
-            setImage(message);
+            const imageBuffer = await image.getBase64Async(Jimp.MIME_JPEG);
+            setImage(imageBuffer);
             // socket.emit("screen-data", imageBuffer);
           }
         );
