@@ -31,8 +31,9 @@ const Vnc = ({ socket }) => {
     };
   }, []);
   return (
-    <div className="flex justify-center items-center w-screen h-screen p-2">
-      <img src={`${image}`} className="w-full h-full" />
+    <div className="flex justify-center items-center w-[95vw] h-[90vh] p-5 rounded-[8px]">
+      <p className=" p-2 font-bold text-[16px]">Bauer Screen</p>
+      <img src={`${image}`} className="w-full h-full rounded-[8px]" />
     </div>
   );
 };
