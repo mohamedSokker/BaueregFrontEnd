@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { PageLoading } from "../components";
 
 const Vnc = ({ socket }) => {
   const axiosPrivate = useAxiosPrivate();
@@ -31,9 +32,17 @@ const Vnc = ({ socket }) => {
     };
   }, []);
   return (
-    <div className="flex flex-col justify-center items-center w-[95vw] h-[90vh] p-5 rounded-[8px]">
-      <p className=" p-2 font-bold text-[16px]">Bauer Screen</p>
-      <img src={`${image}`} className="w-full h-full rounded-[8px]" />
+    <div className="flex flex-col justify-center items-center w-[100vw] h-[90vh] p-5 rounded-[8px]">
+      <p className=" p-2 font-[900] text-[20px]">Bauer Screen</p>
+      {!image ? (
+        <PageLoading />
+      ) : (
+        <img
+          src={`${image}`}
+          className="w-full h-full rounded-[8px] "
+          style={{ objectFit: "contain" }}
+        />
+      )}
     </div>
   );
 };
