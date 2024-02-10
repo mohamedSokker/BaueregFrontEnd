@@ -36,10 +36,11 @@ const Vnc = ({ socket }) => {
       err?.response?.data?.message ? err?.response?.data?.message : err,
     ]);
     setTimeout(() => {
-      setError(false);
-      setTimeout(() => {
-        setErrorData([]);
-      }, 1000);
+      setErrorData([]);
+      // setError(false);
+      // setTimeout(() => {
+      //   setErrorData([]);
+      // }, 1000);
     }, 5000);
   };
 
