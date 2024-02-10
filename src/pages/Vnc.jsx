@@ -27,6 +27,7 @@ const Vnc = ({ socket }) => {
   };
 
   const handleErr = (err) => {
+    console.log("Client Connection error" + err);
     setError(true);
     setErrorData((prev) => [
       ...prev,
@@ -43,11 +44,11 @@ const Vnc = ({ socket }) => {
   useEffect(() => {
     socket.emit("join-message", tableName);
     socket.on("screen-data", screenData);
-    socket.on("Client Connection error", handleErr);
+    socket.on(`Client Connection error`, handleErr);
 
     return () => {
       socket.off("screen-data", screenData);
-      socket.off("Client Connection error", handleErr);
+      socket.off(`Client Connection error`, handleErr);
     };
   }, []);
   return (
