@@ -32,14 +32,14 @@ const Vnc = ({ socket }) => {
     };
   }, []);
   return (
-    <div className="flex flex-col justify-center items-center w-[100vw] h-[90vh] p-5 rounded-[8px]">
-      <p className=" p-2 font-[900] text-[20px]">Bauer Screen</p>
+    <div className="flex flex-col justify-center items-center w-[100vw] h-[100vh] p-2">
+      {/* <p className=" p-2 font-[900] text-[20px]">Bauer Screen</p> */}
       {!image ? (
         <PageLoading />
       ) : (
         <img
           src={`${image}`}
-          className="w-full h-full rounded-[8px] "
+          className="w-full h-full flex justify-center items-center"
           style={{ objectFit: "contain" }}
         />
       )}

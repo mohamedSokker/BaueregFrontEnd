@@ -16,10 +16,11 @@ const RequiredAuth = ({ allowedRole }) => {
   } = useNavContext();
   const location = useLocation();
 
-  return usersData[0]?.roles.Editor[allowedRole] === true ||
-    usersData[0]?.roles.Editor[allowedRole].length > 0 ||
-    usersData[0]?.roles.User[allowedRole] === true ||
-    usersData[0]?.roles.User[allowedRole].length > 0 ? (
+  return usersData &&
+    (usersData[0]?.roles.Editor[allowedRole] === true ||
+      usersData[0]?.roles.Editor[allowedRole].length > 0 ||
+      usersData[0]?.roles.User[allowedRole] === true ||
+      usersData[0]?.roles.User[allowedRole].length > 0) ? (
     <div className={currentMode === "Dark" ? "dark" : ""}>
       <div className="flex w-screen h-screen relative dark:bg-main-dark-bg m-0 p-0">
         <div
@@ -82,7 +83,7 @@ const RequiredAuth = ({ allowedRole }) => {
         </div>
       </div>
     </div>
-  ) : usersData.length > 0 ? (
+  ) : usersData?.length > 0 ? (
     <UnAuthorized />
   ) : (
     <Navigate to="/Login" state={{ from: location }} replace />
