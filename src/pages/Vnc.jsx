@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { PageLoading } from "../components";
+import { useNavContext } from "../contexts/NavContext";
 
 const Vnc = ({ socket }) => {
   const axiosPrivate = useAxiosPrivate();
+  const { setError, setErrorData } = useNavContext;
 
   const { tableName } = useParams();
   const [image, setImage] = useState(null);
@@ -23,9 +25,27 @@ const Vnc = ({ socket }) => {
   const screenData = (message) => {
     setImage(message);
   };
+
+  const handleErr = (err) => {
+    setError(true);
+    setErrorData((prev) => [
+      ...prev,
+      err?.response?.data?.message
+        ? err?.response?.data?.message
+        : err?.message,
+    ]);
+    setTimeout(() => {
+      setError(false);
+      setTimeout(() => {
+        setErrorData([]);
+      }, 1000);
+    }, 5000);
+  };
+
   useEffect(() => {
     socket.emit("join-message", tableName);
     socket.on("screen-data", screenData);
+    socket.on("Client Connection error", handleErr);
 
     return () => {
       socket.off("screen-data", screenData);
