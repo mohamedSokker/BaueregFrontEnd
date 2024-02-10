@@ -36,11 +36,10 @@ const Vnc = ({ socket }) => {
       err?.response?.data?.message ? err?.response?.data?.message : err,
     ]);
     setTimeout(() => {
-      setErrorData([]);
-      // setError(false);
-      // setTimeout(() => {
-      //   setErrorData([]);
-      // }, 1000);
+      setError(false);
+      setTimeout(() => {
+        setErrorData([]);
+      }, 1000);
     }, 5000);
   };
 
@@ -69,7 +68,7 @@ const Vnc = ({ socket }) => {
       ) : (
         <img
           src={`${image}`}
-          className="w-full h-full flex justify-center items-center"
+          className="w-full h-[90%] flex justify-center items-center"
           style={{ objectFit: "contain" }}
         />
       )}
