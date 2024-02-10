@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { CiWarning } from "react-icons/ci";
+
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { PageLoading } from "../components";
 import { useNavContext } from "../contexts/NavContext";
@@ -57,8 +59,11 @@ const Vnc = ({ socket }) => {
       {!image && !error ? (
         <PageLoading />
       ) : error ? (
-        <div className="flex flex-col justify-center items-center w-[100vw] h-[100vh] p-2">
-          <div className="w-[95%] rounded-[8px] bg-red-500">{errorData}</div>
+        <div className="flex flex-col justify-center w-[100vw] h-[100vh] p-2">
+          <div className="w-[95%] rounded-[8px] bg-red-500 text-white p-4 flex justify-center items-center">
+            <CiWarning className="text-[40px] font-extrabold" />
+            <p className="ml-5 text-xl font-semibold">{errorData}</p>
+          </div>
         </div>
       ) : (
         <img
