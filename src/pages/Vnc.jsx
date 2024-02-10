@@ -6,7 +6,7 @@ import { useNavContext } from "../contexts/NavContext";
 
 const Vnc = ({ socket }) => {
   const axiosPrivate = useAxiosPrivate();
-  const { error, errorData, setError, setErrorData } = useNavContext;
+  const { error, errorData, setError, setErrorData } = useNavContext();
 
   const { tableName } = useParams();
   const [image, setImage] = useState(null);
