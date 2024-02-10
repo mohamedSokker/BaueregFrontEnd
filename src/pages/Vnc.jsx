@@ -6,7 +6,7 @@ import { useNavContext } from "../contexts/NavContext";
 
 const Vnc = ({ socket }) => {
   const axiosPrivate = useAxiosPrivate();
-  const { setError, setErrorData } = useNavContext;
+  const { error, errorData, setError, setErrorData } = useNavContext;
 
   const { tableName } = useParams();
   const [image, setImage] = useState(null);
@@ -30,9 +30,7 @@ const Vnc = ({ socket }) => {
     setError(true);
     setErrorData((prev) => [
       ...prev,
-      err?.response?.data?.message
-        ? err?.response?.data?.message
-        : err?.message,
+      err?.response?.data?.message ? err?.response?.data?.message : err,
     ]);
     setTimeout(() => {
       setError(false);
@@ -49,13 +47,18 @@ const Vnc = ({ socket }) => {
 
     return () => {
       socket.off("screen-data", screenData);
+      socket.off("Client Connection error", handleErr);
     };
   }, []);
   return (
     <div className="flex flex-col justify-center items-center w-[100vw] h-[100vh] p-2">
       {/* <p className=" p-2 font-[900] text-[20px]">Bauer Screen</p> */}
-      {!image ? (
+      {!image && !error ? (
         <PageLoading />
+      ) : error ? (
+        <div className="flex flex-col justify-center items-center w-[100vw] h-[100vh] p-2">
+          <div className="w-[95%] rounded-[8px] bg-red-500">{errorData}</div>
+        </div>
       ) : (
         <img
           src={`${image}`}
