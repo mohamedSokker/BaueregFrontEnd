@@ -42,8 +42,10 @@ function App() {
   return (
     <Routes>
       <Route path="/Login" element={<Login />} />
-      <Route path="/Vnc/:tableName" element={<Vnc socket={socket} />} />
       <Route path="/UnAuthorized" element={<UnAuthorized />} />
+      <Route element={<RequiredAuth allowedRole={"Dashboard"} />}>
+        <Route path="/Vnc/:tableName" element={<Vnc socket={socket} />} />
+      </Route>
       <Route element={<PersistLogin />}>
         <Route element={<RequiredAuth allowedRole={"Dashboard"} />}>
           <Route path="/" element={<Dashboard socket={socket} />} />
