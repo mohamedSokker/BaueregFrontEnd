@@ -32,12 +32,24 @@ const ManageKanban = () => {
       if (isNearLeftEdge) el.scrollBy(-10, 0);
     };
 
+    const handleTouchMove = (e) => {
+      const el = document.getElementById("cont");
+      const touchX = e.touches[0].clientX;
+
+      const isNearRightEdge = window.innerWidth - touchX < 50;
+      const isNearLeftEdge = touchX < 50;
+
+      if (isNearRightEdge) el.scrollBy(10, 0);
+
+      if (isNearLeftEdge) el.scrollBy(-10, 0);
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchmove", handleMouseMove);
+    window.addEventListener("touchmove", handleTouchMove);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("touchmove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
   return (
