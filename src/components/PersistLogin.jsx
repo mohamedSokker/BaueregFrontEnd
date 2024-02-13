@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import { useNavContext } from "../contexts/NavContext";
 import { Spinner } from "../components";
-import MainLoading from "../components/mainLoading";
+import MainLoading from "../components/MainLoading";
 import logo from "../assets/logoblue.jpg";
 
 const PersistLogin = () => {
