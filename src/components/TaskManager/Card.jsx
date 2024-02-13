@@ -38,7 +38,7 @@ const Card = ({ id, items }) => {
                   <div className="w-full font-[600]">
                     <h4>{item?.desc}</h4>
                   </div>
-                  <div className="w-full flex flex-col items-start gap-2 text-gray-600 font-[200] text-[14px]">
+                  <div className="w-full flex flex-row items-start justify-start gap-12 text-gray-600 font-[200] text-[14px]">
                     {item.start !== "" && (
                       <div className="flex flex-row gap-1 items-center">
                         <CiClock1 />
@@ -58,9 +58,13 @@ const Card = ({ id, items }) => {
                       </div>
                     )}
                   </div>
-                  <div className="w-full flex flex-row gap-2 flex-wrap">
-                    <div className="p-[2px] px-4 rounded-full border-1 border-blue-600 text-[14px] text-blue-600 bg-[rgba(37,99,235,0.3)] font-[500]">
-                      {item?.eq}
+                  <div className="flex flex-row gap-[2px] justify-start items-center text-gray-600 font-[200] text-[14px]">
+                    <CiClock1 />
+                    <p className="text-[10px]">{`duration: ${item.duration} hrs`}</p>
+                  </div>
+                  <div className="w-full flex flex-row gap-2 flex-wrap justify-start">
+                    <div className="p-[2px] px-4 rounded-full border-1 border-cyan-500 text-[14px] text-cyan-500 bg-[rgba(6,182,212,0.3)] font-[500]">
+                      {item?.workshop}
                     </div>
                     <div
                       className="p-[2px] px-4 rounded-full border-1 text-[14px] font-[500] bg-[rgb(235,166,37)]"
@@ -86,6 +90,9 @@ const Card = ({ id, items }) => {
                       }}
                     >
                       {item?.periority}
+                    </div>
+                    <div className="p-[2px] px-4 rounded-full border-1 border-blue-600 text-[14px] text-blue-600 bg-[rgba(37,99,235,0.3)] font-[500]">
+                      {item?.eq}
                     </div>
                   </div>
                 </div>
