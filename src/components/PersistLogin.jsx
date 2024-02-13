@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
 import { useNavContext } from "../contexts/NavContext";
 import { Spinner } from "../components";
+import MainLoading from "../components/mainLoading";
+import logo from "../assets/logoblue.jpg";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +37,14 @@ const PersistLogin = () => {
   //   console.log(`aT: ${JSON.stringify(token)}`);
   // }, [isLoading]);
 
-  return <>{isLoading ? <Spinner message={`Page Loading`} /> : <Outlet />}</>;
+  return isLoading ? (
+    <div className="w-[100vw] h-[100vh] flex flex-col gap-2 justify-center items-center">
+      <img src={logo} alt="logo" className="text-white w-20 h-20 rounded-sm" />
+      <MainLoading />
+    </div>
+  ) : (
+    <Outlet />
+  );
 };
 
 export default PersistLogin;
