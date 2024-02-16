@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
-import { IoFilter } from "react-icons/io5";
 
-import { stores } from "../data/Kanban/tasks";
-
-import MainCard from "../components/TaskManager/MainCard";
-import { logoColor } from "../BauerColors";
-
-const headerClass =
-  "h-full py-2 w-[calc(100vw/6)] flex justify-center items-center text-black font-[400] text-[14px] cursor-pointer";
+import Header from "../subPages/TaskManager/Tasks/components/Header";
+import Tasks from "../subPages/TaskManager/Tasks/view/Tasks";
+import Workshop from "../subPages/TaskManager/Workshop/View/Workshop";
+import Inspection from "../subPages/TaskManager/Inspection/View/Inspection";
+import Planning from "../subPages/TaskManager/Planning";
+import QA from "../subPages/TaskManager/QA";
+import Report from "../subPages/TaskManager/Report";
 
 const ManageKanban = () => {
   const [category, setCategory] = useState("Tasks");
+
   const handleDragAndDrop = (result) => {
     const { source, destination, type } = result;
     console.log(`source: ${JSON.stringify(source)}`);
@@ -75,197 +75,62 @@ const ManageKanban = () => {
             <p>Yard Task Manager</p>
           </div>
           <div className="w-full h-[35px] flex flex-row justify-between items-center overflow-x-scroll px-2">
-            <div
-              className={headerClass}
-              onClick={() => setCategory("Tasks")}
-              style={{
-                backgroundColor:
-                  category === "Tasks" ? "white" : "rgb(209,213,219)",
-                borderTopWidth: category === "Tasks" ? 1 : 0,
-                borderRightWidth: category === "Tasks" ? 1 : 0,
-                borderLeftWidth: category === "Tasks" ? 1 : 0,
-                borderBottomWidth: category === "Tasks" ? 0 : 1,
-                borderTopRightRadius: "6px",
-                borderTopLeftRadius: "6px",
-                borderColor: "rgb(156,163,175)",
-              }}
-            >
-              <p
-                className="border-r-1 w-full text-center border-gray-400"
-                style={{
-                  borderRightWidth:
-                    category === "Tasks" || category === "Workshop" ? 0 : 1,
-                }}
-              >
-                Tasks
-              </p>
-            </div>
-            <div
-              className={headerClass}
-              onClick={() => setCategory("Workshop")}
-              style={{
-                backgroundColor:
-                  category === "Workshop" ? "white" : "rgb(209,213,219)",
-                borderTopWidth: category === "Workshop" ? 1 : 0,
-                borderRightWidth: category === "Workshop" ? 1 : 0,
-                borderLeftWidth: category === "Workshop" ? 1 : 0,
-                borderBottomWidth: category === "Workshop" ? 0 : 1,
-                borderTopRightRadius: "6px",
-                borderTopLeftRadius: "6px",
-                borderColor: "rgb(156,163,175)",
-              }}
-            >
-              <p
-                className="border-r-1 w-full text-center border-gray-400"
-                style={{
-                  borderRightWidth:
-                    category === "Workshop" || category === "Inspection"
-                      ? 0
-                      : 1,
-                }}
-              >
-                Workshop
-              </p>
-            </div>
-            <div
-              className={headerClass}
-              onClick={() => setCategory("Inspection")}
-              style={{
-                backgroundColor:
-                  category === "Inspection" ? "white" : "rgb(209,213,219)",
-                borderTopWidth: category === "Inspection" ? 1 : 0,
-                borderRightWidth: category === "Inspection" ? 1 : 0,
-                borderLeftWidth: category === "Inspection" ? 1 : 0,
-                borderBottomWidth: category === "Inspection" ? 0 : 1,
-                borderTopRightRadius: "6px",
-                borderTopLeftRadius: "6px",
-                borderColor: "rgb(156,163,175)",
-              }}
-            >
-              <p
-                className="border-r-1 w-full text-center border-gray-400"
-                style={{
-                  borderRightWidth:
-                    category === "Inspection" || category === "Report" ? 0 : 1,
-                }}
-              >
-                Inspection
-              </p>
-            </div>
-            <div
-              className={headerClass}
-              onClick={() => setCategory("Report")}
-              style={{
-                backgroundColor:
-                  category === "Report" ? "white" : "rgb(209,213,219)",
-                borderTopWidth: category === "Report" ? 1 : 0,
-                borderRightWidth: category === "Report" ? 1 : 0,
-                borderLeftWidth: category === "Report" ? 1 : 0,
-                borderBottomWidth: category === "Report" ? 0 : 1,
-                borderTopRightRadius: "6px",
-                borderTopLeftRadius: "6px",
-                borderColor: "rgb(156,163,175)",
-              }}
-            >
-              <p
-                className="border-r-1 w-full text-center border-gray-400"
-                style={{
-                  borderRightWidth:
-                    category === "Report" || category === "Planning" ? 0 : 1,
-                }}
-              >
-                Report
-              </p>
-            </div>
-            <div
-              className={headerClass}
-              onClick={() => setCategory("Planning")}
-              style={{
-                backgroundColor:
-                  category === "Planning" ? "white" : "rgb(209,213,219)",
-                borderTopWidth: category === "Planning" ? 1 : 0,
-                borderRightWidth: category === "Planning" ? 1 : 0,
-                borderLeftWidth: category === "Planning" ? 1 : 0,
-                borderBottomWidth: category === "Planning" ? 0 : 1,
-                borderTopRightRadius: "6px",
-                borderTopLeftRadius: "6px",
-                borderColor: "rgb(156,163,175)",
-              }}
-            >
-              <p
-                className="border-r-1 w-full text-center border-gray-400"
-                style={{
-                  borderRightWidth:
-                    category === "Planning" || category === "QA Inspection"
-                      ? 0
-                      : 1,
-                }}
-              >
-                Planning
-              </p>
-            </div>
-            <div
-              className={headerClass}
-              onClick={() => setCategory("QA Inspection")}
-              style={{
-                backgroundColor:
-                  category === "QA Inspection" ? "white" : "rgb(209,213,219)",
-                borderTopWidth: category === "QA Inspection" ? 1 : 0,
-                borderRightWidth: category === "QA Inspection" ? 1 : 0,
-                borderLeftWidth: category === "QA Inspection" ? 1 : 0,
-                borderBottomWidth: category === "QA Inspection" ? 0 : 1,
-                borderTopRightRadius: "6px",
-                borderTopLeftRadius: "6px",
-                borderColor: "rgb(156,163,175)",
-              }}
-            >
-              <p className="w-full text-center border-gray-400">
-                QA Inspection
-              </p>
-            </div>
+            <Header
+              name={`Tasks`}
+              isParBorder={true}
+              Par2Cond={`Workshop`}
+              category={category}
+              setCategory={setCategory}
+            />
+            <Header
+              name={`Workshop`}
+              isParBorder={true}
+              Par2Cond={`Inspection`}
+              category={category}
+              setCategory={setCategory}
+            />
+            <Header
+              name={`Inspection`}
+              isParBorder={true}
+              Par2Cond={`Report`}
+              category={category}
+              setCategory={setCategory}
+            />
+            <Header
+              name={`Report`}
+              isParBorder={true}
+              Par2Cond={`Planning`}
+              category={category}
+              setCategory={setCategory}
+            />
+            <Header
+              name={`Planning`}
+              isParBorder={true}
+              Par2Cond={`QA Inspection`}
+              category={category}
+              setCategory={setCategory}
+            />
+            <Header
+              name={`QA`}
+              isParBorder={false}
+              category={category}
+              setCategory={setCategory}
+            />
           </div>
         </div>
-        <div className="w-full h-[6vh] p-2 flex items-center">
-          <div className="flex flex-row justify-start gap-2 text-gray-400 text-[12px] items-center py-1 px-3 w-full rounded-[8px] border-1 border-gray-300">
-            <IoFilter />
-            <p>All</p>
-          </div>
-        </div>
-        <div
-          className="w-full h-[72vh] flex flex-row justify-start items-start gap-2 px-2 overflow-x-scroll"
-          id="cont"
-        >
-          <MainCard
-            titleBorderColor="green"
-            title="To Do"
-            id="To Do"
-            stores={stores}
-          />
-          <MainCard
-            titleBorderColor="blue"
-            title="Ready"
-            id="Ready"
-            stores={stores}
-          />
-          <MainCard
-            titleBorderColor="red"
-            title="Delayed"
-            id="Delayed"
-            stores={stores}
-          />
-          <MainCard
-            titleBorderColor="red"
-            title="Rejected"
-            id="Rejected"
-            stores={stores}
-          />
-          <MainCard
-            titleBorderColor="green"
-            title="Done"
-            id="Done"
-            stores={stores}
-          />
-        </div>
+        {category === "Tasks" ? (
+          <Tasks />
+        ) : category === "Workshop" ? (
+          <Workshop />
+        ) : category === "Inspection" ? (
+          <Inspection />
+        ) : category === "Report" ? (
+          <Report />
+        ) : category === "QA" ? (
+          <QA />
+        ) : (
+          <Planning />
+        )}
       </div>
     </DragDropContext>
   );
