@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import "../styles/EditCard.css";
+import "../Styles/EditCard.css";
 
 const EditCardFields = ({
   name,
@@ -44,7 +44,7 @@ const EditCardFields = ({
       ) : input === "textarea" ? (
         <textarea
           ref={inputRef}
-          disabled={disabled}
+          placeholder={name}
           onChange={(e) => {
             setVal((prev) => ({ ...prev, [col]: e.target.value }));
           }}
@@ -78,7 +78,7 @@ const EditCardFields = ({
           }}
           value={val[col]}
         >
-          {options.length === "" ? (
+          {options.length === 0 ? (
             <option>{`Select ${name}`}</option>
           ) : (
             <>

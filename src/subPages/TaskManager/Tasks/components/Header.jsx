@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 
-const headerClass =
-  "h-full py-2 w-[calc(100vw/6)] flex justify-center items-center text-black font-[400] text-[14px] cursor-pointer";
-
 const Header = ({ name, isParBorder, Par2Cond, category, setCategory }) => {
   return (
     <div
-      className={headerClass}
+      className="h-full py-2 flex justify-start items-center text-black font-[400] text-[14px] cursor-pointer"
       onClick={() => setCategory(name)}
       style={{
+        minWidth: "224px",
         backgroundColor: category === name ? "white" : "rgb(209,213,219)",
         borderTopWidth: category === name ? 1 : 0,
         borderRightWidth: category === name ? 1 : 0,
@@ -23,7 +21,7 @@ const Header = ({ name, isParBorder, Par2Cond, category, setCategory }) => {
         className="w-full text-center border-gray-400"
         style={{
           borderRightWidth:
-            (category === name || category === Par2Cond) && isParBorder ? 0 : 1,
+            category === name || category === Par2Cond || !isParBorder ? 0 : 1,
         }}
       >
         {name}

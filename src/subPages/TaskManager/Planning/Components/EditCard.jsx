@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
-import "../styles/EditCard.css";
+import "../Styles/EditCard.css";
 import EditCardFields from "./EditCardFields";
 import { editFields } from "../Model/model";
 
@@ -69,7 +69,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             input={"input"}
             val={val}
             setVal={setVal}
-            disabled={true}
+            disabled={false}
           />
           <EditCardFields
             name="Equipment"
@@ -96,7 +96,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             input={"input"}
             val={val}
             setVal={setVal}
-            disabled={false}
+            disabled={true}
           />
           <EditCardFields
             name="End"
@@ -108,7 +108,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             input={"input"}
             val={val}
             setVal={setVal}
-            disabled={false}
+            disabled={true}
           />
         </div>
         <div className="flex flex-row w-full p-2 px-6 justify-between">
@@ -122,7 +122,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             input={"input"}
             val={val}
             setVal={setVal}
-            disabled={true}
+            disabled={false}
           />
           <EditCardFields
             name="Workshop"
@@ -134,7 +134,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             input={"input"}
             val={val}
             setVal={setVal}
-            disabled={true}
+            disabled={false}
           />
         </div>
         <div className="flex flex-row w-full p-2 px-6 justify-between">
@@ -148,7 +148,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             input={"input"}
             val={val}
             setVal={setVal}
-            disabled={false}
+            disabled={true}
           />
           <EditCardFields
             name="Periority"
@@ -160,7 +160,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             options={["high", "medium", "low"]}
             val={val}
             setVal={setVal}
-            disabled={true}
+            disabled={false}
           />
         </div>
         <div className="flex flex-row w-full p-2 px-6 justify-between">
@@ -176,7 +176,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             disabled={false}
           />
         </div>
-        <div className="w-full flex flex-row  justify-between items-center p-2 px-6">
+        <div className="w-full flex flex-row gap-4 justify-between items-center p-2 px-6">
           <div>
             <button className="text-gray-500 font-[600] text-[14px]">
               DELETE

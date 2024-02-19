@@ -2,7 +2,7 @@ import React from "react";
 import { IoFilter } from "react-icons/io5";
 
 import { stores } from "../../../../data/Kanban/tasks";
-import MainCard from "../components/MainCard";
+import MainCard from "../Components/MainCard";
 
 const Tasks = () => {
   return (
@@ -19,19 +19,21 @@ const Tasks = () => {
         className="w-full h-[72vh] flex flex-row justify-start items-start gap-2 px-2 overflow-x-scroll"
         id="cont"
       >
-        {/* <MainCard
+        <MainCard
           titleBorderColor="orange"
           title="Inspected"
           id="Inspected"
           stores={stores}
           w={"300px"}
-        /> */}
+          shrink={true}
+        />
         <MainCard
           titleBorderColor="yellow"
           title="To Do"
           id="To Do"
           stores={stores}
           w={"300px"}
+          shrink={false}
         />
         <MainCard
           titleBorderColor="blue"
@@ -39,6 +41,7 @@ const Tasks = () => {
           id="Ready"
           stores={stores}
           w={"300px"}
+          shrink={false}
         />
         {/* <MainCard
           titleBorderColor="red"
@@ -53,6 +56,7 @@ const Tasks = () => {
           id="Rejected"
           stores={stores}
           w={"300px"}
+          shrink={false}
         />
         <MainCard
           titleBorderColor="green"
@@ -60,6 +64,7 @@ const Tasks = () => {
           id="Done"
           stores={stores}
           w={"300px"}
+          shrink={false}
         />
       </div>
     </>

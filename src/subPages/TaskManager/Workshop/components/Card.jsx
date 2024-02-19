@@ -2,15 +2,19 @@ import React, { useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { CiClock1 } from "react-icons/ci";
 import { IoIosCheckmarkCircle } from "react-icons/io";
+import Voice from "../components/Voice";
+import UsersCard from "./UsersCard";
 // import { TiDelete } from "react-icons/ti";
 
 // import EditCard from "./EditCard";
 
 const Card = ({ id, items }) => {
+  const [isUsersCard, setIsUsersCard] = useState(false);
   // const [isEditCard, setIsEditCard] = useState(false);
-  // const [item, setItem] = useState(null);
+  const [item, setItem] = useState(null);
   return (
     <>
+      {isUsersCard && <UsersCard setIsUsersCard={setIsUsersCard} item={item} />}
       {/* {isEditCard && <EditCard setIsEditCard={setIsEditCard} item={item} />} */}
       <Droppable
         droppableId={id}
@@ -52,13 +56,38 @@ const Card = ({ id, items }) => {
                           <div className="w-0 h-0 border-1 border-green-600 rounded-full"></div>
                         </div>
                         <p>{item?.title}</p>
+                        <Voice size={16} text={item.desc} />
                       </div>
-                      {item.pic !== "" && (
-                        <img
-                          src={item?.pic}
-                          alt="profile-pic"
-                          className="w-6 h-6 rounded-full"
-                        />
+                      {item.pic.length > 0 && (
+                        <div className="relative w-6 h-6 flex items-center">
+                          <div
+                            className=" hover:underline hover:cursor-pointer text-[10px] font-[300] absolute flex flex-row w-[50px]"
+                            style={{
+                              right:
+                                item.pic.length >= 3
+                                  ? "35px"
+                                  : `${item.pic.length * 10 + 5}px`,
+                            }}
+                            onClick={() => {
+                              setIsUsersCard(true);
+                              setItem(item);
+                            }}
+                          >
+                            {`${item.pic.length.toString()} users`}
+                          </div>
+                          {item.pic.map(
+                            (image, i) =>
+                              i <= 2 && (
+                                <img
+                                  key={i}
+                                  src={image.pic}
+                                  alt="profile-pic"
+                                  className="w-6 h-6 rounded-full absolute border-1 border-gray-300"
+                                  style={{ right: `${i * 10}px` }}
+                                />
+                              )
+                          )}
+                        </div>
                       )}
                     </div>
                     <div className="w-full font-[600]">

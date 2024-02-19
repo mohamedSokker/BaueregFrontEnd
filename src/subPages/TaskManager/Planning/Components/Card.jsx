@@ -19,9 +19,7 @@ const Card = ({ id, items }) => {
         droppableId={id}
         isScrollable={true}
         shouldUsePlaceholder={true}
-        isDropDisabled={
-          id === "To Do" || id === "Ready" || id === "Rejected" ? false : true
-        }
+        isDropDisabled={id === "To Do" || id === "Inspected" ? false : true}
       >
         {(provided) => (
           <div
@@ -35,9 +33,7 @@ const Card = ({ id, items }) => {
                 index={index}
                 key={item.id}
                 isDragDisabled={
-                  id === "To Do" || id === "Ready" || id === "Rejected"
-                    ? false
-                    : true
+                  id === "To Do" || id === "Inspected" ? false : true
                 }
               >
                 {(provided) => (
@@ -47,30 +43,29 @@ const Card = ({ id, items }) => {
                     ref={provided.innerRef}
                     className="w-full flex flex-col gap-2 bg-gray-100 rounded-md border-1 border-gray-400 p-2"
                     onDoubleClick={() => {
-                      if (
-                        id === "To Do" ||
-                        id === "Ready" ||
-                        id === "Rejected"
-                      ) {
+                      if (id === "To Do" || id === "Inspected") {
                         setIsEditCard(true);
                         setItem(item);
                       }
                     }}
                   >
-                    {/* <div className="flex flex-row justify-end items-center">
-                      <div className="text-green-700 cursor-pointer">
-                        <IoIosCheckmarkCircle
-                          className="md:text-[17px] text-[34px]"
-                          onClick={() => {
-                            setIsEditCard(true);
-                            setItem(item);
-                          }}
-                        />
+                    {/* {id === "To Do" && (
+                      <div className="flex flex-row justify-end items-center">
+                        <div className="text-green-700 cursor-pointer">
+                          <IoIosCheckmarkCircle
+                            className="md:text-[17px] text-[34px]"
+                            onClick={() => {
+                              setIsEditCard(true);
+                              setItem(item);
+                            }}
+                          />
+                        </div>
+                        <div className="text-red-700 cursor-pointer">
+                          <TiDelete className="md:text-[20px] text-[40px]" />
+                        </div>
                       </div>
-                      <div className="text-red-700 cursor-pointer">
-                        <TiDelete className="md:text-[20px] text-[40px]" />
-                      </div>
-                    </div> */}
+                    )} */}
+
                     <div className="w-full flex flex-row gap-2 justify-between items-center text-gray-600">
                       <div className="flex flex-row gap-1 items-center">
                         <div className="w-3 h-3 rounded-full border-1 border-green-600 flex justify-center items-center">
@@ -139,17 +134,16 @@ const Card = ({ id, items }) => {
                         <p className="text-[10px]">{`duration: ${item.duration} hrs`}</p>
                       </div>
                     )}
-
                     <div className="w-full flex flex-row gap-2 flex-wrap justify-start">
                       {item?.workshop && item?.workshop !== "" && (
-                        <div className=" px-2 rounded-full border-1 border-cyan-500 text-[12px] text-cyan-500 bg-[rgba(6,182,212,0.3)] font-[500]">
+                        <div className="px-2 rounded-full border-1 border-cyan-500 text-[12px] text-cyan-500 bg-[rgba(6,182,212,0.3)] font-[500]">
                           {item?.workshop}
                         </div>
                       )}
 
                       {item?.periority && item?.periority !== "" && (
                         <div
-                          className=" px-2 rounded-full border-1 text-[12px] font-[500] bg-[rgb(235,166,37)]"
+                          className="px-2 rounded-full border-1 text-[12px] font-[500] bg-[rgb(235,166,37)]"
                           style={{
                             borderColor:
                               item.periority === "high"

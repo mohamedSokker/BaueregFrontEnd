@@ -5,12 +5,12 @@ import { IoFilter } from "react-icons/io5";
 
 import Card from "./Card";
 
-const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
+const MainCard = ({ titleBorderColor, title, id, stores, w, shrink }) => {
   const [isMin, setIsMin] = useState(false);
   return !isMin ? (
     <div
       className="flex flex-col justify-start items-start  h-[98%] bg-gray-300 rounded-md p-1 border-1 border-gray-400 flex-1"
-      style={{ minWidth: w }}
+      style={{ minWidth: w, flexShrink: shrink ? 1 : 0 }}
     >
       <div className="w-full flex flex-row justify-between items-center">
         <div className="flex flex-row justify-start items-center gap-[6px] mb-2 px-1">
@@ -55,7 +55,7 @@ const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
       </div>
       <div
         className="text-black font-[800] text-[16px]"
-        style={{ writingMode: "vertical-rl" }}
+        style={{ writingMode: "vertical-lr" }}
       >
         {title}
       </div>

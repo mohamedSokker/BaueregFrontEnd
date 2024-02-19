@@ -8,8 +8,10 @@ const Workshop = () => {
   return (
     <>
       <div className="w-full h-[6vh] p-2 flex items-center">
-        <div className="flex flex-row justify-start gap-2 text-gray-400 text-[12px] items-center py-1 px-3 w-full rounded-[8px] border-1 border-gray-300">
-          <IoFilter />
+        <div className="flex flex-row justify-start gap-2 text-black text-[12px] items-center py-1 px-3 w-full rounded-[8px] border-1 border-gray-300">
+          <div className="hover:cursor-pointer">
+            <IoFilter />
+          </div>
           <p>All</p>
         </div>
       </div>
