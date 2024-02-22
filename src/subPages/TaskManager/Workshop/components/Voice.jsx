@@ -6,17 +6,21 @@ const Voice = ({ text, size }) => {
   const { speak, voices } = useSpeechSynthesis();
   const [voice, setVoice] = useState(voices[0]);
 
-  console.log(voices);
+  // console.log(voices);
 
-  useEffect(() => {
-    const targetVoice = voices?.filter((voice) => voice.lang === "ar");
-    console.log(targetVoice[0]);
-    setVoice(targetVoice[0]);
-  }, [voices]);
+  // useEffect(() => {
+  //   const targetVoice = voices?.filter((voice) => voice.lang === "ar");
+  //   console.log(targetVoice[0]);
+  //   setVoice(targetVoice[0]);
+  // }, [voices]);
 
   const handleSpeak = () => {
     // console.log(voices);
-    speak({ text: text, voice: voice, rate: 0.8 });
+    speak({
+      text: text,
+      voice: voices?.filter((voice) => voice.lang === "ar"),
+      rate: 0.8,
+    });
   };
   return (
     <div
