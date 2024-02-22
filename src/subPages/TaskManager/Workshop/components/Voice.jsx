@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MdKeyboardVoice } from "react-icons/md";
 import { useSpeechSynthesis } from "react-speech-kit";
 
 const Voice = ({ text, size }) => {
   const { speak, voices } = useSpeechSynthesis();
+  const [voice, setVoice] = useState(voices[0]);
+
+  useEffect(() => {
+    const targetVoice = voices?.filter((voice) => voice.lang === "ar");
+    console.log(targetVoice[0]);
+    setVoice(targetVoice[0]);
+  }, []);
 
   const handleSpeak = () => {
-    console.log(voices);
-    speak({ text: text, voice: voices[22], rate: 0.8 });
+    // console.log(voices);
+    speak({ text: text, voice: voice, rate: 0.8 });
   };
   return (
     <div

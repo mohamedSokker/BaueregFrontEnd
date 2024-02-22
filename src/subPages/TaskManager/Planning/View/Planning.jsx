@@ -16,11 +16,11 @@ const Tasks = () => {
         </div>
       </div>
       <div
-        className="w-full h-[72vh] flex flex-row justify-start items-start gap-2 px-2 overflow-x-scroll"
+        className="w-full h-[calc(84vh-35px)] flex flex-row justify-start items-start gap-2 px-2 overflow-x-scroll"
         id="cont"
       >
         <MainCard
-          titleBorderColor="orange"
+          titleBorderColor="cyan"
           title="Inspected"
           id="Inspected"
           stores={stores}
@@ -37,11 +37,18 @@ const Tasks = () => {
         />
         <MainCard
           titleBorderColor="blue"
-          title="Ready"
-          id="Ready"
+          title="InProgress"
+          id="InProgress"
           stores={stores}
           w={"300px"}
           shrink={false}
+        />
+        <MainCard
+          titleBorderColor="orange"
+          title="Waiting Inspection"
+          id="Waiting Inspection"
+          stores={stores}
+          w={"300px"}
         />
         {/* <MainCard
           titleBorderColor="red"

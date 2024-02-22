@@ -75,7 +75,7 @@ const Inspection = () => {
         </div>
       </div>
       <div
-        className="w-full h-[72vh] flex flex-row justify-start items-start gap-2 p-2 overflow-x-scroll"
+        className="w-full h-[calc(84vh-35px)] flex flex-row justify-start items-start gap-2 p-2 overflow-x-scroll"
         style={{ backdropFilter: "blur(2px)", opacity: 0.8 }}
         id="cont"
       >

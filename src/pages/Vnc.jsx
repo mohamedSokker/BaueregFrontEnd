@@ -51,20 +51,14 @@ const Vnc = ({ socket }) => {
     return () => {
       socket.off("screen-data", screenData);
       socket.off(`Client Connection error`, handleErr);
+      socket.emit("leave-room", tableName);
     };
   }, []);
   return (
     <div className="flex flex-col justify-center items-center w-[100%] h-[100%] p-2">
       {/* <p className=" p-2 font-[900] text-[20px]">Bauer Screen</p> */}
-      {!image && !error ? (
+      {!image ? (
         <PageLoading />
-      ) : error ? (
-        <div className="flex flex-col justify-center w-[100vw] h-[100vh] p-2">
-          <div className="w-[95%] rounded-[8px] bg-red-500 text-white p-4 flex justify-center items-center">
-            <CiWarning className="text-[40px] font-extrabold" />
-            <p className="ml-5 text-xl font-semibold">{errorData}</p>
-          </div>
-        </div>
       ) : (
         <img
           src={`${image}`}

@@ -16,11 +16,29 @@
   }
 }
 
+@keyframes animate-x-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @keyframes animate-out {
   from {
     transform: scale(1);
   }
   to {
     transform: scale(0);
+  }
+}
+
+@keyframes animate-x-out {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
   }
 }

@@ -29,11 +29,11 @@ const ManageKanban = () => {
 
   return (
     <DragDropContext onDragEnd={handleDragAndDrop}>
-      <div className="w-full h-[92vh] md:mt-0 mt-[58px] flex flex-col gap-2 justify-center">
+      <div className="w-full h-[92vh] md:mt-0 mt-[58px] flex flex-col gap-2 justify-start">
         <div className="flex flex-col w-full items-center bg-gray-300">
-          <div className="w-full flex justify-start items-center font-[700] text-[18px] p-3">
+          {/* <div className="w-full flex justify-start items-center font-[700] text-[18px] p-3">
             <p>Yard Task Manager</p>
-          </div>
+          </div> */}
           <div className="w-full h-[35px] flex flex-row justify-start items-start overflow-x-auto px-2">
             <Header
               name={`Tasks`}

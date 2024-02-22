@@ -84,7 +84,7 @@ export const stores = {
       workshop: "Electric",
     },
   ],
-  Ready: [
+  InProgress: [
     {
       id: "4",
       desc: "اخراج قطمه من الجيربوكس",
@@ -114,6 +114,26 @@ export const stores = {
       duration: "1",
       workshop: "Electric",
     },
+    {
+      id: "6",
+      desc: "Task6",
+      name: "wael",
+      pic: [
+        { name: "sokker", pic: profile },
+        { name: "bahaa", pic: bahaa },
+        { name: "fernaz", pic: fernaz },
+        { name: "said", pic: said },
+      ],
+      eq: "MC 128 #169",
+      periority: "high",
+      title: "Gearbox",
+      start: "2024-02-12 08:00",
+      end: "",
+      duration: "1",
+      workshop: "Electric",
+    },
+  ],
+  "Waiting Inspection": [
     {
       id: "6",
       desc: "Task6",

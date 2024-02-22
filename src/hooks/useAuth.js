@@ -62,7 +62,7 @@ const RequiredAuth = ({ allowedRole }) => {
         >
           {/* Navbar */}
           <div
-            className="fixed md:static flex dark:bg-background-logoColor bg-main-bg items-center h-[8vh] navbar"
+            className="fixed md:static flex dark:bg-background-logoColor bg-gray-300 items-center h-[8vh] navbar"
             style={{ width: "100vw" }}
           >
             <Navbar />
