@@ -18,7 +18,7 @@ const Voice = ({ text, size }) => {
     // console.log(voices);
     speak({
       text: text,
-      voice: voices?.filter((voice) => voice.lang === "ar"),
+      voice: voices?.filter((voice) => voice.lang === "ar")[0],
       rate: 0.8,
     });
   };
