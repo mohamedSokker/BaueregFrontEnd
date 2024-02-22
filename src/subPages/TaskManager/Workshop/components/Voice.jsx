@@ -12,7 +12,7 @@ const Voice = ({ text, size }) => {
     const targetVoice = voices?.filter((voice) => voice.lang === "ar");
     console.log(targetVoice[0]);
     setVoice(targetVoice[0]);
-  }, []);
+  }, [voices]);
 
   const handleSpeak = () => {
     // console.log(voices);
