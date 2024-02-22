@@ -6,6 +6,8 @@ const Voice = ({ text, size }) => {
   const { speak, voices } = useSpeechSynthesis();
   const [voice, setVoice] = useState(voices[0]);
 
+  console.log(voices);
+
   useEffect(() => {
     const targetVoice = voices?.filter((voice) => voice.lang === "ar");
     console.log(targetVoice[0]);
