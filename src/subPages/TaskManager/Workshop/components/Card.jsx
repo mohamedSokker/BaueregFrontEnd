@@ -8,7 +8,7 @@ import UsersCard from "./UsersCard";
 
 // import EditCard from "./EditCard";
 
-const Card = ({ id, items }) => {
+const Card = ({ id, items, handleSave }) => {
   const [isUsersCard, setIsUsersCard] = useState(false);
   // const [isEditCard, setIsEditCard] = useState(false);
   const [item, setItem] = useState(null);
@@ -20,6 +20,7 @@ const Card = ({ id, items }) => {
         droppableId={id}
         isScrollable={true}
         shouldUsePlaceholder={true}
+        isDropDisabled={true}
       >
         {(provided) => (
           <div
@@ -28,7 +29,12 @@ const Card = ({ id, items }) => {
             className="w-full h-full flex flex-col gap-1"
           >
             {items.map((item, index) => (
-              <Draggable draggableId={item.id} index={index} key={item.id}>
+              <Draggable
+                draggableId={item.id}
+                index={index}
+                key={item.id}
+                isDragDisabled={true}
+              >
                 {(provided) => (
                   <div
                     {...provided.dragHandleProps}
@@ -41,8 +47,7 @@ const Card = ({ id, items }) => {
                         <IoIosCheckmarkCircle
                           className="md:text-[17px] text-[34px]"
                           onClick={() => {
-                            // setIsEditCard(true);
-                            // setItem(item);
+                            handleSave(item);
                           }}
                         />
                       </div>
@@ -91,7 +96,7 @@ const Card = ({ id, items }) => {
                       )}
                     </div>
                     <div className="w-full font-[600]">
-                      <h4>{item?.desc}</h4>
+                      <h4>{item?.descAr}</h4>
                     </div>
                     <div className="w-full flex flex-row items-start justify-start gap-12 text-gray-600 font-[200] text-[14px]">
                       {item.start !== "" && (
@@ -113,39 +118,48 @@ const Card = ({ id, items }) => {
                         </div>
                       )}
                     </div>
-                    <div className="flex flex-row gap-[2px] justify-start items-center text-gray-600 font-[200] text-[14px]">
-                      <CiClock1 />
-                      <p className="text-[10px]">{`duration: ${item.duration} hrs`}</p>
-                    </div>
+                    {item.duration && item.duration !== "" && (
+                      <div className="flex flex-row gap-[2px] justify-start items-center text-gray-600 font-[200] text-[14px]">
+                        <CiClock1 />
+                        <p className="text-[10px]">{`duration: ${item.duration} hrs`}</p>
+                      </div>
+                    )}
+
                     <div className="w-full flex flex-row gap-2 flex-wrap justify-start">
-                      <div className="p-[2px] px-4 rounded-full border-1 border-cyan-500 text-[14px] text-cyan-500 bg-[rgba(6,182,212,0.3)] font-[500]">
-                        {item?.workshop}
-                      </div>
-                      <div
-                        className="p-[2px] px-4 rounded-full border-1 text-[14px] font-[500] bg-[rgb(235,166,37)]"
-                        style={{
-                          borderColor:
-                            item.periority === "high"
-                              ? "rgb(220,38,38)"
-                              : item.periority === "medium"
-                              ? "rgb(235,166,37)"
-                              : "rgb(68,220,38)",
-                          backgroundColor:
-                            item.periority === "high"
-                              ? "rgba(220,38,38,0.1)"
-                              : item.periority === "medium"
-                              ? "rgba(235,166,37,0.1)"
-                              : "rgba(68,220,38,0.1)",
-                          color:
-                            item.periority === "high"
-                              ? "rgba(220,38,38,1)"
-                              : item.periority === "medium"
-                              ? "rgba(235,166,37,1)"
-                              : "rgba(68,220,38,1)",
-                        }}
-                      >
-                        {item?.periority}
-                      </div>
+                      {item?.workshop && item?.workshop !== "" && (
+                        <div className="p-[2px] px-4 rounded-full border-1 border-cyan-500 text-[14px] text-cyan-500 bg-[rgba(6,182,212,0.3)] font-[500]">
+                          {item?.workshop}
+                        </div>
+                      )}
+
+                      {item?.periority && item?.periority !== "" && (
+                        <div
+                          className="p-[2px] px-4 rounded-full border-1 text-[14px] font-[500] bg-[rgb(235,166,37)]"
+                          style={{
+                            borderColor:
+                              item.periority === "high"
+                                ? "rgb(220,38,38)"
+                                : item.periority === "medium"
+                                ? "rgb(235,166,37)"
+                                : "rgb(68,220,38)",
+                            backgroundColor:
+                              item.periority === "high"
+                                ? "rgba(220,38,38,0.1)"
+                                : item.periority === "medium"
+                                ? "rgba(235,166,37,0.1)"
+                                : "rgba(68,220,38,0.1)",
+                            color:
+                              item.periority === "high"
+                                ? "rgba(220,38,38,1)"
+                                : item.periority === "medium"
+                                ? "rgba(235,166,37,1)"
+                                : "rgba(68,220,38,1)",
+                          }}
+                        >
+                          {item?.periority}
+                        </div>
+                      )}
+
                       <div className="p-[2px] px-4 rounded-full border-1 border-blue-600 text-[14px] text-blue-600 bg-[rgba(37,99,235,0.3)] font-[500]">
                         {item?.eq}
                       </div>

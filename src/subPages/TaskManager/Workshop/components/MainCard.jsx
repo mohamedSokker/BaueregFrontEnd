@@ -2,7 +2,7 @@ import React from "react";
 
 import Card from "./Card";
 
-const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
+const MainCard = ({ titleBorderColor, title, id, stores, w, handleSave }) => {
   return (
     <div
       className="flex flex-col justify-start items-start  h-[98%] bg-gray-300 rounded-md p-1 border-1 border-gray-400"
@@ -19,7 +19,7 @@ const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
         </div>
       </div>
       <div className="w-full h-full overflow-y-scroll">
-        <Card id={id} items={stores[id]} />
+        <Card id={id} items={stores[id]} handleSave={handleSave} />
       </div>
     </div>
   );

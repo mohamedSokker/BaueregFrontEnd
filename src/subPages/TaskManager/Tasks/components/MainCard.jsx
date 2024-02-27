@@ -6,7 +6,15 @@ import { IoFilter } from "react-icons/io5";
 import Card from "./Card";
 import "../styles/EditCard.css";
 
-const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
+const MainCard = ({
+  titleBorderColor,
+  title,
+  id,
+  stores,
+  w,
+  handleSave,
+  handleDelete,
+}) => {
   const [isMin, setIsMin] = useState(false);
   return !isMin ? (
     <div
@@ -14,8 +22,6 @@ const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
       style={{
         minWidth: w,
         transition: "all 0.5s ease-in-out",
-        // animation: "animate-x-in 0.5s ease-in-out",
-        // transformOrigin: "left center",
       }}
     >
       <div className="w-full flex flex-row justify-between items-center">
@@ -26,7 +32,7 @@ const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
           ></div>
           <div className="text-black font-[800] text-[16px]">{title}</div>
           <div className="bg-gray-100 px-1 rounded-full text-gray-600 text-[12px] font-[800] flex justify-center items-center">
-            {stores[id].length}
+            {stores[id]?.length}
           </div>
         </div>
         <div className="mb-2 px-1 flex flex-row items-center gap-[6px]">
@@ -42,18 +48,18 @@ const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
         </div>
       </div>
       <div className="w-full h-full overflow-y-scroll">
-        <Card id={id} items={stores[id]} />
+        <Card
+          id={id}
+          items={stores[id]}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
+        />
       </div>
     </div>
   ) : (
     <div
       className="flex flex-col justify-start items-center gap-8  h-[98%] bg-gray-300 rounded-md p-1 border-1 border-gray-400 md:min-w-[30px]"
-      // style={{
-      //   animation: "animate-x-out 0.5s ease-in-out",
-      //   transformOrigin: "right center",
-      // }}
       style={{ transition: "all 0.5s ease-in-out" }}
-      // style={{ minWidth: "20px" }}
     >
       <div
         className="hover:cursor-pointer"

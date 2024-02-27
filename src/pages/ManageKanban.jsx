@@ -6,29 +6,155 @@ import Tasks from "../subPages/TaskManager/Tasks/view/Tasks";
 import Workshop from "../subPages/TaskManager/Workshop/View/Workshop";
 import Inspection from "../subPages/TaskManager/Inspection/View/Inspection";
 import Planning from "../subPages/TaskManager/Planning/View/Planning";
-import QA from "../subPages/TaskManager/QA";
-import Report from "../subPages/TaskManager/Report";
+import QA from "../subPages/TaskManager/QA/View/QA";
+import Report from "../subPages/TaskManager/Report/View/Report";
+import PageLoading from "../components/PageLoading";
+
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+
+const storeModel = {
+  "To Do": [],
+  InProgress: [],
+  "Waiting Inspection": [],
+  Inspected: [],
+  Rejected: [],
+  Done: [],
+};
 
 const ManageKanban = () => {
   const [category, setCategory] = useState("Tasks");
+  const [loading, setLoading] = useState(false);
+  const [stores, setStores] = useState(storeModel);
 
-  const handleDragAndDrop = (result) => {
-    const { source, destination, type } = result;
-    console.log(`source: ${JSON.stringify(source)}`);
-    console.log(`destination: ${JSON.stringify(destination)}`);
-    console.log(`type: ${type}`);
+  console.log(stores);
 
-    if (!destination) return;
+  const axiosPrivate = useAxiosPrivate();
 
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    )
-      return;
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const url = `/api/v1/taskManagerGetTasks`;
+      const data = await axiosPrivate(url, { method: "GET" });
+      console.log(data?.data);
+      let result = storeModel;
+      data?.data?.map((d) => {
+        result = result[d.Category]
+          ? {
+              ...result,
+              [d.Category]: [
+                ...result[d.Category],
+                {
+                  id: d.ID.toString(),
+                  desc: d.Description ? d.Description : "",
+                  pic: d.ToUser ? JSON.parse(d.ToUser) : [],
+                  eq: d.Equipment,
+                  periority: d.Periority ? d.Periority : "",
+                  title: d.Title ? d.Title : "",
+                  start: d.StartTime
+                    ? new Date(d.StartTime).toISOString().slice(0, 16)
+                    : "",
+                  end: d.EndTime
+                    ? new Date(d.EndTime).toISOString().slice(0, 16)
+                    : "",
+                  duration: d.Duration ? d.Duration : "",
+                  workshop: d.Workshop ? d.Workshop : "",
+                },
+              ],
+            }
+          : {
+              ...result,
+              [d.Category]: [
+                {
+                  id: d.ID.toString(),
+                  desc: d.Description ? d.Description : "",
+                  pic: d.ToUser ? JSON.parse(d.ToUser) : [],
+                  eq: d.Equipment,
+                  periority: d.Periority ? d.Periority : "",
+                  title: d.Title ? d.Title : "",
+                  start: d.StartTime
+                    ? new Date(d.StartTime).toISOString().slice(0, 16)
+                    : "",
+                  end: d.EndTime
+                    ? new Date(d.EndTime).toISOString().slice(0, 16)
+                    : "",
+                  duration: d.Duration ? d.Duration : "",
+                  workshop: d.Workshop ? d.Workshop : "",
+                },
+              ],
+            };
+      });
+      console.log(result);
+      setStores(result);
+      setLoading(false);
+    } catch (err) {
+      console.log(
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message
+      );
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const handleDragAndDrop = async (result) => {
+    try {
+      const { source, destination } = result;
+
+      if (!destination) return;
+
+      if (
+        source.droppableId === destination.droppableId &&
+        source.index === destination.index
+      )
+        return;
+
+      const itemSourceIndex = source.index;
+      const itemDestinationIndex = destination.index;
+
+      const itemSourceCategory = source.droppableId;
+      const itemDestinationCategory = destination.droppableId;
+
+      const sourceData = stores[itemSourceCategory][itemSourceIndex];
+      setLoading(true);
+
+      if (source.droppableId !== destination.droppableId) {
+        const url = `/api/v1/taskManagerUpdateTasks`;
+        await axiosPrivate(url, {
+          method: "POST",
+          data: JSON.stringify({
+            Category: destination.droppableId,
+            ID: stores[itemSourceCategory][itemSourceIndex]?.id,
+          }),
+        });
+      }
+
+      let newStore = { ...stores };
+
+      newStore[itemSourceCategory].splice(itemSourceIndex, 1);
+      newStore[itemDestinationCategory].splice(
+        itemDestinationIndex,
+        0,
+        sourceData
+      );
+      setStores(newStore);
+      setLoading(false);
+    } catch (err) {
+      console.log(
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message
+      );
+      setLoading(false);
+    }
   };
 
   return (
     <DragDropContext onDragEnd={handleDragAndDrop}>
+      {loading && <PageLoading message={`Loading Tasks`} />}
       <div className="w-full h-[92vh] md:mt-0 mt-[58px] flex flex-col gap-2 justify-start">
         <div className="flex flex-col w-full items-center bg-gray-300">
           {/* <div className="w-full flex justify-start items-center font-[700] text-[18px] p-3">
@@ -78,18 +204,18 @@ const ManageKanban = () => {
             />
           </div>
         </div>
-        {category === "Tasks" ? (
-          <Tasks />
-        ) : category === "Workshop" ? (
-          <Workshop />
-        ) : category === "Inspection" ? (
+        {category === "Tasks" && stores ? (
+          <Tasks stores={stores} setStores={setStores} />
+        ) : category === "Workshop" && stores ? (
+          <Workshop stores={stores} setStores={setStores} />
+        ) : category === "Inspection" && stores ? (
           <Inspection />
-        ) : category === "Report" ? (
+        ) : category === "Report" && stores ? (
           <Report />
-        ) : category === "QA" ? (
+        ) : category === "QA" && stores ? (
           <QA />
         ) : (
-          <Planning />
+          stores && <Planning stores={stores} setStores={setStores} />
         )}
       </div>
     </DragDropContext>

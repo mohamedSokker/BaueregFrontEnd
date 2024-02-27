@@ -1,77 +1,96 @@
 import React, { useEffect, useState } from "react";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import PageLoading from "../../../../components/PageLoading";
+import useHandleData from "../Controller/controller";
+import Dropdown from "../Components/Dropdown";
 
 const Inspection = () => {
-  const [data, setData] = useState(null);
-  const [eq, setEq] = useState("MC");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const axiosPrivate = useAxiosPrivate();
+  const {
+    getEqType,
+    getEqModel,
+    getEq,
+    handleEqTypeChange,
+    handleEqModelChange,
+    handleEqChange,
+    handleCheck,
+    handleRemarks,
+    handleSave,
+    loading,
+    message,
+    data,
+    selectedData,
+    eqTypeArray,
+    eqType,
+    eqTypeLoading,
+    eqModelArray,
+    eqModel,
+    eqModelLoading,
+    eqArray,
+    eq,
+    eqLoading,
+  } = useHandleData();
 
-  console.log(data);
+  console.log(selectedData);
 
-  const getData = async (eq) => {
-    try {
-      setMessage(
-        `Loading ${
-          eq && eq.startsWith("MC")
-            ? "MC Check List"
-            : eq && eq.startsWith("BC")
-            ? "BC Check List"
-            : eq && "BG Check List"
-        }`
-      );
-      setLoading(true);
-      const url = `/api/v1/taskManagerReadExcel`;
-      const data = await axiosPrivate(url, {
-        method: "POST",
-        data: JSON.stringify({
-          type: eq.startsWith("MC") ? "MC" : eq.startsWith("BC") ? "BC" : "BG",
-          sheet: eq.startsWith("MC")
-            ? "MC"
-            : eq.startsWith("BC")
-            ? "BC"
-            : "BauerBG",
-        }),
-      });
-      setData(data?.data);
-      setLoading(false);
-    } catch (err) {
-      console.log(
-        err?.response?.data?.message
-          ? err?.response?.data?.message
-          : err?.message
-      );
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getData(eq);
-  }, []);
-
-  const handleEqChange = async (e) => {
-    const eq = e.target.value;
-    setEq(eq);
-    await getData(eq);
-  };
   return (
     <>
       {loading && <PageLoading message={message} />}
       <div className="w-full h-[6vh] p-2 flex items-center">
-        <div className="flex flex-row justify-start gap-2 text-gray-400 text-[12px] items-center py-1 px-3 w-full rounded-[8px] border-1 border-gray-300">
-          <p>Equipment</p>
-          <select
-            onChange={handleEqChange}
-            className="px-2 py-1 bg-white border-b-1 border-gray-400 focus:border-red-400 text-black outline-none"
-          >
-            <option>MC 128# 169</option>
-            <option>BC 881# 11824</option>
-            <option>BG 28# 1577</option>
-          </select>
+        <div className="flex flex-row justify-start gap-4 text-gray-400 text-[12px] items-center py-1 px-3 w-full rounded-[8px] border-1 border-gray-300">
+          <div className="flex flex-row justify-start gap-2 items-center">
+            <p>Equipment Type</p>
+            <Dropdown
+              handleChange={handleEqTypeChange}
+              handleClick={getEqType}
+              datas={eqTypeArray}
+              datasLoading={eqTypeLoading}
+              value={eqType}
+            />
+            {/* <select
+              onChange={handleEqChange}
+              className="px-2 py-1 bg-white border-b-1 border-gray-400 focus:border-red-400 text-black outline-none"
+            >
+              <option>MC 128# 169</option>
+              <option>BC 881# 11824</option>
+              <option>BG 28# 1577</option>
+            </select> */}
+          </div>
+          <div className="flex flex-row justify-start gap-2 items-center">
+            <p>Equipment Model</p>
+            <Dropdown
+              handleChange={handleEqModelChange}
+              handleClick={getEqModel}
+              datas={eqModelArray}
+              datasLoading={eqModelLoading}
+              value={eqModel}
+            />
+            {/* <select
+              onChange={handleEqChange}
+              className="px-2 py-1 bg-white border-b-1 border-gray-400 focus:border-red-400 text-black outline-none"
+            >
+              <option>MC 128# 169</option>
+              <option>BC 881# 11824</option>
+              <option>BG 28# 1577</option>
+            </select> */}
+          </div>
+          <div className="flex flex-row justify-start gap-2 items-center">
+            <p>Equipment</p>
+            <Dropdown
+              handleChange={handleEqChange}
+              handleClick={getEq}
+              datas={eqArray}
+              datasLoading={eqLoading}
+              value={eq}
+            />
+            {/* <select
+              onChange={handleEqChange}
+              className="px-2 py-1 bg-white border-b-1 border-gray-400 focus:border-red-400 text-black outline-none"
+            >
+              <option>MC 128# 169</option>
+              <option>BC 881# 11824</option>
+              <option>BG 28# 1577</option>
+            </select> */}
+          </div>
         </div>
       </div>
       <div
@@ -114,7 +133,21 @@ const Inspection = () => {
                         </div>
                         {cat?.Check === "Yes" ? (
                           <div>
-                            <input type="checkbox" className="px-2 p-1" />
+                            <input
+                              type="checkbox"
+                              className="px-2 p-1"
+                              onChange={(e) => handleCheck(cat, d, e)}
+                              checked={
+                                selectedData &&
+                                selectedData[d] &&
+                                (cat?.Detail
+                                  ? selectedData[d][
+                                      `${cat.Description} (${cat.Detail})`
+                                    ]?.checked
+                                  : selectedData[d][`${cat.Description}`]
+                                      ?.checked)
+                              }
+                            />
                           </div>
                         ) : (
                           <div>
@@ -122,6 +155,17 @@ const Inspection = () => {
                               type="text"
                               placeholder="Value"
                               className="border-b-1 border-gray-400 px-2 p-1 focus:border-red-400 outline-none"
+                              value={
+                                selectedData &&
+                                selectedData[d] &&
+                                (cat?.Detail
+                                  ? selectedData[d][
+                                      `${cat.Description} (${cat.Detail})`
+                                    ]?.value
+                                  : selectedData[d][`${cat.Description}`]
+                                      ?.value)
+                              }
+                              onChange={(e) => handleCheck(cat, d, e)}
                             />
                           </div>
                         )}
@@ -130,6 +174,16 @@ const Inspection = () => {
                         <textarea
                           className="w-full border-b-1 border-gray-400  px-2 p-1 focus:border-red-400 outline-none"
                           placeholder="Remarks"
+                          value={
+                            selectedData &&
+                            selectedData[d] &&
+                            (cat?.Detail
+                              ? selectedData[d][
+                                  `${cat.Description} (${cat.Detail})`
+                                ]?.Remarks
+                              : selectedData[d][`${cat.Description}`]?.Remarks)
+                          }
+                          onChange={(e) => handleRemarks(cat, d, e)}
                         />
                       </div>
                     </div>
@@ -138,7 +192,10 @@ const Inspection = () => {
               </>
             ))}
           <div className="w-full flex flex-row justify-end items-center p-2">
-            <button className="text-red-400 font-[600] text-[14px]">
+            <button
+              className="text-red-400 font-[600] text-[14px]"
+              onClick={handleSave}
+            >
               SAVE
             </button>
           </div>

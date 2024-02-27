@@ -7,21 +7,28 @@ import { TiDelete } from "react-icons/ti";
 import EditCard from "./EditCard";
 import UsersCard from "./UsersCard";
 
-const Card = ({ id, items }) => {
+const Card = ({ id, items, handleSave, handleDelete }) => {
+  const allowedDrag = ["To Do", "InProgress", "Rejected", "Waiting Inspection"];
   const [isEditCard, setIsEditCard] = useState(false);
   const [item, setItem] = useState(null);
   const [isUsersCard, setIsUsersCard] = useState(false);
   return (
     <>
-      {isEditCard && <EditCard setIsEditCard={setIsEditCard} item={item} />}
+      {isEditCard && (
+        <EditCard
+          category={id}
+          setIsEditCard={setIsEditCard}
+          item={item}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
+        />
+      )}
       {isUsersCard && <UsersCard setIsUsersCard={setIsUsersCard} item={item} />}
       <Droppable
         droppableId={id}
         isScrollable={true}
         shouldUsePlaceholder={true}
-        isDropDisabled={
-          id === "To Do" || id === "Ready" || id === "Rejected" ? false : true
-        }
+        isDropDisabled={allowedDrag.includes(id) ? false : true}
       >
         {(provided) => (
           <div
@@ -34,11 +41,7 @@ const Card = ({ id, items }) => {
                 draggableId={item.id}
                 index={index}
                 key={item.id}
-                isDragDisabled={
-                  id === "To Do" || id === "Ready" || id === "Rejected"
-                    ? false
-                    : true
-                }
+                isDragDisabled={allowedDrag.includes(id) ? false : true}
               >
                 {(provided) => (
                   <div
@@ -47,11 +50,7 @@ const Card = ({ id, items }) => {
                     ref={provided.innerRef}
                     className="w-full flex flex-col gap-2 bg-gray-100 rounded-md border-1 border-gray-400 p-2"
                     onDoubleClick={() => {
-                      if (
-                        id === "To Do" ||
-                        id === "Ready" ||
-                        id === "Rejected"
-                      ) {
+                      if (allowedDrag.includes(id)) {
                         setIsEditCard(true);
                         setItem(item);
                       }

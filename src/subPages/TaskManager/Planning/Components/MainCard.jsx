@@ -5,7 +5,15 @@ import { IoFilter } from "react-icons/io5";
 
 import Card from "./Card";
 
-const MainCard = ({ titleBorderColor, title, id, stores, w, shrink }) => {
+const MainCard = ({
+  titleBorderColor,
+  title,
+  id,
+  stores,
+  w,
+  handleSave,
+  handleDelete,
+}) => {
   const [isMin, setIsMin] = useState(false);
   return !isMin ? (
     <div
@@ -36,7 +44,12 @@ const MainCard = ({ titleBorderColor, title, id, stores, w, shrink }) => {
         </div>
       </div>
       <div className="w-full h-full overflow-y-scroll">
-        <Card id={id} items={stores[id]} />
+        <Card
+          id={id}
+          items={stores[id]}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
+        />
       </div>
     </div>
   ) : (

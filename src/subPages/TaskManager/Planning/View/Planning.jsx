@@ -1,12 +1,21 @@
 import React from "react";
 import { IoFilter } from "react-icons/io5";
 
-import { stores } from "../../../../data/Kanban/tasks";
+// import { stores } from "../../../../data/Kanban/tasks";
 import MainCard from "../Components/MainCard";
+import usePlan from "../Controllers/controller";
+import PageLoading from "../../../../components/PageLoading";
 
-const Tasks = () => {
+const Planning = ({ stores, setStores }) => {
+  const { loading, message, handleSave, handleDelete } = usePlan(
+    stores,
+    setStores
+  );
+
+  // console.log(stores);
   return (
     <>
+      {loading && <PageLoading message={message} />}
       <div className="w-full h-[6vh] p-2 flex items-center">
         <div className="flex flex-row justify-start gap-2 text-black text-[12px] items-center py-1 px-3 w-full rounded-[8px] border-1 border-gray-300">
           <div className="hover:cursor-pointer">
@@ -26,6 +35,8 @@ const Tasks = () => {
           stores={stores}
           w={"300px"}
           shrink={true}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
         />
         <MainCard
           titleBorderColor="yellow"
@@ -34,6 +45,8 @@ const Tasks = () => {
           stores={stores}
           w={"300px"}
           shrink={false}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
         />
         <MainCard
           titleBorderColor="blue"
@@ -42,6 +55,8 @@ const Tasks = () => {
           stores={stores}
           w={"300px"}
           shrink={false}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
         />
         <MainCard
           titleBorderColor="orange"
@@ -49,6 +64,8 @@ const Tasks = () => {
           id="Waiting Inspection"
           stores={stores}
           w={"300px"}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
         />
         {/* <MainCard
           titleBorderColor="red"
@@ -64,6 +81,8 @@ const Tasks = () => {
           stores={stores}
           w={"300px"}
           shrink={false}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
         />
         <MainCard
           titleBorderColor="green"
@@ -72,10 +91,12 @@ const Tasks = () => {
           stores={stores}
           w={"300px"}
           shrink={false}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
         />
       </div>
     </>
   );
 };
 
-export default Tasks;
+export default Planning;

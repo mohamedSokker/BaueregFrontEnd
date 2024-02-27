@@ -7,13 +7,23 @@ import { TiDelete } from "react-icons/ti";
 import EditCard from "./EditCard";
 import UsersCard from "./UsersCard";
 
-const Card = ({ id, items }) => {
+const Card = ({ id, items, handleSave, handleDelete }) => {
   const [isEditCard, setIsEditCard] = useState(false);
   const [item, setItem] = useState(null);
   const [isUsersCard, setIsUsersCard] = useState(false);
+
+  // console.log(items);
   return (
     <>
-      {isEditCard && <EditCard setIsEditCard={setIsEditCard} item={item} />}
+      {isEditCard && (
+        <EditCard
+          category={id}
+          setIsEditCard={setIsEditCard}
+          item={item}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
+        />
+      )}
       {isUsersCard && <UsersCard setIsUsersCard={setIsUsersCard} item={item} />}
       <Droppable
         droppableId={id}

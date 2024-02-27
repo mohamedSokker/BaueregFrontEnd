@@ -1,6 +1,7 @@
 export const editFields = {
   id: null,
   desc: null,
+  descAr: null,
   name: null,
   pic: null,
   eq: null,

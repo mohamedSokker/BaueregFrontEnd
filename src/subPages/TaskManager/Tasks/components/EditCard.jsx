@@ -5,7 +5,13 @@ import "../styles/EditCard.css";
 import EditCardFields from "./EditCardFields";
 import { editFields } from "../Model/model";
 
-const EditCard = ({ setIsEditCard, item }) => {
+const EditCard = ({
+  setIsEditCard,
+  item,
+  category,
+  handleSave,
+  handleDelete,
+}) => {
   const [isCanceled, setIsCanceled] = useState(false);
   const [val, setVal] = useState(editFields);
 
@@ -176,9 +182,31 @@ const EditCard = ({ setIsEditCard, item }) => {
             disabled={false}
           />
         </div>
+        <div className="flex flex-row w-full p-2 px-6 justify-between">
+          <EditCardFields
+            name={`Description_Ar`}
+            col="descAr"
+            data={item.descAr}
+            focused={false}
+            input={`textarea`}
+            w={`100%`}
+            val={val}
+            setVal={setVal}
+            disabled={false}
+          />
+        </div>
         <div className="w-full flex flex-row  justify-between items-center p-2 px-6">
           <div>
-            <button className="text-gray-500 font-[600] text-[14px]">
+            <button
+              className="text-gray-500 font-[600] text-[14px]"
+              onClick={async () => {
+                handleDelete(val, category);
+                setIsCanceled(true);
+                setTimeout(() => {
+                  setIsEditCard(false);
+                }, 500);
+              }}
+            >
               DELETE
             </button>
           </div>
@@ -186,6 +214,7 @@ const EditCard = ({ setIsEditCard, item }) => {
             <button
               className=" text-red-400 font-[600] text-[14px]"
               onClick={async () => {
+                handleSave(val, category);
                 setIsCanceled(true);
                 setTimeout(() => {
                   setIsEditCard(false);

@@ -44,6 +44,7 @@ const EditCardFields = ({
       ) : input === "textarea" ? (
         <textarea
           ref={inputRef}
+          disabled={disabled}
           placeholder={name}
           onChange={(e) => {
             setVal((prev) => ({ ...prev, [col]: e.target.value }));
