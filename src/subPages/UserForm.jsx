@@ -95,6 +95,13 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
         const url = `/api/v1/Equipments_Location`;
         const eqsData = await axiosPrivate(url, { method: "GET" });
         setEqLocData(eqsData.data);
+        const neweqsData = eqsData.data.filter((d) => d.End_Date === null);
+        let newSitesArray = [];
+        neweqsData.map((d) => {
+          newSitesArray.push(d.Location);
+        });
+        newSitesArray = Array.from(new Set(newSitesArray));
+        data.Sites = newSitesArray;
         setAllDatas(data);
         setLoading(false);
       } catch (err) {
@@ -191,8 +198,8 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
         const newRoles = roles[category][title].filter(
           (role) => role.name !== e.target.value
         );
-        console.log(e.target.value);
-        console.log(newRoles);
+        // console.log(e.target.value);
+        // console.log(newRoles);
         setRules((prev) => ({
           ...prev,
           [category]: {
