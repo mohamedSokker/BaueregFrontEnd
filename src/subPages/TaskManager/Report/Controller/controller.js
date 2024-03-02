@@ -21,7 +21,7 @@ const getItemsOfSelectedData = (data, reportData) => {
   return result;
 };
 
-const useReports = () => {
+const useReports = (stores, setStores) => {
   const axiosPrivate = useAxiosPrivate();
 
   const [data, setData] = useState([]);
@@ -83,6 +83,11 @@ const useReports = () => {
       const data = getItemsOfSelectedData(selectedData, selectedReport);
       const url = `/api/v1/taskManagerHandleTasks`;
       await axiosPrivate(url, { method: "POST", data: JSON.stringify(data) });
+      // let newStore = { ...stores };
+      // data.map((d) => {
+      //   newStore["Inspected"].splice(0, 0, {});
+      // });
+      // setStores(newStore);
       setLoading(false);
     } catch (err) {
       console.log(

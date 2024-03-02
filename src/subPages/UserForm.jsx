@@ -11,11 +11,14 @@ import { AllStocks, allDataTitles } from "../data/Tablesdata";
 import { allData } from "../data/allRoles";
 import { PageLoading } from "../components";
 import { useNavContext } from "../contexts/NavContext";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const UserForm = ({ handleSaveUser, getChildData, userData }) => {
   const { token } = useNavContext();
+  const axiosPrivate = useAxiosPrivate();
 
   const [allDatas, setAllDatas] = useState([]);
+  const [eqLocData, setEqLocData] = useState([]);
   const [active, setActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
@@ -89,6 +92,9 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       try {
         setLoading(true);
         const data = await allData(token);
+        const url = `/api/v1/Equipments_Location`;
+        const eqsData = await axiosPrivate(url, { method: "GET" });
+        setEqLocData(eqsData.data);
         setAllDatas(data);
         setLoading(false);
       } catch (err) {
@@ -143,11 +149,11 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
   };
 
   const handleCheckboxChange = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     let category = e.target.dataset.cat;
     let title = e.target.dataset.title;
-    console.log(category);
-    console.log(title);
+    // console.log(category);
+    // console.log(title);
     if (typeof roles[category][title] === "boolean") {
       setRules((prev) => ({
         ...prev,
@@ -182,10 +188,11 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
         }
       } else {
         console.log(`Set rules from Third`);
-        let newRoles = { ...roles };
-        newRoles = newRoles[category][title].filter(
+        const newRoles = roles[category][title].filter(
           (role) => role.name !== e.target.value
         );
+        console.log(e.target.value);
+        console.log(newRoles);
         setRules((prev) => ({
           ...prev,
           [category]: {
@@ -193,6 +200,20 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
             [title]: newRoles,
           },
         }));
+      }
+    }
+    if (title === "Sites") {
+      const targetData = eqLocData.filter(
+        (d) => d.Location === e.target.value && d.End_Date === null
+      );
+      for (let i = 0; i < targetData.length; i++) {
+        handleCheckboxChange({
+          target: {
+            value: targetData[i].Equipment,
+            dataset: { cat: category, title: "Equipments" },
+            checked: e.target.checked === true ? true : false,
+          },
+        });
       }
     }
   };

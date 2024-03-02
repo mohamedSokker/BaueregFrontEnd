@@ -4,6 +4,7 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import "../styles/EditCard.css";
 import EditCardFields from "./EditCardFields";
 import { editFields } from "../Model/model";
+import { workshops } from "../Constants/constants";
 
 const EditCard = ({
   setIsEditCard,
@@ -135,9 +136,9 @@ const EditCard = ({
             col="workshop"
             data={item?.workshop}
             focused={false}
-            inputType={"text"}
             w={"45%"}
-            input={"input"}
+            options={workshops}
+            input={"combobox"}
             val={val}
             setVal={setVal}
             disabled={true}

@@ -5,7 +5,7 @@ import useReports from "../Controller/controller";
 import PageLoading from "../../../../components/PageLoading";
 import EditReport from "../Components/EditReport";
 
-const Report = () => {
+const Report = ({ stores, setStores }) => {
   const {
     loading,
     message,
@@ -20,7 +20,7 @@ const Report = () => {
     handleSend,
     handleSave,
     handleDelete,
-  } = useReports();
+  } = useReports(stores, setStores);
 
   const [isEditCard, setIsEditCard] = useState(false);
 
