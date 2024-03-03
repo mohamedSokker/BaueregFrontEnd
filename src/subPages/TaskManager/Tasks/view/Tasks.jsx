@@ -6,7 +6,7 @@ import MainCard from "../components/MainCard";
 import useTask from "../controllers/controller";
 import PageLoading from "../../../../components/PageLoading";
 
-const Tasks = ({ stores, setStores }) => {
+const Tasks = ({ stores, setStores, users, fullusers }) => {
   const { loading, message, handleSave, handleDelete } = useTask(
     stores,
     setStores
@@ -31,6 +31,8 @@ const Tasks = ({ stores, setStores }) => {
           title="To Do"
           id="To Do"
           stores={stores}
+          users={users}
+          fullusers={fullusers}
           w={"300px"}
           handleSave={handleSave}
           handleDelete={handleDelete}
@@ -40,6 +42,8 @@ const Tasks = ({ stores, setStores }) => {
           title="InProgress"
           id="InProgress"
           stores={stores}
+          users={users}
+          fullusers={fullusers}
           w={"300px"}
           handleSave={handleSave}
           handleDelete={handleDelete}
@@ -49,6 +53,8 @@ const Tasks = ({ stores, setStores }) => {
           title="Waiting Inspection"
           id="Waiting Inspection"
           stores={stores}
+          users={users}
+          fullusers={fullusers}
           w={"300px"}
           handleSave={handleSave}
           handleDelete={handleDelete}
@@ -58,6 +64,8 @@ const Tasks = ({ stores, setStores }) => {
           title="Rejected"
           id="Rejected"
           stores={stores}
+          users={users}
+          fullusers={fullusers}
           w={"300px"}
           handleSave={handleSave}
           handleDelete={handleDelete}
@@ -67,6 +75,8 @@ const Tasks = ({ stores, setStores }) => {
           title="Done"
           id="Done"
           stores={stores}
+          users={users}
+          fullusers={fullusers}
           w={"300px"}
           handleSave={handleSave}
           handleDelete={handleDelete}

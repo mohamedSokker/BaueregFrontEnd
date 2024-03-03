@@ -41,6 +41,10 @@ const Card = ({ id, items, handleSave }) => {
                     {...provided.draggableProps}
                     ref={provided.innerRef}
                     className="w-full flex flex-col gap-2 bg-gray-100 rounded-md border-1 border-gray-400 p-2"
+                    // style={{
+                    //   backgroundColor:
+                    //     item.IsReady === "true" ? "green" : "rgb(243,244,246)",
+                    // }}
                   >
                     <div className="flex flex-row justify-end items-center">
                       <div className="text-green-700 cursor-pointer">
@@ -61,7 +65,7 @@ const Card = ({ id, items, handleSave }) => {
                           <div className="w-0 h-0 border-1 border-green-600 rounded-full"></div>
                         </div>
                         <p>{item?.title}</p>
-                        <Voice size={16} text={item.desc} />
+                        <Voice size={16} text={item.descAr} />
                       </div>
                       {item.pic.length > 0 && (
                         <div className="relative w-6 h-6 flex items-center">

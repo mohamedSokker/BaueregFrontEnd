@@ -7,8 +7,9 @@ import { TiDelete } from "react-icons/ti";
 import EditCard from "./EditCard";
 import UsersCard from "./UsersCard";
 
-const Card = ({ id, items, handleSave, handleDelete }) => {
+const Card = ({ id, items, handleSave, handleDelete, users, fullusers }) => {
   const allowedDrag = ["To Do", "InProgress", "Rejected", "Waiting Inspection"];
+  const allowedDrop = ["To Do", "InProgress"];
   const [isEditCard, setIsEditCard] = useState(false);
   const [item, setItem] = useState(null);
   const [isUsersCard, setIsUsersCard] = useState(false);
@@ -21,6 +22,8 @@ const Card = ({ id, items, handleSave, handleDelete }) => {
           item={item}
           handleSave={handleSave}
           handleDelete={handleDelete}
+          users={users}
+          fullusers={fullusers}
         />
       )}
       {isUsersCard && <UsersCard setIsUsersCard={setIsUsersCard} item={item} />}
@@ -28,7 +31,7 @@ const Card = ({ id, items, handleSave, handleDelete }) => {
         droppableId={id}
         isScrollable={true}
         shouldUsePlaceholder={true}
-        isDropDisabled={allowedDrag.includes(id) ? false : true}
+        isDropDisabled={allowedDrop.includes(id) ? false : true}
       >
         {(provided) => (
           <div

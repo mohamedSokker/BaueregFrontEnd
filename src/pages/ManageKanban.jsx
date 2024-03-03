@@ -9,6 +9,7 @@ import Planning from "../subPages/TaskManager/Planning/View/Planning";
 import QA from "../subPages/TaskManager/QA/View/QA";
 import Report from "../subPages/TaskManager/Report/View/Report";
 import PageLoading from "../components/PageLoading";
+import QAInspection from "../subPages/TaskManager/QA Inspection/View/QA Inspection";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavContext } from "../contexts/NavContext";
@@ -28,6 +29,7 @@ const userModel = {
   Inspection: ["Site Engineer", "Yard Engineer"],
   Report: ["Site Engineer", "Yard Engineer"],
   QA: ["QA Engineer"],
+  "QA Inspection": ["QA Engineer"],
   Planning: ["Planning Engineer"],
 };
 
@@ -35,6 +37,10 @@ const ManageKanban = () => {
   const [category, setCategory] = useState("Tasks");
   const [loading, setLoading] = useState(false);
   const [stores, setStores] = useState(storeModel);
+  const [users, setUsers] = useState([]);
+  const [fullusers, setFullUsers] = useState([]);
+
+  console.log(stores);
 
   const { usersData } = useNavContext();
 
@@ -43,19 +49,25 @@ const ManageKanban = () => {
   useEffect(() => {
     if (usersData[0].roles.Admin) {
       setCategory("Tasks");
+      getData();
     } else if (usersData[0].department === "Maintenance") {
       if (userModel.Tasks.includes(usersData[0].title)) {
         setCategory("Tasks");
+        getData();
       } else if (userModel.Inspection.includes(usersData[0].title)) {
         setCategory("Inspection");
       } else if (userModel.Report.includes(usersData[0].title)) {
         setCategory("Inspection");
       } else if (userModel.Planning.includes(usersData[0].title)) {
         setCategory("Planning");
+        getData();
       } else if (userModel.QA.includes(usersData[0].title)) {
-        setCategory("QA");
+        setCategory("QA Inspection");
+      } else if (userModel["QA Inspection"].includes(usersData[0].title)) {
+        setCategory("QA Inspection");
       } else if (userModel.Workshop.includes(usersData[0].title)) {
         setCategory("Workshop");
+        getData();
       }
     }
   }, []);
@@ -65,6 +77,17 @@ const ManageKanban = () => {
       setLoading(true);
       const url = `/api/v1/taskManagerGetTasks`;
       const data = await axiosPrivate(url, { method: "GET" });
+      const usersURL = `/api/v1/taskManagergetUsers`;
+      const usersResponse = await axiosPrivate(usersURL, { method: "GET" });
+      // setFullUsers(usersResponse.data);
+      const usersResult = [];
+      let fullUsersResult = {};
+      usersResponse.data.map((d) => {
+        usersResult.push(d.UserName);
+        fullUsersResult[d.UserName] = d.ProfileImg;
+      });
+      setFullUsers(fullUsersResult);
+      setUsers(usersResult);
       console.log(data?.data);
       let result = storeModel;
       data?.data?.map((d) => {
@@ -88,6 +111,8 @@ const ManageKanban = () => {
                     : "",
                   duration: d.Duration ? d.Duration : "",
                   workshop: d.Workshop ? d.Workshop : "",
+                  reportID: d.ReportID ? d.ReportID : "",
+                  IsReady: d.IsReady ? d.IsReady : "",
                 },
               ],
             }
@@ -109,6 +134,8 @@ const ManageKanban = () => {
                     : "",
                   duration: d.Duration ? d.Duration : "",
                   workshop: d.Workshop ? d.Workshop : "",
+                  reportID: d.ReportID ? d.ReportID : "",
+                  IsReady: d.IsReady ? d.IsReady : "",
                 },
               ],
             };
@@ -126,9 +153,9 @@ const ManageKanban = () => {
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
   const handleDragAndDrop = async (result) => {
     try {
@@ -156,8 +183,10 @@ const ManageKanban = () => {
         await axiosPrivate(url, {
           method: "POST",
           data: JSON.stringify({
-            Category: destination.droppableId,
-            ID: stores[itemSourceCategory][itemSourceIndex]?.id,
+            data: {
+              Category: destination.droppableId,
+              ID: stores[itemSourceCategory][itemSourceIndex]?.id,
+            },
           }),
         });
       }
@@ -252,6 +281,17 @@ const ManageKanban = () => {
                 usersData[0].department === "Maintenance")) && (
               <Header
                 name={`QA`}
+                isParBorder={true}
+                Par2Cond={`QA Inspection`}
+                category={category}
+                setCategory={setCategory}
+              />
+            )}
+            {(usersData[0].roles.Admin ||
+              (userModel["QA Inspection"].includes(usersData[0].title) &&
+                usersData[0].department === "Maintenance")) && (
+              <Header
+                name={`QA Inspection`}
                 isParBorder={false}
                 category={category}
                 setCategory={setCategory}
@@ -260,7 +300,12 @@ const ManageKanban = () => {
           </div>
         </div>
         {category === "Tasks" && stores ? (
-          <Tasks stores={stores} setStores={setStores} />
+          <Tasks
+            stores={stores}
+            setStores={setStores}
+            users={users}
+            fullusers={fullusers}
+          />
         ) : category === "Workshop" && stores ? (
           <Workshop stores={stores} setStores={setStores} />
         ) : category === "Inspection" && stores ? (
@@ -269,6 +314,8 @@ const ManageKanban = () => {
           <Report stores={stores} setStores={setStores} />
         ) : category === "QA" && stores ? (
           <QA stores={stores} setStores={setStores} />
+        ) : category === "QA Inspection" && stores ? (
+          <QAInspection stores={stores} setStores={setStores} />
         ) : (
           stores && <Planning stores={stores} setStores={setStores} />
         )}

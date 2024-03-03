@@ -14,8 +14,54 @@ const EditCardFields = ({
   val,
   setVal,
   disabled,
+  fullusers,
+  isMultiple,
 }) => {
   const inputRef = useRef(null);
+
+  // useEffect(() => {
+  //   console.log(
+  //     val && val["pic"] && Array.from(val["pic"], (option) => option.name)
+  //   );
+  // }, [val]);
+
+  const handleSelectChange = (e) => {
+    // console.log(e.target.selectedOptions);
+    setVal((prev) => ({ ...prev, pic: [] }));
+    Array.from(e.target.selectedOptions, (option) => {
+      if (col === "pic") {
+        console.log(val);
+        setVal((prev) =>
+          prev[col]
+            ? {
+                ...prev,
+                [col]: [
+                  ...prev[col],
+                  {
+                    name: option.value,
+                    pic: `${process.env.REACT_APP_BASE_URL}/${
+                      fullusers[option.value]
+                    }`,
+                  },
+                ],
+              }
+            : {
+                ...prev,
+                [col]: [
+                  {
+                    name: option.value,
+                    pic: `${process.env.REACT_APP_BASE_URL}/${
+                      fullusers[option.value]
+                    }`,
+                  },
+                ],
+              }
+        );
+      } else {
+        setVal((prev) => ({ ...prev, [col]: { name: e.target.value } }));
+      }
+    });
+  };
 
   useEffect(() => {
     focused && inputRef.current.focus();
@@ -62,9 +108,8 @@ const EditCardFields = ({
       ) : (
         <select
           disabled={disabled}
-          onChange={(e) => {
-            setVal((prev) => ({ ...prev, [col]: e.target.value }));
-          }}
+          multiple={isMultiple}
+          onChange={handleSelectChange}
           style={{
             color:
               disabled || options.length === 0 ? "rgb(107,114,128)" : "black",
@@ -76,7 +121,13 @@ const EditCardFields = ({
           onBlur={(e) => {
             e.target.previousElementSibling.classList.remove("focused");
           }}
-          value={val[col]}
+          value={
+            col === "pic"
+              ? val &&
+                val["pic"] &&
+                Array.from(val[col], (option) => option.name)
+              : val[col]
+          }
         >
           {options.length === "" ? (
             <option>{`Select ${name}`}</option>

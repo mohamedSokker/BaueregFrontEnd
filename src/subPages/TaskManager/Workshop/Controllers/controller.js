@@ -12,12 +12,41 @@ const useWorkshop = (stores, setStores) => {
     try {
       setMessage(`Updating Tasks...`);
       setLoading(true);
+      let result = [];
+      Object.keys(stores).map((title) => {
+        stores[title].map((t) => {
+          if (t.reportID === item.reportID && t.id !== item.id) {
+            result.push(title);
+          }
+        });
+      });
+      console.log(result);
+      let flag = false;
+      if (
+        result.includes("To Do") ||
+        result.includes("Inspected") ||
+        result.includes("InProgress")
+      ) {
+        flag = false;
+      } else {
+        flag = true;
+      }
+
+      console.log(flag);
+
       const url = `/api/v1/taskManagerUpdateTasks`;
       await axiosPrivate(url, {
         method: "POST",
         data: JSON.stringify({
-          Category: "Waiting Inspection",
-          ID: item.id,
+          data: {
+            Category: "Waiting Inspection",
+            ID: item.id,
+          },
+          flags: {
+            updateReport: flag ? true : false,
+            reportID: item.reportID,
+            IsReady: flag ? "true" : "false",
+          },
         }),
       });
       let newStore = { ...stores };

@@ -16,16 +16,21 @@ const useTask = (stores, setStores) => {
       await axiosPrivate(url, {
         method: "POST",
         data: JSON.stringify({
-          ID: d?.id,
-          Description: d?.desc !== "" ? d?.desc : null,
-          Description_Ar: d?.descAr !== "" ? d?.descAr : null,
-          ToUser: d?.pic !== "" ? d?.pic : null,
-          Periority: d?.periority !== "" ? d?.periority : null,
-          Title: d?.title !== "" ? d?.title : null,
-          StartTime: d?.start !== "" ? new Date(d?.start) : null,
-          EndTime: d?.end !== "" ? new Date(d?.end) : null,
-          Duration: d?.duration !== "" ? d?.duration : null,
-          Workshop: d?.workshop !== "" ? d?.workshop : null,
+          data: {
+            ID: d?.id,
+            Description: d?.desc !== "" ? d?.desc : null,
+            Description_Ar: d?.descAr !== "" ? d?.descAr : null,
+            ToUser:
+              d?.pic !== "" && d?.pic.length > 0
+                ? JSON.stringify(d?.pic)
+                : null,
+            Periority: d?.periority !== "" ? d?.periority : null,
+            Title: d?.title !== "" ? d?.title : null,
+            StartTime: d?.start !== "" ? new Date(d?.start) : null,
+            EndTime: d?.end !== "" ? new Date(d?.end) : null,
+            Duration: d?.duration !== "" ? d?.duration : null,
+            Workshop: d?.workshop !== "" ? d?.workshop : null,
+          },
         }),
       });
       let newStore = { ...stores };

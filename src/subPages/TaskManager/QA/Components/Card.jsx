@@ -1,35 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { CiClock1 } from "react-icons/ci";
-import { IoIosCheckmarkCircle } from "react-icons/io";
-import { TiDelete } from "react-icons/ti";
 
-import EditCard from "./EditCard";
-import UsersCard from "./UsersCard";
-
-const Card = ({ id, items, handleSave, handleDelete }) => {
-  const [isEditCard, setIsEditCard] = useState(false);
-  const [item, setItem] = useState(null);
-  const [isUsersCard, setIsUsersCard] = useState(false);
-
-  // console.log(items);
+const Card = ({ id, items }) => {
+  const allowedDrag = ["Rejected", "Waiting Inspection", "Done"];
   return (
     <>
-      {isEditCard && (
-        <EditCard
-          category={id}
-          setIsEditCard={setIsEditCard}
-          item={item}
-          handleSave={handleSave}
-          handleDelete={handleDelete}
-        />
-      )}
-      {isUsersCard && <UsersCard setIsUsersCard={setIsUsersCard} item={item} />}
       <Droppable
         droppableId={id}
         isScrollable={true}
         shouldUsePlaceholder={true}
-        isDropDisabled={id === "To Do" || id === "Inspected" ? false : true}
+        isDropDisabled={allowedDrag.includes(id) ? false : true}
       >
         {(provided) => (
           <div
@@ -42,9 +23,7 @@ const Card = ({ id, items, handleSave, handleDelete }) => {
                 draggableId={item.id}
                 index={index}
                 key={item.id}
-                isDragDisabled={
-                  id === "To Do" || id === "Inspected" ? false : true
-                }
+                isDragDisabled={allowedDrag.includes(id) ? false : true}
               >
                 {(provided) => (
                   <div
@@ -56,30 +35,7 @@ const Card = ({ id, items, handleSave, handleDelete }) => {
                     //   backgroundColor:
                     //     item.IsReady === "true" ? "green" : "rgb(243,244,246)",
                     // }}
-                    onDoubleClick={() => {
-                      if (id === "To Do" || id === "Inspected") {
-                        setIsEditCard(true);
-                        setItem(item);
-                      }
-                    }}
                   >
-                    {/* {id === "To Do" && (
-                      <div className="flex flex-row justify-end items-center">
-                        <div className="text-green-700 cursor-pointer">
-                          <IoIosCheckmarkCircle
-                            className="md:text-[17px] text-[34px]"
-                            onClick={() => {
-                              setIsEditCard(true);
-                              setItem(item);
-                            }}
-                          />
-                        </div>
-                        <div className="text-red-700 cursor-pointer">
-                          <TiDelete className="md:text-[20px] text-[40px]" />
-                        </div>
-                      </div>
-                    )} */}
-
                     <div className="w-full flex flex-row gap-2 justify-between items-center text-gray-600">
                       <div className="flex flex-row gap-1 items-center">
                         <div className="w-3 h-3 rounded-full border-1 border-green-600 flex justify-center items-center">
@@ -96,10 +52,6 @@ const Card = ({ id, items, handleSave, handleDelete }) => {
                                 item.pic.length >= 3
                                   ? "35px"
                                   : `${item.pic.length * 10 + 5}px`,
-                            }}
-                            onClick={() => {
-                              setIsUsersCard(true);
-                              setItem(item);
                             }}
                           >
                             {`${item.pic.length.toString()} users`}
@@ -148,16 +100,17 @@ const Card = ({ id, items, handleSave, handleDelete }) => {
                         <p className="text-[10px]">{`duration: ${item.duration} hrs`}</p>
                       </div>
                     )}
+
                     <div className="w-full flex flex-row gap-2 flex-wrap justify-start">
                       {item?.workshop && item?.workshop !== "" && (
-                        <div className="px-2 rounded-full border-1 border-cyan-500 text-[12px] text-cyan-500 bg-[rgba(6,182,212,0.3)] font-[500]">
+                        <div className=" px-2 rounded-full border-1 border-cyan-500 text-[12px] text-cyan-500 bg-[rgba(6,182,212,0.3)] font-[500]">
                           {item?.workshop}
                         </div>
                       )}
 
                       {item?.periority && item?.periority !== "" && (
                         <div
-                          className="px-2 rounded-full border-1 text-[12px] font-[500] bg-[rgb(235,166,37)]"
+                          className=" px-2 rounded-full border-1 text-[12px] font-[500] bg-[rgb(235,166,37)]"
                           style={{
                             borderColor:
                               item.periority === "high"

@@ -32,11 +32,20 @@ import Vnc from "./pages/Vnc";
 function App() {
   const { token, usersData } = useNavContext();
 
+  const handleUserName = () => {
+    socket.emit("userName", usersData[0]?.username);
+  };
+
   useEffect(() => {
     if (!socket.connected && token && usersData) {
       socket.connect();
-      socket.emit("userName", usersData[0]?.username);
     }
+
+    socket.on("RequestUserName", handleUserName);
+
+    return () => {
+      socket.off("RequestUserName", handleUserName);
+    };
   }, [socket, token, usersData]);
 
   return (

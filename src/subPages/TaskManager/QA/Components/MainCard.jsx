@@ -4,19 +4,8 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import { IoFilter } from "react-icons/io5";
 
 import Card from "./Card";
-import "../styles/EditCard.css";
 
-const MainCard = ({
-  titleBorderColor,
-  title,
-  id,
-  stores,
-  w,
-  handleSave,
-  handleDelete,
-  users,
-  fullusers,
-}) => {
+const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
   const [isMin, setIsMin] = useState(false);
   return !isMin ? (
     <div
@@ -50,14 +39,7 @@ const MainCard = ({
         </div>
       </div>
       <div className="w-full h-full overflow-y-scroll">
-        <Card
-          id={id}
-          items={stores[id]}
-          handleSave={handleSave}
-          handleDelete={handleDelete}
-          users={users}
-          fullusers={fullusers}
-        />
+        <Card id={id} items={stores[id]} />
       </div>
     </div>
   ) : (

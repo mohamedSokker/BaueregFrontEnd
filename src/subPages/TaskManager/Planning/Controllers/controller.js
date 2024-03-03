@@ -16,16 +16,18 @@ const usePlan = (stores, setStores) => {
       await axiosPrivate(url, {
         method: "POST",
         data: JSON.stringify({
-          ID: d?.id,
-          Description: d?.desc !== "" ? d?.desc : null,
-          Description_Ar: d?.descAr !== "" ? d?.descAr : null,
-          ToUser: d?.pic !== "" ? d?.pic : null,
-          Periority: d?.periority !== "" ? d?.periority : null,
-          Title: d?.title !== "" ? d?.title : null,
-          StartTime: d?.start !== "" ? (d?.start).split("T").join(" ") : null,
-          EndTime: d?.end !== "" ? (d?.end).split("T").join(" ") : null,
-          Duration: d?.duration !== "" ? d?.duration : null,
-          Workshop: d?.workshop !== "" ? d?.workshop : null,
+          data: {
+            ID: d?.id,
+            Description: d?.desc !== "" ? d?.desc : null,
+            Description_Ar: d?.descAr !== "" ? d?.descAr : null,
+            ToUser: d?.pic !== "" ? d?.pic : null,
+            Periority: d?.periority !== "" ? d?.periority : null,
+            Title: d?.title !== "" ? d?.title : null,
+            StartTime: d?.start !== "" ? (d?.start).split("T").join(" ") : null,
+            EndTime: d?.end !== "" ? (d?.end).split("T").join(" ") : null,
+            Duration: d?.duration !== "" ? d?.duration : null,
+            Workshop: d?.workshop !== "" ? d?.workshop : null,
+          },
         }),
       });
       let newStore = { ...stores };

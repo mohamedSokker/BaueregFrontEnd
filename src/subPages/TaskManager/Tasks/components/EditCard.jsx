@@ -12,6 +12,8 @@ const EditCard = ({
   category,
   handleSave,
   handleDelete,
+  users,
+  fullusers,
 }) => {
   const [isCanceled, setIsCanceled] = useState(false);
   const [val, setVal] = useState(editFields);
@@ -147,15 +149,17 @@ const EditCard = ({
         <div className="flex flex-row w-full p-2 px-6 justify-between">
           <EditCardFields
             name="Assigned To"
-            col="name"
+            col="pic"
             data={item?.name}
             focused={false}
-            inputType={"text"}
             w={"45%"}
-            input={"input"}
+            input={"combobox"}
+            options={users}
             val={val}
             setVal={setVal}
             disabled={false}
+            fullusers={fullusers}
+            isMultiple={true}
           />
           <EditCardFields
             name="Periority"
