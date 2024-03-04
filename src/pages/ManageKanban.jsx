@@ -413,8 +413,6 @@ const ManageKanban = () => {
             fullusers={fullusers}
             newStore={newStore}
             setNewStore={setNewStore}
-            minDuration={minDuration}
-            maxDuration={maxDuration}
             count={count}
             setCount={setCount}
           />
