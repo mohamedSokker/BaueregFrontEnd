@@ -55,16 +55,6 @@ const getUniqueItems = (array, compareValue) => {
   return flag;
 };
 
-const storetoJSON = async (store) => {
-  let result = [];
-  Object.keys(store).map((title) => {
-    store[title].map((item) => {
-      result.push({ ...item, category: title });
-    });
-  });
-  return result;
-};
-
 const ManageKanban = () => {
   const [category, setCategory] = useState("Tasks");
   const [loading, setLoading] = useState(false);
@@ -72,34 +62,12 @@ const ManageKanban = () => {
   const [users, setUsers] = useState([]);
   const [fullusers, setFullUsers] = useState([]);
   const [newStore, setNewStore] = useState(objectModel);
-  const [minDuration, setMinDuration] = useState(0);
-  const [maxDuration, setMaxDuration] = useState(10);
+
   const [count, setCount] = useState(0);
 
   const { usersData } = useNavContext();
 
   const axiosPrivate = useAxiosPrivate();
-
-  useEffect(() => {
-    if (stores) {
-      const getMinDuration = async () => {
-        const jsonData = await storetoJSON(stores);
-        const durs = jsonData.map((dur) => dur.duration && dur.duration);
-        const minDur = Math.min.apply(null, durs);
-        console.log(minDur);
-        setMinDuration(minDur);
-      };
-      const getMaxDuration = async () => {
-        const jsonData = await storetoJSON(stores);
-        const durs = jsonData.map((dur) => dur.duration && dur.duration);
-        const maxDur = Math.max.apply(null, durs);
-        console.log(maxDur);
-        setMaxDuration(maxDur);
-      };
-      getMinDuration();
-      getMaxDuration();
-    }
-  }, [stores]);
 
   useEffect(() => {
     if (

@@ -16,6 +16,16 @@ const storeModel = {
   Done: [],
 };
 
+const storetoJSON = async (store) => {
+  let result = [];
+  Object.keys(store).map((title) => {
+    store[title].map((item) => {
+      result.push({ ...item, category: title });
+    });
+  });
+  return result;
+};
+
 const Tasks = ({
   stores,
   setStores,
@@ -23,8 +33,6 @@ const Tasks = ({
   fullusers,
   newStore,
   setNewStore,
-  minDuration,
-  maxDuration,
   count,
   setCount,
 }) => {
@@ -35,9 +43,28 @@ const Tasks = ({
 
   const [copiedStores, setCopiedStores] = useState(storeModel);
   const [isFilterCard, setIsFilterCard] = useState(false);
+  const [minDuration, setMinDuration] = useState(0);
+  const [maxDuration, setMaxDuration] = useState(10);
 
   useEffect(() => {
     setCopiedStores(stores);
+
+    const getMinDuration = async () => {
+      const jsonData = await storetoJSON(stores);
+      const durs = jsonData.map((dur) => dur.duration && dur.duration);
+      const minDur = Math.min.apply(null, durs);
+      console.log(minDur);
+      setMinDuration(minDur);
+    };
+    const getMaxDuration = async () => {
+      const jsonData = await storetoJSON(stores);
+      const durs = jsonData.map((dur) => dur.duration && dur.duration);
+      const maxDur = Math.max.apply(null, durs);
+      console.log(maxDur);
+      setMaxDuration(maxDur);
+    };
+    getMinDuration();
+    getMaxDuration();
   }, []);
   return (
     <>
