@@ -35,6 +35,16 @@ const Tasks = ({
   setNewStore,
   count,
   setCount,
+  filteredData,
+  setFilteredData,
+  minDate,
+  setMinDate,
+  maxDate,
+  setMaxDate,
+  currentDate,
+  setCurrentDate,
+  currentDuration,
+  setCurrentDuration,
 }) => {
   const { loading, message, handleSave, handleDelete } = useTask(
     stores,
@@ -51,14 +61,18 @@ const Tasks = ({
 
     const getMinDuration = async () => {
       const jsonData = await storetoJSON(stores);
-      const durs = jsonData.map((dur) => dur.duration && dur.duration);
+      const durs = jsonData.map(
+        (dur) => dur.duration && dur.duration !== "" && dur.duration
+      );
       const minDur = Math.min.apply(null, durs);
       console.log(minDur);
       setMinDuration(minDur);
     };
     const getMaxDuration = async () => {
       const jsonData = await storetoJSON(stores);
-      const durs = jsonData.map((dur) => dur.duration && dur.duration);
+      const durs = jsonData.map(
+        (dur) => dur.duration && dur.duration !== "" && dur.duration
+      );
       const maxDur = Math.max.apply(null, durs);
       console.log(maxDur);
       setMaxDuration(maxDur);
@@ -81,6 +95,16 @@ const Tasks = ({
           maxDuration={maxDuration}
           count={count}
           setCount={setCount}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+          minDate={minDate}
+          setMinDate={setMinDate}
+          maxDate={maxDate}
+          setMaxDate={setMaxDate}
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          currentDuration={currentDuration}
+          setCurrentDuration={setCurrentDuration}
         />
       )}
       <div className="w-full h-[6vh] p-2 flex items-center">

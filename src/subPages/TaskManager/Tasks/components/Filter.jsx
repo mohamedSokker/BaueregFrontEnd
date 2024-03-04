@@ -16,6 +16,16 @@ const Filter = ({
   maxDuration,
   count,
   setCount,
+  filteredData,
+  setFilteredData,
+  minDate,
+  setMinDate,
+  maxDate,
+  setMaxDate,
+  currentDate,
+  setCurrentDate,
+  currentDuration,
+  setCurrentDuration,
 }) => {
   const [isCanceled, setIsCanceled] = useState(false);
 
@@ -37,7 +47,17 @@ const Filter = ({
     minDuration,
     maxDuration,
     count,
-    setCount
+    setCount,
+    filteredData,
+    setFilteredData,
+    minDate,
+    setMinDate,
+    maxDate,
+    setMaxDate,
+    currentDate,
+    setCurrentDate,
+    currentDuration,
+    setCurrentDuration
   );
 
   return (

@@ -17,24 +17,24 @@ const useFilter = (
   minDuration,
   maxDuration,
   count,
-  setCount
+  setCount,
+  filteredData,
+  setFilteredData,
+  minDate,
+  setMinDate,
+  maxDate,
+  setMaxDate,
+  currentDate,
+  setCurrentDate,
+  currentDuration,
+  setCurrentDuration
 ) => {
-  const [filteredData, setFilteredData] = useState([]);
-  const [currentDuration, setCurrentDuration] = useState([
-    minDuration,
-    maxDuration,
-  ]);
-  const [minDate, setMinDate] = useState(null);
-  const [maxDate, setMaxDate] = useState(null);
-  const [currentDate, setCurrentDate] = useState({
-    start: minDate,
-    end: maxDate,
-  });
-
   useEffect(() => {
     const getMinDate = async () => {
       const jsonData = await storetoJSON(copiedStores);
-      const dates = jsonData.map((date) => date.start && new Date(date.start));
+      const dates = jsonData.map(
+        (date) => date.start && date.start !== "" && new Date(date.start)
+      );
       const minDate = new Date(Math.min.apply(null, dates))
         .toISOString()
         .slice(0, 10);
@@ -44,7 +44,9 @@ const useFilter = (
     };
     const getMaxDate = async () => {
       const jsonData = await storetoJSON(copiedStores);
-      const dates = jsonData.map((date) => date.start && new Date(date.start));
+      const dates = jsonData.map(
+        (date) => date.start && date.start !== "" && new Date(date.start)
+      );
       const maxDate = new Date(Math.max.apply(null, dates))
         .toISOString()
         .slice(0, 10);
