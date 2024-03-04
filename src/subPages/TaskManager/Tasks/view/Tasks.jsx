@@ -1,22 +1,67 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoFilter } from "react-icons/io5";
 
 // import { stores } from "../../../../data/Kanban/tasks";
 import MainCard from "../components/MainCard";
 import useTask from "../controllers/controller";
 import PageLoading from "../../../../components/PageLoading";
+import Filter from "../components/Filter";
 
-const Tasks = ({ stores, setStores, users, fullusers }) => {
+const storeModel = {
+  "To Do": [],
+  InProgress: [],
+  "Waiting Inspection": [],
+  Inspected: [],
+  Rejected: [],
+  Done: [],
+};
+
+const Tasks = ({
+  stores,
+  setStores,
+  users,
+  fullusers,
+  newStore,
+  setNewStore,
+  minDuration,
+  maxDuration,
+  count,
+  setCount,
+}) => {
   const { loading, message, handleSave, handleDelete } = useTask(
     stores,
     setStores
   );
+
+  const [copiedStores, setCopiedStores] = useState(storeModel);
+  const [isFilterCard, setIsFilterCard] = useState(false);
+
+  useEffect(() => {
+    setCopiedStores(stores);
+  }, []);
   return (
     <>
       {loading && <PageLoading message={message} />}
+      {isFilterCard && (
+        <Filter
+          newStore={newStore}
+          setNewStore={setNewStore}
+          setIsFilterCard={setIsFilterCard}
+          copiedStores={copiedStores}
+          setStores={setStores}
+          stores={stores}
+          minDuration={minDuration}
+          maxDuration={maxDuration}
+          count={count}
+          setCount={setCount}
+        />
+      )}
       <div className="w-full h-[6vh] p-2 flex items-center">
         <div className="flex flex-row justify-start gap-2 text-black text-[12px] items-center py-1 px-3 w-full rounded-[8px] border-1 border-gray-300">
-          <div className="hover:cursor-pointer">
+          <div
+            className="hover:cursor-pointer"
+            onClick={() => setIsFilterCard(true)}
+          >
             <IoFilter />
           </div>
           <p>All</p>

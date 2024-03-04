@@ -33,18 +33,154 @@ const userModel = {
   Planning: ["Planning Engineer"],
 };
 
+const objectModel = {
+  Description: [],
+  UserName: [],
+  Equipment: [],
+  Periority: [],
+  Title: [],
+  Time: [],
+  Duration: [],
+  Workshop: [],
+};
+
+const getUniqueItems = (array, compareValue) => {
+  let flag = true;
+  for (let i = 0; i < array.length; i++) {
+    if (array[i]?.value === compareValue || compareValue === "") {
+      flag = false;
+      break;
+    }
+  }
+  return flag;
+};
+
+const storetoJSON = async (store) => {
+  let result = [];
+  Object.keys(store).map((title) => {
+    store[title].map((item) => {
+      result.push({ ...item, category: title });
+    });
+  });
+  return result;
+};
+
 const ManageKanban = () => {
   const [category, setCategory] = useState("Tasks");
   const [loading, setLoading] = useState(false);
-  const [stores, setStores] = useState(storeModel);
+  const [stores, setStores] = useState(null);
   const [users, setUsers] = useState([]);
   const [fullusers, setFullUsers] = useState([]);
-
-  console.log(stores);
+  const [newStore, setNewStore] = useState(objectModel);
+  const [minDuration, setMinDuration] = useState(0);
+  const [maxDuration, setMaxDuration] = useState(10);
+  const [count, setCount] = useState(0);
 
   const { usersData } = useNavContext();
 
   const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+    if (stores) {
+      const getMinDuration = async () => {
+        const jsonData = await storetoJSON(stores);
+        const durs = jsonData.map((dur) => dur.duration && dur.duration);
+        const minDur = Math.min.apply(null, durs);
+        console.log(minDur);
+        setMinDuration(minDur);
+      };
+      const getMaxDuration = async () => {
+        const jsonData = await storetoJSON(stores);
+        const durs = jsonData.map((dur) => dur.duration && dur.duration);
+        const maxDur = Math.max.apply(null, durs);
+        console.log(maxDur);
+        setMaxDuration(maxDur);
+      };
+      getMinDuration();
+      getMaxDuration();
+    }
+  }, [stores]);
+
+  useEffect(() => {
+    if (
+      stores &&
+      (stores["To Do"]?.length > 0 ||
+        stores?.Inspected.length > 0 ||
+        stores?.InProgress.length > 0 ||
+        stores["Waiting Inspection"]?.length > 0 ||
+        stores?.Rejected.length > 0 ||
+        stores?.Done.length > 0)
+    ) {
+      let copyStore = { ...stores };
+      // console.log(copyStore);
+      let result = objectModel;
+      Object.keys(copyStore).map((store) => {
+        copyStore[store].map((item) => {
+          console.log(item);
+          if (getUniqueItems(result.Description, item.desc))
+            result.Description.push({
+              value: item.desc,
+              checked: false,
+              col: "desc",
+            });
+          item.pic.map((user) => {
+            if (getUniqueItems(result.UserName, user.name))
+              result.UserName.push({
+                value: user.name,
+                checked: false,
+                col: "pic",
+              });
+          });
+          if (getUniqueItems(result.Equipment, item.eq))
+            result.Equipment.push({
+              value: item.eq,
+              checked: false,
+              col: "eq",
+            });
+          if (getUniqueItems(result.Periority, item.periority))
+            result.Periority.push({
+              value: item.periority,
+              checked: false,
+              col: "periority",
+            });
+          if (getUniqueItems(result.Title, item.title))
+            result.Title.push({
+              value: item.title,
+              checked: false,
+              col: "title",
+            });
+          if (getUniqueItems(result.Time, item.start)) {
+            result.Time.push({
+              value: item.start,
+              checked: false,
+              col: "start",
+            });
+          }
+
+          if (getUniqueItems(result.Time, item.end)) {
+            result.Time.push({ value: item.end, checked: true, col: "end" });
+          }
+
+          if (getUniqueItems(result.Duration, item.duration)) {
+            result.Duration.push({
+              value: item.duration,
+              checked: false,
+              col: "duration",
+            });
+          }
+
+          if (getUniqueItems(result.Workshop, item.workshop))
+            result.Workshop.push({
+              value: item.workshop,
+              checked: false,
+              col: "workshop",
+            });
+        });
+      });
+      // console.log(result);
+      setNewStore(result);
+    }
+  }, [stores]);
 
   useEffect(() => {
     if (usersData[0].roles.Admin) {
@@ -88,7 +224,7 @@ const ManageKanban = () => {
       });
       setFullUsers(fullUsersResult);
       setUsers(usersResult);
-      console.log(data?.data);
+      // console.log(data?.data);
       let result = storeModel;
       data?.data?.map((d) => {
         result = result[d.Category]
@@ -142,7 +278,7 @@ const ManageKanban = () => {
               ],
             };
       });
-      console.log(result);
+      // console.log(result);
       setStores(result);
       setLoading(false);
     } catch (err) {
@@ -307,6 +443,12 @@ const ManageKanban = () => {
             setStores={setStores}
             users={users}
             fullusers={fullusers}
+            newStore={newStore}
+            setNewStore={setNewStore}
+            minDuration={minDuration}
+            maxDuration={maxDuration}
+            count={count}
+            setCount={setCount}
           />
         ) : category === "Workshop" && stores ? (
           <Workshop stores={stores} setStores={setStores} />
