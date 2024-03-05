@@ -32,6 +32,7 @@ const useFilter = (
           return new Date(date.start);
         }
       });
+      console.log(dates);
       const minDate = new Date(Math.min.apply(null, dates))
         .toISOString()
         .slice(0, 10);
