@@ -19,21 +19,21 @@ const useFilter = (
   count,
   setCount
 ) => {
-  useEffect(() => {
-    const [filteredData, setFilteredData] = useState([]);
-    const [minDuration, setMinDuration] = useState(0);
-    const [maxDuration, setMaxDuration] = useState(10);
-    const [currentDuration, setCurrentDuration] = useState([
-      minDuration,
-      maxDuration,
-    ]);
-    const [minDate, setMinDate] = useState(null);
-    const [maxDate, setMaxDate] = useState(null);
-    const [currentDate, setCurrentDate] = useState({
-      start: minDate,
-      end: maxDate,
-    });
+  const [filteredData, setFilteredData] = useState([]);
+  const [minDuration, setMinDuration] = useState(0);
+  const [maxDuration, setMaxDuration] = useState(10);
+  const [currentDuration, setCurrentDuration] = useState([
+    minDuration,
+    maxDuration,
+  ]);
+  const [minDate, setMinDate] = useState(null);
+  const [maxDate, setMaxDate] = useState(null);
+  const [currentDate, setCurrentDate] = useState({
+    start: minDate,
+    end: maxDate,
+  });
 
+  useEffect(() => {
     const getMinDate = async () => {
       const jsonData = await storetoJSON(copiedStores);
       let dates = [];
