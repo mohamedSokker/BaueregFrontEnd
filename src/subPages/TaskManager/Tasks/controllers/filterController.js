@@ -56,7 +56,7 @@ const useFilter = (
       console.log(maxDate);
     };
     const getMinDuration = async () => {
-      const jsonData = await storetoJSON(stores);
+      const jsonData = await storetoJSON(copiedStores);
       const durs = jsonData.map(
         (dur) => dur.duration && dur.duration !== "" && dur.duration
       );
@@ -65,7 +65,7 @@ const useFilter = (
       setMinDuration(minDur);
     };
     const getMaxDuration = async () => {
-      const jsonData = await storetoJSON(stores);
+      const jsonData = await storetoJSON(copiedStores);
       const durs = jsonData.map(
         (dur) => dur.duration && dur.duration !== "" && dur.duration
       );
