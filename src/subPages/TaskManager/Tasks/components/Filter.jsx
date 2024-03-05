@@ -50,6 +50,7 @@ const Filter = ({
     currentDate,
     setCurrentDate,
     setCurrentDuration,
+    setMinDuration,
     setMaxDuration
   );
 
