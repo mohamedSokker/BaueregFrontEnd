@@ -14,16 +14,10 @@ const useFilter = (
   setNewStore,
   copiedStores,
   setStores,
-  setCount,
-  filteredData,
-  setFilteredData,
-  setMinDate,
-  setMaxDate,
-  setMinDuration,
-  setMaxDuration,
-  currentDate,
-  setCurrentDate,
-  setCurrentDuration
+  minDuration,
+  maxDuration,
+  count,
+  setCount
 ) => {
   useEffect(() => {
     const getMinDate = async () => {
@@ -31,11 +25,9 @@ const useFilter = (
       let dates = [];
       jsonData.map((date) => {
         if (date.start && date.start !== "") {
-          console.log(date.start);
           dates.push(new Date(date.start));
         }
       });
-      console.log(dates);
       const minDate = new Date(Math.min.apply(null, dates))
         .toISOString()
         .slice(0, 10);
@@ -55,28 +47,8 @@ const useFilter = (
       setCurrentDate((prev) => ({ ...prev, end: maxDate }));
       console.log(maxDate);
     };
-    const getMinDuration = async () => {
-      const jsonData = await storetoJSON(copiedStores);
-      const durs = jsonData.map(
-        (dur) => dur.duration && dur.duration !== "" && dur.duration
-      );
-      const minDur = Math.min.apply(null, durs);
-      console.log(minDur);
-      setMinDuration(minDur);
-    };
-    const getMaxDuration = async () => {
-      const jsonData = await storetoJSON(copiedStores);
-      const durs = jsonData.map(
-        (dur) => dur.duration && dur.duration !== "" && dur.duration
-      );
-      const maxDur = Math.max.apply(null, durs);
-      console.log(maxDur);
-      setMaxDuration(maxDur);
-    };
     getMinDate();
     getMaxDate();
-    getMinDuration();
-    getMaxDuration();
   }, []);
 
   const getUniqueArray = (array) => {
@@ -281,6 +253,13 @@ const useFilter = (
     handleDurationChange,
     handleStartDateChange,
     handleEndDateChange,
+    count,
+    minDate,
+    maxDate,
+    currentDate,
+    minDuration,
+    maxDuration,
+    currentDuration,
   };
 };
 

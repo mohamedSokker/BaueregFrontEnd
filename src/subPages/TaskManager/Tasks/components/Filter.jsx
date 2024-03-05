@@ -16,18 +16,6 @@ const Filter = ({
   maxDuration,
   count,
   setCount,
-  filteredData,
-  setFilteredData,
-  minDate,
-  setMinDate,
-  maxDate,
-  setMaxDate,
-  setMinDuration,
-  setMaxDuration,
-  currentDate,
-  setCurrentDate,
-  currentDuration,
-  setCurrentDuration,
 }) => {
   const [isCanceled, setIsCanceled] = useState(false);
 
@@ -37,21 +25,19 @@ const Filter = ({
     handleDurationChange,
     handleStartDateChange,
     handleEndDateChange,
+    minDate,
+    maxDate,
+    currentDate,
+    currentDuration,
   } = useFilter(
     newStore,
     setNewStore,
     copiedStores,
     setStores,
-    setCount,
-    filteredData,
-    setFilteredData,
-    setMinDate,
-    setMaxDate,
-    currentDate,
-    setCurrentDate,
-    setCurrentDuration,
-    setMinDuration,
-    setMaxDuration
+    minDuration,
+    maxDuration,
+    count,
+    setCount
   );
 
   return (
