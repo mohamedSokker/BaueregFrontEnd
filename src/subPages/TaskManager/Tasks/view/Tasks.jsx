@@ -39,6 +39,8 @@ const Tasks = ({
   setMinDuration,
   maxDuration,
   setMaxDuration,
+  currentDuration,
+  setCurrentDuration,
 }) => {
   const { loading, message, handleSave, handleDelete } = useTask(
     stores,
@@ -87,6 +89,8 @@ const Tasks = ({
           maxDuration={maxDuration}
           count={count}
           setCount={setCount}
+          currentDuration={currentDuration}
+          setCurrentDuration={setCurrentDuration}
         />
       )}
       <div className="w-full h-[6vh] p-2 flex items-center">

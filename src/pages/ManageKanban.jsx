@@ -63,6 +63,12 @@ const ManageKanban = () => {
   const [fullusers, setFullUsers] = useState([]);
   const [newStore, setNewStore] = useState(objectModel);
   const [count, setCount] = useState(0);
+  const [minDuration, setMinDuration] = useState(0);
+  const [maxDuration, setMaxDuration] = useState(10);
+  const [currentDuration, setCurrentDuration] = useState([
+    minDuration,
+    maxDuration,
+  ]);
 
   const { usersData } = useNavContext();
 
@@ -414,6 +420,12 @@ const ManageKanban = () => {
             setNewStore={setNewStore}
             count={count}
             setCount={setCount}
+            minDuration={minDuration}
+            maxDuration={maxDuration}
+            setMinDuration={setMinDuration}
+            setMaxDuration={setMaxDuration}
+            currentDuration={currentDuration}
+            setCurrentDuration={setCurrentDuration}
           />
         ) : category === "Workshop" && stores ? (
           <Workshop stores={stores} setStores={setStores} />
