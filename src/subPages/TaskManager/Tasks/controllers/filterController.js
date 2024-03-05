@@ -14,27 +14,23 @@ const useFilter = (
   setNewStore,
   copiedStores,
   setStores,
-  minDuration,
-  maxDuration,
-  count,
   setCount,
   filteredData,
   setFilteredData,
-  minDate,
   setMinDate,
-  maxDate,
   setMaxDate,
   currentDate,
   setCurrentDate,
-  currentDuration,
   setCurrentDuration
 ) => {
   useEffect(() => {
     const getMinDate = async () => {
       const jsonData = await storetoJSON(copiedStores);
       const dates = jsonData.map((date) => {
-        console.log(date.start);
-        return date.start && date.start !== "" && new Date(date.start);
+        if (date.start && date.start !== "") {
+          console.log(date.start);
+          return new Date(date.start);
+        }
       });
       const minDate = new Date(Math.min.apply(null, dates))
         .toISOString()

@@ -40,19 +40,13 @@ const Filter = ({
     setNewStore,
     copiedStores,
     setStores,
-    minDuration,
-    maxDuration,
-    count,
     setCount,
     filteredData,
     setFilteredData,
-    minDate,
     setMinDate,
-    maxDate,
     setMaxDate,
     currentDate,
     setCurrentDate,
-    currentDuration,
     setCurrentDuration
   );
 
