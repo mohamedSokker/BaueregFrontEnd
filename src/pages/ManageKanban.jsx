@@ -64,10 +64,7 @@ const ManageKanban = () => {
   const [newStore, setNewStore] = useState(objectModel);
   const [count, setCount] = useState(0);
   const [filteredData, setFilteredData] = useState([]);
-  const [currentDuration, setCurrentDuration] = useState([
-    minDuration,
-    maxDuration,
-  ]);
+  const [currentDuration, setCurrentDuration] = useState([]);
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const [currentDate, setCurrentDate] = useState({
