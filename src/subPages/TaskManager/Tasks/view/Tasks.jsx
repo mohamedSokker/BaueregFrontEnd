@@ -45,6 +45,10 @@ const Tasks = ({
   setCurrentDate,
   currentDuration,
   setCurrentDuration,
+  minDuration,
+  setMinDuration,
+  maxDuration,
+  setMaxDuration,
 }) => {
   const { loading, message, handleSave, handleDelete } = useTask(
     stores,
@@ -53,8 +57,6 @@ const Tasks = ({
 
   const [copiedStores, setCopiedStores] = useState(storeModel);
   const [isFilterCard, setIsFilterCard] = useState(false);
-  const [minDuration, setMinDuration] = useState(0);
-  const [maxDuration, setMaxDuration] = useState(10);
 
   useEffect(() => {
     setCopiedStores(stores);

@@ -64,7 +64,12 @@ const ManageKanban = () => {
   const [newStore, setNewStore] = useState(objectModel);
   const [count, setCount] = useState(0);
   const [filteredData, setFilteredData] = useState([]);
-  const [currentDuration, setCurrentDuration] = useState([]);
+  const [minDuration, setMinDuration] = useState(0);
+  const [maxDuration, setMaxDuration] = useState(10);
+  const [currentDuration, setCurrentDuration] = useState([
+    minDuration,
+    maxDuration,
+  ]);
   const [minDate, setMinDate] = useState(null);
   const [maxDate, setMaxDate] = useState(null);
   const [currentDate, setCurrentDate] = useState({
@@ -432,6 +437,10 @@ const ManageKanban = () => {
             setCurrentDate={setCurrentDate}
             currentDuration={currentDuration}
             setCurrentDuration={setCurrentDuration}
+            minDuration={minDuration}
+            setMinDuration={setMinDuration}
+            maxDuration={maxDuration}
+            setMaxDuration={setMaxDuration}
           />
         ) : category === "Workshop" && stores ? (
           <Workshop stores={stores} setStores={setStores} />
