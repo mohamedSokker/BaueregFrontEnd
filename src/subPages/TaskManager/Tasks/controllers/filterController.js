@@ -26,10 +26,11 @@ const useFilter = (
   useEffect(() => {
     const getMinDate = async () => {
       const jsonData = await storetoJSON(copiedStores);
-      const dates = jsonData.map((date) => {
+      let dates = [];
+      jsonData.map((date) => {
         if (date.start && date.start !== "") {
           console.log(date.start);
-          return new Date(date.start);
+          dates.push(new Date(date.start));
         }
       });
       console.log(dates);
