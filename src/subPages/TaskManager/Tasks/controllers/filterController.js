@@ -19,6 +19,8 @@ const useFilter = (
   setFilteredData,
   setMinDate,
   setMaxDate,
+  setMinDuration,
+  setMaxDuration,
   currentDate,
   setCurrentDate,
   setCurrentDuration
@@ -53,8 +55,28 @@ const useFilter = (
       setCurrentDate((prev) => ({ ...prev, end: maxDate }));
       console.log(maxDate);
     };
+    const getMinDuration = async () => {
+      const jsonData = await storetoJSON(stores);
+      const durs = jsonData.map(
+        (dur) => dur.duration && dur.duration !== "" && dur.duration
+      );
+      const minDur = Math.min.apply(null, durs);
+      console.log(minDur);
+      setMinDuration(minDur);
+    };
+    const getMaxDuration = async () => {
+      const jsonData = await storetoJSON(stores);
+      const durs = jsonData.map(
+        (dur) => dur.duration && dur.duration !== "" && dur.duration
+      );
+      const maxDur = Math.max.apply(null, durs);
+      console.log(maxDur);
+      setMaxDuration(maxDur);
+    };
     getMinDate();
     getMaxDate();
+    getMinDuration();
+    getMaxDuration();
   }, []);
 
   const getUniqueArray = (array) => {

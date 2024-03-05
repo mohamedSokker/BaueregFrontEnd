@@ -60,27 +60,6 @@ const Tasks = ({
 
   useEffect(() => {
     setCopiedStores(stores);
-
-    const getMinDuration = async () => {
-      const jsonData = await storetoJSON(stores);
-      const durs = jsonData.map(
-        (dur) => dur.duration && dur.duration !== "" && dur.duration
-      );
-      const minDur = Math.min.apply(null, durs);
-      console.log(minDur);
-      setMinDuration(minDur);
-    };
-    const getMaxDuration = async () => {
-      const jsonData = await storetoJSON(stores);
-      const durs = jsonData.map(
-        (dur) => dur.duration && dur.duration !== "" && dur.duration
-      );
-      const maxDur = Math.max.apply(null, durs);
-      console.log(maxDur);
-      setMaxDuration(maxDur);
-    };
-    getMinDuration();
-    getMaxDuration();
   }, []);
   return (
     <>
@@ -103,6 +82,8 @@ const Tasks = ({
           setMinDate={setMinDate}
           maxDate={maxDate}
           setMaxDate={setMaxDate}
+          setMinDuration={setMinDuration}
+          setMaxDuration={setMaxDuration}
           currentDate={currentDate}
           setCurrentDate={setCurrentDate}
           currentDuration={currentDuration}

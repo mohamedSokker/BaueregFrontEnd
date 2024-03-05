@@ -22,6 +22,8 @@ const Filter = ({
   setMinDate,
   maxDate,
   setMaxDate,
+  setMinDuration,
+  setMaxDuration,
   currentDate,
   setCurrentDate,
   currentDuration,
@@ -47,7 +49,8 @@ const Filter = ({
     setMaxDate,
     currentDate,
     setCurrentDate,
-    setCurrentDuration
+    setCurrentDuration,
+    setMaxDuration
   );
 
   return (
