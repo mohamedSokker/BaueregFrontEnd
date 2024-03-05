@@ -260,13 +260,6 @@ const useFilter = (
     handleDurationChange,
     handleStartDateChange,
     handleEndDateChange,
-    count,
-    minDate,
-    maxDate,
-    currentDate,
-    minDuration,
-    maxDuration,
-    currentDuration,
   };
 };
 

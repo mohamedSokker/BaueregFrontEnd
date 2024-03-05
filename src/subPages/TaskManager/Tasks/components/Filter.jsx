@@ -35,10 +35,6 @@ const Filter = ({
     handleDurationChange,
     handleStartDateChange,
     handleEndDateChange,
-    minDate,
-    maxDate,
-    currentDate,
-    currentDuration,
   } = useFilter(
     newStore,
     setNewStore,
