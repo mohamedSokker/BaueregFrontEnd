@@ -11,10 +11,4 @@ export const workshops = [
   "Body and metal",
 ];
 
-export const allowedCategories = [
-  "To Do",
-  "InProgress",
-  "Rejected",
-  "Waiting Inspection",
-  "Done",
-];
+export const allowedCategories = ["Rejected", "Waiting Inspection", "Done"];

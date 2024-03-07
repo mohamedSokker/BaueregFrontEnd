@@ -33,127 +33,17 @@ const userModel = {
   Planning: ["Planning Engineer"],
 };
 
-const objectModel = {
-  Description: [],
-  UserName: [],
-  Equipment: [],
-  Periority: [],
-  Title: [],
-  Time: [],
-  Duration: [],
-  Workshop: [],
-};
-
-const getUniqueItems = (array, compareValue) => {
-  let flag = true;
-  for (let i = 0; i < array.length; i++) {
-    if (array[i]?.value === compareValue || compareValue === "") {
-      flag = false;
-      break;
-    }
-  }
-  return flag;
-};
-
 const ManageKanban = () => {
   const [category, setCategory] = useState("Tasks");
   const [loading, setLoading] = useState(false);
   const [stores, setStores] = useState(null);
+  const [copiedStores, setCopiedStores] = useState(null);
   const [users, setUsers] = useState([]);
   const [fullusers, setFullUsers] = useState([]);
-  const [newStore, setNewStore] = useState(objectModel);
-  const [count, setCount] = useState(0);
-  const [minDuration, setMinDuration] = useState(0);
-  const [maxDuration, setMaxDuration] = useState(10);
-  const [currentDuration, setCurrentDuration] = useState([
-    minDuration,
-    maxDuration,
-  ]);
 
   const { usersData } = useNavContext();
 
   const axiosPrivate = useAxiosPrivate();
-
-  useEffect(() => {
-    if (
-      stores &&
-      (stores["To Do"]?.length > 0 ||
-        stores?.Inspected.length > 0 ||
-        stores?.InProgress.length > 0 ||
-        stores["Waiting Inspection"]?.length > 0 ||
-        stores?.Rejected.length > 0 ||
-        stores?.Done.length > 0)
-    ) {
-      let copyStore = { ...stores };
-      // console.log(copyStore);
-      let result = objectModel;
-      Object.keys(copyStore).map((store) => {
-        copyStore[store].map((item) => {
-          console.log(item);
-          if (getUniqueItems(result.Description, item.desc))
-            result.Description.push({
-              value: item.desc,
-              checked: false,
-              col: "desc",
-            });
-          item.pic.map((user) => {
-            if (getUniqueItems(result.UserName, user.name))
-              result.UserName.push({
-                value: user.name,
-                checked: false,
-                col: "pic",
-              });
-          });
-          if (getUniqueItems(result.Equipment, item.eq))
-            result.Equipment.push({
-              value: item.eq,
-              checked: false,
-              col: "eq",
-            });
-          if (getUniqueItems(result.Periority, item.periority))
-            result.Periority.push({
-              value: item.periority,
-              checked: false,
-              col: "periority",
-            });
-          if (getUniqueItems(result.Title, item.title))
-            result.Title.push({
-              value: item.title,
-              checked: false,
-              col: "title",
-            });
-          if (getUniqueItems(result.Time, item.start)) {
-            result.Time.push({
-              value: item.start,
-              checked: false,
-              col: "start",
-            });
-          }
-
-          if (getUniqueItems(result.Time, item.end)) {
-            result.Time.push({ value: item.end, checked: true, col: "end" });
-          }
-
-          if (getUniqueItems(result.Duration, item.duration)) {
-            result.Duration.push({
-              value: item.duration,
-              checked: false,
-              col: "duration",
-            });
-          }
-
-          if (getUniqueItems(result.Workshop, item.workshop))
-            result.Workshop.push({
-              value: item.workshop,
-              checked: false,
-              col: "workshop",
-            });
-        });
-      });
-      // console.log(result);
-      setNewStore(result);
-    }
-  }, [stores]);
 
   useEffect(() => {
     if (usersData[0].roles.Admin) {
@@ -253,6 +143,7 @@ const ManageKanban = () => {
       });
       // console.log(result);
       setStores(result);
+      setCopiedStores(result);
       setLoading(false);
     } catch (err) {
       console.log(
@@ -410,22 +301,14 @@ const ManageKanban = () => {
             )}
           </div>
         </div>
-        {category === "Tasks" && stores ? (
+        {category === "Tasks" && stores && copiedStores ? (
           <Tasks
             stores={stores}
             setStores={setStores}
             users={users}
             fullusers={fullusers}
-            newStore={newStore}
-            setNewStore={setNewStore}
-            count={count}
-            setCount={setCount}
-            minDuration={minDuration}
-            maxDuration={maxDuration}
-            setMinDuration={setMinDuration}
-            setMaxDuration={setMaxDuration}
-            currentDuration={currentDuration}
-            setCurrentDuration={setCurrentDuration}
+            copiedStores={copiedStores}
+            setCopiedStores={setCopiedStores}
           />
         ) : category === "Workshop" && stores ? (
           <Workshop stores={stores} setStores={setStores} />
@@ -433,12 +316,29 @@ const ManageKanban = () => {
           <Inspection />
         ) : category === "Report" && stores ? (
           <Report stores={stores} setStores={setStores} />
-        ) : category === "QA" && stores ? (
-          <QA stores={stores} setStores={setStores} />
+        ) : category === "QA" && stores && copiedStores ? (
+          <QA
+            stores={stores}
+            setStores={setStores}
+            users={users}
+            fullusers={fullusers}
+            copiedStores={copiedStores}
+            setCopiedStores={setCopiedStores}
+          />
         ) : category === "QA Inspection" && stores ? (
           <QAInspection stores={stores} setStores={setStores} />
         ) : (
-          stores && <Planning stores={stores} setStores={setStores} />
+          stores &&
+          copiedStores && (
+            <Planning
+              stores={stores}
+              setStores={setStores}
+              users={users}
+              fullusers={fullusers}
+              copiedStores={copiedStores}
+              setCopiedStores={setCopiedStores}
+            />
+          )
         )}
       </div>
     </DragDropContext>

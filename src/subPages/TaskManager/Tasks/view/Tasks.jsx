@@ -6,74 +6,43 @@ import MainCard from "../components/MainCard";
 import useTask from "../controllers/controller";
 import PageLoading from "../../../../components/PageLoading";
 import Filter from "../components/Filter";
-
-const storeModel = {
-  "To Do": [],
-  InProgress: [],
-  "Waiting Inspection": [],
-  Inspected: [],
-  Rejected: [],
-  Done: [],
-};
-
-const storetoJSON = async (store) => {
-  let result = [];
-  Object.keys(store).map((title) => {
-    store[title].map((item) => {
-      result.push({ ...item, category: title });
-    });
-  });
-  return result;
-};
+import useFilter from "../controllers/Taskcontroller";
 
 const Tasks = ({
   stores,
   setStores,
   users,
   fullusers,
-  newStore,
-  setNewStore,
-  count,
-  setCount,
-  minDuration,
-  setMinDuration,
-  maxDuration,
-  setMaxDuration,
-  currentDuration,
-  setCurrentDuration,
+  copiedStores,
+  setCopiedStores,
 }) => {
   const { loading, message, handleSave, handleDelete } = useTask(
     stores,
     setStores
   );
 
-  const [copiedStores, setCopiedStores] = useState(storeModel);
-  const [isFilterCard, setIsFilterCard] = useState(false);
+  const {
+    count,
+    setCount,
+    isFilterCard,
+    setIsFilterCard,
+    minDuration,
+    maxDuration,
+    minDate,
+    setMinDate,
+    maxDate,
+    setMaxDate,
+    currentDate,
+    setCurrentDate,
+    currentDuration,
+    setCurrentDuration,
+    filteredData,
+    setFilteredData,
+    newStore,
+    setNewStore,
+    copiedNewStore,
+  } = useFilter(stores, setStores, copiedStores, setCopiedStores);
 
-  useEffect(() => {
-    setCopiedStores(stores);
-
-    const getMinDuration = async () => {
-      const jsonData = await storetoJSON(stores);
-      const durs = jsonData.map(
-        (dur) => dur.duration && dur.duration !== "" && dur.duration
-      );
-      const minDur = Math.min.apply(null, durs);
-      console.log(minDur);
-      setMinDuration(minDur);
-    };
-    const getMaxDuration = async () => {
-      const jsonData = await storetoJSON(stores);
-      const durs = jsonData.map(
-        (dur) => dur.duration && dur.duration !== "" && dur.duration
-      );
-      const maxDur = Math.max.apply(null, durs);
-      console.log(maxDur);
-      setMaxDuration(maxDur);
-    };
-    getMinDuration();
-    getMaxDuration();
-  }, []);
   return (
     <>
       {loading && <PageLoading message={message} />}
@@ -81,6 +50,7 @@ const Tasks = ({
         <Filter
           newStore={newStore}
           setNewStore={setNewStore}
+          copiedNewStore={copiedNewStore}
           setIsFilterCard={setIsFilterCard}
           copiedStores={copiedStores}
           setStores={setStores}
@@ -91,6 +61,14 @@ const Tasks = ({
           setCount={setCount}
           currentDuration={currentDuration}
           setCurrentDuration={setCurrentDuration}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+          minDate={minDate}
+          setMinDate={setMinDate}
+          maxDate={maxDate}
+          setMaxDate={setMaxDate}
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
         />
       )}
       <div className="w-full h-[6vh] p-2 flex items-center">

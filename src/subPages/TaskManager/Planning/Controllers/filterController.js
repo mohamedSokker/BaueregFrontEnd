@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { storeModel, filterModel, objectModel } from "../Model/model";
-import { allowedCategories } from "../Constants/constants";
 
 const getUniqueArray = (array) => {
   const uniqueSet = new Set();
@@ -50,7 +49,7 @@ const useFilter = (
   currentDate,
   setCurrentDate
 ) => {
-  // console.log(filterModel);
+  console.log(filterModel);
 
   useEffect(() => {
     filterModel.checkedItems
@@ -89,10 +88,7 @@ const useFilter = (
           if (item.col === "pic") {
             jsonData.map((d) => {
               d[item.col].map((user) => {
-                if (
-                  user.name === item.value &&
-                  allowedCategories.includes(d.category)
-                ) {
+                if (user.name === item.value) {
                   console.log(d);
                   result.push(d);
                 }
@@ -103,10 +99,7 @@ const useFilter = (
           } else if (item.col === "duration") {
           } else {
             jsonData.map((d) => {
-              if (
-                d[item.col] === item.value &&
-                allowedCategories.includes(d.category)
-              ) {
+              if (d[item.col] === item.value) {
                 result.push(d);
               }
             });
@@ -145,11 +138,7 @@ const useFilter = (
       newStore[title].map((item) => {
         if (item.col === "duration") {
           jsonData.map((d) => {
-            if (
-              d[item.col] >= newValue[0] &&
-              d[item.col] <= newValue[1] &&
-              allowedCategories.includes(d.category)
-            ) {
+            if (d[item.col] >= newValue[0] && d[item.col] <= newValue[1]) {
               result.push(d);
             }
           });
@@ -184,12 +173,16 @@ const useFilter = (
       newStore[title].map((item) => {
         if (item.col === "start") {
           jsonData.map((d) => {
+            console.log(
+              new Date(d[item.col]).toLocaleDateString(),
+              new Date(e.target.value).toLocaleDateString(),
+              new Date(currentDate.end).toLocaleDateString()
+            );
             if (
               new Date(d[item.col]).toLocaleDateString() >=
                 new Date(e.target.value).toLocaleDateString() &&
               new Date(d[item.col]).toLocaleDateString() <=
-                new Date(currentDate.end).toLocaleDateString() &&
-              allowedCategories.includes(d.category)
+                new Date(currentDate.end).toLocaleDateString()
             ) {
               result.push(d);
             }
@@ -225,12 +218,16 @@ const useFilter = (
       newStore[title].map((item) => {
         if (item.col === "start") {
           jsonData.map((d) => {
+            console.log(
+              new Date(d[item.col]).toLocaleDateString(),
+              new Date(e.target.value).toLocaleDateString(),
+              new Date(currentDate.start).toLocaleDateString()
+            );
             if (
               new Date(d[item.col]).toLocaleDateString() >=
                 new Date(currentDate.start).toLocaleDateString() &&
               new Date(d[item.col]).toLocaleDateString() <=
-                new Date(e.target.value).toLocaleDateString() &&
-              allowedCategories.includes(d.category)
+                new Date(e.target.value).toLocaleDateString()
             ) {
               result.push(d);
             }

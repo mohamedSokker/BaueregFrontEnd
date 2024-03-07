@@ -50,8 +50,6 @@ const useFilter = (
   currentDate,
   setCurrentDate
 ) => {
-  // console.log(filterModel);
-
   useEffect(() => {
     filterModel.checkedItems
       ? setNewStore(filterModel.checkedItems)
@@ -115,6 +113,7 @@ const useFilter = (
       });
     });
     result = getUniqueArray(result);
+    console.log(result);
     result = await JSONtoStore(result);
     // console.log(result);
     setFilteredData(result);
@@ -184,6 +183,11 @@ const useFilter = (
       newStore[title].map((item) => {
         if (item.col === "start") {
           jsonData.map((d) => {
+            // console.log(
+            //   new Date(d[item.col]).toLocaleDateString(),
+            //   new Date(e.target.value).toLocaleDateString(),
+            //   new Date(currentDate.end).toLocaleDateString()
+            // );
             if (
               new Date(d[item.col]).toLocaleDateString() >=
                 new Date(e.target.value).toLocaleDateString() &&
@@ -225,6 +229,11 @@ const useFilter = (
       newStore[title].map((item) => {
         if (item.col === "start") {
           jsonData.map((d) => {
+            // console.log(
+            //   new Date(d[item.col]).toLocaleDateString(),
+            //   new Date(e.target.value).toLocaleDateString(),
+            //   new Date(currentDate.start).toLocaleDateString()
+            // );
             if (
               new Date(d[item.col]).toLocaleDateString() >=
                 new Date(currentDate.start).toLocaleDateString() &&

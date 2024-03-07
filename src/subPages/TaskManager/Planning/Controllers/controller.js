@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
-const usePlan = (stores, setStores) => {
+const usePlan = (planStores, setPlanStores) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -30,13 +30,13 @@ const usePlan = (stores, setStores) => {
           },
         }),
       });
-      let newStore = { ...stores };
+      let newStore = { ...planStores };
       newStore[cat].map((item, index) => {
         if (item.id === d.id) {
           newStore[cat].splice(index, 1, d);
         }
       });
-      setStores(newStore);
+      setPlanStores(newStore);
       setLoading(false);
     } catch (err) {
       console.log(
@@ -57,13 +57,13 @@ const usePlan = (stores, setStores) => {
         method: "POST",
         data: JSON.stringify({ ID: d?.id }),
       });
-      let newStore = { ...stores };
+      let newStore = { ...planStores };
       newStore[cat].map((item, index) => {
         if (item.id === d.id) {
           newStore[cat].splice(index, 1);
         }
       });
-      setStores(newStore);
+      setPlanStores(newStore);
       setLoading(false);
     } catch (err) {
       console.log(

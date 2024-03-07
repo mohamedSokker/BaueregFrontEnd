@@ -3,8 +3,8 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { FaCheckCircle, FaCircle } from "react-icons/fa";
 import { Slider } from "@material-ui/core";
 
-import "../styles/EditCard.css";
-import useFilter from "../controllers/filterController";
+import "../Styles/EditCard.css";
+import useFilter from "../Controller/filterController";
 
 const Filter = ({
   setIsFilterCard,

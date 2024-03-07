@@ -27,9 +27,9 @@ const MainCard = ({ titleBorderColor, title, id, stores, w }) => {
           </div>
         </div>
         <div className="mb-2 px-1 flex flex-row items-center gap-[6px]">
-          <div className="hover:cursor-pointer">
+          {/* <div className="hover:cursor-pointer">
             <IoFilter size={16} />
-          </div>
+          </div> */}
           <div
             className="hover:cursor-pointer"
             onClick={() => setIsMin((prev) => !prev)}
