@@ -29,11 +29,13 @@ const COLORS = [
 ];
 
 const JSONtoStore = (store) => {
-  let result = { ...storeModel };
+  let result = {};
   store.map((item) => {
     result = {
       ...result,
-      [item.category]: [...result[item.category], item],
+      [item.category]: result[item.category]
+        ? [...result[item.category], item]
+        : [item],
     };
   });
   return result;
@@ -176,9 +178,12 @@ const MainCard = ({ workshop, stores, copiedStores, jsonStores }) => {
                 {Object.keys(eqDates).map((eq, i) => (
                   <div
                     key={i}
-                    className="flex flex-col items-start w-full text-gray-400"
+                    className="flex flex-col gap-2 items-start w-full text-gray-600"
                   >
-                    <div className="text-[12px] font-[500]">{`Equipment: ${eq}`}</div>
+                    <div className=" px-2 rounded-full border-1 border-blue-600 text-[12px] text-blue-600 bg-[rgba(37,99,235,0.3)] font-[500]">
+                      {eq}
+                    </div>
+                    {/* <div className="text-[12px] font-[500]">{`Equipment: ${eq}`}</div> */}
                     <div className="flex flex-row w-full justify-between">
                       <div className="flex flex-row gap-1 items-center">
                         <CiClock1 />
@@ -209,11 +214,11 @@ const MainCard = ({ workshop, stores, copiedStores, jsonStores }) => {
                 ))}
 
                 <div className="w-full flex flex-row gap-2 flex-wrap justify-start">
-                  {eqs.map((eq) => (
+                  {/* {eqs.map((eq) => (
                     <div className=" px-2 rounded-full border-1 border-blue-600 text-[12px] text-blue-600 bg-[rgba(37,99,235,0.3)] font-[500]">
                       {eq}
                     </div>
-                  ))}
+                  ))} */}
                 </div>
                 <div className="w-full h-full flex flex-row justify-start items-center text-[12px] flex-wrap">
                   <ResponsiveContainer width={"100%"} height={`90%`}>
