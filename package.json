@@ -50,6 +50,7 @@
     "react-text-to-speech": "^0.9.1",
     "react-to-print": "^2.14.13",
     "react-vnc": "^1.0.0",
+    "recharts": "^2.12.2",
     "socket.io-client": "^4.6.1",
     "styled-components": "^6.0.7",
     "vnc-rfb-client": "^0.2.0"

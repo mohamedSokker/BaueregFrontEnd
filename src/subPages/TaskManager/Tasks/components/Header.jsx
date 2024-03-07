@@ -6,7 +6,7 @@ const Header = ({ name, isParBorder, Par2Cond, category, setCategory }) => {
       className="h-full py-2 flex justify-start items-center text-black font-[400] text-[14px] cursor-pointer"
       onClick={() => setCategory(name)}
       style={{
-        minWidth: "100px",
+        minWidth: "50px",
         flex: 1,
         backgroundColor: category === name ? "white" : "rgb(209,213,219)",
         borderTopWidth: category === name ? 1 : 0,

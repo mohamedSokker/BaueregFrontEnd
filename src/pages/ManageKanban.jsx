@@ -10,6 +10,7 @@ import QA from "../subPages/TaskManager/QA/View/QA";
 import Report from "../subPages/TaskManager/Report/View/Report";
 import PageLoading from "../components/PageLoading";
 import QAInspection from "../subPages/TaskManager/QA Inspection/View/QA Inspection";
+import Analysis from "../subPages/TaskManager/Analysis/View/Analysis";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavContext } from "../contexts/NavContext";
@@ -294,6 +295,15 @@ const ManageKanban = () => {
                 usersData[0].department === "Maintenance")) && (
               <Header
                 name={`QA Inspection`}
+                isParBorder={true}
+                Par2Cond={`Analysis`}
+                category={category}
+                setCategory={setCategory}
+              />
+            )}
+            {usersData[0].roles.Admin && (
+              <Header
+                name={`Analysis`}
                 isParBorder={false}
                 category={category}
                 setCategory={setCategory}
@@ -327,6 +337,12 @@ const ManageKanban = () => {
           />
         ) : category === "QA Inspection" && stores ? (
           <QAInspection stores={stores} setStores={setStores} />
+        ) : category === "Analysis" && stores ? (
+          <Analysis
+            stores={stores}
+            setStores={setStores}
+            copiedStores={copiedStores}
+          />
         ) : (
           stores &&
           copiedStores && (
