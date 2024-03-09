@@ -17,7 +17,7 @@ import { storeModel } from "../Model/model";
 
 const COLORS = [
   "#156E84",
-  "#88D3E5",
+  "#7F608F",
   "#AE4F46",
   "#CD8880",
   "#A39547",
@@ -25,7 +25,7 @@ const COLORS = [
   "#3AAE61",
   "#96D6AB",
   "#613A67",
-  "#7F608F",
+  "#88D3E5",
 ];
 
 const JSONtoStore = (store) => {
@@ -44,7 +44,8 @@ const JSONtoStore = (store) => {
 const addHours = (anyDate, hours) => {
   const dt = new Date(anyDate);
   const milliseconds = dt.getTime();
-  const milliseconds2 = milliseconds + 1000 * 60 * 60 * (hours + 2);
+  const milliseconds2 =
+    milliseconds + 1000 * 60 * 60 * (hours - dt.getTimezoneOffset() / 60);
   return new Date(milliseconds2);
 };
 
@@ -134,7 +135,6 @@ const MainCard = ({ workshop, stores, copiedStores, jsonStores }) => {
             : `Empty`,
       };
     });
-    console.log(newDates);
     setEqDates(newDates);
     eqsArray = Array.from(new Set(eqsArray));
     setEqs(eqsArray);

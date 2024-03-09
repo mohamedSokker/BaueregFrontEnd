@@ -14,6 +14,7 @@ import Analysis from "../subPages/TaskManager/Analysis/View/Analysis";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavContext } from "../contexts/NavContext";
+import Files from "../subPages/TaskManager/Files/View/Files";
 
 const storeModel = {
   "To Do": [],
@@ -48,7 +49,7 @@ const ManageKanban = () => {
 
   useEffect(() => {
     if (usersData[0].roles.Admin) {
-      setCategory("Tasks");
+      setCategory("Planning");
       getData();
     } else if (usersData[0].department === "Maintenance") {
       if (userModel.Tasks.includes(usersData[0].title)) {
@@ -223,40 +224,37 @@ const ManageKanban = () => {
             <p>Yard Task Manager</p>
           </div> */}
           <div className="w-full h-[35px] flex flex-row justify-start items-start overflow-x-auto px-2">
-            {(usersData[0].roles.Admin ||
-              (userModel.Tasks.includes(usersData[0].title) &&
-                usersData[0].department === "Maintenance")) && (
-              <Header
-                name={`Tasks`}
-                isParBorder={true}
-                Par2Cond={`Workshop`}
-                category={category}
-                setCategory={setCategory}
-              />
-            )}
+            {userModel.Tasks.includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance" && (
+                <Header
+                  name={`Tasks`}
+                  isParBorder={true}
+                  Par2Cond={`Workshop`}
+                  category={category}
+                  setCategory={setCategory}
+                />
+              )}
 
-            {(usersData[0].roles.Admin ||
-              (userModel.Workshop.includes(usersData[0].title) &&
-                usersData[0].department === "Maintenance")) && (
-              <Header
-                name={`Workshop`}
-                isParBorder={true}
-                Par2Cond={`Inspection`}
-                category={category}
-                setCategory={setCategory}
-              />
-            )}
-            {(usersData[0].roles.Admin ||
-              (userModel.Inspection.includes(usersData[0].title) &&
-                usersData[0].department === "Maintenance")) && (
-              <Header
-                name={`Inspection`}
-                isParBorder={true}
-                Par2Cond={`Report`}
-                category={category}
-                setCategory={setCategory}
-              />
-            )}
+            {userModel.Workshop.includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance" && (
+                <Header
+                  name={`Workshop`}
+                  isParBorder={true}
+                  Par2Cond={`Inspection`}
+                  category={category}
+                  setCategory={setCategory}
+                />
+              )}
+            {userModel.Inspection.includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance" && (
+                <Header
+                  name={`Inspection`}
+                  isParBorder={true}
+                  Par2Cond={`Report`}
+                  category={category}
+                  setCategory={setCategory}
+                />
+              )}
             {(usersData[0].roles.Admin ||
               (userModel.Report.includes(usersData[0].title) &&
                 usersData[0].department === "Maintenance")) && (
@@ -274,28 +272,6 @@ const ManageKanban = () => {
               <Header
                 name={`Planning`}
                 isParBorder={true}
-                Par2Cond={`QA`}
-                category={category}
-                setCategory={setCategory}
-              />
-            )}
-            {(usersData[0].roles.Admin ||
-              (userModel.QA.includes(usersData[0].title) &&
-                usersData[0].department === "Maintenance")) && (
-              <Header
-                name={`QA`}
-                isParBorder={true}
-                Par2Cond={`QA Inspection`}
-                category={category}
-                setCategory={setCategory}
-              />
-            )}
-            {(usersData[0].roles.Admin ||
-              (userModel["QA Inspection"].includes(usersData[0].title) &&
-                usersData[0].department === "Maintenance")) && (
-              <Header
-                name={`QA Inspection`}
-                isParBorder={true}
                 Par2Cond={`Analysis`}
                 category={category}
                 setCategory={setCategory}
@@ -304,11 +280,39 @@ const ManageKanban = () => {
             {usersData[0].roles.Admin && (
               <Header
                 name={`Analysis`}
+                isParBorder={true}
+                Par2Cond={`Files`}
+                category={category}
+                setCategory={setCategory}
+              />
+            )}
+            {usersData[0].roles.Admin && (
+              <Header
+                name={`Files`}
                 isParBorder={false}
                 category={category}
                 setCategory={setCategory}
               />
             )}
+            {userModel.QA.includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance" && (
+                <Header
+                  name={`QA`}
+                  isParBorder={true}
+                  Par2Cond={`QA Inspection`}
+                  category={category}
+                  setCategory={setCategory}
+                />
+              )}
+            {userModel["QA Inspection"].includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance" && (
+                <Header
+                  name={`QA Inspection`}
+                  isParBorder={false}
+                  category={category}
+                  setCategory={setCategory}
+                />
+              )}
           </div>
         </div>
         {category === "Tasks" && stores && copiedStores ? (
@@ -322,7 +326,7 @@ const ManageKanban = () => {
           />
         ) : category === "Workshop" && stores ? (
           <Workshop stores={stores} setStores={setStores} />
-        ) : category === "Inspection" && stores ? (
+        ) : category === "Inspection" ? (
           <Inspection />
         ) : category === "Report" && stores ? (
           <Report stores={stores} setStores={setStores} />
@@ -335,10 +339,16 @@ const ManageKanban = () => {
             copiedStores={copiedStores}
             setCopiedStores={setCopiedStores}
           />
-        ) : category === "QA Inspection" && stores ? (
+        ) : category === "QA Inspection" ? (
           <QAInspection stores={stores} setStores={setStores} />
         ) : category === "Analysis" && stores ? (
           <Analysis
+            stores={stores}
+            setStores={setStores}
+            copiedStores={copiedStores}
+          />
+        ) : category === "Files" ? (
+          <Files
             stores={stores}
             setStores={setStores}
             copiedStores={copiedStores}
