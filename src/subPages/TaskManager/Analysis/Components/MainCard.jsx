@@ -58,9 +58,7 @@ const MainCard = ({ workshop, stores, copiedStores, jsonStores }) => {
   const [eqDates, setEqDates] = useState({});
 
   useEffect(() => {
-    const result = jsonStores.filter(
-      (item) => item.workshop === `${workshop} Workshop`
-    );
+    const result = jsonStores.filter((item) => item.workshop === workshop);
 
     const doneTasks = result.filter((item) => item.category === "Done");
     result.length > 0
@@ -154,7 +152,7 @@ const MainCard = ({ workshop, stores, copiedStores, jsonStores }) => {
                 style={{ borderColor: "green" }}
               ></div>
               <div className="text-black font-[800] text-[14px]">
-                {`${workshop} Workshop`}
+                {workshop}
               </div>
             </div>
             <div className="mb-2 px-1 flex flex-row items-center gap-[6px]">

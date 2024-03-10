@@ -5,9 +5,15 @@ import { IoFilter } from "react-icons/io5";
 import MainCard from "../components/MainCard";
 import useWorkshop from "../Controllers/controller";
 import PageLoading from "../../../../components/PageLoading";
+import { useNavContext } from "../../../../contexts/NavContext";
 
 const Workshop = ({ stores, setStores }) => {
-  const { loading, message, handleSave } = useWorkshop(stores, setStores);
+  const { usersData } = useNavContext();
+  const { loading, message, handleSave } = useWorkshop(
+    stores,
+    setStores,
+    usersData
+  );
   return (
     <>
       {loading && <PageLoading message={message} />}

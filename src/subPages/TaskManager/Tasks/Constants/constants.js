@@ -1,14 +1,14 @@
 export const workshops = [
-  "Main",
-  "Electrical",
-  "Mechanical",
-  "Welding",
-  "Diesel",
-  "Gearbox",
-  "Equipment Electronics",
-  "Painting",
-  "Power Electronics",
-  "Body and metal",
+  "Main Workshop",
+  "Electrical Workshop",
+  "Mechanical Workshop",
+  "Welding Workshop",
+  "Diesel Workshop",
+  "Gearbox Workshop",
+  "Equipment Electronics Workshop",
+  "Painting Workshop",
+  "Power Electronics Workshop",
+  "Body and metal Workshop",
 ];
 
 export const allowedCategories = [

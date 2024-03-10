@@ -66,7 +66,7 @@ const ManageKanban = () => {
         setCategory("QA Inspection");
       } else if (userModel["QA Inspection"].includes(usersData[0].title)) {
         setCategory("QA Inspection");
-      } else if (userModel.Workshop.includes(usersData[0].title)) {
+      } else if (usersData[0].title.startsWith("Workshop")) {
         setCategory("Workshop");
         getData();
       }

@@ -1,12 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import { storeModel } from "../Model/model";
 
-const useWorkshop = (stores, setStores) => {
+const storetoJSON = async (store) => {
+  let result = [];
+  Object.keys(store).map((title) => {
+    store[title].map((item) => {
+      result.push({ ...item, category: title });
+    });
+  });
+  return result;
+};
+
+const JSONtoStore = async (store) => {
+  let result = { ...storeModel };
+  store.map((item) => {
+    result = {
+      ...result,
+      [item.category]: [...result[item.category], item],
+    };
+  });
+  return result;
+};
+
+const useWorkshop = (stores, setStores, usersData) => {
   const axiosPrivate = useAxiosPrivate();
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  const filterData = async () => {
+    const jsonData = await storetoJSON(stores);
+    console.log(jsonData);
+    const targetWorkshop = usersData[0]?.title?.split("(")[1]?.split(")")[0];
+    console.log(targetWorkshop);
+    const targetData = jsonData.filter((d) => d.workshop === targetWorkshop);
+    console.log(targetData);
+    const storeData = await JSONtoStore(targetData);
+    console.log(storeData);
+    setStores(storeData);
+  };
+
+  useEffect(() => {
+    filterData();
+  }, []);
 
   const handleSave = async (item) => {
     try {
@@ -40,6 +78,7 @@ const useWorkshop = (stores, setStores) => {
         data: JSON.stringify({
           data: {
             Category: "Waiting Inspection",
+            EndTime: "Date.Now",
             ID: item.id,
           },
           flags: {
@@ -56,7 +95,7 @@ const useWorkshop = (stores, setStores) => {
         }
       });
 
-      newStore["Waiting Inspection"].splice(0, 0, item);
+      newStore["Waiting Inspection"].splice(0, 0, { ...item, end: new Date() });
       console.log(newStore);
       setStores(newStore);
       setLoading(false);
