@@ -120,7 +120,7 @@ const Files = () => {
             )}/`}</div>
             <div className="h-full flex flex-row gap-2 items-center text-[14px]">
               <div
-                className="h-full flex flex-row p-1 pl-3 gap-2 items-center justify-center bg-gray-100 border-1 border-gray-300 hover:bg-gray-200 rounded-md hover:cursor-pointer relative"
+                className="h-full w-[100px] flex flex-row p-1 pl-3 gap-2 items-center justify-center bg-gray-100 border-1 border-gray-300 hover:bg-gray-200 rounded-md hover:cursor-pointer relative"
                 onClick={() => setIsUploadPanel((prev) => !prev)}
               >
                 <p className=" font-[400]">Add File</p>
