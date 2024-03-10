@@ -48,7 +48,7 @@ const ManageKanban = () => {
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
-    if (usersData[0].roles.Admin) {
+    if (usersData[0]?.roles?.Admin) {
       setCategory("Planning");
       getData();
     } else if (usersData[0].department === "Maintenance") {
@@ -64,9 +64,9 @@ const ManageKanban = () => {
         getData();
       } else if (userModel.QA.includes(usersData[0].title)) {
         setCategory("QA Inspection");
-      } else if (userModel["QA Inspection"].includes(usersData[0].title)) {
+      } else if (userModel["QA Inspection"].includes(usersData[0]?.title)) {
         setCategory("QA Inspection");
-      } else if (usersData[0].title.startsWith("Workshop")) {
+      } else if (usersData[0]?.title?.startsWith("Workshop")) {
         setCategory("Workshop");
         getData();
       }
@@ -235,7 +235,7 @@ const ManageKanban = () => {
                 />
               )}
 
-            {userModel.Workshop.includes(usersData[0].title) &&
+            {usersData[0]?.title?.startsWith("Workshop") &&
               usersData[0].department === "Maintenance" && (
                 <Header
                   name={`Workshop`}

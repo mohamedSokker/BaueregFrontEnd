@@ -106,7 +106,9 @@ const FilesList = ({ file, path, currentFiles, setCurrentFiles }) => {
                 onClick={() => {
                   window
                     .open(
-                      `${baseURL}/Bauereg/TaskManagerTasks/${file?.file}`,
+                      `${baseURL}/${path.replace("/home/mohamed/", "")}/${
+                        file?.file
+                      }`,
                       "_blank"
                     )
                     .focus();
