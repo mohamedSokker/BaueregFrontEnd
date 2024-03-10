@@ -22,6 +22,8 @@ const FilesList = ({ file, path, currentFiles, setCurrentFiles }) => {
   const [isFilePanel, setIsFilePanel] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const baseURL = process.env.REACT_APP_BASE_URL;
+
   const axiosPrivate = useAxiosPrivate();
 
   const handleDeleteFile = async (file, fileName) => {
@@ -99,12 +101,22 @@ const FilesList = ({ file, path, currentFiles, setCurrentFiles }) => {
                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
               }}
             >
-              {/* <div className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2">
-            <MdDriveFileRenameOutline size={14} color="rgb(107,114,128)" />
-            <button className="text-green-700 text-[12px] rounded-md flex flex-row justify-center items-center">
-              Rename File
-            </button>
-          </div> */}
+              <div
+                className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
+                onClick={() => {
+                  window
+                    .open(
+                      `${baseURL}/Bauereg/TaskManagerTasks/${file?.file}`,
+                      "_blank"
+                    )
+                    .focus();
+                }}
+              >
+                <MdDriveFileRenameOutline size={14} color="rgb(107,114,128)" />
+                <button className="text-green-700 text-[12px] rounded-md flex flex-row justify-center items-center">
+                  Get File
+                </button>
+              </div>
               <div
                 className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
                 onClick={() =>
