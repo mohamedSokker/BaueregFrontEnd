@@ -13,7 +13,7 @@ const DataEntry = () => {
   const renderPage = () => {
     if (tableName === "Maintenance") {
       return <Maintenance />;
-    } else if (tableName === "AvailabiltyPlan") {
+    } else if (tableName === "AvailabilityPlan") {
       return <AvailabilityPlan />;
     } else if (tableName === "EquipmentsLocation") {
       return <EquipmentsLocation />;
