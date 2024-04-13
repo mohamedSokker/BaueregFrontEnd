@@ -15,16 +15,16 @@ import UploadCard from "../Components/UploadCard";
 const Files = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [path, setPath] = useState(process.env.REACT_APP_TASKS_ABS_PATH);
+  const [path, setPath] = useState("");
   const [files, setFiles] = useState(null);
-  const [currentPath, setCurrentPath] = useState(
-    process.env.REACT_APP_TASKS_ABS_PATH
-  );
+  const [currentPath, setCurrentPath] = useState("");
   const [currentFiles, setCurrentFiles] = useState(null);
   const [isUploadPanel, setIsUploadPanel] = useState(false);
   const [isUpload, setIsUploadCard] = useState(false);
 
-  console.log(isUploadPanel);
+  // console.log(isUploadPanel);
+  console.log(path);
+  console.log(currentPath);
 
   const axiosPrivate = useAxiosPrivate();
 

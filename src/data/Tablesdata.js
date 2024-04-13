@@ -8,7 +8,10 @@ import { AiOutlineTable } from "react-icons/ai";
 import { RiBookLine } from "react-icons/ri";
 import { BsDatabaseAdd } from "react-icons/bs";
 import { BiListPlus, BiTestTube } from "react-icons/bi";
+import { BiLineChart } from "react-icons/bi";
+import { MdOutlineFireTruck } from "react-icons/md";
 import { Cookies } from "react-cookie";
+import { dataEntry } from "./dataEntry";
 
 import {
   EditTables,
@@ -32,6 +35,8 @@ const token = cookies?.get("token");
 
 export const allDataTitles = [
   "Dashboard",
+  "DataEntry",
+  "DataEntrySites",
   "Kanban",
   "Transportations",
   "Sites",
@@ -44,6 +49,7 @@ export const allDataTitles = [
   "OilSamples",
   "OilSamplesAnalyzed",
   "ManageUsers",
+  "ManageAppUsers",
 ];
 
 export const links = [
@@ -52,28 +58,28 @@ export const links = [
     name: "Dashboard",
     dest: "/dashboard",
     elem: <Dashboard />,
-    icon: <IoMdGrid />,
+    icon: <BiLineChart size={20} />,
   },
   {
     title: "Task Manager",
     name: "Kanban",
     dest: "/kanban",
     elem: <ManageKanban />,
-    icon: <BiListPlus />,
+    icon: <BiListPlus size={20} />,
   },
   {
     title: "Transportations",
     name: "Transportations",
     dest: "/Transportations",
     elem: <Transportaions />,
-    icon: <TbTransferIn />,
+    icon: <MdOutlineFireTruck size={20} />,
   },
   {
     title: "Sites",
     name: "Sites",
     dest: "/sites",
     elem: <Locations />,
-    icon: <GiCrane />,
+    icon: <GiCrane size={20} />,
     data: [],
   },
   {
@@ -81,7 +87,7 @@ export const links = [
     name: "Equipments",
     dest: "/equipments",
     elem: <Equipments />,
-    icon: <GiCargoCrane />,
+    icon: <GiCargoCrane size={20} />,
     data: [],
   },
   {
@@ -89,7 +95,7 @@ export const links = [
     name: "Orders",
     dest: "/orders",
     elem: <Orders />,
-    icon: <TiShoppingCart />,
+    icon: <TiShoppingCart size={20} />,
     data: [],
   },
   {
@@ -97,7 +103,7 @@ export const links = [
     name: "Stocks",
     dest: "/stocks",
     elem: <Stocks />,
-    icon: <SiLinuxcontainers />,
+    icon: <SiLinuxcontainers size={20} />,
     data: [],
   },
   {
@@ -105,7 +111,7 @@ export const links = [
     name: "Tables",
     dest: "/Tables",
     elem: <EditTables />,
-    icon: <AiOutlineTable />,
+    icon: <AiOutlineTable size={20} />,
     data: [],
   },
   {
@@ -113,20 +119,15 @@ export const links = [
     name: "DataEntry",
     dest: "/DataEntry",
     elem: <DataEntry />,
-    icon: <BsDatabaseAdd />,
-    data: [
-      { name: "Maintenance" },
-      { name: "PeriodicMaintenance" },
-      { name: "EquipmentsLocation" },
-      { name: "Machinary" },
-    ],
+    icon: <BsDatabaseAdd size={20} />,
+    data: dataEntry,
   },
   {
     title: "Catalogues",
     name: "Catalogues",
     dest: "/catalogues",
     elem: <Catalogues />,
-    icon: <RiBookLine />,
+    icon: <RiBookLine size={20} />,
     data: [],
   },
   {
@@ -134,36 +135,36 @@ export const links = [
     name: "OilSamples",
     dest: "/OilSamples",
     elem: <OilSamples />,
-    icon: <BiTestTube />,
+    icon: <BiTestTube size={20} />,
   },
   {
     title: "Oil Samples Analyzed",
     name: "OilSamplesAnalyzed",
     dest: "/OilSamplesAnalyzed",
     elem: <OilSamplesAnalyzed />,
-    icon: <BiTestTube />,
+    icon: <BiTestTube size={20} />,
   },
   {
     title: "Manage Users",
     name: "ManageUsers",
     dest: "/ManageUsers",
     elem: <ManageUsers />,
-    icon: <FiUserCheck />,
+    icon: <FiUserCheck size={20} />,
     data: [
       {
         name: "Add User",
         dest: "/AddUser",
-        icon: <FiUserPlus />,
+        icon: <FiUserPlus size={16} />,
       },
       {
         name: "Edit User",
         dest: "/EditUser",
-        icon: <FiUserCheck />,
+        icon: <FiUserCheck size={16} />,
       },
       {
         name: "Delete User",
         dest: "/DeleteUser",
-        icon: <FiUserMinus />,
+        icon: <FiUserMinus size={16} />,
       },
     ],
   },
@@ -172,22 +173,22 @@ export const links = [
     name: "ManageAppUsers",
     dest: "/ManageAppUsers",
     elem: <ManageAppUsers />,
-    icon: <FiUserCheck />,
+    icon: <FiUserCheck size={20} />,
     data: [
       {
         name: "Add User",
         dest: "/AddAppUser",
-        icon: <FiUserPlus />,
+        icon: <FiUserPlus size={16} />,
       },
       {
         name: "Edit User",
         dest: "/EditAppUser",
-        icon: <FiUserCheck />,
+        icon: <FiUserCheck size={16} />,
       },
       {
         name: "Delete User",
         dest: "/DeleteAppUser",
-        icon: <FiUserMinus />,
+        icon: <FiUserMinus size={16} />,
       },
     ],
   },

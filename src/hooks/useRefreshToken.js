@@ -2,6 +2,7 @@ import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 
 import axios from "../api/axios";
 import { useNavContext } from "../contexts/NavContext";
+import { dataEntry } from "../data/dataEntry";
 
 const useRefreshToken = () => {
   const { setToken, setUsersData } = useNavContext();
@@ -37,12 +38,7 @@ const useRefreshToken = () => {
       user.roles.User["ManageAppUsers"] = [];
     }
     if (user.roles.Editor.DataEntry) {
-      user.roles.Editor["DataEntry"] = [
-        { name: "Maintenance" },
-        { name: "PeriodicMaintenance" },
-        { name: "EquipmentsLocation" },
-        { name: "Machinary" },
-      ];
+      user.roles.Editor["DataEntry"] = dataEntry;
       user.roles.User["DataEntry"] = [];
     } else {
       user.roles.Editor["DataEntry"] = [];

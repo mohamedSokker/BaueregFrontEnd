@@ -219,7 +219,7 @@ const ManageKanban = () => {
     <DragDropContext onDragEnd={handleDragAndDrop}>
       {loading && <PageLoading message={`Loading Tasks`} />}
       <div className="w-full h-[92vh] md:mt-0 mt-[58px] flex flex-col gap-2 justify-start">
-        <div className="flex flex-col w-full items-center bg-gray-300">
+        <div className="flex flex-col w-full items-center bg-gray-100">
           {/* <div className="w-full flex justify-start items-center font-[700] text-[18px] p-3">
             <p>Yard Task Manager</p>
           </div> */}

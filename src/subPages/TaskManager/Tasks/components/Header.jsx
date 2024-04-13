@@ -8,7 +8,7 @@ const Header = ({ name, isParBorder, Par2Cond, category, setCategory }) => {
       style={{
         minWidth: "100px",
         flex: 1,
-        backgroundColor: category === name ? "white" : "rgb(209,213,219)",
+        backgroundColor: category === name ? "white" : "rgb(243,244,246)",
         borderTopWidth: category === name ? 1 : 0,
         borderRightWidth: category === name ? 1 : 0,
         borderLeftWidth: category === name ? 1 : 0,

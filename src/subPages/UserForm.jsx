@@ -35,7 +35,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
     Admin: false,
     Editor: {
       ManageUsers: false,
+      ManageAppUsers: false,
       Dashboard: false,
+      DataEntry: [],
+      DataEntrySites: [],
       Kanban: false,
       Transportations: false,
       Sites: [],
@@ -50,7 +53,10 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
     },
     User: {
       ManageUsers: false,
+      ManageAppUsers: false,
       Dashboard: false,
+      DataEntry: [],
+      DataEntrySites: [],
       Kanban: false,
       Transportations: false,
       Sites: [],
@@ -92,7 +98,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       try {
         setLoading(true);
         const data = await allData(token);
-        const url = `/api/v1/Equipments_Location`;
+        const url = `/api/v3/Equipments_Location`;
         const eqsData = await axiosPrivate(url, { method: "GET" });
         setEqLocData(eqsData.data);
         const neweqsData = eqsData.data.filter((d) => d.End_Date === null);

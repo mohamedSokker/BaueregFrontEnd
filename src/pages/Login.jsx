@@ -62,18 +62,18 @@ const Login = () => {
         user.roles.Editor["ManageAppUsers"] = [];
         user.roles.User["ManageAppUsers"] = [];
       }
-      if (user.roles.Editor.DataEntry) {
-        user.roles.Editor["DataEntry"] = [
-          { name: "Maintenance" },
-          { name: "PeriodicMaintenance" },
-          { name: "EquipmentsLocation" },
-          { name: "Machinary" },
-        ];
-        user.roles.User["DataEntry"] = [];
-      } else {
-        user.roles.Editor["DataEntry"] = [];
-        user.roles.User["DataEntry"] = [];
-      }
+      // if (user.roles.Editor.DataEntry) {
+      //   user.roles.Editor["DataEntry"] = [
+      //     { name: "Maintenance" },
+      //     { name: "PeriodicMaintenance" },
+      //     { name: "EquipmentsLocation" },
+      //     { name: "Machinary" },
+      //   ];
+      //   user.roles.User["DataEntry"] = [];
+      // } else {
+      //   user.roles.Editor["DataEntry"] = [];
+      //   user.roles.User["DataEntry"] = [];
+      // }
 
       setUsersData([user]);
       // const userInfo = await getTokenData(data?.data?.token);

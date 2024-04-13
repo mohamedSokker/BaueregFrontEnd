@@ -2,6 +2,7 @@ import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 
 import { AllTables } from "./AllTables";
 import { AllStocks } from "./Tablesdata";
+import { dataEntrtArray } from "./dataEntry";
 import fetchDataOnly from "../Functions/fetchDataOnly";
 
 let allEqs = [];
@@ -13,7 +14,7 @@ let allSitesWithName = [];
 
 export const allSitesEqsdata = async (token) => {
   try {
-    const url = `${process.env.REACT_APP_BASE_URL}/api/v1/Location_Bauer`;
+    const url = `${process.env.REACT_APP_BASE_URL}/api/v3/Location_Bauer`;
     const data = await fetchDataOnly(url, "GET", token);
     allSites = [];
     allSitesWithName = [];
@@ -26,7 +27,7 @@ export const allSitesEqsdata = async (token) => {
     //   allSitesWithName.push({ name: item.Location });
     // });
 
-    const eqsURL = `${process.env.REACT_APP_BASE_URL}/api/v1/Bauer_Equipments`;
+    const eqsURL = `${process.env.REACT_APP_BASE_URL}/api/v3/Bauer_Equipments`;
     const dataEq = await fetchDataOnly(eqsURL, "GET", token);
     allEqs = [];
     allEqsWithName = [];
@@ -60,6 +61,8 @@ export const allData = async (token) => {
   await allSitesEqsdata(token);
   return {
     Dashboard: ["true"],
+    DataEntry: dataEntrtArray,
+    DataEntrySites: allSites,
     Kanban: ["true"],
     Transportations: ["true"],
     Sites: allSites,

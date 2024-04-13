@@ -32,17 +32,14 @@ const EditTables = ({ socket }) => {
   const [loading, setLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState({});
   const [selectedIndex, setSelectedIndex] = useState({});
-  const [errorDetails, setErrorDetails] = useState("");
-  const { closeSmallSidebar, usersData, token, setError, setErrorData } =
-    useNavContext();
+  const { closeSmallSidebar, usersData, token, setErrorData } = useNavContext();
   const axiosPrivate = useAxiosPrivate();
 
   let grid;
 
   const getDataWithoutLoading = async () => {
     try {
-      setError(false);
-      const url = `/api/v1/${tableName}`;
+      const url = `/api/v3/${tableName}`;
       const data = await axiosPrivate(url, { method: "GET" });
       setTableData(data?.data);
       setTableGrid([]);
@@ -58,20 +55,12 @@ const EditTables = ({ socket }) => {
         ]);
       });
     } catch (err) {
-      setError(true);
       setErrorData((prev) => [
         ...prev,
         err?.response?.data?.message
           ? err?.response?.data?.message
           : err?.message,
       ]);
-      setTimeout(() => {
-        setError(false);
-        setTimeout(() => {
-          setErrorData([]);
-        }, 1000);
-      }, 5000);
-      setLoading(false);
     }
   };
 
@@ -110,8 +99,7 @@ const EditTables = ({ socket }) => {
   const getData = async () => {
     try {
       setLoading(true);
-      setError(false);
-      const url = `/api/v1/${tableName}`;
+      const url = `/api/v3/${tableName}`;
       const data = await axiosPrivate(url, { method: "GET" });
       setTableData(data?.data);
       setTableGrid([]);
@@ -128,19 +116,12 @@ const EditTables = ({ socket }) => {
       });
       setLoading(false);
     } catch (err) {
-      setError(true);
       setErrorData((prev) => [
         ...prev,
         err?.response?.data?.message
           ? err?.response?.data?.message
           : err?.message,
       ]);
-      setTimeout(() => {
-        setError(false);
-        setTimeout(() => {
-          setErrorData([]);
-        }, 1000);
-      }, 5000);
       setLoading(false);
     }
   };
@@ -163,7 +144,7 @@ const EditTables = ({ socket }) => {
       className={`w-full p-2 md:p-10 bg-white rounded-xl Main--Page dark:bg-background-logoColor h-full`}
       onClick={closeSmallSidebar}
     >
-      <React.Fragment className="w-full">
+      <React.Fragment>
         <div className="flex flex-row items-center justify-between Header mb-10 ">
           <Header category="" title={tableName ? tableName : "Test"} />
         </div>
@@ -240,19 +221,12 @@ const EditTables = ({ socket }) => {
                 }
               }
             } catch (err) {
-              setError(true);
               setErrorData((prev) => [
                 ...prev,
                 err?.response?.data?.message
                   ? err?.response?.data?.message
                   : err?.message,
               ]);
-              setTimeout(() => {
-                setError(false);
-                setTimeout(() => {
-                  setErrorData([]);
-                }, 1000);
-              }, 5000);
               setLoading(false);
             }
           }}

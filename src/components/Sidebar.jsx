@@ -37,25 +37,19 @@ const Sidebar = () => {
 
   return (
     <div className="h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto p-4 pl-0 pb-10 dark:text-white relative shadow-lg">
-      <div className="flex items-center justify-center">
-        <Link
+      <div className="flex flex-row items-center justify-end">
+        {/* <Link
           to="/"
           onClick={() => setActiveMenu(false)}
           className="items-center flex text-xl font-extrabold tracking-tight dark:text-white text-slate-900"
         >
-          <img src={logo} className="w-36 h-36" alt="logo" />
-          {/* <span>
-            Bauer{" "}
-            <span className=" text-logoColor dark:text-black/80 text-lg ml-2">
-              Egypt
-            </span>
-          </span> */}
-        </Link>
+          <img src={logo} className="w-8 h-8" alt="logo" />
+        </Link> */}
         {/* <TooltipComponent content="Close" position="BottomCenter"> */}
         <button
           type="button"
           onClick={() => setActiveMenu(false)}
-          className=" text-[12px] font-bold text-gray-400 hover:text-black rounded-md p-2 w-8 h-8 flex items-center justify-center bg-gray-100 mt-4 absolute top-2 right-2"
+          className=" text-[12px] font-bold text-gray-400 hover:text-black rounded-md p-2 w-8 h-8 flex items-center justify-center bg-gray-100"
         >
           X{/* <MdOutlineCancel /> */}
         </button>
@@ -77,6 +71,7 @@ const Sidebar = () => {
                     className="flex flex-row items-center justify-between w-full h-full p-4 font-semibold text-[25px]"
                     onClick={(e) => {
                       links.map((link) => {
+                        if (!item?.data) handleCloseSidebar();
                         if (document.getElementById(`${link.title}-side`)) {
                           document.getElementById(
                             `${link.title}-side`
@@ -117,7 +112,7 @@ const Sidebar = () => {
                   >
                     <div className="flex flex-row items-center">
                       {item.icon}
-                      <span className="ml-4 text-[16px]">{item.title}</span>
+                      <span className="ml-4 text-[14px]">{item.title}</span>
                     </div>
                     {item?.data &&
                       (document
@@ -134,7 +129,7 @@ const Sidebar = () => {
                   ?.classList?.contains("Active") && item?.data ? (
                   <div
                     key={i}
-                    className="flex items-center flex-col justify-start w-full pl-8 text-gray-700 bg-[rgb(25,78,94)] dark:text-white rounded-md pt-3 mb-2"
+                    className="flex items-center flex-col justify-start w-full pl-8 text-gray-700 bg-[rgb(25,78,94)] dark:text-white rounded-md pt-3 mb-2 text-[12px]"
                   >
                     {usersData[0]?.roles?.Editor[item.name]?.map((cat, i) => (
                       <Link
@@ -178,8 +173,8 @@ const Sidebar = () => {
           className="flex flex-row items-center w-full h-8 p-4 font-semibold text-[25px]"
           onClick={signOut}
         >
-          <BiLogOut />
-          <span className="ml-4 text-[16px]">Logout</span>
+          <BiLogOut size={20} />
+          <span className="ml-4 text-[14px]">Logout</span>
         </button>
       </div>
     </div>

@@ -22,6 +22,8 @@ const FilesList = ({ file, path, currentFiles, setCurrentFiles }) => {
   const [isFilePanel, setIsFilePanel] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  console.log(path);
+
   const baseURL = process.env.REACT_APP_BASE_URL;
 
   const axiosPrivate = useAxiosPrivate();
@@ -106,9 +108,7 @@ const FilesList = ({ file, path, currentFiles, setCurrentFiles }) => {
                 onClick={() => {
                   window
                     .open(
-                      `${baseURL}/${path.replace("/home/mohamed/", "")}/${
-                        file?.file
-                      }`,
+                      `${baseURL}/Bauereg/TaskManagerTasks/${path}/${file?.file}`,
                       "_blank"
                     )
                     .focus();

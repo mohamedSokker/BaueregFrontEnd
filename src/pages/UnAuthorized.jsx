@@ -6,8 +6,13 @@ import { Navbar, Sidebar } from "../components";
 import Error from "../components/Error";
 
 const UnAuthorized = () => {
-  const { currentMode, activeMenu, error, errorData, closeSmallSidebar } =
-    useNavContext();
+  const {
+    currentMode,
+    activeMenu,
+    errorData,
+    setErrorData,
+    closeSmallSidebar,
+  } = useNavContext();
 
   return (
     <div className={currentMode === "Dark" ? "dark" : ""}>
@@ -29,29 +34,20 @@ const UnAuthorized = () => {
           <Sidebar />
         </div>
 
-        <div
-          className="fixed dark:bg-logoColor z-[11] left-0 bottom-4 px-4 flex flex-col gap-4"
-          style={
-            error
-              ? {
-                  transform: "translate(0)",
-                  transition: "all 0.5s ease-in-out",
-                }
-              : {
-                  transform: "translate(-100%)",
-                  transition: "all 0.5s ease-in-out",
-                }
-          }
-        >
-          <Error errorData={errorData} error={error} />
-        </div>
+        {errorData.length > 0 && (
+          <div className="fixed dark:bg-logoColor z-[11] left-0 bottom-4 flex flex-col gap-4">
+            {errorData.map((data, i) => (
+              <Error key={i} data={data} setErrorData={setErrorData} />
+            ))}
+          </div>
+        )}
         {/* Navbar + MainPage */}
         <div
           className={`dark:bg-background-logoColor bg-main-bg min-h-screen w-full `}
         >
           {/* Navbar */}
           <div
-            className="fixed md:static flex dark:bg-background-logoColor bg-main-bg items-center h-[8vh] navbar"
+            className="fixed md:static flex dark:bg-background-logoColor bg-gray-100 items-center h-[8vh] navbar"
             style={{ width: "100vw" }}
           >
             <Navbar />

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 
 import { useNavContext } from "../contexts/NavContext";
@@ -11,10 +12,12 @@ const RequiredAuth = ({ allowedRole }) => {
     currentMode,
     activeMenu,
     closeSmallSidebar,
-    error,
     errorData,
+    setErrorData,
   } = useNavContext();
   const location = useLocation();
+
+  console.log(errorData);
 
   return usersData &&
     (usersData[0]?.roles.Editor[allowedRole] === true ||
@@ -39,22 +42,13 @@ const RequiredAuth = ({ allowedRole }) => {
         >
           <Sidebar />
         </div>
-        <div
-          className="fixed dark:bg-logoColor z-[11] left-0 bottom-4 px-4 flex flex-col gap-4"
-          style={
-            error
-              ? {
-                  transform: "translate(0)",
-                  transition: "all 0.5s ease-in-out",
-                }
-              : {
-                  transform: "translate(-100%)",
-                  transition: "all 0.5s ease-in-out",
-                }
-          }
-        >
-          <Error errorData={errorData} error={error} />
-        </div>
+        {errorData.length > 0 && (
+          <div className="fixed dark:bg-logoColor z-[11] left-0 bottom-4 flex flex-col gap-4">
+            {errorData.map((data, i) => (
+              <Error key={i} data={data} setErrorData={setErrorData} ind={i} />
+            ))}
+          </div>
+        )}
 
         {/* Navbar + MainPage */}
         <div
@@ -62,7 +56,7 @@ const RequiredAuth = ({ allowedRole }) => {
         >
           {/* Navbar */}
           <div
-            className="fixed md:static flex dark:bg-background-logoColor bg-gray-300 items-center h-[8vh] navbar"
+            className="fixed md:static flex dark:bg-background-logoColor bg-gray-100 items-center h-[8vh] navbar"
             style={{ width: "100vw" }}
           >
             <Navbar />
