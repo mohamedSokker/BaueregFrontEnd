@@ -18,30 +18,34 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div className="p-4 bg-white border-1 border-gray-300">
         <p className="text-[12px] font-[600]">{`${label} `}</p>
-        <p className="text-[10px] font-[600]">{`Productuion: ${payload[0]?.payload?.prod}`}</p>
-        <p className="text-[10px] font-[600]">{`Fuel Consumption: ${payload[0]?.payload?.fuelCons}`}</p>
-        <p className="text-[10px] font-[600]">{`Oil Consumption : ${payload[0]?.payload?.oilCons}`}</p>
+        <p className="text-[10px] font-[600]">
+          {label.startsWith("MC") || label.startsWith("BC")
+            ? `Productuion: ${payload[0]?.payload?.prod} m²`
+            : `Productuion: ${payload[0]?.payload?.prod} ml`}
+        </p>
+        <p className="text-[10px] font-[600]">{`Fuel Consumption: ${payload[0]?.payload?.fuelCons} L`}</p>
+        <p className="text-[10px] font-[600]">{`Oil Consumption : ${payload[0]?.payload?.oilCons} L`}</p>
         <p className="text-[10px] font-[600]">
           {label.startsWith("MC") || label.startsWith("BC")
             ? `Fuel Consumption / m² : ${(
                 Number(payload[0]?.payload?.fuelCons) /
                 Number(payload[0]?.payload?.prod)
-              ).toFixed(2)}`
+              ).toFixed(2)} L/m²`
             : `Fuel Consumption / ml : ${(
                 Number(payload[0]?.payload?.fuelCons) /
                 Number(payload[0]?.payload?.prod)
-              ).toFixed(2)}`}
+              ).toFixed(2)} L/ml`}
         </p>
         <p className="text-[10px] font-[600]">
           {label.startsWith("MC") || label.startsWith("BC")
             ? `Oil Consumption / m² : ${(
                 Number(payload[0]?.payload?.oilCons) /
                 Number(payload[0]?.payload?.prod)
-              ).toFixed(2)}`
+              ).toFixed(2)} L/m²`
             : `Oil Consumption / ml : ${(
                 Number(payload[0]?.payload?.oilCons) /
                 Number(payload[0]?.payload?.prod)
-              ).toFixed(2)}`}
+              ).toFixed(2)} L/ml`}
         </p>
       </div>
     );

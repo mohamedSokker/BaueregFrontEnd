@@ -23,6 +23,11 @@ import ProdDrillFilter from "../components/ProdDrillFilter";
 import FuelFilter from "../components/FuelFilter";
 import OilFilter from "../components/OilFilter";
 
+import AvConsCard from "../components/AvConsCard";
+import MinStockCard from "../components/MinStockCard";
+import AvConsRateCard from "../components/AvConsRate";
+import EquipmentConsCard from "../components/EquipmentsCons";
+
 const Dashboard = ({ socket }) => {
   const [isAvTrenchFilterCard, setIsAvTrenchFilterCard] = useState(false);
   const [isAvDrillFilterCard, setIsAvDrillFilterCard] = useState(false);
@@ -37,11 +42,22 @@ const Dashboard = ({ socket }) => {
   const [isDashboardLabel, setIsDashboardLabel] = useState(false);
   const [isSpareLabel, setIsSpareLabel] = useState(false);
 
-  const { loading, data, copiedData, setData } = useData();
+  const {
+    loading,
+    data,
+    currentSpare,
+    copiedData,
+    isSearch,
+    searchItems,
+    setData,
+    setIsSearch,
+    handleSearchChange,
+    handleSearchClick,
+  } = useData();
 
   return (
     <>
-      {loading && <PageLoading message={`Loading Data`} />}
+      {loading && <PageLoading message={`Loading Data...`} />}
       <div
         className="absolute right-0 top-0 h-full flex flex-col items-center justify-center z-[1000]"
         style={
@@ -210,7 +226,79 @@ const Dashboard = ({ socket }) => {
           </div>
         </>
       ) : (
-        <></>
+        <>
+          <div
+            className="w-full h-full flex flex-col justify-start items-center md:mt-0 mt-[58px] bg-gray-100"
+            onClick={() => setIsSearch(false)}
+          >
+            <div className="w-full h-[20px] flex flex-row justify-between items-center px-2 py-[2px]">
+              <div className="flex flex-row gap-3 pl-1">
+                <p className="text-[14px] font-[700]">{`Code: ${currentSpare?.SparePart_Code}`}</p>
+                <p className="text-[14px] font-[700]">{`Description: ${currentSpare?.Description}`}</p>
+              </div>
+
+              <div className="flex flex-row relative">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="border-b-1 border-gray-300 focus:border-red-400 outline-none pl-2 text-[12px]"
+                  onChange={handleSearchChange}
+                />
+                {isSearch && (
+                  <div className="absolute w-[400px] max-h-[200px] right-0 top-[20px] z-[100] flex flex-col items-start gap-[2px] bg-gray-300 text-[12px] text-black overflow-y-scroll">
+                    {searchItems.map((item, i) => (
+                      <div
+                        className="hover:bg-white cursor-pointer m-auto w-full px-3 py-1"
+                        key={i}
+                        onClick={() => handleSearchClick(item)}
+                      >
+                        {`${item.SparePart_Code} (${item.Description})`}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="w-full h-[calc(50%-10px)] flex flex-row gap-1 px-1 py-[2px]">
+              <div className="flex-[3] h-full gap-1 flex flex-row justify-between flex-wrap">
+                <div className="w-full h-[calc(50%-2px)]">
+                  <AvConsCard
+                    title={`Current Avarage Consumption`}
+                    data={data?.maintStocksData}
+                    currentSpare={currentSpare}
+                  />
+                </div>
+                <div className="w-full h-[calc(50%-2px)]">
+                  <MinStockCard
+                    title={`Minimum Quantity in store`}
+                    data={data?.maintStocksData}
+                    currentSpare={currentSpare}
+                  />
+                </div>
+              </div>
+              <div className="flex-[10] h-full gap-1 flex flex-row justify-between flex-wrap">
+                <div className="w-full h-[100%]">
+                  <AvConsRateCard
+                    title={`Avarage Consumption Rate`}
+                    data={data?.maintStocksData}
+                    currentSpare={currentSpare}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="w-full h-[calc(50%-10px)] px-1 py-[2px] pb-[4px]">
+              <div className="flex-[10] h-full gap-1 flex flex-row justify-between flex-wrap">
+                <div className="w-full h-[100%]">
+                  <EquipmentConsCard
+                    title={`Equipments Consumption`}
+                    data={data?.maintStocksData}
+                    currentSpare={currentSpare}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </>
   );
