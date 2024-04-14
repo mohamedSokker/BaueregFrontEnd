@@ -30,7 +30,6 @@ const useData = () => {
       setLoading(true);
       const url = `/api/v1/dashboard`;
       const data = await axiosPrivate(url, { method: "GET" });
-      data?.data.sort((a, b) => a.DateTime - b.DateTime);
       setData(data.data);
       setCopiedData(data?.data);
       setCurrentSpare(data?.data?.maintStocksData[3]);
