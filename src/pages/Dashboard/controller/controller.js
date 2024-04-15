@@ -28,12 +28,35 @@ const useData = () => {
   const getData = async () => {
     try {
       setLoading(true);
-      const url = `/api/v1/dashboard`;
-      const data = await axiosPrivate(url, { method: "GET" });
-      setData(data.data);
-      setCopiedData(data?.data);
-      setCurrentSpare(data?.data?.maintStocksData[3]);
-      console.log(data.data);
+      const avurl = `/api/v1/availability`;
+      const avData = await axiosPrivate(url, { method: "GET" });
+      const mainturl = `/api/v1/maintenance`;
+      const maintData = await axiosPrivate(url, { method: "GET" });
+      const maintStocksurl = `/api/v1/maintenanceStocks`;
+      const maintStocksData = await axiosPrivate(url, { method: "GET" });
+      const fuelConsurl = `/api/v1/fuelCons`;
+      const fuelCons = await axiosPrivate(url, { method: "GET" });
+      const oilConsurl = `/api/v1/oilCons`;
+      const oilCons = await axiosPrivate(url, { method: "GET" });
+      const prodDrillurl = `/api/v1/prodDrill`;
+      const prodDrill = await axiosPrivate(url, { method: "GET" });
+      const prodTrenchurl = `/api/v1/prodTrench`;
+      const prodTrench = await axiosPrivate(url, { method: "GET" });
+
+      const data = {
+        avData: avData.data,
+        maintData: maintData.data,
+        maintStocksData: maintStocksData.data,
+        fuelCons: fuelCons.data,
+        oilCons: oilCons.data,
+        prodDrill: prodDrill.data,
+        prodTrench: prodTrench.data,
+      };
+
+      setData(data);
+      setCopiedData(data);
+      setCurrentSpare(data?.maintStocksData[3]);
+      console.log(data);
       setLoading(false);
     } catch (err) {
       console.log(err.message);
