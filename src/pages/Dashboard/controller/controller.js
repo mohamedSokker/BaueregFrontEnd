@@ -46,13 +46,15 @@ const useData = () => {
       const prodTrench = await axiosPrivate(prodTrenchurl, { method: "GET" });
 
       const data = {
-        avData: [JSON.parse(avData.data)],
-        maintData: [JSON.parse(maintData.data)],
-        maintStocksData: [JSON.parse(maintStocksData.data)],
-        fuelCons: [JSON.parse(fuelCons.data)],
-        oilCons: [JSON.parse(oilCons.data)],
-        prodDrill: [JSON.parse(prodDrill.data)],
-        prodTrench: [JSON.parse(prodTrench.data)],
+        avData: JSON.parse(`[${avData.data.slice(0, -1).trim()}]`),
+        maintData: JSON.parse(`[${maintData.data.slice(0, -1).trim()}]`),
+        maintStocksData: JSON.parse(
+          `[${maintStocksData.data.slice(0, -1).trim()}]`
+        ),
+        fuelCons: JSON.parse(`[${fuelCons.data.slice(0, -1).trim()}]`),
+        oilCons: JSON.parse(`[${oilCons.data.slice(0, -1).trim()}]`),
+        prodDrill: JSON.parse(`[${prodDrill.data.slice(0, -1).trim()}]`),
+        prodTrench: JSON.parse(`[${prodTrench.data.slice(0, -1).trim()}]`),
       };
 
       setData(data);
