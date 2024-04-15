@@ -29,19 +29,21 @@ const useData = () => {
     try {
       setLoading(true);
       const avurl = `/api/v1/availability`;
-      const avData = await axiosPrivate(url, { method: "GET" });
+      const avData = await axiosPrivate(avurl, { method: "GET" });
       const mainturl = `/api/v1/maintenance`;
-      const maintData = await axiosPrivate(url, { method: "GET" });
+      const maintData = await axiosPrivate(mainturl, { method: "GET" });
       const maintStocksurl = `/api/v1/maintenanceStocks`;
-      const maintStocksData = await axiosPrivate(url, { method: "GET" });
+      const maintStocksData = await axiosPrivate(maintStocksurl, {
+        method: "GET",
+      });
       const fuelConsurl = `/api/v1/fuelCons`;
-      const fuelCons = await axiosPrivate(url, { method: "GET" });
+      const fuelCons = await axiosPrivate(fuelConsurl, { method: "GET" });
       const oilConsurl = `/api/v1/oilCons`;
-      const oilCons = await axiosPrivate(url, { method: "GET" });
+      const oilCons = await axiosPrivate(oilConsurl, { method: "GET" });
       const prodDrillurl = `/api/v1/prodDrill`;
-      const prodDrill = await axiosPrivate(url, { method: "GET" });
+      const prodDrill = await axiosPrivate(prodDrillurl, { method: "GET" });
       const prodTrenchurl = `/api/v1/prodTrench`;
-      const prodTrench = await axiosPrivate(url, { method: "GET" });
+      const prodTrench = await axiosPrivate(prodTrenchurl, { method: "GET" });
 
       const data = {
         avData: avData.data,
