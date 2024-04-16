@@ -35,14 +35,42 @@ const useDataEntry = () => {
         if (!responseData.sitesData) {
           setLoading(true);
           setMessage(`Loading Selection Data...`);
-          const url = `/api/v1/getActiveData`;
-          const result = await axiosPrivate(url, {
-            method: "POST",
-            data: JSON.stringify({ username: usersData[0].username }),
+          const URLs = [
+            "/api/v1/getActiveData",
+            "/api/v1/getBreakdowns",
+            "/api/v1/getUserSites",
+          ];
+
+          const responseData = await Promise.all(
+            URLs.map((url) => {
+              return axiosPrivate(url, {
+                method: "POST",
+                data: JSON.stringify({ username: usersData[0].username }),
+              });
+            })
+          );
+
+          console.log({
+            sitesResult: responseData[0].data,
+            usersResult: responseData[2].data,
+            allBreakdownTypes: responseData[1].data,
           });
-          // console.log(result.data);
-          setSiteData(result?.data);
-          responseData.sitesData = result?.data;
+          // const url = `/api/v1/getActiveData`;
+          // const result = await axiosPrivate(url, {
+          //   method: "POST",
+          //   data: JSON.stringify({ username: usersData[0].username }),
+          // });
+          // // console.log(result.data);
+          setSiteData({
+            sitesResult: responseData[0].data,
+            usersResult: responseData[2].data,
+            allBreakdownTypes: responseData[1].data,
+          });
+          responseData.sitesData = {
+            sitesResult: responseData[0].data,
+            usersResult: responseData[1].data,
+            allBreakdownTypes: responseData[2].data,
+          };
           setLoading(false);
         } else {
           setSiteData(responseData.sitesData);

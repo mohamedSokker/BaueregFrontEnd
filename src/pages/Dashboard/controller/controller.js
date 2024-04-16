@@ -57,24 +57,52 @@ const useData = ({ socket }) => {
   const getData = async () => {
     try {
       setLoading(true);
-      const avurl = `/api/v1/availability`;
-      const avData = await axiosPrivate(avurl, { method: "GET" });
-      const mainturl = `/api/v1/maintenance`;
-      const maintData = await axiosPrivate(mainturl, { method: "GET" });
-      const maintStocksurl = `/api/v1/maintenanceStocks`;
-      const maintStocksData = await axiosPrivate(maintStocksurl, {
-        method: "GET",
-      });
-      const fuelConsurl = `/api/v1/fuelCons`;
-      const fuelCons = await axiosPrivate(fuelConsurl, { method: "GET" });
-      const oilConsurl = `/api/v1/oilCons`;
-      const oilCons = await axiosPrivate(oilConsurl, { method: "GET" });
-      const prodDrillurl = `/api/v1/prodDrill`;
-      const prodDrill = await axiosPrivate(prodDrillurl, { method: "GET" });
-      const prodTrenchurl = `/api/v1/prodTrench`;
-      const prodTrench = await axiosPrivate(prodTrenchurl, { method: "GET" });
+      // const avurl = `/api/v1/availability`;
+      // const avData = await axiosPrivate(avurl, { method: "GET" });
+      // const mainturl = `/api/v1/maintenance`;
+      // const maintData = await axiosPrivate(mainturl, { method: "GET" });
+      // const maintStocksurl = `/api/v1/maintenanceStocks`;
+      // const maintStocksData = await axiosPrivate(maintStocksurl, {
+      //   method: "GET",
+      // });
+      // const fuelConsurl = `/api/v1/fuelCons`;
+      // const fuelCons = await axiosPrivate(fuelConsurl, { method: "GET" });
+      // const oilConsurl = `/api/v1/oilCons`;
+      // const oilCons = await axiosPrivate(oilConsurl, { method: "GET" });
+      // const prodDrillurl = `/api/v1/prodDrill`;
+      // const prodDrill = await axiosPrivate(prodDrillurl, { method: "GET" });
+      // const prodTrenchurl = `/api/v1/prodTrench`;
+      // const prodTrench = await axiosPrivate(prodTrenchurl, { method: "GET" });
 
-      console.log(avData.data);
+      const URLs = [
+        "/api/v1/availability",
+        "/api/v1/maintenance",
+        "/api/v1/maintenanceStocks",
+        "/api/v1/fuelCons",
+        "/api/v1/oilCons",
+        "/api/v1/prodDrill",
+        "/api/v1/prodTrench",
+      ];
+
+      const responseData = await Promise.all(
+        URLs.map((url) => {
+          return axiosPrivate(url, { method: "GET" });
+        })
+      );
+
+      const data = {
+        avData: responseData[0].data,
+        maintData: responseData[1].data,
+        maintStocksData: responseData[2].data,
+        fuelCons: responseData[3].data,
+        oilCons: responseData[4].data,
+        prodDrill: responseData[5].data,
+        prodTrench: responseData[6].data,
+      };
+
+      console.log(responseData);
+
+      // console.log(avData.data);
 
       // const data = {
       //   avData: JSON.parse(`[${avData.data.slice(0, -1).trim()}]`),
@@ -87,20 +115,20 @@ const useData = ({ socket }) => {
       //   prodDrill: JSON.parse(`[${prodDrill.data.slice(0, -1).trim()}]`),
       //   prodTrench: JSON.parse(`[${prodTrench.data.slice(0, -1).trim()}]`),
       // };
-      const data = {
-        avData: avData.data,
-        maintData: maintData.data,
-        maintStocksData: maintStocksData.data,
-        fuelCons: fuelCons.data,
-        oilCons: oilCons.data,
-        prodDrill: prodDrill.data,
-        prodTrench: prodTrench.data,
-      };
+      // const data = {
+      //   avData: avData.data,
+      //   maintData: maintData.data,
+      //   maintStocksData: maintStocksData.data,
+      //   fuelCons: fuelCons.data,
+      //   oilCons: oilCons.data,
+      //   prodDrill: prodDrill.data,
+      //   prodTrench: prodTrench.data,
+      // };
 
       setData(data);
       setCopiedData(data);
       setCurrentSpare(data?.maintStocksData[3]);
-      console.log(data);
+      // console.log(data);
       setLoading(false);
     } catch (err) {
       console.log(err.message);
