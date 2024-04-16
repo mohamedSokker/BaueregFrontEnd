@@ -53,10 +53,14 @@ const Transportaions = () => {
         setLoading(true);
         const url = `/api/v1/transportGetActiveSites`;
         const data = await axiosPrivate(url, { method: "POST" });
-        setTransData(data?.data.eqsTrans);
+        const eqsTransurl = `/api/v1/transportGetEqTransp`;
+        const eqsTransData = await axiosPrivate(eqsTransurl, {
+          method: "POST",
+        });
+        setTransData(eqsTransData?.data);
         let result = {};
         let resultArray = [];
-        data?.data?.eqsLoc.map((d) => {
+        data?.data?.map((d) => {
           result[d.Location]
             ? (result[d.Location] = [
                 ...result[d.Location],
@@ -79,7 +83,7 @@ const Transportaions = () => {
               ]);
         });
 
-        data?.data?.eqsTrans.map((d) => {
+        eqsTransData?.data?.map((d) => {
           if (!result[d.ToLocation]) {
             result[d.ToLocation] = [];
           }
