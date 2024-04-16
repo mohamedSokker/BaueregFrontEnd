@@ -18,7 +18,6 @@ const useAvConsRate = ({ data, currentSpare }) => {
       const targetData = data?.filter(
         (item) => item.SparePart_Code === currentSpare.SparePart_Code
       );
-      console.log(targetData);
 
       let result = [];
       targetData.map((item) => {

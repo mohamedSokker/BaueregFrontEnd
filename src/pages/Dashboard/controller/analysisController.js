@@ -7,7 +7,6 @@ const useAnalysis = ({ data }) => {
   const { usersData } = useNavContext();
   useEffect(() => {
     if (data) {
-      //   console.log(usersData);
       let eqs = [];
       usersData[0]?.roles?.Editor?.Equipments?.concat(
         usersData[0]?.roles?.User?.Equipments
@@ -19,7 +18,6 @@ const useAnalysis = ({ data }) => {
         )
           eqs.push(eq.name);
       });
-      //   console.log(eqs);
       let result = {};
       data.fuelCons.map((d) => {
         if (eqs.includes(d.Equipment)) {
@@ -124,7 +122,6 @@ const useAnalysis = ({ data }) => {
               };
         }
       });
-      console.log(result);
       let resultArray = [];
       Object.keys(result).map((item) => {
         resultArray.push({
@@ -134,7 +131,6 @@ const useAnalysis = ({ data }) => {
           prod: result[item]?.prod ? result[item]?.prod : 0,
         });
       });
-      console.log(resultArray);
       setChartData(resultArray);
     }
   }, [data]);

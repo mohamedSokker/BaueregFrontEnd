@@ -53,7 +53,7 @@ const Dashboard = ({ socket }) => {
     setIsSearch,
     handleSearchChange,
     handleSearchClick,
-  } = useData();
+  } = useData({ socket });
 
   return (
     <>

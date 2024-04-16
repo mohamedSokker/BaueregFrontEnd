@@ -81,7 +81,6 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
   }, []);
 
   const handleCheck = ({ title, store, index }) => {
-    console.log(copiedData);
     // change item checked
     let data = [];
     let eqsCheck = [];
@@ -119,8 +118,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
         });
       }
     });
-    console.log(eqsCheck);
-    console.log(sitesCheck);
+
     const filterData = copiedData.fuelCons?.filter(
       (item) =>
         new Date(item["Date "]) >=
@@ -135,8 +133,6 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     //get sum
     const sum = filterData.length;
     setCount(sum);
-    console.log(filterData);
-    console.log(sum);
   };
 
   const handleStartTimeChange = (e) => {
@@ -184,8 +180,6 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     //get sum
     const sum = filterData.length;
     setCount(sum);
-    console.log(filterData);
-    console.log(sum);
   };
 
   const handleEndTimeChange = (e) => {
@@ -234,8 +228,6 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     //get sum
     const sum = filterData.length;
     setCount(sum);
-    console.log(filterData);
-    console.log(sum);
   };
 
   const handleShowResult = () => {

@@ -25,7 +25,6 @@ const useAv = ({ data }) => {
           eqs.includes(d.Equipment)
       );
       avTrenchData.sort((a, b) => a.Date_Time - b.Date_Time);
-      console.log(avTrenchData);
       let s = 0;
       let x = [];
       let y = [];

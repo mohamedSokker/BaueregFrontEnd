@@ -15,15 +15,44 @@ const getUniqueArray = (array) => {
   return uniqueArray;
 };
 
-const useData = () => {
+const useData = ({ socket }) => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({
+    avData: [],
+    maintData: [],
+    maintStocksData: [],
+    fuelCons: [],
+    oilCons: [],
+    prodDrill: [],
+    prodTrench: [],
+  });
   const [copiedData, setCopiedData] = useState(null);
   const [currentSpare, setCurrentSpare] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [searchItems, setSearchItems] = useState([]);
 
   const axiosPrivate = useAxiosPrivate();
+
+  // let avData = ``;
+
+  // const handleAvData = (data) => {
+  //   avData += data;
+  //   setData((prev) => ({
+  //     ...prev,
+  //     avData: JSON.parse(`[${avData.slice(0, -1).trim()}]`),
+  //   }));
+  //   // console.log(`[${avData.slice(0, -1).trim()}]`);
+  //   // console.log(JSON.parse(`[${avData.slice(0, -1).trim()}]`));
+  // };
+
+  // useEffect(() => {
+  //   socket.emit("requestAvData", "requestAvData");
+  //   socket.on("avData", handleAvData);
+
+  //   return () => {
+  //     socket.off("avData", handleAvData);
+  //   };
+  // }, []);
 
   const getData = async () => {
     try {
@@ -45,16 +74,27 @@ const useData = () => {
       const prodTrenchurl = `/api/v1/prodTrench`;
       const prodTrench = await axiosPrivate(prodTrenchurl, { method: "GET" });
 
+      console.log(avData.data);
+
+      // const data = {
+      //   avData: JSON.parse(`[${avData.data.slice(0, -1).trim()}]`),
+      //   maintData: JSON.parse(`[${maintData.data.slice(0, -1).trim()}]`),
+      //   maintStocksData: JSON.parse(
+      //     `[${maintStocksData.data.slice(0, -1).trim()}]`
+      //   ),
+      //   fuelCons: JSON.parse(`[${fuelCons.data.slice(0, -1).trim()}]`),
+      //   oilCons: JSON.parse(`[${oilCons.data.slice(0, -1).trim()}]`),
+      //   prodDrill: JSON.parse(`[${prodDrill.data.slice(0, -1).trim()}]`),
+      //   prodTrench: JSON.parse(`[${prodTrench.data.slice(0, -1).trim()}]`),
+      // };
       const data = {
-        avData: JSON.parse(`[${avData.data.slice(0, -1).trim()}]`),
-        maintData: JSON.parse(`[${maintData.data.slice(0, -1).trim()}]`),
-        maintStocksData: JSON.parse(
-          `[${maintStocksData.data.slice(0, -1).trim()}]`
-        ),
-        fuelCons: JSON.parse(`[${fuelCons.data.slice(0, -1).trim()}]`),
-        oilCons: JSON.parse(`[${oilCons.data.slice(0, -1).trim()}]`),
-        prodDrill: JSON.parse(`[${prodDrill.data.slice(0, -1).trim()}]`),
-        prodTrench: JSON.parse(`[${prodTrench.data.slice(0, -1).trim()}]`),
+        avData: avData.data,
+        maintData: maintData.data,
+        maintStocksData: maintStocksData.data,
+        fuelCons: fuelCons.data,
+        oilCons: oilCons.data,
+        prodDrill: prodDrill.data,
+        prodTrench: prodTrench.data,
       };
 
       setData(data);

@@ -19,8 +19,6 @@ const useEqCons = ({ data, currentSpare }) => {
         (value, index, array) => array.indexOf(value) === index
       );
 
-      console.log(eqs);
-
       let result = [];
       let history = {};
 
@@ -33,7 +31,6 @@ const useEqCons = ({ data, currentSpare }) => {
             if (history[eq]) {
               totalQuantity += Number(item.SparePart_Quantity);
               totalWH += Number(item.Working_Hours) - history[eq].currentWH;
-              // console.log(eq, totalWH);
               history = {
                 ...history,
                 [eq]: { currentWH: item.Working_Hours },
@@ -46,7 +43,6 @@ const useEqCons = ({ data, currentSpare }) => {
             }
           }
         });
-        console.log(history);
         result.push({
           name: eq,
           "Total Quantity": totalQuantity,
@@ -59,7 +55,6 @@ const useEqCons = ({ data, currentSpare }) => {
               : 0,
         });
       });
-      console.log(result);
       setChartData(result);
     }
   }, [currentSpare]);

@@ -22,7 +22,6 @@ const useAv = ({ data }) => {
         (d) => d.Equipment.startsWith("BG") && eqs.includes(d.Equipment)
       );
       avDrillData.sort((a, b) => a.Date_Time - b.Date_Time);
-      console.log(avDrillData);
       let s = 0;
       let x = [];
       let y = [];

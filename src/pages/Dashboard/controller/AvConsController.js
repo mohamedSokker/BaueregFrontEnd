@@ -9,7 +9,6 @@ const useAvCons = ({ data, currentSpare }) => {
         (item) => item.SparePart_Code === currentSpare.SparePart_Code
       );
       setSum(targetData[targetData.length - 1]?.AvaregeConsumption);
-      console.log(targetData);
     }
   }, [currentSpare]);
   return { sum };
