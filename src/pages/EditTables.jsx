@@ -196,7 +196,7 @@ const EditTables = ({ socket }) => {
               } else {
                 if (args.requestType === "delete") {
                   await axiosPrivate(
-                    `/api/v1/${tableName}/${JSON.parse(selectedRow)[0]["ID"]}`,
+                    `/api/v3/${tableName}/${JSON.parse(selectedRow)[0]["ID"]}`,
                     { method: "DELETE" }
                   );
                 } else if (
@@ -204,7 +204,7 @@ const EditTables = ({ socket }) => {
                   args.requestType === "save"
                 ) {
                   axiosPrivate(
-                    `/api/v1/${tableName}/${JSON.parse(selectedRow)[0]["ID"]}`,
+                    `/api/v3/${tableName}/${JSON.parse(selectedRow)[0]["ID"]}`,
                     {
                       method: "PUT",
                       data: JSON.stringify(grid.currentViewData[selectedIndex]),
@@ -214,7 +214,7 @@ const EditTables = ({ socket }) => {
                   args.action === "add" &&
                   args.requestType === "save"
                 ) {
-                  axiosPrivate(`/api/v1/${tableName}`, {
+                  axiosPrivate(`/api/v3/${tableName}`, {
                     method: "POST",
                     data: JSON.stringify(grid.currentViewData[0]),
                   });
