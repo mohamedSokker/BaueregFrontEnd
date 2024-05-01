@@ -15,6 +15,32 @@ const getUniqueArray = (array) => {
   return uniqueArray;
 };
 
+const ExcelDateToJSDate = (serial) => {
+  var utc_days = Math.floor(serial - 25569);
+  var utc_value = utc_days * 86400;
+  var date_info = new Date(utc_value * 1000);
+
+  var fractional_day = serial - Math.floor(serial) + 0.0000001;
+
+  var total_seconds = Math.floor(86400 * fractional_day);
+
+  var seconds = total_seconds % 60;
+
+  total_seconds -= seconds;
+
+  var hours = Math.floor(total_seconds / (60 * 60));
+  var minutes = Math.floor(total_seconds / 60) % 60;
+
+  return new Date(
+    date_info.getFullYear(),
+    date_info.getMonth(),
+    date_info.getDate(),
+    hours,
+    minutes,
+    seconds
+  );
+};
+
 const useData = ({ socket }) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
@@ -33,47 +59,9 @@ const useData = ({ socket }) => {
 
   const axiosPrivate = useAxiosPrivate();
 
-  // let avData = ``;
-
-  // const handleAvData = (data) => {
-  //   avData += data;
-  //   setData((prev) => ({
-  //     ...prev,
-  //     avData: JSON.parse(`[${avData.slice(0, -1).trim()}]`),
-  //   }));
-  //   // console.log(`[${avData.slice(0, -1).trim()}]`);
-  //   // console.log(JSON.parse(`[${avData.slice(0, -1).trim()}]`));
-  // };
-
-  // useEffect(() => {
-  //   socket.emit("requestAvData", "requestAvData");
-  //   socket.on("avData", handleAvData);
-
-  //   return () => {
-  //     socket.off("avData", handleAvData);
-  //   };
-  // }, []);
-
   const getData = async () => {
     try {
       setLoading(true);
-      // const avurl = `/api/v1/availability`;
-      // const avData = await axiosPrivate(avurl, { method: "GET" });
-      // const mainturl = `/api/v1/maintenance`;
-      // const maintData = await axiosPrivate(mainturl, { method: "GET" });
-      // const maintStocksurl = `/api/v1/maintenanceStocks`;
-      // const maintStocksData = await axiosPrivate(maintStocksurl, {
-      //   method: "GET",
-      // });
-      // const fuelConsurl = `/api/v1/fuelCons`;
-      // const fuelCons = await axiosPrivate(fuelConsurl, { method: "GET" });
-      // const oilConsurl = `/api/v1/oilCons`;
-      // const oilCons = await axiosPrivate(oilConsurl, { method: "GET" });
-      // const prodDrillurl = `/api/v1/prodDrill`;
-      // const prodDrill = await axiosPrivate(prodDrillurl, { method: "GET" });
-      // const prodTrenchurl = `/api/v1/prodTrench`;
-      // const prodTrench = await axiosPrivate(prodTrenchurl, { method: "GET" });
-
       const URLs = [
         "/api/v1/availability",
         "/api/v1/maintenance",
@@ -90,6 +78,30 @@ const useData = ({ socket }) => {
         })
       );
 
+      for (let i = 0; i < responseData[3].data.length; i++) {
+        responseData[3].data[i]["Date "] = ExcelDateToJSDate(
+          responseData[3].data[i]["Date "]
+        );
+      }
+
+      for (let i = 0; i < responseData[4].data.length; i++) {
+        responseData[4].data[i]["Date"] = ExcelDateToJSDate(
+          responseData[4].data[i]["Date"]
+        );
+      }
+
+      for (let i = 0; i < responseData[5].data.length; i++) {
+        responseData[5].data[i]["Pouring Finish"] = ExcelDateToJSDate(
+          responseData[5].data[i]["Pouring Finish"]
+        );
+      }
+
+      for (let i = 0; i < responseData[6].data.length; i++) {
+        responseData[6].data[i]["Pouring Finish"] = ExcelDateToJSDate(
+          responseData[6].data[i]["Pouring Finish"]
+        );
+      }
+
       const data = {
         avData: responseData[0].data,
         maintData: responseData[1].data,
@@ -100,30 +112,8 @@ const useData = ({ socket }) => {
         prodTrench: responseData[6].data,
       };
 
-      console.log(responseData);
-
-      // console.log(avData.data);
-
-      // const data = {
-      //   avData: JSON.parse(`[${avData.data.slice(0, -1).trim()}]`),
-      //   maintData: JSON.parse(`[${maintData.data.slice(0, -1).trim()}]`),
-      //   maintStocksData: JSON.parse(
-      //     `[${maintStocksData.data.slice(0, -1).trim()}]`
-      //   ),
-      //   fuelCons: JSON.parse(`[${fuelCons.data.slice(0, -1).trim()}]`),
-      //   oilCons: JSON.parse(`[${oilCons.data.slice(0, -1).trim()}]`),
-      //   prodDrill: JSON.parse(`[${prodDrill.data.slice(0, -1).trim()}]`),
-      //   prodTrench: JSON.parse(`[${prodTrench.data.slice(0, -1).trim()}]`),
-      // };
-      // const data = {
-      //   avData: avData.data,
-      //   maintData: maintData.data,
-      //   maintStocksData: maintStocksData.data,
-      //   fuelCons: fuelCons.data,
-      //   oilCons: oilCons.data,
-      //   prodDrill: prodDrill.data,
-      //   prodTrench: prodTrench.data,
-      // };
+      console.log(data.avData);
+      console.log(data.fuelCons);
 
       setData(data);
       setCopiedData(data);
