@@ -32,7 +32,7 @@ const useAv = ({ data }) => {
       });
       setXData(x);
       setYData(y);
-      setSum(`${(s / avDrillData.length).toFixed(2)} %`);
+      setSum(`${((s / avDrillData.length) * 100).toFixed(2)} %`);
     }
   }, [data]);
   return { sum, xData, yData };

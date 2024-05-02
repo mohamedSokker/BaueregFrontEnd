@@ -35,7 +35,7 @@ const useAv = ({ data }) => {
       });
       setXData(x);
       setYData(y);
-      setSum(`${(s / avTrenchData.length).toFixed(2)} %`);
+      setSum(`${((s / avTrenchData.length) * 100).toFixed(2)} %`);
     }
   }, [data]);
   return { sum, xData, yData };
