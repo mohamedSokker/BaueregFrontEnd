@@ -21,10 +21,10 @@ const useFuel = ({ data }) => {
 
       const avTrenchData = data.filter(
         (d) =>
-          (d.Equipment.startsWith("MC") ||
-            d.Equipment.startsWith("BC") ||
-            d.Equipment.startsWith("BG")) &&
-          eqs.includes(d.Equipment)
+          (d?.Equipment.startsWith("MC") ||
+            d?.Equipment.startsWith("BC") ||
+            d?.Equipment.startsWith("BG")) &&
+          eqs.includes(d?.Equipment)
       );
 
       avTrenchData.sort((a, b) => a["Date "] - b["Date "]);
