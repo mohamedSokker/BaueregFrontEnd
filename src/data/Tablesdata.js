@@ -29,6 +29,7 @@ import {
   DataEntry,
 } from "../pages";
 import Transportaions from "../pages/Transportaions";
+import Files from "../pages/BReport/View/Files";
 
 const cookies = new Cookies();
 const token = cookies?.get("token");
@@ -89,6 +90,13 @@ export const links = [
     elem: <Equipments />,
     icon: <GiCargoCrane size={20} />,
     data: [],
+  },
+  {
+    title: "BReport",
+    name: "breport",
+    dest: "/breport",
+    elem: <Files />,
+    icon: <GiCargoCrane size={20} />,
   },
   {
     title: "Orders",
