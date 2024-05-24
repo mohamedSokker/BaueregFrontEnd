@@ -21,9 +21,9 @@ const useFuel = ({ data }) => {
 
       const avTrenchData = data.filter(
         (d) =>
-          (d?.Equipment.startsWith("MC") ||
-            d?.Equipment.startsWith("BC") ||
-            d?.Equipment.startsWith("BG")) &&
+          (d?.Equipment?.startsWith("MC") ||
+            d?.Equipment?.startsWith("BC") ||
+            d?.Equipment?.startsWith("BG")) &&
           eqs.includes(d?.Equipment)
       );
 
