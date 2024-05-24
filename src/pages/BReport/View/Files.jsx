@@ -119,7 +119,7 @@ const Files = () => {
         <div className="w-[75%] px-1 h-full flex flex-col gap-2">
           <div className="w-full h-[32px] flex flex-row justify-between">
             <div className="h-full text-[16px] font-[700] text-[#0969DA] flex flex-row items-center">{`${currentPath.replace(
-              import.meta.env.VITE_TASKS_ABS_PATH,
+              process.env.REACT_APP_TASKS_ABS_PATH,
               ""
             )}/`}</div>
             <div className="h-full flex flex-row gap-2 items-center text-[14px]">

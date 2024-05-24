@@ -10,7 +10,7 @@ const UploadCard = ({
   currentFiles,
   setCurrentFiles,
 }) => {
-  const baseURL = import.meta.env.VITE_BASE_URL;
+  const baseURL = process.env.REACT_APP_BASE_URL;
 
   const [isCanceled, setIsCanceled] = useState(false);
   const [files, setFiles] = useState(null);
