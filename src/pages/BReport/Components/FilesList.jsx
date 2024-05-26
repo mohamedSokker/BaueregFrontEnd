@@ -30,8 +30,6 @@ const FilesList = ({
   const [isFilePanel, setIsFilePanel] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log(path);
-
   const baseURL = process.env.REACT_APP_BASE_URL;
 
   const axiosPrivate = useAxiosPrivate();
@@ -47,7 +45,6 @@ const FilesList = ({
       let result = [...currentFiles];
       result = result.filter((f) => f.file !== fileName);
       setCurrentFiles(result);
-      console.log(result);
       setLoading(false);
     } catch (err) {
       console.log(
@@ -57,8 +54,56 @@ const FilesList = ({
       );
       setLoading(false);
     }
+  };
 
-    // console.log(file);
+  const colors = {
+    0: "blue",
+    1: "red",
+    2: "magenta",
+    3: "orange",
+    4: "green",
+    5: "black",
+  };
+
+  const getStackedGraph = (graphData) => {
+    let result = [];
+    graphData?.model?.map((item) => {
+      if (item.ckecked == "1") {
+        result = result[item?.graph]
+          ? {
+              ...result,
+              [item?.graph]: [
+                ...result[item?.graph],
+                {
+                  tension: 0.9,
+                  borderColor: colors[item.color],
+                  borderWidth: 0.5,
+                  label: `${item?.name} [${item.unit}]`,
+                  data: graphData?.data?.[item?.name],
+                  pointStyle: "cross",
+                  pointRadius: 0.1,
+                  pointBorderColor: colors[item.color],
+                },
+              ],
+            }
+          : {
+              ...result,
+              [item?.graph]: [
+                {
+                  tension: 0.9,
+                  borderColor: colors[item.color],
+                  borderWidth: 0.5,
+                  label: `${item?.name} [${item.unit}]`,
+                  data: graphData?.data?.[item?.name],
+                  pointStyle: "cross",
+                  pointRadius: 0.1,
+                  pointBorderColor: colors[item.color],
+                },
+              ],
+            };
+      }
+    });
+    return result;
   };
 
   const handleGetReport = async () => {
@@ -78,45 +123,36 @@ const FilesList = ({
 
       const endDate = string.slice(stopIndex + 3, stopIndex + 15);
 
-      const reg = /([0-9]+,){5}('[A-Z])[^']+','\[[^']+\]',/g;
+      const reg = string.includes("copyright by BAUER Maschinen GmbH$BEGINN")
+        ? /([0-9]+,){5}('[A-Z])[^']+','\[[^']+\]',[0-9],[0-9]/g
+        : /([0-9]+,){5}('[A-Z])[^']+','\[[^']+\]',/g;
 
       const notMatch = /[0-9a-z-A-Z\_\$\(\)\#\.\>\s]+\s{2,}/g;
 
       const headersData = header.match(notMatch).join("");
-      const project = headersData.slice(47, 67);
-      const pannel = headersData.slice(67, 82);
-      const startTime = headersData.slice(82, 94);
-      const jobSite = headersData.slice(119, 149);
-      const operator = headersData.slice(203, 228);
-      result.headers = {
-        headersData: headersData,
-        operator: operator.trim(),
-        project: project.trim(),
-        panel: pannel.trim(),
-        jobSite: jobSite.trim(),
-        startTimeString: startTime.trim(),
-        startTime: new Date(
-          Date.UTC(
-            Number(`20${startTime.trim().slice(4, 6)}`),
-            Number(Number(startTime.trim().slice(2, 4)) - 1),
-            Number(`${startTime.trim().slice(0, 2)}`),
-            Number(`${startTime.trim().slice(6, 8)}`),
-            Number(`${startTime.trim().slice(8, 10)}`),
-            Number(`${startTime.trim().slice(10, 12)}`)
-          )
-        ).toISOString(),
-        endDateString: endDate,
-        endTime: new Date(
-          Date.UTC(
-            Number(`20${endDate.trim().slice(4, 6)}`),
-            Number(Number(endDate.trim().slice(2, 4)) - 1),
-            Number(`${endDate.trim().slice(0, 2)}`),
-            Number(`${endDate.trim().slice(6, 8)}`),
-            Number(`${endDate.trim().slice(8, 10)}`),
-            Number(`${endDate.trim().slice(10, 12)}`)
-          )
-        ).toISOString(),
-      };
+      const project = string.includes(
+        "copyright by BAUER Maschinen GmbH$BEGINN"
+      )
+        ? headersData.slice(47, 67)
+        : headersData.slice(53, 73);
+      const pannel = string.includes("copyright by BAUER Maschinen GmbH$BEGINN")
+        ? headersData.slice(67, 82)
+        : headersData.slice(73, 88);
+      const startTime = string.includes(
+        "copyright by BAUER Maschinen GmbH$BEGINN"
+      )
+        ? headersData.slice(82, 94)
+        : headersData.slice(88, 100);
+      const jobSite = string.includes(
+        "copyright by BAUER Maschinen GmbH$BEGINN"
+      )
+        ? headersData.slice(119, 149)
+        : headersData.slice(100, 155);
+      const operator = string.includes(
+        "copyright by BAUER Maschinen GmbH$BEGINN"
+      )
+        ? headersData.slice(203, 228)
+        : headersData.slice(209, 234);
 
       const itemHead = header.match(reg);
       let model = [];
@@ -125,6 +161,11 @@ const FilesList = ({
           .match(/([0-9]+,){5}/)[0]
           .slice(0, -1)
           .split(",");
+        const configStr1 = string.includes(
+          "copyright by BAUER Maschinen GmbH$BEGINN"
+        )
+          ? itemHead[i].split(",")
+          : ["1"];
         const name = itemHead[i].match(/('[A-Z])[^']+'/)[0].slice(1, -1);
         const unit = itemHead[i].match(/'\[[^']+\]'/)[0].slice(2, -2);
         model = [
@@ -137,11 +178,17 @@ const FilesList = ({
             graph: configStr[2],
             color: configStr[3],
             factor: configStr[4],
+            ckecked: string.includes("copyright by BAUER Maschinen GmbH$BEGINN")
+              ? configStr1[configStr1.length - 1]
+              : "1",
           },
         ];
       }
 
       let dataList = {};
+      model.map((item) => {
+        dataList = { ...dataList, [item.name]: [] };
+      });
       let pointer = 0;
       let startDepth = 0;
       let breaks = false;
@@ -163,24 +210,11 @@ const FilesList = ({
               startDepth = Number(arr[i].slice(0, 5)) / Number(10 ** 2);
             }
 
-            dataList = dataList[item?.name]
-              ? {
-                  ...dataList,
-                  [item?.name]: [
-                    ...dataList[item?.name],
-                    Number(
-                      arr[i].slice(pointer, pointer + Number(item?.bits))
-                    ) / Number(10 ** item?.division),
-                  ],
-                }
-              : {
-                  ...dataList,
-                  [item?.name]: [
-                    Number(
-                      arr[i].slice(pointer, pointer + Number(item?.bits))
-                    ) / Number(10 ** item?.division),
-                  ],
-                };
+            dataList[item.name].push(
+              Number(arr[i].slice(pointer, pointer + Number(item?.bits))) /
+                Number(10 ** item?.division)
+            );
+
             pointer += Number(item?.bits);
           });
         } else {
@@ -189,8 +223,71 @@ const FilesList = ({
       }
 
       result.breaks = breaksNo;
-      result.startDepth = startDepth;
-      result.depth = Math.max(...dataList?.Tiefe);
+      // result.startDepth = startDepth;
+      // result.depth = Math.max(...dataList?.Tiefe);
+
+      result.headers = string.includes(
+        "copyright by BAUER Maschinen GmbH$BEGINN"
+      )
+        ? {
+            Operator: operator.trim(),
+            "Project id": project.trim(),
+            "Depth at start": startDepth,
+            "Final depth": Math.max(...dataList?.Tiefe),
+            "Panel No.": pannel.trim(),
+            JobSite: jobSite.trim(),
+            "Start Time": new Date(
+              Date.UTC(
+                Number(`20${startTime.trim().slice(4, 6)}`),
+                Number(Number(startTime.trim().slice(2, 4)) - 1),
+                Number(`${startTime.trim().slice(0, 2)}`),
+                Number(`${startTime.trim().slice(6, 8)}`),
+                Number(`${startTime.trim().slice(8, 10)}`),
+                Number(`${startTime.trim().slice(10, 12)}`)
+              )
+            ).toISOString(),
+            "End Time": new Date(
+              Date.UTC(
+                Number(`20${endDate.trim().slice(4, 6)}`),
+                Number(Number(endDate.trim().slice(2, 4)) - 1),
+                Number(`${endDate.trim().slice(0, 2)}`),
+                Number(`${endDate.trim().slice(6, 8)}`),
+                Number(`${endDate.trim().slice(8, 10)}`),
+                Number(`${endDate.trim().slice(10, 12)}`)
+              )
+            ).toISOString(),
+            "Max deviation X +": Math.max(...dataList?.["Abweichung X"]),
+            "Max deviation Y +": Math.max(...dataList?.["Abweichung Y"]),
+            "Max deviation X -": Math.min(...dataList?.["Abweichung X"]),
+            "Max deviation Y -": Math.min(...dataList?.["Abweichung Y"]),
+          }
+        : {
+            Operator: operator.trim(),
+            Client: project.trim(),
+            "Column No.": pannel.trim(),
+            jobSite: jobSite.trim(),
+            "T length of borehole": Math.max(...dataList?.Tiefe),
+            "Start Time": new Date(
+              Date.UTC(
+                Number(`20${startTime.trim().slice(4, 6)}`),
+                Number(Number(startTime.trim().slice(2, 4)) - 1),
+                Number(`${startTime.trim().slice(0, 2)}`),
+                Number(`${startTime.trim().slice(6, 8)}`),
+                Number(`${startTime.trim().slice(8, 10)}`),
+                Number(`${startTime.trim().slice(10, 12)}`)
+              )
+            ).toISOString(),
+            "End Time": new Date(
+              Date.UTC(
+                Number(`20${endDate.trim().slice(4, 6)}`),
+                Number(Number(endDate.trim().slice(2, 4)) - 1),
+                Number(`${endDate.trim().slice(0, 2)}`),
+                Number(`${endDate.trim().slice(6, 8)}`),
+                Number(`${endDate.trim().slice(8, 10)}`),
+                Number(`${endDate.trim().slice(10, 12)}`)
+              )
+            ).toISOString(),
+          };
       // result.maxX = Math.max(...dataList?.["Abweichung X"]);
       // result.minX = Math.min(...dataList?.["Abweichung X"]);
       // result.maxY = Math.max(...dataList?.["Abweichung Y"]);
@@ -198,14 +295,16 @@ const FilesList = ({
       result.data = dataList;
       const arrLength =
         Number(
-          new Date(result.headers.endTime) - new Date(result.headers.startTime)
+          new Date(result.headers["End Time"]) -
+            new Date(result.headers["Start Time"])
         ) /
           1000 -
         breaksTime;
 
       const step =
         (Number(
-          new Date(result.headers.endTime) - new Date(result.headers.startTime)
+          new Date(result.headers["End Time"]) -
+            new Date(result.headers["Start Time"])
         ) /
           1000 -
           breaksTime) /
@@ -220,9 +319,10 @@ const FilesList = ({
       };
 
       result.dataLength = dataList?.Tiefe?.length;
-      console.log(result);
+      result.model = model;
+      result.items = getStackedGraph(result);
       setLoading(false);
-      setGraphData(result?.data);
+      setGraphData(result);
       setIsGraph(true);
     } catch (err) {
       console.log(

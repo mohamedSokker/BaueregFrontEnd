@@ -26,8 +26,8 @@ const Files = () => {
   const [graphData, setGraphData] = useState({});
 
   // console.log(isUploadPanel);
-  console.log(path);
-  console.log(currentPath);
+  // console.log(path);
+  // console.log(currentPath);
 
   const axiosPrivate = useAxiosPrivate();
 
