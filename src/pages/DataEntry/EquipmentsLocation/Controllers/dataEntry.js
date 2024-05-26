@@ -5,21 +5,28 @@ import { useNavContext } from "../../../../contexts/NavContext";
 import {
   initialAllData,
   initialData,
+  initialPerMaintData,
+  initialSaved,
+  jsonifyArray,
   regix,
   responseData,
+  validationException,
 } from "../Model/model";
 
 const useDataEntry = () => {
   const { usersData, setError, setErrorData, errorData } = useNavContext();
   const [data, setData] = useState(initialData);
+  const [perMaintData, setPerMaintData] = useState(initialPerMaintData);
+  const [saved, setSaved] = useState(initialSaved);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(``);
+  const [perLoading, setPerLoading] = useState(false);
   const [siteData, setSiteData] = useState([]);
   const [allData, setAllData] = useState(initialAllData);
 
   const axiosPrivate = useAxiosPrivate();
 
-  console.log(data);
+  // console.log(data);
   console.log(allData);
 
   useEffect(() => {
@@ -85,7 +92,10 @@ const useDataEntry = () => {
     const dataKeys = Object.keys(data);
     let flag = true;
     for (let i = 0; i < dataKeys.length; i++) {
-      if (data[dataKeys[i]] === "") {
+      if (
+        data[dataKeys[i]] === "" &&
+        !validationException.includes(dataKeys[i])
+      ) {
         flag = false;
         break;
       }
@@ -107,13 +117,18 @@ const useDataEntry = () => {
       if (!validateData()) {
         throw new Error(`Validation Error`);
       } else {
-        // console.log(data);
-        const url = `/api/v3/dataEntryHandleAvPlan`;
+        const body = {
+          UserName: usersData[0].username,
+          TableName: "Maintenance",
+          Data: JSON.stringify(data),
+          Sent: "false",
+        };
+        const url = `/api/v3/QCTable`;
         const response = await axiosPrivate(url, {
           method: "POST",
-          data: JSON.stringify(data),
+          data: JSON.stringify(body),
         });
-        console.log(response.data);
+        console.log(response);
         setLoading(false);
       }
     } catch (err) {
@@ -129,6 +144,7 @@ const useDataEntry = () => {
 
   return {
     loading,
+    perLoading,
     allData,
     // getChildData,
     errorData,
@@ -137,6 +153,10 @@ const useDataEntry = () => {
     data,
     setData,
     setAllData,
+    saved,
+    setPerMaintData,
+    setPerLoading,
+    setSaved,
     handleAdd,
     message,
     siteData,
