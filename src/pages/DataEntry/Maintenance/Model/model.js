@@ -36,7 +36,7 @@ export const jsonifyArray = (array, name) => {
 export const getDate = (date) => {
   const dt = new Date(date);
   dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
-  return dt.toISOString().slice(0, 16);
+  return dt.toISOString().slice(0, 19);
 };
 
 export const initialData = {
