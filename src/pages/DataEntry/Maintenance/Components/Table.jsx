@@ -33,6 +33,8 @@ const Table = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [editData, setEditData] = useState(null);
 
+  console.log(tableData);
+
   let grid;
 
   const getData = async () => {
@@ -103,11 +105,12 @@ const Table = () => {
   const handleSendData = async () => {
     try {
       setPageLoading(true);
-      console.log(tableData);
+      const targetData = tableData.filter((item) => item.Sent === "false");
+      console.log(targetData);
       const url = `/api/v3/dataEntryHandleAvCalc`;
       const response = await axiosPrivate(url, {
         method: "POST",
-        data: JSON.stringify(tableData),
+        data: JSON.stringify(targetData),
       });
       console.log(response.data);
       setPageLoading(false);

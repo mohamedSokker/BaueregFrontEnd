@@ -3,7 +3,7 @@ import { useNavContext } from "../contexts/NavContext";
 import { useParams } from "react-router-dom";
 import Maintenance from "./DataEntry/Maintenance/View/Maintenance";
 import AvailabilityPlan from "./DataEntry/AvailabilityPlan/View/AvailabiltyPlan";
-import EquipmentsLocation from "../subPages/EquipmentsLocation";
+import EquipmentsLocation from "./DataEntry/EquipmentsLocation/View/EquipmentsLocation";
 import Machinary from "../subPages/Machinary";
 
 const DataEntry = () => {
