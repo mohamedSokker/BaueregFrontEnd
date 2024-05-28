@@ -51,9 +51,7 @@ const useDropdown = ({
           case "Equipment_Type":
             let eqType = [];
             const sitesFilter = siteData?.sitesResult
-              ? siteData?.sitesResult?.filter(
-                  (site) => site?.Location === data?.Location
-                )
+              ? siteData?.sitesResult
               : [];
             sitesFilter?.map((d) => {
               eqType.push(d.Equipment_Type);
@@ -102,9 +100,7 @@ const useDropdown = ({
             let eq = [];
             const sitesFilterEqs = siteData?.sitesResult
               ? siteData?.sitesResult?.filter(
-                  (site) =>
-                    site?.Location === data?.Location &&
-                    site?.Equipment_Type === data.Equipment_Type
+                  (site) => site?.Equipment_Type === data.Equipment_Type
                 )
               : [];
             sitesFilterEqs?.map((d) => {

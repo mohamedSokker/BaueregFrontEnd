@@ -9,3 +9,6 @@ Password: Bauer_Morsy2024_000
 
 Username: Diaa Samir DA
 Password: Bauer_Diaa2024_000
+
+Username: Mostafa Shawky
+Password: Bauer_Shawky2024_000
