@@ -5,6 +5,7 @@ import Maintenance from "./DataEntry/Maintenance/View/Maintenance";
 import AvailabilityPlan from "./DataEntry/AvailabilityPlan/View/AvailabiltyPlan";
 import EquipmentsLocation from "./DataEntry/EquipmentsLocation/View/EquipmentsLocation";
 import Machinary from "../subPages/Machinary";
+import MachinaryLocation from "./DataEntry/MachinaryLocation/View/MachinaryLocation";
 
 const DataEntry = () => {
   const { closeSmallSidebar } = useNavContext();
