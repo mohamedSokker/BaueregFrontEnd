@@ -17,6 +17,8 @@ const DataEntry = () => {
       return <AvailabilityPlan />;
     } else if (tableName === "EquipmentsLocation") {
       return <EquipmentsLocation />;
+    } else if (tableName === "MachinaryLocation") {
+      return <MachinaryLocation />;
     } else {
       return <Machinary />;
     }
