@@ -33,28 +33,26 @@ const Table = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  // console.log(tableData);
-
   let grid;
 
   const getData = async () => {
     try {
       setLoading(true);
-      const url = `/api/v3/QCTable`;
+      const url = `/api/v3/Machinary_Location`;
       const data = await axiosPrivate(url, { method: "GET" });
-      const targetData = data?.data?.filter(
-        (d) =>
-          d.UserName === usersData[0].username && d.TableName === "Maintenance"
-      );
-      let targetTable = [];
-      targetData?.map((item) => {
-        item?.Data &&
-          targetTable.push({
-            ID: item?.ID,
-            ...JSON.parse(item?.Data),
-            Sent: item?.Sent,
-          });
-      });
+      // const targetData = data?.data?.filter(
+      //   (d) =>
+      //     d.UserName === usersData[0].username && d.TableName === "Maintenance"
+      // );
+      const targetTable = data?.data;
+      // targetData?.map((item) => {
+      //   item?.Data &&
+      //     targetTable.push({
+      //       ID: item?.ID,
+      //       ...JSON.parse(item?.Data),
+      //       Sent: item?.Sent,
+      //     });
+      // });
       setTableData(targetTable);
       setTableGrid([]);
       targetTable[0] &&
@@ -98,44 +96,52 @@ const Table = () => {
   };
 
   const handleCellDoubleClick = (e) => {
-    setEditData(e.rowData);
+    console.log({
+      ...e.rowData,
+      Start_Date: new Date(e.rowData.Start_Date).toISOString().slice(0, 10),
+      End_Date: new Date(e.rowData.End_Date).toISOString().slice(0, 10),
+    });
+    setEditData({
+      ...e.rowData,
+      Start_Date: new Date(e.rowData.Start_Date).toISOString().slice(0, 10),
+      End_Date: new Date(e.rowData.End_Date).toISOString().slice(0, 10),
+    });
     setIsEdit(true);
   };
 
-  const handleSendData = async () => {
-    try {
-      setPageLoading(true);
-      const targetData = tableData.filter((item) => item.Sent === "false");
-      console.log(targetData);
-      const url = `/api/v3/dataEntryHandleAvCalc`;
-      const response = await axiosPrivate(url, {
-        method: "POST",
-        data: JSON.stringify(targetData),
-      });
-      console.log(response.data);
-      setPageLoading(false);
-    } catch (err) {
-      setErrorData((prev) => [
-        ...prev,
-        err?.response?.data?.message
-          ? err?.response?.data?.message
-          : err?.message,
-      ]);
-      setPageLoading(false);
-    }
-  };
+  // const handleSendData = async () => {
+  //   try {
+  //     setPageLoading(true);
+  //     console.log(tableData);
+  //     const url = `/api/v3/dataEntryHandleAvCalc`;
+  //     const response = await axiosPrivate(url, {
+  //       method: "POST",
+  //       data: JSON.stringify(tableData),
+  //     });
+  //     console.log(response.data);
+  //     setPageLoading(false);
+  //   } catch (err) {
+  //     setErrorData((prev) => [
+  //       ...prev,
+  //       err?.response?.data?.message
+  //         ? err?.response?.data?.message
+  //         : err?.message,
+  //     ]);
+  //     setPageLoading(false);
+  //   }
+  // };
 
   if (loading) return <Spinner message={`Loading Data...`} />;
   if (isEdit) return <EditDataEntry editData={editData} />;
   return (
     <div className="w-full flex flex-col gap-2 p-2 bg-white rounded-xl Main--Page dark:bg-background-logoColor h-full">
       {pageLoading && <PageLoading message={`Sending Data...`} />}
-      <div className="flex flex-row justify-end items-center ">
+      {/* <div className="flex flex-row justify-end items-center ">
         <div
           className="bg-logoColor rounded-md text-white text-[12px] py-1 px-3 hover:cursor-pointer"
           onClick={handleSendData}
         >{`Send Data`}</div>
-      </div>
+      </div> */}
       <GridComponent
         style={{ cursor: "pointer" }}
         recordDoubleClick={handleCellDoubleClick}

@@ -94,10 +94,10 @@ const DataEntry = () => {
         </div>
 
         <Dropdown
-          label="Equipment_Type"
+          label="Machinery_Type"
           local={true}
-          localData={allData?.eqsType}
-          column="Equipment_Type"
+          localData={allData?.machType}
+          column="Machinery_Type"
           siteData={siteData}
           setAllData={setAllData}
           condition={data?.Location !== ""}
@@ -110,14 +110,14 @@ const DataEntry = () => {
         />
 
         <Dropdown
-          label="Equipment"
+          label="Machinery_Model"
           // URL="/api/v1/Bauer_Equipments"
-          column="Equipment"
+          column="Machinery_Model"
           siteData={siteData}
           setAllData={setAllData}
-          condition={data?.Site !== "" && data.Equipment_Type !== ""}
+          condition={data?.Location !== "" && data.Machinery_Type !== ""}
           local={true}
-          localData={allData?.eqs}
+          localData={allData?.machModel}
           data={data}
           setData={setData}
           // getChildData={getChildData}
@@ -127,18 +127,18 @@ const DataEntry = () => {
         />
 
         <Dropdown
-          label="UnderCarrage_Type"
+          label="Machinary_Specs"
           // URL="/api/v1/Bauer_Equipments"
-          column="UnderCarrage_Type"
+          column="Machinary_Specs"
           siteData={siteData}
           setAllData={setAllData}
           condition={
-            data?.Site !== "" &&
-            data.Equipment_Type !== "" &&
-            data.Equipment !== ""
+            data?.Location !== "" &&
+            data.Machinery_Type !== "" &&
+            data.Machinery_Model !== ""
           }
           local={true}
-          localData={allData?.UnderCarrage_Type}
+          localData={allData?.machSpecs}
           data={data}
           setData={setData}
           // getChildData={getChildData}
@@ -147,26 +147,73 @@ const DataEntry = () => {
           setErrorData={setErrorData}
         />
 
-        <div className="p-2 flex flex-col justify-centrt items-center">
-          {!regix["Working_Hours"].test(data.Working_Hours) ? (
-            <div className="w-full h-6 flex flex-row justify-start items-center gap-3">
-              <p className="h-full text-[14px] text-gray-400 flex flex-row justify-start items-center">{`Working Hours`}</p>
-              <p className="text-[10px] text-red-500 h-full">
-                Not Valid text field data
-              </p>
-            </div>
-          ) : (
-            <p className="w-full h-6 text-[14px] text-gray-400 flex flex-row justify-start items-center">{`Working Hours`}</p>
-          )}
-          <input
-            type="text"
-            className="w-[30vw] border-b-1 border-logoColor outline-none p-2 bg-gray-100 text-[14px]"
-            value={data.Working_Hours}
-            onChange={(e) =>
-              setData((prev) => ({ ...prev, Working_Hours: e.target.value }))
-            }
-          />
-        </div>
+        <Dropdown
+          label="Code"
+          // URL="/api/v1/Bauer_Equipments"
+          column="Code"
+          siteData={siteData}
+          setAllData={setAllData}
+          condition={
+            data?.Location !== "" &&
+            data.Machinery_Type !== "" &&
+            data.Machinery_Model !== "" &&
+            data.Machinary_Specs !== ""
+          }
+          local={true}
+          localData={allData?.code}
+          data={data}
+          setData={setData}
+          // getChildData={getChildData}
+          errorData={errorData}
+          setError={setError}
+          setErrorData={setErrorData}
+        />
+
+        <Dropdown
+          label="Serial_No"
+          // URL="/api/v1/Bauer_Equipments"
+          column="Serial_No"
+          siteData={siteData}
+          setAllData={setAllData}
+          condition={
+            data?.Location !== "" &&
+            data.Machinery_Type !== "" &&
+            data.Machinery_Model !== "" &&
+            data.Machinary_Specs !== "" &&
+            data.Code !== ""
+          }
+          local={true}
+          localData={allData?.serial}
+          data={data}
+          setData={setData}
+          // getChildData={getChildData}
+          errorData={errorData}
+          setError={setError}
+          setErrorData={setErrorData}
+        />
+
+        <Dropdown
+          label="Machinery_Status"
+          // URL="/api/v1/Bauer_Equipments"
+          column="Machinery_Status"
+          siteData={siteData}
+          setAllData={setAllData}
+          condition={
+            data?.Location !== "" &&
+            data.Machinery_Type !== "" &&
+            data.Machinery_Model !== "" &&
+            data.Machinary_Specs !== "" &&
+            data.Code !== ""
+          }
+          local={true}
+          localData={allData?.machStatus}
+          data={data}
+          setData={setData}
+          // getChildData={getChildData}
+          errorData={errorData}
+          setError={setError}
+          setErrorData={setErrorData}
+        />
 
         <div className="w-[100%] h-[20%] text-white font-bold text-[16px] flex items-center p-2">
           <button

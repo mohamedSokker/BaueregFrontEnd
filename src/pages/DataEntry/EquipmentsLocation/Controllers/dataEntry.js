@@ -23,6 +23,7 @@ const useDataEntry = () => {
   const [perLoading, setPerLoading] = useState(false);
   const [siteData, setSiteData] = useState([]);
   const [allData, setAllData] = useState(initialAllData);
+  const [isEndDateChecked, setIsEndDateChecked] = useState(false);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -117,16 +118,17 @@ const useDataEntry = () => {
       if (!validateData()) {
         throw new Error(`Validation Error`);
       } else {
-        const body = {
-          UserName: usersData[0].username,
-          TableName: "Maintenance",
-          Data: JSON.stringify(data),
-          Sent: "false",
-        };
-        const url = `/api/v3/QCTable`;
+        // const body = {
+        //   UserName: usersData[0].username,
+        //   TableName: "Maintenance",
+        //   Data: JSON.stringify(data),
+        //   Sent: "false",
+        // };
+        const result = isEndDateChecked ? data : { ...data, End_Date: null };
+        const url = `/api/v3/dataEntryHandleAddEqLocation`;
         const response = await axiosPrivate(url, {
           method: "POST",
-          data: JSON.stringify(body),
+          data: JSON.stringify(result),
         });
         console.log(response);
         setLoading(false);
@@ -160,6 +162,8 @@ const useDataEntry = () => {
     handleAdd,
     message,
     siteData,
+    isEndDateChecked,
+    setIsEndDateChecked,
   };
 };
 

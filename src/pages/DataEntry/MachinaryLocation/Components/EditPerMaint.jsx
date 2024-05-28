@@ -29,12 +29,20 @@ const EditPerMaint = ({
         const excelData = await axiosPrivate(url, { method: "GET" });
         setDatas(excelData?.data);
         setDataTitles(Object.keys(excelData?.data));
+
+        const tableSelData = JSON.parse(editData?.Action)[Type];
+        let targetSelData = {};
         Object.keys(excelData?.data).map((title) => {
-          setSelectedData((prev) => ({
-            ...prev,
-            [title]: { Task: [] },
-          }));
+          if (tableSelData[title]) {
+            targetSelData = { ...targetSelData, [title]: tableSelData[title] };
+          } else {
+            targetSelData = {
+              ...targetSelData,
+              [title]: { Task: [] },
+            };
+          }
         });
+        setSelectedData(targetSelData);
         setPerLoading(false);
       } catch (err) {
         console.log(

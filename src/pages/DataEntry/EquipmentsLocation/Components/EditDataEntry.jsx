@@ -27,8 +27,9 @@ const EditDataEntry = ({ editData }) => {
     handleDelete,
     message,
     siteData,
+    isEndDateChecked,
+    setIsEndDateChecked,
   } = useEditDataEntry({ editData });
-  console.log(data);
   return (
     <div className="w-full h-full flex flex-col justify-around bg-gray-100">
       {loading && (
@@ -93,17 +94,26 @@ const EditDataEntry = ({ editData }) => {
 
         <div className="p-2 flex flex-col justify-center items-center">
           <p className="w-full h-6 text-[14px] text-gray-400 flex flex-row justify-start">{`End Date`}</p>
-          <input
-            type="date"
-            value={data.End_Date}
-            className="w-[30vw] border-b-1 border-logoColor outline-none p-2 bg-gray-100 text-[14px]"
-            onChange={(e) =>
-              setData((prev) => ({
-                ...prev,
-                End_Date: e?.target?.value,
-              }))
-            }
-          />
+          <div className="flex flex-row items-center gap-4">
+            <input
+              type="checkbox"
+              checked={isEndDateChecked}
+              onChange={() => {
+                setIsEndDateChecked((prev) => !prev);
+              }}
+            />
+            <input
+              type="date"
+              value={data.End_Date}
+              className="w-[30vw] border-b-1 border-logoColor outline-none p-2 bg-gray-100 text-[14px]"
+              onChange={(e) => {
+                setData((prev) => ({
+                  ...prev,
+                  End_Date: e?.target?.value,
+                }));
+              }}
+            />
+          </div>
         </div>
 
         <Dropdown
@@ -224,20 +234,26 @@ const EditDataEntry = ({ editData }) => {
           setErrorData={setErrorData}
         />
 
-        <div className="p-2 flex flex-col justify-center items-center">
-          <p className="w-full h-6 text-[14px] text-gray-400 flex flex-row justify-start">{`UnderCarrage Type`}</p>
-          <input
-            type="date"
-            value={data.UnderCarrage_Type}
-            className="w-[30vw] border-b-1 border-logoColor outline-none p-2 bg-gray-100 text-[14px]"
-            onChange={(e) =>
-              setData((prev) => ({
-                ...prev,
-                UnderCarrage_Type: e?.target?.value,
-              }))
-            }
-          />
-        </div>
+        <Dropdown
+          label="UnderCarrage_Type"
+          // URL="/api/v1/Bauer_Equipments"
+          column="UnderCarrage_Type"
+          siteData={siteData}
+          setAllData={setAllData}
+          condition={
+            data?.Site !== "" &&
+            data.Equipment_Type !== "" &&
+            data.Equipment !== ""
+          }
+          local={true}
+          localData={allData?.UnderCarrage_Type}
+          data={data}
+          setData={setData}
+          // getChildData={getChildData}
+          errorData={errorData}
+          setError={setError}
+          setErrorData={setErrorData}
+        />
         {/* <div className="p-2 flex flex-col justify-center items-center">
           {!regix.Action.test(data.Action) ? (
             <div className="w-full h-4 flex flex-row justify-start items-center gap-3">

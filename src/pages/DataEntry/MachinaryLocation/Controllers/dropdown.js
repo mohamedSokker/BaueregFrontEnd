@@ -43,20 +43,22 @@ const useDropdown = ({
             }));
             setData((prev) => ({
               ...prev,
-              Equipment_Type: "",
-              Equipment: "",
-              UnderCarrage_Type: "",
+              Machinery_Type: "",
+              Machinery_Model: "",
+              Machinary_Specs: "",
+              Code: "",
+              Serial_No: "",
+              Machinery_Status: "",
             }));
             break;
-          case "Equipment_Type":
+          case "Machinery_Type":
             let eqType = [];
             const sitesFilter = siteData?.sitesResult
-              ? siteData?.sitesResult?.filter(
-                  (site) => site?.Location === data?.Location
-                )
+              ? siteData?.sitesResult
               : [];
+            console.log(sitesFilter);
             sitesFilter?.map((d) => {
-              eqType.push(d.Equipment_Type);
+              eqType.push(d.Machinery_Type);
             });
 
             if (eqType)
@@ -65,50 +67,52 @@ const useDropdown = ({
               );
             setAllData((prev) => ({
               ...prev,
-              eqsType: jsonifyArray(eqType, "Equipment_Type"),
+              machType: jsonifyArray(eqType, "Machinery_Type"),
             }));
             setData((prev) => ({
               ...prev,
-              Equipment: "",
-              UnderCarrage_Type: "",
+              Machinery_Model: "",
+              Machinary_Specs: "",
+              Code: "",
+              Serial_No: "",
+              Machinery_Status: "",
             }));
             break;
-          // case "Equipment_Model":
-          //   let eqModel = [];
-          //   const sitesFilterEqsModel = siteData?.sitesResult
-          //     ? siteData?.sitesResult?.filter(
-          //         (site) =>
-          //           site?.Location === data?.Location &&
-          //           site?.Equipment_Type === data.Equipment_Type
-          //       )
-          //     : [];
-          //   sitesFilterEqsModel?.map((d) => {
-          //     eqModel.push(d.Equipment_Model);
-          //   });
-          //   if (eqModel)
-          //     eqModel = eqModel?.filter(
-          //       (value, index, array) => array.indexOf(value) === index
-          //     );
-          //   setAllData((prev) => ({
-          //     ...prev,
-          //     eqsModel: jsonifyArray(eqModel, "Equipment_Model"),
-          //   }));
-          //   setData((prev) => ({
-          //     ...prev,
-          //     Equipment: "",
-          //   }));
-          //   break;
-          case "Equipment":
+          case "Machinery_Model":
+            let eqModel = [];
+            const sitesFilterEqsModel = siteData?.sitesResult
+              ? siteData?.sitesResult?.filter(
+                  (site) => site?.Machinery_Type === data.Machinery_Type
+                )
+              : [];
+            sitesFilterEqsModel?.map((d) => {
+              eqModel.push(d.Machinery_Model);
+            });
+            if (eqModel)
+              eqModel = eqModel?.filter(
+                (value, index, array) => array.indexOf(value) === index
+              );
+            setAllData((prev) => ({
+              ...prev,
+              machModel: jsonifyArray(eqModel, "Machinery_Model"),
+            }));
+            setData((prev) => ({
+              ...prev,
+              Machinary_Specs: "",
+              Code: "",
+              Serial_No: "",
+              Machinery_Status: "",
+            }));
+            break;
+          case "Machinary_Specs":
             let eq = [];
             const sitesFilterEqs = siteData?.sitesResult
               ? siteData?.sitesResult?.filter(
-                  (site) =>
-                    site?.Location === data?.Location &&
-                    site?.Equipment_Type === data.Equipment_Type
+                  (site) => site?.Machinery_Model === data.Machinery_Model
                 )
               : [];
             sitesFilterEqs?.map((d) => {
-              eq.push(d.Equipment);
+              eq.push(d.Machinary_Specs);
             });
 
             if (eq)
@@ -117,24 +121,24 @@ const useDropdown = ({
               );
             setAllData((prev) => ({
               ...prev,
-              eqs: jsonifyArray(eq, "Equipment"),
+              machSpecs: jsonifyArray(eq, "Machinary_Specs"),
             }));
             setData((prev) => ({
               ...prev,
-              UnderCarrage_Type: "",
+              Code: "",
+              Serial_No: "",
+              Machinery_Status: "",
             }));
             break;
-          case "UnderCarrage_Type":
+          case "Code":
             let underCarrage = [];
             const sitesFilterUnderCarrage = siteData?.sitesResult
               ? siteData?.sitesResult?.filter(
-                  (site) =>
-                    site?.Equipment_Type === data.Equipment_Type &&
-                    site?.Equipment === data.Equipment
+                  (site) => site?.Machinary_Specs === data.Machinary_Specs
                 )
               : [];
             sitesFilterUnderCarrage?.map((d) => {
-              underCarrage.push(d.UnderCarrage_Type);
+              underCarrage.push(d.Code);
             });
 
             if (underCarrage)
@@ -143,33 +147,58 @@ const useDropdown = ({
               );
             setAllData((prev) => ({
               ...prev,
-              UnderCarrage_Type: jsonifyArray(
-                underCarrage,
-                "UnderCarrage_Type"
-              ),
+              code: jsonifyArray(underCarrage, "Code"),
+            }));
+            setData((prev) => ({
+              ...prev,
+              Serial_No: "",
+              Machinery_Status: "",
             }));
             break;
-          // case "Store":
-          //   setAllData((prev) => ({
-          //     ...prev,
-          //     store: jsonifyArray(AllStocks, `stock`),
-          //   }));
-          //   break;
-          // case "Periodic Maintenance Interval":
-          //   setAllData((prev) => ({
-          //     ...prev,
-          //     "Periodic Maintenance Interval": perMaintPlan,
-          //   }));
-          //   break;
-          // case "Breakdown_Type":
-          //   const sitesFilterBdType = siteData?.allBreakdownTypes
-          //     ? siteData?.allBreakdownTypes
-          //     : [];
-          //   setAllData((prev) => ({
-          //     ...prev,
-          //     Breakdown_Type: sitesFilterBdType,
-          //   }));
-          //   break;
+
+          case "Serial_No":
+            let serials = [];
+            const sitesFilterSerials = siteData?.sitesResult
+              ? siteData?.sitesResult?.filter(
+                  (site) => site?.Code === data.Code
+                )
+              : [];
+            sitesFilterSerials?.map((d) => {
+              serials.push(d.Serial_No);
+            });
+
+            if (serials)
+              serials = serials?.filter(
+                (value, index, array) => array.indexOf(value) === index
+              );
+            setAllData((prev) => ({
+              ...prev,
+              serial: jsonifyArray(serials, "Serial_No"),
+            }));
+            setData((prev) => ({
+              ...prev,
+              Machinery_Status: "",
+            }));
+            break;
+
+          case "Machinery_Status":
+            let status = [];
+            const sitesFilterStatus = siteData?.sitesResult
+              ? siteData?.sitesResult
+              : [];
+            sitesFilterStatus?.map((d) => {
+              status.push(d.Machinery_Status);
+            });
+
+            if (status)
+              status = status?.filter(
+                (value, index, array) => array.indexOf(value) === index
+              );
+            setAllData((prev) => ({
+              ...prev,
+              machStatus: jsonifyArray(status, "Machinery_Status"),
+            }));
+            break;
         }
         setDatasLoading(false);
       } else if (localData.length === 0) {

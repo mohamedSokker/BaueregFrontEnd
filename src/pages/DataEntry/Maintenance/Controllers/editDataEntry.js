@@ -29,7 +29,7 @@ const useEditDataEntry = ({ editData }) => {
 
   const axiosPrivate = useAxiosPrivate();
 
-  // console.log(allData);
+  console.log(allData);
 
   useEffect(() => {
     const getData = async () => {
@@ -38,14 +38,30 @@ const useEditDataEntry = ({ editData }) => {
         if (!responseData.sitesData) {
           setLoading(true);
           setMessage(`Loading Selection Data...`);
-          const url = `/api/v1/getActiveData`;
-          const result = await axiosPrivate(url, {
-            method: "POST",
-            data: JSON.stringify({ username: usersData[0].username }),
+          const URLs = [
+            "/api/v1/getActiveData",
+            "/api/v1/getBreakdowns",
+            "/api/v1/getUserSites",
+          ];
+
+          const responseData = await Promise.all(
+            URLs.map((url) => {
+              return axiosPrivate(url, {
+                method: "POST",
+                data: JSON.stringify({ username: usersData[0].username }),
+              });
+            })
+          );
+          setSiteData({
+            sitesResult: responseData[0].data,
+            usersResult: responseData[2].data,
+            allBreakdownTypes: responseData[1].data,
           });
-          console.log(result.data);
-          setSiteData(result?.data);
-          responseData.sitesData = result?.data;
+          responseData.sitesData = {
+            sitesResult: responseData[0].data,
+            usersResult: responseData[1].data,
+            allBreakdownTypes: responseData[2].data,
+          };
           setLoading(false);
         } else {
           setSiteData(responseData.sitesData);
@@ -64,9 +80,7 @@ const useEditDataEntry = ({ editData }) => {
   }, []);
 
   useEffect(() => {
-    const sites = siteData?.usersResult
-      ? siteData?.usersResult?.split(",")
-      : [];
+    const sites = siteData?.usersResult ? siteData?.usersResult : [];
 
     let sitesFilter = siteData?.sitesResult
       ? siteData?.sitesResult?.filter((site) => sites.includes(site?.Location))

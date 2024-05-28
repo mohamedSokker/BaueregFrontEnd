@@ -31,7 +31,7 @@ const useEditDataEntry = ({ editData }) => {
   const axiosPrivate = useAxiosPrivate();
 
   // console.log(allData);
-  console.log(editData);
+  // console.log(editData);
 
   useEffect(() => {
     const getData = async () => {
@@ -41,7 +41,7 @@ const useEditDataEntry = ({ editData }) => {
           setLoading(true);
           setMessage(`Loading Selection Data...`);
           const URLs = [
-            "/api/v1/getActiveData",
+            "/api/v1/getActiveMachinary",
             "/api/v1/getBreakdowns",
             "/api/v1/getUserSites",
           ];
@@ -96,14 +96,9 @@ const useEditDataEntry = ({ editData }) => {
   useEffect(() => {
     const sites = siteData?.usersResult ? siteData?.usersResult : [];
 
-    let sitesFilter = siteData?.sitesResult
-      ? siteData?.sitesResult?.filter((site) => sites.includes(site?.Location))
-      : [];
+    let sitesFilter = siteData?.sitesResult ? siteData?.sitesResult : [];
 
-    const sitesFilterBdType = siteData?.allBreakdownTypes
-      ? siteData?.allBreakdownTypes
-      : [];
-
+    console.log(editData);
     sitesFilter = sitesFilter?.filter(
       (value, index, array) => array.indexOf(value) === index
     );
@@ -121,13 +116,12 @@ const useEditDataEntry = ({ editData }) => {
     setAllData((prev) => ({
       ...prev,
       sites: jsonifyArray(sites, "Location"),
-      eqsType: sitesFilter,
-      eqsModel: sitesFilter,
-      eqs: sitesFilter,
-      UnderCarrage_Type: sitesFilter,
-      store: jsonifyArray(AllStocks, `stock`),
-      Breakdown_Type: sitesFilterBdType,
-      "Periodic Maintenance Interval": perMaintPlan,
+      machType: sitesFilter,
+      machModel: sitesFilter,
+      machSpecs: sitesFilter,
+      code: sitesFilter,
+      serial: sitesFilter,
+      machStatus: sitesFilter,
     }));
   }, [siteData]);
 
@@ -167,7 +161,7 @@ const useEditDataEntry = ({ editData }) => {
         // };
         const result = isEndDateChecked ? data : { ...data, End_Date: null };
         console.log(result);
-        const url = `/api/v3/dataEntryHandleEditEqLocation/${data.ID}`;
+        const url = `/api/v3/dataEntryHandleEditMachLocation/${data.ID}`;
         const response = await axiosPrivate(url, {
           method: "PUT",
           data: JSON.stringify(result),
@@ -191,7 +185,7 @@ const useEditDataEntry = ({ editData }) => {
       setLoading(true);
       setMessage(`Deleting Data...`);
 
-      const url = `/api/v3/QCTable/${data.ID}`;
+      const url = `/api/v3/Machinary_Location/${data.ID}`;
       const response = await axiosPrivate(url, {
         method: "DELETE",
       });

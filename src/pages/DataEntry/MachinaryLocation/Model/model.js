@@ -40,11 +40,13 @@ export const getDate = (date) => {
 };
 
 export const initialData = {
+  Machinery_Type: "",
+  Machinery_Model: "",
+  Machinary_Specs: "",
+  Code: "",
+  Serial_No: "",
   Location: "",
-  Equipment_Type: "",
-  Equipment: "",
-  UnderCarrage_Type: "",
-  Working_Hours: "",
+  Machinery_Status: "",
   Start_Date: new Date().toISOString().slice(0, 10),
   End_Date: new Date().toISOString().slice(0, 10),
 };
@@ -67,12 +69,15 @@ export const initialSaved = {
 };
 export const initialAllData = {
   sites: [],
-  eqsType: [],
-  eqs: [],
-  UnderCarrage_Type: [],
+  machType: [],
+  machModel: [],
+  machSpecs: [],
+  code: [],
+  serial: [],
+  machStatus: [],
 };
 
-export const validationException = ["UnderCarrage_Type"];
+export const validationException = ["Serial_No"];
 
 export const responseData = {
   sitesData: null,
