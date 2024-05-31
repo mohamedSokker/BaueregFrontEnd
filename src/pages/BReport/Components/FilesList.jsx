@@ -78,7 +78,7 @@ const FilesList = ({
                   tension: 0.9,
                   borderColor: colors[item.color],
                   borderWidth: 0.5,
-                  label: `${item?.name} [${item.unit}]`,
+                  label: `${item?.name} [${item.unit}] x ${item.factor}`,
                   data: graphData?.data?.[item?.name],
                   pointStyle: "cross",
                   pointRadius: 0.1,
@@ -93,7 +93,7 @@ const FilesList = ({
                   tension: 0.9,
                   borderColor: colors[item.color],
                   borderWidth: 0.5,
-                  label: `${item?.name} [${item.unit}]`,
+                  label: `${item?.name} [${item.unit}] x ${item.factor}`,
                   data: graphData?.data?.[item?.name],
                   pointStyle: "cross",
                   pointRadius: 0.1,
@@ -325,6 +325,7 @@ const FilesList = ({
       setGraphData(result);
       setIsGraph(true);
     } catch (err) {
+      console.log(err);
       console.log(
         err?.response?.data?.message
           ? err?.response?.data?.message

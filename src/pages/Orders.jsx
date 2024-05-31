@@ -1,7 +1,11 @@
 import React from "react";
 import { useNavContext } from "../contexts/NavContext";
 import { useParams } from "react-router-dom";
-import { OrderNo, Quotation, Confirmation, Invoice } from "../components";
+// import { OrderNo, Quotation, Confirmation, Invoice } from "../components";
+import OrderNo from "./DataEntry/Orders/OrderNo/View/OrderNo";
+import Confirmation from "./DataEntry/Orders/OrderConfirmation/View/OrderConfirmation";
+import Quotation from "./DataEntry/Orders/OrderQuotation/View/OrderQuotation";
+import Invoice from "./DataEntry/Orders/OrderInvoice/View/OrderInvoice";
 
 const Orders = () => {
   const { closeSmallSidebar } = useNavContext();
