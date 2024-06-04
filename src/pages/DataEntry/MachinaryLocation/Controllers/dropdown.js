@@ -137,7 +137,9 @@ const useDropdown = ({
             let underCarrage = [];
             const sitesFilterUnderCarrage = siteData?.sitesResult
               ? siteData?.sitesResult?.filter(
-                  (site) => site?.Machinary_Specs === data.Machinary_Specs
+                  (site) =>
+                    site?.Machinary_Specs === data.Machinary_Specs &&
+                    site?.Machinery_Model === data.Machinery_Model
                 )
               : [];
             sitesFilterUnderCarrage?.map((d) => {
