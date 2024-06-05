@@ -94,11 +94,9 @@ const useEditDataEntry = ({ editData }) => {
   }, []);
 
   useEffect(() => {
-    const sites = siteData?.usersResult ? siteData?.usersResult : [];
+    // const sites = siteData?.usersResult ? siteData?.usersResult : [];
 
-    let sitesFilter = siteData?.sitesResult
-      ? siteData?.sitesResult?.filter((site) => sites.includes(site?.Location))
-      : [];
+    let sitesFilter = siteData?.sitesResult ? siteData?.sitesResult : [];
 
     const sitesFilterBdType = siteData?.allBreakdownTypes
       ? siteData?.allBreakdownTypes
@@ -120,7 +118,7 @@ const useEditDataEntry = ({ editData }) => {
 
     setAllData((prev) => ({
       ...prev,
-      sites: jsonifyArray(sites, "Location"),
+      sites: sitesFilter,
       eqsType: sitesFilter,
       eqsModel: sitesFilter,
       eqs: sitesFilter,
