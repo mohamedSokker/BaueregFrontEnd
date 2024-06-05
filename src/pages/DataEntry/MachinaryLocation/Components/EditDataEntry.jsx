@@ -208,8 +208,7 @@ const EditDataEntry = ({ editData }) => {
             data.Machinery_Type !== "" &&
             data.Machinery_Model !== "" &&
             data.Machinary_Specs !== "" &&
-            data.Code !== "" &&
-            data.Serial_No !== ""
+            data.Code !== ""
           }
           local={true}
           localData={allData?.machStatus}
