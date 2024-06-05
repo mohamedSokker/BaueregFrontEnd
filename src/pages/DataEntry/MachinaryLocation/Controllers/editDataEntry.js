@@ -30,8 +30,8 @@ const useEditDataEntry = ({ editData }) => {
 
   const axiosPrivate = useAxiosPrivate();
 
-  // console.log(allData);
-  // console.log(editData);
+  console.log(allData);
+  console.log(editData);
 
   useEffect(() => {
     const getData = async () => {
@@ -55,11 +55,11 @@ const useEditDataEntry = ({ editData }) => {
             })
           );
 
-          console.log({
-            sitesResult: responseData[0].data,
-            usersResult: responseData[2].data,
-            allBreakdownTypes: responseData[1].data,
-          });
+          // console.log({
+          //   sitesResult: responseData[0].data,
+          //   usersResult: responseData[2].data,
+          //   allBreakdownTypes: responseData[1].data,
+          // });
           // const url = `/api/v1/getActiveData`;
           // const result = await axiosPrivate(url, {
           //   method: "POST",
@@ -94,14 +94,24 @@ const useEditDataEntry = ({ editData }) => {
   }, []);
 
   useEffect(() => {
-    const sites = siteData?.usersResult ? siteData?.usersResult : [];
+    // const sites = siteData?.usersResult ? siteData?.usersResult : [];
 
     let sitesFilter = siteData?.sitesResult ? siteData?.sitesResult : [];
 
-    console.log(editData);
     sitesFilter = sitesFilter?.filter(
       (value, index, array) => array.indexOf(value) === index
     );
+
+    setAllData((prev) => ({
+      ...prev,
+      sites: sitesFilter,
+      machType: sitesFilter,
+      machModel: sitesFilter,
+      machSpecs: sitesFilter,
+      code: sitesFilter,
+      serial: sitesFilter,
+      machStatus: sitesFilter,
+    }));
 
     editData?.End_Date === null ||
     editData?.End_Date === "" ||
@@ -112,17 +122,6 @@ const useEditDataEntry = ({ editData }) => {
           End_Date: new Date().toISOString().slice(0, 10),
         })
       : setData(editData);
-
-    setAllData((prev) => ({
-      ...prev,
-      sites: jsonifyArray(sites, "Location"),
-      machType: sitesFilter,
-      machModel: sitesFilter,
-      machSpecs: sitesFilter,
-      code: sitesFilter,
-      serial: sitesFilter,
-      machStatus: sitesFilter,
-    }));
   }, [siteData]);
 
   const validateData = () => {
