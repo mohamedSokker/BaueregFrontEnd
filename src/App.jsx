@@ -7,7 +7,7 @@ import logo from "./assets/logoblue.jpg";
 import { socket } from "./socket/socket";
 import MainLoading from "./components/MainLoading";
 
-const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Dashboard = lazy(() => import("./pages/Dashboard/view/Dashboard"));
 const ManageKanban = lazy(() => import("./pages/ManageKanban"));
 const Kanban = lazy(() => import("./pages/Kanban"));
 const Login = lazy(() => import("./pages/Login"));
