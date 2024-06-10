@@ -1,34 +1,34 @@
 import { Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
-
-import { Navbar, Sidebar } from "./components";
+import { useEffect, lazy, Suspense } from "react";
 
 import { useNavContext } from "./contexts/NavContext";
 import "./App.css";
+import logo from "./assets/logoblue.jpg";
 import { socket } from "./socket/socket";
-import {
-  Dashboard,
-  ManageKanban,
-  Kanban,
-  Login,
-  Orders,
-  OilSamples,
-  OilSamplesAnalyzed,
-  Locations,
-  Equipments,
-  Stocks,
-  EditTables,
-  Catalogues,
-  ManageUsers,
-  ManageAppUsers,
-  DataEntry,
-} from "./pages";
-import RequiredAuth from "./hooks/useAuth";
-import PersistLogin from "./components/PersistLogin";
-import UnAuthorized from "./pages/UnAuthorized";
-import Transportaions from "./pages/Transportaions";
-import Vnc from "./pages/Vnc";
-import Files from "./pages/BReport/View/Files";
+import MainLoading from "./components/MainLoading";
+
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const ManageKanban = lazy(() => import("./pages/ManageKanban"));
+const Kanban = lazy(() => import("./pages/Kanban"));
+const Login = lazy(() => import("./pages/Login"));
+const Orders = lazy(() => import("./pages/Orders"));
+const OilSamples = lazy(() => import("./pages/OilSamples"));
+const OilSamplesAnalyzed = lazy(() => import("./pages/OilSamplesAnalyzed"));
+const Locations = lazy(() => import("./pages/Locations"));
+const Equipments = lazy(() => import("./pages/Equipments"));
+const Stocks = lazy(() => import("./pages/Stocks"));
+const EditTables = lazy(() => import("./pages/EditTables"));
+const Catalogues = lazy(() => import("./pages/Catalogues"));
+const ManageUsers = lazy(() => import("./pages/ManageUsers"));
+const ManageAppUsers = lazy(() => import("./pages/ManageAppUsers"));
+const DataEntry = lazy(() => import("./pages/DataEntry"));
+
+const RequiredAuth = lazy(() => import("./hooks/useAuth"));
+const PersistLogin = lazy(() => import("./components/PersistLogin"));
+const UnAuthorized = lazy(() => import("./pages/UnAuthorized"));
+const Transportaions = lazy(() => import("./pages/Transportaions"));
+const Vnc = lazy(() => import("./pages/Vnc"));
+const Files = lazy(() => import("./pages/BReport/View/Files"));
 
 function App() {
   const { token, usersData } = useNavContext();
@@ -41,73 +41,89 @@ function App() {
   }, [socket, token, usersData]);
 
   return (
-    <Routes>
-      <Route path="/Login" element={<Login />} />
-      <Route path="/Vnc/:tableName" element={<Vnc socket={socket} />} />
-      <Route path="/UnAuthorized" element={<UnAuthorized />} />
-      <Route element={<PersistLogin />}>
-        <Route element={<RequiredAuth allowedRole={"Dashboard"} />}>
-          <Route path="/" element={<Dashboard socket={socket} />} />
-          <Route path="/Dashboard" element={<Dashboard socket={socket} />} />
-        </Route>
+    <Suspense
+      fallback={
+        <div className="w-[100vw] h-[100vh] flex flex-col gap-2 justify-center items-center">
+          <img
+            src={logo}
+            alt="logo"
+            className="text-white w-20 h-20 rounded-sm"
+          />
+          <MainLoading />
+        </div>
+      }
+    >
+      <Routes>
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Vnc/:tableName" element={<Vnc socket={socket} />} />
+        <Route path="/UnAuthorized" element={<UnAuthorized />} />
+        <Route element={<PersistLogin />}>
+          <Route element={<RequiredAuth allowedRole={"Dashboard"} />}>
+            <Route path="/" element={<Dashboard socket={socket} />} />
+            <Route path="/Dashboard" element={<Dashboard socket={socket} />} />
+          </Route>
 
-        <Route element={<RequiredAuth allowedRole={"Kanban"} />}>
-          <Route path="/Kanban" element={<ManageKanban socket={socket} />} />
-          <Route path="/ManageKanban" element={<Kanban socket={socket} />} />
+          <Route element={<RequiredAuth allowedRole={"Kanban"} />}>
+            <Route path="/Kanban" element={<ManageKanban socket={socket} />} />
+            <Route path="/ManageKanban" element={<Kanban socket={socket} />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Transportations"} />}>
+            <Route
+              path="/Transportations"
+              element={<Transportaions socket={socket} />}
+            />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Sites"} />}>
+            <Route path="/Sites/:tableName" element={<Locations />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
+            <Route path="/Equipments/:tableName" element={<Equipments />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
+            <Route path="/breport" element={<Files />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Orders"} />}>
+            <Route path="/Orders/:tableName" element={<Orders />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Stocks"} />}>
+            <Route path="/Stocks/:tableName" element={<Stocks />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Tables"} />}>
+            <Route
+              path="/Tables/:tableName"
+              element={<EditTables socket={socket} />}
+            />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"DataEntry"} />}>
+            <Route
+              path="/DataEntry/:tableName"
+              element={<DataEntry socket={socket} />}
+            />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Catalogues"} />}>
+            <Route path="/Catalogues/:tableName" element={<Catalogues />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"OilSamples"} />}>
+            <Route path="/OilSamples" element={<OilSamples />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"OilSamplesAnalyzed"} />}>
+            <Route
+              path="/OilSamplesAnalyzed"
+              element={<OilSamplesAnalyzed />}
+            />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"ManageUsers"} />}>
+            <Route path="/ManageUsers/:tableName" element={<ManageUsers />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"ManageAppUsers"} />}>
+            <Route
+              path="/ManageAppUsers/:tableName"
+              element={<ManageAppUsers />}
+            />
+          </Route>
         </Route>
-        <Route element={<RequiredAuth allowedRole={"Transportations"} />}>
-          <Route
-            path="/Transportations"
-            element={<Transportaions socket={socket} />}
-          />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"Sites"} />}>
-          <Route path="/Sites/:tableName" element={<Locations />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
-          <Route path="/Equipments/:tableName" element={<Equipments />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
-          <Route path="/breport" element={<Files />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"Orders"} />}>
-          <Route path="/Orders/:tableName" element={<Orders />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"Stocks"} />}>
-          <Route path="/Stocks/:tableName" element={<Stocks />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"Tables"} />}>
-          <Route
-            path="/Tables/:tableName"
-            element={<EditTables socket={socket} />}
-          />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"DataEntry"} />}>
-          <Route
-            path="/DataEntry/:tableName"
-            element={<DataEntry socket={socket} />}
-          />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"Catalogues"} />}>
-          <Route path="/Catalogues/:tableName" element={<Catalogues />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"OilSamples"} />}>
-          <Route path="/OilSamples" element={<OilSamples />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"OilSamplesAnalyzed"} />}>
-          <Route path="/OilSamplesAnalyzed" element={<OilSamplesAnalyzed />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"ManageUsers"} />}>
-          <Route path="/ManageUsers/:tableName" element={<ManageUsers />} />
-        </Route>
-        <Route element={<RequiredAuth allowedRole={"ManageAppUsers"} />}>
-          <Route
-            path="/ManageAppUsers/:tableName"
-            element={<ManageAppUsers />}
-          />
-        </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </Suspense>
   );
 }
 

@@ -6,6 +6,8 @@ import OrderNo from "./DataEntry/Orders/OrderNo/View/OrderNo";
 import Confirmation from "./DataEntry/Orders/OrderConfirmation/View/OrderConfirmation";
 import Quotation from "./DataEntry/Orders/OrderQuotation/View/OrderQuotation";
 import Invoice from "./DataEntry/Orders/OrderInvoice/View/OrderInvoice";
+import OrderIncompleteItems from "./DataEntry/Orders/OrderIncompleteItems/view/OrderIncompleteItems";
+import OrderStatus from "./DataEntry/Orders/OrderStatus/view/OrderStatus";
 
 const Orders = () => {
   const { closeSmallSidebar } = useNavContext();
@@ -19,6 +21,10 @@ const Orders = () => {
       return <Confirmation />;
     } else if (tableName === "Invoice") {
       return <Invoice />;
+    } else if (tableName === "Order_IncompleteItems") {
+      return <OrderIncompleteItems />;
+    } else if (tableName === "Order_Status") {
+      return <OrderStatus />;
     }
   };
 

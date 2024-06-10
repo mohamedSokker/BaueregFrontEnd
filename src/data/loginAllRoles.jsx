@@ -49,7 +49,14 @@ export const allData = async () => {
     Transportations: ["true"],
     Sites: allSites,
     Equipments: allEqs,
-    Orders: ["Order", "Quotation", "Confirmation", "Invoice"],
+    Orders: [
+      "Order",
+      "Quotation",
+      "Confirmation",
+      "Invoice",
+      "Order_IncompleteItems",
+      "Order_Status",
+    ],
     Stocks: [
       "Barcode Generation",
       "Barcode Reader",
@@ -95,6 +102,8 @@ export const allDataWithName = async (token) => {
       { name: "Quotation" },
       { name: "Confirmation" },
       { name: "Invoice" },
+      { name: "Order_IncompleteItems" },
+      { name: "Order_Status" },
     ],
     Stocks: [
       { name: "Barcode Generation" },

@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 import { IoMdGrid } from "react-icons/io";
 import { GiCrane, GiCargoCrane } from "react-icons/gi";
@@ -13,23 +14,22 @@ import { MdOutlineFireTruck } from "react-icons/md";
 import { Cookies } from "react-cookie";
 import { dataEntry } from "./dataEntry";
 
-import {
-  EditTables,
-  Equipments,
-  Locations,
-  Orders,
-  Stocks,
-  Dashboard,
-  Catalogues,
-  ManageUsers,
-  ManageAppUsers,
-  ManageKanban,
-  OilSamples,
-  OilSamplesAnalyzed,
-  DataEntry,
-} from "../pages";
-import Transportaions from "../pages/Transportaions";
-import Files from "../pages/BReport/View/Files";
+const Dashboard = lazy(() => import("../pages/Dashboard"));
+const ManageKanban = lazy(() => import("../pages/ManageKanban"));
+const Orders = lazy(() => import("../pages/Orders"));
+const OilSamples = lazy(() => import("../pages/OilSamples"));
+const OilSamplesAnalyzed = lazy(() => import("../pages/OilSamplesAnalyzed"));
+const Locations = lazy(() => import("../pages/Locations"));
+const Equipments = lazy(() => import("../pages/Equipments"));
+const Stocks = lazy(() => import("../pages/Stocks"));
+const EditTables = lazy(() => import("../pages/EditTables"));
+const Catalogues = lazy(() => import("../pages/Catalogues"));
+const ManageUsers = lazy(() => import("../pages/ManageUsers"));
+const ManageAppUsers = lazy(() => import("../pages/ManageAppUsers"));
+const DataEntry = lazy(() => import("../pages/DataEntry"));
+
+const Transportaions = lazy(() => import("../pages/Transportaions"));
+const Files = lazy(() => import("../pages/BReport/View/Files"));
 
 const cookies = new Cookies();
 const token = cookies?.get("token");
