@@ -14,7 +14,7 @@ import { MdOutlineFireTruck } from "react-icons/md";
 import { Cookies } from "react-cookie";
 import { dataEntry } from "./dataEntry";
 
-const Dashboard = lazy(() => import("../pages/Dashboard"));
+const Dashboard = lazy(() => import("../pages/Dashboard/view/Dashboard"));
 const ManageKanban = lazy(() => import("../pages/ManageKanban"));
 const Orders = lazy(() => import("../pages/Orders"));
 const OilSamples = lazy(() => import("../pages/OilSamples"));
