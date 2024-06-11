@@ -12,13 +12,15 @@ const ManageKanban = lazy(() => import("./pages/ManageKanban"));
 const Kanban = lazy(() => import("./pages/Kanban"));
 const Login = lazy(() => import("./pages/Login"));
 const Orders = lazy(() => import("./pages/Orders"));
-const OilSamples = lazy(() => import("./pages/OilSamples"));
-const OilSamplesAnalyzed = lazy(() => import("./pages/OilSamplesAnalyzed"));
+const OilSamples = lazy(() => import("./pages/OilSamples/View/OilSamples"));
+const OilSamplesAnalyzed = lazy(() =>
+  import("./pages/OilSamplesAnalyzed/View/OilSamplesAnalyzed")
+);
 const Locations = lazy(() => import("./pages/Locations"));
 const Equipments = lazy(() => import("./pages/Equipments"));
 const Stocks = lazy(() => import("./pages/Stocks"));
 const EditTables = lazy(() => import("./pages/EditTables"));
-const Catalogues = lazy(() => import("./pages/Catalogues"));
+const Catalogues = lazy(() => import("./pages/Catalogues/view/Catalogues"));
 const ManageUsers = lazy(() => import("./pages/ManageUsers"));
 const ManageAppUsers = lazy(() => import("./pages/ManageAppUsers"));
 const DataEntry = lazy(() => import("./pages/DataEntry"));
