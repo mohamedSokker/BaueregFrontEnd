@@ -103,7 +103,7 @@ function App() {
             />
           </Route>
           <Route element={<RequiredAuth allowedRole={"Catalogues"} />}>
-            <Route path="/Catalogues/:tableName" element={<Catalogues />} />
+            <Route path="/Catalogues" element={<Catalogues />} />
           </Route>
           <Route element={<RequiredAuth allowedRole={"OilSamples"} />}>
             <Route path="/OilSamples" element={<OilSamples />} />
