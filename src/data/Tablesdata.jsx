@@ -15,16 +15,18 @@ import { MdOutlineFireTruck } from "react-icons/md";
 import { Cookies } from "react-cookie";
 import { dataEntry } from "./dataEntry";
 
-const Dashboard = lazy(() => import("../pages/Dashboard"));
+const Dashboard = lazy(() => import("../pages/Dashboard/view/Dashboard"));
 const ManageKanban = lazy(() => import("../pages/ManageKanban"));
 const Orders = lazy(() => import("../pages/Orders"));
-const OilSamples = lazy(() => import("../pages/OilSamples"));
-const OilSamplesAnalyzed = lazy(() => import("../pages/OilSamplesAnalyzed"));
+const OilSamples = lazy(() => import("../pages/OilSamples/View/OilSamples"));
+const OilSamplesAnalyzed = lazy(() =>
+  import("../pages/OilSamplesAnalyzed/View/OilSamplesAnalyzed")
+);
 const Locations = lazy(() => import("../pages/Locations"));
 const Equipments = lazy(() => import("../pages/Equipments"));
 const Stocks = lazy(() => import("../pages/Stocks"));
 const EditTables = lazy(() => import("../pages/EditTables"));
-const Catalogues = lazy(() => import("../pages/Catalogues"));
+const Catalogues = lazy(() => import("../pages/Catalogues/view/Catalogues"));
 const ManageUsers = lazy(() => import("../pages/ManageUsers"));
 const ManageAppUsers = lazy(() => import("../pages/ManageAppUsers"));
 const DataEntry = lazy(() => import("../pages/DataEntry"));
