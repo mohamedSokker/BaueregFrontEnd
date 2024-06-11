@@ -49,7 +49,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       Tables: [],
       OilSamples: false,
       OilSamplesAnalyzed: false,
-      Catalogues: [],
+      Catalogues: false,
     },
     User: {
       ManageUsers: false,
@@ -67,7 +67,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       Tables: [],
       OilSamples: false,
       OilSamplesAnalyzed: false,
-      Catalogues: [],
+      Catalogues: false,
     },
   });
   // const [active, setActive] = useState(false);
