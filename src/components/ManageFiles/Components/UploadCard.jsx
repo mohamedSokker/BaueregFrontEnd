@@ -9,7 +9,8 @@ const UploadCard = ({
   path,
   currentFiles,
   setCurrentFiles,
-  setFile,
+  uploadURL,
+  setUploadedFiles,
 }) => {
   const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -43,7 +44,7 @@ const UploadCard = ({
       });
     });
     console.log(data);
-    fetch(`${baseURL}/api/v3/dataEntryOrderInvoiceUploadFiles?url=${path}`, {
+    fetch(`${baseURL}${uploadURL}?url=${path}`, {
       method: "POST",
       body: data,
     })
@@ -53,6 +54,7 @@ const UploadCard = ({
         let result = [...currentFiles];
         result = result.concat(targetFiles);
         setCurrentFiles(result);
+        setUploadedFiles(result);
         // setFile(result);
         setLoading(false);
       })

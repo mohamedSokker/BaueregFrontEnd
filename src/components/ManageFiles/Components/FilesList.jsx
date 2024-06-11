@@ -5,7 +5,7 @@ import { MdDriveFileRenameOutline, MdDelete } from "react-icons/md";
 import { GoGraph } from "react-icons/go";
 import { ColorRing } from "react-loader-spinner";
 
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const addHours = (anyDate, hours) => {
   const dt = new Date(anyDate);
@@ -28,7 +28,14 @@ const FilesList = ({
   setIsTable,
   setIsGraph,
   setGraphData,
-  setFiles,
+  deleteFilesURL,
+  analyzeFileURL,
+  enableTable,
+  enableGraph,
+  enableAnalyze,
+  enableDelete,
+  relPath,
+  setDeletedFile,
 }) => {
   const [isFilePanel, setIsFilePanel] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,7 +47,7 @@ const FilesList = ({
   const handleDeleteFile = async (file, fileName) => {
     try {
       setLoading(true);
-      const url = `/api/v3/dataEntryOrderConfirmationDeleteFiles`;
+      const url = deleteFilesURL;
       await axiosPrivate(url, {
         method: "POST",
         data: JSON.stringify({ path: file }),
@@ -48,6 +55,7 @@ const FilesList = ({
       let result = [...currentFiles];
       result = result.filter((f) => f.file !== fileName);
       setCurrentFiles(result);
+      setDeletedFile(result);
       // setFiles(result);
       setLoading(false);
     } catch (err) {
@@ -65,14 +73,20 @@ const FilesList = ({
     const getData = async () => {
       try {
         setLoading(true);
-        const url = `api/v3/dataEntryOrderConfirmationAnalyze`;
+        const url = analyzeFileURL;
         const data = await axiosPrivate(url, {
           method: "POST",
           data: JSON.stringify({ path: file }),
         });
         console.log(data.data);
-        setTableData(data?.data);
-        setIsTable(true);
+        if (enableTable) {
+          setTableData(data?.data);
+          setIsTable(true);
+        } else if (enableGraph) {
+          setGraphData(data?.data);
+          setIsGraph(true);
+        }
+
         setLoading(false);
       } catch (err) {
         console.log(
@@ -117,7 +131,7 @@ const FilesList = ({
             ) : (
               <FaRegFile color="rgb(107,114,128)" />
             )}
-            <p className="text-[14px]">{file?.file}</p>
+            <p className="text-[14px] truncate">{file?.file}</p>
           </div>
 
           <p className="text-[14px] w-[50%] flex flex-row justify-start">
@@ -137,23 +151,26 @@ const FilesList = ({
                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
               }}
             >
-              <div
-                className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
-                onClick={() => {
-                  handleGetReport(`${path}/${file?.file}`, file?.file);
-                }}
-              >
-                <GoGraph size={14} color="rgb(107,114,128)" />
-                <button className="text-blue-700 text-[12px] rounded-md flex flex-row justify-center items-center">
-                  Analyze
-                </button>
-              </div>
+              {enableAnalyze && (
+                <div
+                  className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
+                  onClick={() => {
+                    handleGetReport(`${path}/${file?.file}`, file?.file);
+                  }}
+                >
+                  <GoGraph size={14} color="rgb(107,114,128)" />
+                  <button className="text-blue-700 text-[12px] rounded-md flex flex-row justify-center items-center">
+                    Analyze
+                  </button>
+                </div>
+              )}
+
               <div
                 className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
                 onClick={() => {
                   window
                     .open(
-                      `${baseURL}/${process.env.REACT_APP_ORDERCONFIRMATION_REL_PATH}/${path}/${file?.file}`,
+                      `${baseURL}/${relPath}/${path}/${file?.file}`,
                       "_blank"
                     )
                     .focus();
@@ -164,17 +181,20 @@ const FilesList = ({
                   Get File
                 </button>
               </div>
-              <div
-                className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
-                onClick={() =>
-                  handleDeleteFile(`${path}/${file?.file}`, file?.file)
-                }
-              >
-                <MdDelete size={14} color="rgb(107,114,128)" />
-                <button className="text-red-600 text-[12px] rounded-md flex flex-row justify-center items-center">
-                  Delete File
-                </button>
-              </div>
+
+              {enableDelete && (
+                <div
+                  className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
+                  onClick={() =>
+                    handleDeleteFile(`${path}/${file?.file}`, file?.file)
+                  }
+                >
+                  <MdDelete size={14} color="rgb(107,114,128)" />
+                  <button className="text-red-600 text-[12px] rounded-md flex flex-row justify-center items-center">
+                    Delete File
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

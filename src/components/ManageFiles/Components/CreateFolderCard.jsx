@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { ColorRing } from "react-loader-spinner";
 
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const CreateFolderCard = ({
   setIsCreateFolder,
@@ -10,6 +10,8 @@ const CreateFolderCard = ({
   currentFiles,
   setCurrentFiles,
   setFiles,
+  createFolderURL,
+  setCreatedFolder,
 }) => {
   const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -23,8 +25,8 @@ const CreateFolderCard = ({
     // console.log(Array.from(files));
     try {
       setLoading(true);
-      console.log(`${path}/${fileName}`);
-      const url = `/api/v3/dataEntryOrderInvoiceCreateFolder`;
+      // console.log(`${path}/${fileName}`);
+      const url = createFolderURL;
       await axiosPrivate(url, {
         method: "POST",
         data: JSON.stringify({ fullpath: `${path}/${fileName}` }),
@@ -38,6 +40,7 @@ const CreateFolderCard = ({
         type: "folder",
       });
       setCurrentFiles(result);
+      setCreatedFolder(result);
       //   setFiles(result);
       setLoading(false);
     } catch (err) {

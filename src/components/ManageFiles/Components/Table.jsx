@@ -18,11 +18,17 @@ import {
   PdfExport,
 } from "@syncfusion/ej2-react-grids";
 
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 import "../Styles/UploadCard.css";
 
-const Table = ({ setIsTable, tableData, setTableData, setLoading }) => {
+const Table = ({
+  setIsTable,
+  tableData,
+  setTableData,
+  setLoading,
+  addDataURL,
+}) => {
   const [isCanceled, setIsCanceled] = useState(false);
   const [tableGrid, setTableGrid] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
@@ -60,15 +66,14 @@ const Table = ({ setIsTable, tableData, setTableData, setLoading }) => {
       tableData?.map((item, i) => {
         targetTable.push({
           ID: i.toString(),
+          Order_No: item.OrderNo,
           Date: item.targetDate,
-          QuotationNo: item.targetQuotationNo,
-          OrderNo: item.targetOrderNo,
-          PartNo: item.partNo,
-          Description: item.Desc,
+          Equipment: item.Eq,
           Quantity: item.Quantity,
-          Unit: item.Unit,
-          UnitPrice: item.targetUnitPrice,
-          TotalPrice: item.targetTotalPrice,
+          Unit: item.unit,
+          Description: item.desc,
+          PartNumber: item.partNo,
+          Status: "Sent",
         });
       });
       setTableData(targetTable);
@@ -107,7 +112,7 @@ const Table = ({ setIsTable, tableData, setTableData, setLoading }) => {
   const handleSend = async () => {
     try {
       setLoading(true);
-      const url = `/api/v3/dataEntryOrderQuotationAddOrder`;
+      const url = addDataURL;
       const targetData = [];
       tableData.map((item) => {
         delete item.ID;

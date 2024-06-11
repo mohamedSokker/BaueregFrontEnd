@@ -4,21 +4,51 @@ import { ImFolder, ImFolderOpen } from "react-icons/im";
 import { ColorRing } from "react-loader-spinner";
 import { FaRegFile } from "react-icons/fa";
 
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
-const Folder = ({ filename, basePath, setCurrentPath, setCurrentFiles }) => {
+const Folder = ({
+  filename,
+  basePath,
+  setCurrentPath,
+  setCurrentFiles,
+  currentPath,
+  getFilesURL,
+  createdFolder,
+  deletedFile,
+  uploadedFiles,
+}) => {
   const [isFolderOpen, setIsFolderOpen] = useState(false);
   const [files, setFiles] = useState(null);
   const [path, setPath] = useState(`${basePath}/${filename}`);
   const [isHovered, setIsHovered] = useState(false);
 
   // console.log(path);
+  // console.log(currentPath);
+  // console.log(files);
+
+  useEffect(() => {
+    if (currentPath === path) {
+      setFiles(createdFolder);
+    }
+  }, [createdFolder]);
+
+  useEffect(() => {
+    if (currentPath === path) {
+      setFiles(deletedFile);
+    }
+  }, [deletedFile]);
+
+  useEffect(() => {
+    if (currentPath === path) {
+      setFiles(uploadedFiles);
+    }
+  }, [uploadedFiles]);
 
   const axiosPrivate = useAxiosPrivate();
 
   const getFiles = async (fullPath) => {
     try {
-      const url = `/api/v3/dataEntryOrderNoGetFiles`;
+      const url = getFilesURL;
       const response = await axiosPrivate(url, {
         method: "POST",
         data: JSON.stringify({
@@ -121,6 +151,11 @@ const Folder = ({ filename, basePath, setCurrentPath, setCurrentFiles }) => {
                     basePath={path}
                     setCurrentPath={setCurrentPath}
                     setCurrentFiles={setCurrentFiles}
+                    currentPath={currentPath}
+                    getFilesURL={getFilesURL}
+                    createdFolder={createdFolder}
+                    deletedFile={deletedFile}
+                    uploadedFiles={uploadedFiles}
                   />
                 ) : (
                   <div
@@ -129,7 +164,7 @@ const Folder = ({ filename, basePath, setCurrentPath, setCurrentFiles }) => {
                     onClick={() => {}}
                   >
                     <FaRegFile color="rgb(107,114,128)" />
-                    <p>{file?.file}</p>
+                    <p className="truncate">{file?.file}</p>
                   </div>
                 )
               )}

@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 import { IoMdGrid } from "react-icons/io";
 import { GiCrane, GiCargoCrane } from "react-icons/gi";
+import { TbReportAnalytics } from "react-icons/tb";
 import { TbTransferIn } from "react-icons/tb";
 import { TiShoppingCart } from "react-icons/ti";
 import { SiLinuxcontainers } from "react-icons/si";
@@ -14,7 +15,7 @@ import { MdOutlineFireTruck } from "react-icons/md";
 import { Cookies } from "react-cookie";
 import { dataEntry } from "./dataEntry";
 
-const Dashboard = lazy(() => import("../pages/Dashboard/view/Dashboard"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
 const ManageKanban = lazy(() => import("../pages/ManageKanban"));
 const Orders = lazy(() => import("../pages/Orders"));
 const OilSamples = lazy(() => import("../pages/OilSamples"));
@@ -96,7 +97,7 @@ export const links = [
     name: "breport",
     dest: "/breport",
     elem: <Files />,
-    icon: <GiCargoCrane size={20} />,
+    icon: <TbReportAnalytics size={20} />,
   },
   {
     title: "Orders",
@@ -136,7 +137,6 @@ export const links = [
     dest: "/catalogues",
     elem: <Catalogues />,
     icon: <RiBookLine size={20} />,
-    data: [],
   },
   {
     title: "Oil Samples",
