@@ -170,7 +170,9 @@ const FilesList = ({
                 onClick={() => {
                   window
                     .open(
-                      `${baseURL}/${relPath}/${path}/${file?.file}`,
+                      `${baseURL}/${relPath}/${path}/${file?.file}`
+                        .replace("#", "%23")
+                        .replace("#", "%23"),
                       "_blank"
                     )
                     .focus();
