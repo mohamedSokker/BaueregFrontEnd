@@ -83,7 +83,7 @@ export const allData = async (token) => {
     ],
     StocksList: AllStocks,
     Tables: AllTables,
-    Catalogues: [],
+    Catalogues: ["true"],
     OilSamples: ["true"],
     OilSamplesAnalyzed: ["true"],
     ManageUsers: ["true"],
@@ -131,7 +131,7 @@ export const allDataWithName = async () => {
     ],
     StocksList: allStocksWithName,
     Tables: allTablesWithName,
-    Catalogues: [],
+    Catalogues: true,
     OilSamples: true,
     OilSamplesAnalyzed: true,
     ManageUsers: [
