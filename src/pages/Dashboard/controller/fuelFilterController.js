@@ -43,9 +43,9 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       });
       const avTrenchData = copiedData.fuelCons.filter(
         (d) =>
-          d["Equipment"].startsWith("BG") ||
-          d["Equipment"].startsWith("BC") ||
-          d["Equipment"].startsWith("MC")
+          d?.Equipment.startsWith("BG") ||
+          d?.Equipment.startsWith("BC") ||
+          d?.Equipment.startsWith("MC")
       );
       avTrenchData.sort((a, b) => a["Date "] - b["Date "]);
       eqs = getUniqueArray(eqs);
