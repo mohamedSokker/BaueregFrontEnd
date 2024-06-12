@@ -169,17 +169,17 @@ const EditTables = ({ socket }) => {
           editSettings={{
             allowDeleting:
               usersData[0]?.roles?.Admin ||
-              usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+              CheckEditorRole(tableName, usersData)
                 ? true
                 : false,
             allowEditing:
               usersData[0]?.roles?.Admin ||
-              usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+              CheckEditorRole(tableName, usersData)
                 ? true
                 : false,
             allowAdding:
               usersData[0]?.roles?.Admin ||
-              usersData[0]?.roles?.Editor?.Tables.includes(tableName)
+              CheckEditorRole(tableName, usersData)
                 ? true
                 : false,
           }}
@@ -190,7 +190,8 @@ const EditTables = ({ socket }) => {
               if (
                 !usersData[0]?.roles?.Admin &&
                 !usersData[0]?.roles?.Editor?.Kanban &&
-                !usersData[0]?.roles?.User?.Kanban
+                !usersData[0]?.roles?.User?.Kanban &&
+                !CheckEditorRole(tableName, usersData)
               ) {
                 throw new Error(`You Are not authorized to edit tasks`);
               } else {
