@@ -1,5 +1,29 @@
 import ManageFiles from "../../../../../components/ManageFiles/View/ManageFiles";
 
+const columns = [
+  "Date",
+  "QuotationNo",
+  "OrderNo",
+  "PartNo",
+  "Description",
+  "Quantity",
+  "Unit",
+  "UnitPrice",
+  "TotalPrice",
+];
+
+const values = [
+  "targetDate",
+  "targetQuotationNo",
+  "targetOrderNo",
+  "partNo",
+  "Desc",
+  "Quantity",
+  "Unit",
+  "targetUnitPrice",
+  "targetTotalPrice",
+];
+
 const OrderQuotation = () => {
   return (
     <ManageFiles
@@ -17,6 +41,8 @@ const OrderQuotation = () => {
       enableAnalyze={true}
       enableTable={true}
       enableGraph={false}
+      columns={columns}
+      values={values}
     />
   );
 };

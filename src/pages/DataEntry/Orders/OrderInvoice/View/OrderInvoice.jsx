@@ -1,5 +1,31 @@
 import ManageFiles from "../../../../../components/ManageFiles/View/ManageFiles";
 
+const columns = [
+  "Date",
+  "InvoiceNo",
+  "ReferenceNo",
+  "OrderNo",
+  "Description",
+  "ItemNo",
+  "Quantity",
+  "Unit",
+  "Total_EURO",
+  "ShipmentMode",
+];
+
+const values = [
+  "targetDate",
+  "targetInvoiceNo",
+  "orderNo",
+  "referenceNo",
+  "desc",
+  "partNo",
+  "Quantity",
+  "unit",
+  "totalValue",
+  "targetShipmentMode",
+];
+
 const OrderInvoice = () => {
   return (
     <ManageFiles
@@ -17,6 +43,8 @@ const OrderInvoice = () => {
       enableAnalyze={true}
       enableTable={true}
       enableGraph={false}
+      columns={columns}
+      values={values}
     />
   );
 };

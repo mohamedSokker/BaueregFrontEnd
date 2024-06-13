@@ -31,6 +31,8 @@ const ManageFiles = ({
   enableAnalyze,
   enableTable,
   enableGraph,
+  columns,
+  values,
 }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -125,6 +127,8 @@ const ManageFiles = ({
           setTableData={setTableData}
           setLoading={setLoading}
           addDataURL={addDataURL}
+          columns={columns}
+          values={values}
         />
       )}
       {enableCreateFolder && isCreateFolder && (

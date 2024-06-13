@@ -28,6 +28,8 @@ const Table = ({
   setTableData,
   setLoading,
   addDataURL,
+  columns,
+  values,
 }) => {
   const [isCanceled, setIsCanceled] = useState(false);
   const [tableGrid, setTableGrid] = useState([]);
@@ -64,17 +66,11 @@ const Table = ({
       setTableGrid([]);
       let targetTable = [];
       tableData?.map((item, i) => {
-        targetTable.push({
-          ID: i.toString(),
-          Order_No: item.OrderNo,
-          Date: item.targetDate,
-          Equipment: item.Eq,
-          Quantity: item.Quantity,
-          Unit: item.unit,
-          Description: item.desc,
-          PartNumber: item.partNo,
-          Status: "Sent",
+        let schemas = { ID: i.toString() };
+        columns?.map((it, index) => {
+          schemas = { ...schemas, [it]: item[values[index]] };
         });
+        targetTable.push(schemas);
       });
       setTableData(targetTable);
       Object.keys(targetTable[0]).map((item, i) => {

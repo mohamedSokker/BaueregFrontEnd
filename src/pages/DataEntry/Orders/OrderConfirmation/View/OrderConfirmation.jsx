@@ -1,5 +1,33 @@
 import ManageFiles from "../../../../../components/ManageFiles/View/ManageFiles";
 
+const columns = [
+  "Date",
+  "ConfirmationNo",
+  "OrderNo",
+  "PartNo",
+  "Description",
+  "Quantity",
+  "Unit",
+  "UnitPrice",
+  "TotalPrice",
+  "DeliveryDate",
+  "ShipmentMode",
+];
+
+const values = [
+  "targetDate",
+  "targetConfirmNo",
+  "targetOrderNo",
+  "partNo",
+  "Desc",
+  "Quantity",
+  "Unit",
+  "targetUnitPrice",
+  "targetTotalPrice",
+  "deliveryDate",
+  "targetShipmentMode",
+];
+
 const OrderConfirmation = () => {
   return (
     <ManageFiles
@@ -17,6 +45,8 @@ const OrderConfirmation = () => {
       enableAnalyze={true}
       enableTable={true}
       enableGraph={false}
+      columns={columns}
+      values={values}
     />
   );
 };
