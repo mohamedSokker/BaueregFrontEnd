@@ -6,6 +6,7 @@ import { GoGraph } from "react-icons/go";
 import { ColorRing } from "react-loader-spinner";
 
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import RenameFolderCard from "./RenameFolderCard";
 
 const addHours = (anyDate, hours) => {
   const dt = new Date(anyDate);
@@ -22,6 +23,7 @@ const addHours = (anyDate, hours) => {
 const FilesList = ({
   file,
   path,
+  setMessage,
   currentFiles,
   setCurrentFiles,
   setTableData,
@@ -29,20 +31,53 @@ const FilesList = ({
   setIsGraph,
   setGraphData,
   deleteFilesURL,
+  renameFilesURL,
   analyzeFileURL,
   enableTable,
   enableGraph,
   enableAnalyze,
   enableDelete,
+  enableRename,
   relPath,
   setDeletedFile,
+  setRenamedFile,
+  getFilesURL,
+  setCurrentPath,
+  setFiles,
 }) => {
   const [isFilePanel, setIsFilePanel] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isRenameFolder, setIsRenameFolder] = useState(false);
+  const [newFileName, setNewFileName] = useState("");
 
   const baseURL = process.env.REACT_APP_BASE_URL;
 
   const axiosPrivate = useAxiosPrivate();
+
+  const getFiles = async (fullPath) => {
+    try {
+      setMessage(`Loading Files...`);
+      setLoading(true);
+      const url = getFilesURL;
+      const response = await axiosPrivate(url, {
+        method: "POST",
+        data: JSON.stringify({
+          fullpath: fullPath,
+        }),
+      });
+      setCurrentFiles(response?.data?.data);
+      setCurrentPath(`${path}/${file.file}`);
+      // console.log(response?.data?.data);
+      setLoading(false);
+    } catch (err) {
+      console.log(
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message
+      );
+      setLoading(false);
+    }
+  };
 
   const handleDeleteFile = async (file, fileName) => {
     try {
@@ -100,8 +135,33 @@ const FilesList = ({
     getData();
   };
 
+  const handleFileClick = async (e) => {
+    if (file.type === "folder") {
+      await getFiles(`${path}/${file.file}`);
+    }
+  };
+
+  const handleFileRightClick = (e) => {
+    e.preventDefault();
+    setIsFilePanel((prev) => !prev);
+  };
+
   return (
     <>
+      {enableRename && isRenameFolder && (
+        <RenameFolderCard
+          setIsRenameFolder={setIsRenameFolder}
+          path={path}
+          currentFiles={currentFiles}
+          setCurrentFiles={setCurrentFiles}
+          setFiles={setFiles}
+          renameFilesURL={renameFilesURL}
+          setRenamedFile={setRenamedFile}
+          newFileName={newFileName}
+          setNewFileName={setNewFileName}
+          oldFileName={file}
+        />
+      )}
       {loading ? (
         <div className="w-full relative p-2 flex flex-row justify-start gap-2 items-center border-t-1 border-t-gray-300 ">
           <ColorRing
@@ -123,9 +183,12 @@ const FilesList = ({
       ) : (
         <div
           className="w-full relative p-2 flex flex-row justify-between items-center border-t-1 border-t-gray-300 hover:cursor-pointer hover:bg-gray-100"
-          onClick={() => setIsFilePanel((prev) => !prev)}
+          onContextMenu={handleFileRightClick}
         >
-          <div className="flex flex-row items-center gap-2 w-[40%] justify-start">
+          <div
+            className="flex flex-row items-center gap-2 w-[40%] justify-start"
+            onClick={handleFileClick}
+          >
             {file.type === "folder" ? (
               <ImFolder color="#54AEFF" />
             ) : (
@@ -156,6 +219,7 @@ const FilesList = ({
                   className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
                   onClick={() => {
                     handleGetReport(`${path}/${file?.file}`, file?.file);
+                    setIsFilePanel(false);
                   }}
                 >
                   <GoGraph size={14} color="rgb(107,114,128)" />
@@ -176,6 +240,7 @@ const FilesList = ({
                       "_blank"
                     )
                     .focus();
+                  setIsFilePanel(false);
                 }}
               >
                 <MdDriveFileRenameOutline size={14} color="rgb(107,114,128)" />
@@ -187,13 +252,32 @@ const FilesList = ({
               {enableDelete && (
                 <div
                   className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
-                  onClick={() =>
-                    handleDeleteFile(`${path}/${file?.file}`, file?.file)
-                  }
+                  onClick={() => {
+                    handleDeleteFile(`${path}/${file?.file}`, file?.file);
+                    setIsFilePanel(false);
+                  }}
                 >
                   <MdDelete size={14} color="rgb(107,114,128)" />
                   <button className="text-red-600 text-[12px] rounded-md flex flex-row justify-center items-center">
                     Delete File
+                  </button>
+                </div>
+              )}
+              {enableRename && (
+                <div
+                  className="flex flex-row items-center w-full hover:bg-gray-200 rounded-md py-1 px-2 gap-2"
+                  onClick={() => {
+                    // handleRenameFile(`${path}/${file?.file}`, file?.file);
+                    setIsRenameFolder(true);
+                    setIsFilePanel(false);
+                  }}
+                >
+                  <MdDriveFileRenameOutline
+                    size={14}
+                    color="rgb(107,114,128)"
+                  />
+                  <button className="text-violet-600 text-[12px] rounded-md flex flex-row justify-center items-center">
+                    Rename File
                   </button>
                 </div>
               )}

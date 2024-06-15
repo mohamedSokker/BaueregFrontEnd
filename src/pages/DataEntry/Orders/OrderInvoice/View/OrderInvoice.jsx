@@ -35,11 +35,14 @@ const OrderInvoice = () => {
       createFolderURL={`/api/v3/dataEntryOrderInvoiceCreateFolder`}
       uploadURL={`/api/v3/dataEntryOrderInvoiceUploadFiles`}
       deleteFilesURL={`/api/v3/dataEntryOrderInvoiceDeleteFiles`}
+      searchFileURL={`/api/v3/dataEntryOrderInvoiceSearchFiles`}
+      renameFilesURL={`/api/v3/dataEntryOrderInvoiceRenameFiles`}
       analyzeFileURL={`/api/v3/dataEntryOrderInvoiceAnalyze`}
       addDataURL={`/api/v3/dataEntryOrderInvoiceAddOrder`}
       enableCreateFolder={true}
       enableUpload={true}
       enableDelete={true}
+      enableRename={true}
       enableAnalyze={true}
       enableTable={true}
       enableGraph={false}

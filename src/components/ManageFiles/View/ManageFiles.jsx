@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { ImFolder } from "react-icons/im";
 import { FaRegFile } from "react-icons/fa";
-import { MdArrowDropDown, MdOutlineFileUpload } from "react-icons/md";
+import {
+  MdArrowDropDown,
+  MdOutlineFileUpload,
+  MdOutlineArrowBackIosNew,
+} from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
 import { ColorRing } from "react-loader-spinner";
 
@@ -15,6 +19,7 @@ import Graphs from "../Components/Graphs";
 import CreateFolderCard from "../Components/CreateFolderCard";
 import { Link } from "react-router-dom";
 import Table from "../Components/Table";
+import RenameFolderCard from "../Components/RenameFolderCard";
 
 const ManageFiles = ({
   absPath,
@@ -24,10 +29,14 @@ const ManageFiles = ({
   createFolderURL,
   uploadURL,
   deleteFilesURL,
+  searchFileURL,
+  renameFilesURL,
   analyzeFileURL,
   enableCreateFolder,
+  enableRenameFolder,
   enableUpload,
   enableDelete,
+  enableRename,
   enableAnalyze,
   enableTable,
   enableGraph,
@@ -49,9 +58,17 @@ const ManageFiles = ({
   const [tableData, setTableData] = useState([]);
   const [createdFolder, setCreatedFolder] = useState(null);
   const [deletedFile, setDeletedFile] = useState(null);
+  const [renamedFile, setRenamedFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState(null);
+  const [searchData, setSearchData] = useState("");
+  const [searchedItems, setSearchedItems] = useState([]);
+  const [searchedFiles, setSearchedFiles] = useState([]);
+
+  // console.log(searchedItems);
 
   const axiosPrivate = useAxiosPrivate();
+
+  // console.log(files);
 
   useEffect(() => {
     if (currentPath === path) {
@@ -64,6 +81,12 @@ const ManageFiles = ({
       setFiles(deletedFile);
     }
   }, [deletedFile]);
+
+  useEffect(() => {
+    if (currentPath === path) {
+      setFiles(renamedFile);
+    }
+  }, [renamedFile]);
 
   useEffect(() => {
     if (currentPath === path) {
@@ -96,6 +119,31 @@ const ManageFiles = ({
     }
   };
 
+  const getCurrentFiles = async (fullPath) => {
+    try {
+      setMessage(`Loading Files...`);
+      setLoading(true);
+      const url = getFilesURL;
+      const response = await axiosPrivate(url, {
+        method: "POST",
+        data: JSON.stringify({
+          fullpath: fullPath,
+        }),
+      });
+      // setFiles(response?.data?.data);
+      setCurrentFiles(response?.data?.data);
+      // console.log(response?.data?.data);
+      setLoading(false);
+    } catch (err) {
+      console.log(
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message
+      );
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getFiles(path);
   }, []);
@@ -106,6 +154,63 @@ const ManageFiles = ({
     setCurrentPath("");
     await getFiles("");
   };
+
+  const handleBack = async () => {
+    console.log(currentPath);
+
+    if (currentFiles !== "") {
+      setCurrentPath(
+        currentPath
+          .split("/")
+          .slice(0, currentPath.split("/").length - 1)
+          .join("/")
+      );
+      await getCurrentFiles(
+        currentPath
+          .split("/")
+          .slice(0, currentPath.split("/").length - 1)
+          .join("/")
+      );
+    }
+  };
+
+  const handleSearch = async (e) => {
+    try {
+      e.preventDefault();
+      setMessage(`Loading Files...`);
+      setLoading(true);
+      setSearchedItems([]);
+      setSearchedFiles([]);
+      if (searchData === "") {
+        throw new Error(`Write something in search`);
+      }
+      const url = searchFileURL;
+      const response = await axiosPrivate(url, {
+        method: "POST",
+        data: JSON.stringify({
+          path: path,
+          search: searchData,
+        }),
+      });
+      // setFiles(response?.data?.data);
+      // setCurrentFiles(response?.data?.data);
+      let result = [];
+      response?.data?.map((item) => {
+        result.push(item.slice(1));
+      });
+      setSearchedItems(result);
+      console.log(result);
+      setLoading(false);
+    } catch (err) {
+      console.log(
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message
+      );
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {loading && <PageLoading message={message} />}
@@ -142,6 +247,7 @@ const ManageFiles = ({
           setCreatedFolder={setCreatedFolder}
         />
       )}
+
       {enableGraph && isGraph && (
         <Graphs setIsGraph={setIsGraph} graphData={graphData} />
       )}
@@ -157,16 +263,23 @@ const ManageFiles = ({
             Files
           </div>
           <div className="w-full relative flex flex-row items-center justify-center px-2">
-            <div className="absolute left-4">
-              <IoSearchOutline size={14} color="rgb(107,114,128)" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search"
-              className="px-6 py-1 text-[12px] outline-none w-full border-1 border-gray-300 rounded-md"
-            />
+            <form
+              className="w-full flex flex-row items-center"
+              onSubmit={handleSearch}
+            >
+              <div className="absolute left-4">
+                <IoSearchOutline size={14} color="rgb(107,114,128)" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchData}
+                onChange={(e) => setSearchData(e.target.value)}
+                className="px-6 py-1 text-[12px] outline-none w-full border-1 border-gray-300 rounded-md"
+              />
+            </form>
           </div>
-          <div className="w-full h-full text-[14px] px-2 flex flex-col items-start overflow-y-scroll">
+          <div className="w-full h-full text-[14px] px-2 flex flex-col items-start overflow-y-scroll gap-2">
             {files &&
               files.map((file, i) =>
                 file.type === "folder" ? (
@@ -181,13 +294,22 @@ const ManageFiles = ({
                     getFilesURL={getFilesURL}
                     createdFolder={createdFolder}
                     deletedFile={deletedFile}
+                    renamedFile={renamedFile}
                     uploadedFiles={uploadedFiles}
+                    searchedItems={searchedItems}
+                    searchedFiles={searchedFiles}
+                    setSearchedFiles={setSearchedFiles}
                   />
                 ) : (
                   <div
                     key={i}
                     className="w-full px-4 py-1 flex flex-row gap-2 justify-start items-center rounded-md hover:bg-gray-200 hover:cursor-pointer"
                     onClick={() => {}}
+                    style={{
+                      backgroundColor: searchedItems.includes(file?.file)
+                        ? "rgb(209,213,219)"
+                        : "",
+                    }}
                   >
                     <FaRegFile color="rgb(107,114,128)" />
                     <p className="truncate">{file?.file}</p>
@@ -199,6 +321,12 @@ const ManageFiles = ({
         <div className="w-[75%] px-1 h-full flex flex-col gap-2">
           <div className="w-full h-[32px] flex flex-row justify-between">
             <div className="h-full text-[16px] font-[700] text-[#0969DA] flex flex-row gap-4 items-center">
+              <p
+                className="hover:underline hover:cursor-pointer"
+                onClick={handleBack}
+              >
+                <MdOutlineArrowBackIosNew />
+              </p>
               <p
                 className="hover:underline hover:cursor-pointer"
                 onClick={handleHomeClick}
@@ -268,6 +396,7 @@ const ManageFiles = ({
                   key={i}
                   file={file}
                   path={currentPath}
+                  setMessage={setMessage}
                   currentFiles={currentFiles}
                   setCurrentFiles={setCurrentFiles}
                   setIsGraph={setIsGraph}
@@ -276,13 +405,18 @@ const ManageFiles = ({
                   setTableData={setTableData}
                   setIsTable={setIsTable}
                   deleteFilesURL={deleteFilesURL}
+                  renameFilesURL={renameFilesURL}
                   analyzeFileURL={analyzeFileURL}
                   enableTable={enableTable}
                   enableGraph={enableGraph}
                   enableAnalyze={enableAnalyze}
                   enableDelete={enableDelete}
+                  enableRename={enableRename}
                   relPath={relPath}
                   setDeletedFile={setDeletedFile}
+                  setRenamedFile={setRenamedFile}
+                  getFilesURL={getFilesURL}
+                  setCurrentPath={setCurrentPath}
                 />
               ))
             ) : (

@@ -37,11 +37,14 @@ const OrderConfirmation = () => {
       createFolderURL={`/api/v3/dataEntryOrderConfirmationCreateFolder`}
       uploadURL={`/api/v3/dataEntryOrderConfirmationUploadFiles`}
       deleteFilesURL={`/api/v3/dataEntryOrderConfirmationDeleteFiles`}
+      searchFileURL={`/api/v3/dataEntryOrderConfirmationSearchFiles`}
+      renameFilesURL={`/api/v3/dataEntryOrderConfirmationRenameFiles`}
       analyzeFileURL={`/api/v3/dataEntryOrderConfirmationAnalyze`}
       addDataURL={`/api/v3/dataEntryOrderConfirmationAddOrder`}
       enableCreateFolder={true}
       enableUpload={true}
       enableDelete={true}
+      enableRename={true}
       enableAnalyze={true}
       enableTable={true}
       enableGraph={false}

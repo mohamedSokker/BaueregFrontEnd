@@ -31,11 +31,14 @@ const OrderNo = () => {
       createFolderURL={`/api/v3/dataEntryOrderNoCreateFolder`}
       uploadURL={`/api/v3/dataEntryOrderNoUploadFiles`}
       deleteFilesURL={`/api/v3/dataEntryOrderNoDeleteFiles`}
+      searchFileURL={`/api/v3/dataEntryOrderNoSearchFiles`}
+      renameFilesURL={`/api/v3/dataEntryOrderNoRenameFiles`}
       analyzeFileURL={`/api/v3/dataEntryOrderNoAnalyze`}
       addDataURL={`/api/v3/dataEntryOrderNoAddOrder`}
       enableCreateFolder={true}
       enableUpload={true}
       enableDelete={true}
+      enableRename={true}
       enableAnalyze={true}
       enableTable={true}
       enableGraph={false}

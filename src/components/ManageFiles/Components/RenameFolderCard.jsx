@@ -6,46 +6,52 @@ import "../Styles/UploadCard.css";
 
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
-const CreateFolderCard = ({
-  setIsCreateFolder,
+const RenameFolderCard = ({
+  setIsRenameFolder,
   path,
   currentFiles,
   setCurrentFiles,
   setFiles,
-  createFolderURL,
-  setCreatedFolder,
+  renameFilesURL,
+  setRenamedFile,
+  newFileName,
+  setNewFileName,
+  oldFileName,
 }) => {
   const baseURL = process.env.REACT_APP_BASE_URL;
-
-  console.log(path);
 
   const axiosPrivate = useAxiosPrivate();
 
   const [isCanceled, setIsCanceled] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [fileName, setFileName] = useState("");
 
-  const handleCreateFolder = async () => {
-    // console.log(Array.from(files));
+  useEffect(() => {
+    setNewFileName(oldFileName.file);
+  }, []);
+
+  const handleRenameFile = async (file, oldFile) => {
     try {
       setLoading(true);
-      // console.log(`${path}/${fileName}`);
-      const url = createFolderURL;
+      const url = renameFilesURL;
+      //   const newPath = prompt("Enter New Folder Name");
       await axiosPrivate(url, {
         method: "POST",
-        data: JSON.stringify({ fullpath: `${path}/${fileName}` }),
+        data: JSON.stringify({
+          path: oldFileName.file,
+          endPath: `${path}/${newFileName}`,
+        }),
       });
-      //   console.log(currentFiles);
-      let result = [...currentFiles];
-      result = result.concat({
-        dateCreated: new Date(),
-        file: fileName,
-        size: 0,
-        type: "folder",
+      let result = [];
+      currentFiles.map((f) => {
+        if (f.file === oldFileName.file) {
+          result.push({ ...f, file: newFileName });
+        } else {
+          result.push(f);
+        }
       });
       setCurrentFiles(result);
-      setCreatedFolder(result);
-      //   setFiles(result);
+      setRenamedFile(result);
+      // setFiles(result);
       setLoading(false);
     } catch (err) {
       console.log(
@@ -86,7 +92,7 @@ const CreateFolderCard = ({
                 onClick={() => {
                   setIsCanceled(true);
                   setTimeout(() => {
-                    setIsCreateFolder(false);
+                    setIsRenameFolder(false);
                   }, 500);
                 }}
               >
@@ -101,8 +107,8 @@ const CreateFolderCard = ({
           <input
             className="w-full border-b-1 border-gray-300 outline-none focus:border-red-400 font-[400] text-[12px] pl-4"
             type="text"
-            value={fileName}
-            onChange={(e) => setFileName(e.target.value)}
+            value={newFileName}
+            onChange={(e) => setNewFileName(e.target.value)}
             onFocus={(e) => {
               e.target.previousElementSibling.classList.add("focused");
             }}
@@ -116,11 +122,11 @@ const CreateFolderCard = ({
           <button
             className="text-red-400 font-[600] text-[14px]"
             onClick={async () => {
-              handleCreateFolder();
+              handleRenameFile();
               // handleSave(val, category);
               setIsCanceled(true);
               setTimeout(() => {
-                setIsCreateFolder(false);
+                setIsRenameFolder(false);
               }, 500);
             }}
           >
@@ -132,4 +138,4 @@ const CreateFolderCard = ({
   );
 };
 
-export default CreateFolderCard;
+export default RenameFolderCard;

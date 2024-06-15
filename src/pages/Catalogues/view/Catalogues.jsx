@@ -9,6 +9,7 @@ const Catalogues = () => {
       createFolderURL={`/api/v3/CataloguesCreateFolder`}
       uploadURL={`/api/v3/CataloguesUploadFiles`}
       deleteFilesURL={`/api/v3/CataloguesDeleteFiles`}
+      searchFileURL={`/api/v3/CataloguesSearchFiles`}
       //   analyzeFileURL={`/api/v3/dataEntryOrderInvoiceAnalyze`}
       //   addDataURL={`/api/v3/dataEntryOrderInvoiceAddOrder`}
       enableCreateFolder={true}

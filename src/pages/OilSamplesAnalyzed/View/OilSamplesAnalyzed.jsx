@@ -9,9 +9,11 @@ const OrderNo = () => {
       createFolderURL={`/api/v3/oilSampleAnalyzedCreateFolder`}
       uploadURL={`/api/v3/oilSampleAnalyzedUploadFiles`}
       deleteFilesURL={`/api/v3/oilSampleAnalyzedDeleteFiles`}
+      searchFileURL={`/api/v3/oilSampleAnalyzedSearchFiles`}
       enableCreateFolder={false}
       enableUpload={false}
       enableDelete={true}
+      enableRename={false}
       enableAnalyze={false}
       enableTable={false}
       enableGraph={false}

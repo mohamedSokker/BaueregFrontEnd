@@ -16,15 +16,45 @@ const Folder = ({
   createdFolder,
   deletedFile,
   uploadedFiles,
+  renamedFile,
+  searchedItems,
+  searchedFiles,
+  setSearchedFiles,
 }) => {
   const [isFolderOpen, setIsFolderOpen] = useState(false);
   const [files, setFiles] = useState(null);
-  const [path, setPath] = useState(`${basePath}/${filename}`);
+  const [path, setPath] = useState("");
   const [isHovered, setIsHovered] = useState(false);
 
   // console.log(path);
   // console.log(currentPath);
   // console.log(files);
+  // console.log(searchedFiles);
+  // console.log(searchedItems);
+
+  useEffect(() => {
+    // console.log(searchedItems);
+    // openArrow(path);
+    searchedItems.map((item) => {
+      const filesArray = item.split("/");
+      // filesArray.map((file) => {
+      // console.log(file);
+      if (filesArray.includes(filename)) {
+        setSearchedFiles((prev) =>
+          Array.from(new Set([...prev, filesArray[filesArray.length - 1]]))
+        );
+        if (path !== "") {
+          openArrow();
+        }
+        // openArrow();
+      }
+      // });
+    });
+  }, [searchedItems, path]);
+
+  useEffect(() => {
+    setPath(`${basePath}/${filename}`);
+  }, [filename]);
 
   useEffect(() => {
     if (currentPath === path) {
@@ -37,6 +67,12 @@ const Folder = ({
       setFiles(deletedFile);
     }
   }, [deletedFile]);
+
+  useEffect(() => {
+    if (currentPath === path) {
+      setFiles(renamedFile);
+    }
+  }, [renamedFile]);
 
   useEffect(() => {
     if (currentPath === path) {
@@ -67,11 +103,18 @@ const Folder = ({
     }
   };
 
+  const openArrow = async () => {
+    if (!isFolderOpen) {
+      setIsFolderOpen(true);
+      await getFiles(`${path}`);
+    }
+  };
+
   const handleArrowClick = async () => {
     setIsFolderOpen((prev) => !prev);
     if (!isFolderOpen) {
       await getFiles(path);
-      setPath(`${path}`);
+      // setPath(`${path}`);
     }
   };
 
@@ -156,12 +199,21 @@ const Folder = ({
                     createdFolder={createdFolder}
                     deletedFile={deletedFile}
                     uploadedFiles={uploadedFiles}
+                    renamedFile={renamedFile}
+                    searchedItems={searchedItems}
+                    searchedFiles={searchedFiles}
+                    setSearchedFiles={setSearchedFiles}
                   />
                 ) : (
                   <div
                     key={i}
                     className="w-full px-4 py-1 flex flex-row gap-2 justify-start items-center rounded-md hover:bg-gray-200 hover:cursor-pointer"
                     onClick={() => {}}
+                    style={{
+                      backgroundColor: searchedFiles.includes(file?.file)
+                        ? "rgb(209,213,219)"
+                        : "",
+                    }}
                   >
                     <FaRegFile color="rgb(107,114,128)" />
                     <p className="truncate">{file?.file}</p>
