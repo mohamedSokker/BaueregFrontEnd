@@ -4,6 +4,8 @@ export const dataEntry = [
   { name: "EquipmentsLocation" },
   { name: "MachinaryLocation" },
   { name: "Machinary" },
+  { name: "Tools" },
+  { name: "ToolsLocation" },
 ];
 
 export const dataEntrtArray = [
@@ -12,4 +14,6 @@ export const dataEntrtArray = [
   "EquipmentsLocation",
   "MachinaryLocation",
   "Machinary",
+  "Tools",
+  "ToolsLocation",
 ];

@@ -7,6 +7,7 @@ import { ColorRing } from "react-loader-spinner";
 
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import RenameFolderCard from "./RenameFolderCard";
+import { useNavContext } from "../../../contexts/NavContext";
 
 const addHours = (anyDate, hours) => {
   const dt = new Date(anyDate);
@@ -50,7 +51,9 @@ const FilesList = ({
   const [isRenameFolder, setIsRenameFolder] = useState(false);
   const [newFileName, setNewFileName] = useState("");
 
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const { setErrorData } = useNavContext();
+
+  const baseURL = import.meta.env.VITE_BASE_URL;
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -70,6 +73,12 @@ const FilesList = ({
       // console.log(response?.data?.data);
       setLoading(false);
     } catch (err) {
+      setErrorData((prev) => [
+        ...prev,
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message,
+      ]);
       console.log(
         err?.response?.data?.message
           ? err?.response?.data?.message
@@ -94,6 +103,12 @@ const FilesList = ({
       // setFiles(result);
       setLoading(false);
     } catch (err) {
+      setErrorData((prev) => [
+        ...prev,
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message,
+      ]);
       console.log(
         err?.response?.data?.message
           ? err?.response?.data?.message
@@ -124,6 +139,12 @@ const FilesList = ({
 
         setLoading(false);
       } catch (err) {
+        setErrorData((prev) => [
+          ...prev,
+          err?.response?.data?.message
+            ? err?.response?.data?.message
+            : err?.message,
+        ]);
         console.log(
           err?.response?.data?.message
             ? err?.response?.data?.message

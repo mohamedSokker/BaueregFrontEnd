@@ -5,6 +5,7 @@ import { ColorRing } from "react-loader-spinner";
 import "../Styles/UploadCard.css";
 
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { useNavContext } from "../../../contexts/NavContext";
 
 const RenameFolderCard = ({
   setIsRenameFolder,
@@ -18,12 +19,14 @@ const RenameFolderCard = ({
   setNewFileName,
   oldFileName,
 }) => {
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const baseURL = import.meta.env.VITE_BASE_URL;
 
   const axiosPrivate = useAxiosPrivate();
 
   const [isCanceled, setIsCanceled] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { setErrorData } = useNavContext();
 
   useEffect(() => {
     setNewFileName(oldFileName.file);
@@ -54,6 +57,12 @@ const RenameFolderCard = ({
       // setFiles(result);
       setLoading(false);
     } catch (err) {
+      setErrorData((prev) => [
+        ...prev,
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message,
+      ]);
       console.log(
         err?.response?.data?.message
           ? err?.response?.data?.message

@@ -5,6 +5,7 @@ import { ColorRing } from "react-loader-spinner";
 import { FaRegFile } from "react-icons/fa";
 
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { useNavContext } from "../../../contexts/NavContext";
 
 const Folder = ({
   filename,
@@ -25,6 +26,8 @@ const Folder = ({
   const [files, setFiles] = useState(null);
   const [path, setPath] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+
+  const { setErrorData } = useNavContext();
 
   // console.log(path);
   // console.log(currentPath);
@@ -95,6 +98,12 @@ const Folder = ({
       // console.log(response?.data?.data);
       return response?.data?.data;
     } catch (err) {
+      setErrorData((prev) => [
+        ...prev,
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message,
+      ]);
       console.log(
         err?.response?.data?.message
           ? err?.response?.data?.message

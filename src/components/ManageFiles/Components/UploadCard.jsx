@@ -3,6 +3,7 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { ColorRing } from "react-loader-spinner";
 
 import "../Styles/UploadCard.css";
+import { useNavContext } from "../../../contexts/NavContext";
 
 const UploadCard = ({
   setIsUploadCard,
@@ -12,11 +13,13 @@ const UploadCard = ({
   uploadURL,
   setUploadedFiles,
 }) => {
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const baseURL = import.meta.env.VITE_BASE_URL;
 
   const [isCanceled, setIsCanceled] = useState(false);
   const [files, setFiles] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const { setErrorData } = useNavContext();
 
   const inputRef = useRef();
 
@@ -59,6 +62,12 @@ const UploadCard = ({
         setLoading(false);
       })
       .catch((err) => {
+        setErrorData((prev) => [
+          ...prev,
+          err?.response?.data?.message
+            ? err?.response?.data?.message
+            : err?.message,
+        ]);
         console.log(err.message);
         setLoading(false);
       });
