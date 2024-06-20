@@ -3,8 +3,8 @@ import ManageFiles from "../../../../components/ManageFiles/View/ManageFiles";
 const UploadFiles = () => {
   return (
     <ManageFiles
-      absPath={import.meta.env.VITE_EQSTOOLSLOCUPLOAD_ABS_PATH}
-      relPath={import.meta.env.VITE_EQSTOOLSLOCUPLOAD_REL_PATH}
+      absPath={process.env.REACT_APP_EQSTOOLSLOCUPLOAD_ABS_PATH}
+      relPath={process.env.REACT_APP_EQSTOOLSLOCUPLOAD_REL_PATH}
       getFilesURL={`/api/v3/EqsToolsUploadGetFiles`}
       createFolderURL={`/api/v3/EqsToolsUploadCreateFolder`}
       uploadURL={`/api/v3/EqsToolsUploadUploadFiles`}

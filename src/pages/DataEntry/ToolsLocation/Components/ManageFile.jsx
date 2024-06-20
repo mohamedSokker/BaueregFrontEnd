@@ -3,8 +3,8 @@ import ManageFiles from "../../../../components/ManageFiles/View/ManageFiles";
 const ManageFile = () => {
   return (
     <ManageFiles
-      absPath={import.meta.env.VITE_EQSTOOLSLOC_ABS_PATH}
-      relPath={import.meta.env.VITE_EQSTOOLSLOC_REL_PATH}
+      absPath={process.env.REACT_APP_EQSTOOLSLOC_ABS_PATH}
+      relPath={process.env.REACT_APP_EQSTOOLSLOC_REL_PATH}
       getFilesURL={`/api/v3/EqsToolsLocGetFiles`}
       enableCreateFolder={false}
       enableUpload={false}

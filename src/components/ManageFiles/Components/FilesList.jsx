@@ -53,7 +53,7 @@ const FilesList = ({
 
   const { setErrorData } = useNavContext();
 
-  const baseURL = import.meta.env.VITE_BASE_URL;
+  const baseURL = process.env.REACT_APP_BASE_URL;
 
   const axiosPrivate = useAxiosPrivate();
 

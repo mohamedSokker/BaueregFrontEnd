@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import PageLoading from "../../../../components/PageLoading";
 
-const path = import.meta.env.VITE_PERMAINT_ABS_PATH;
+const path = process.env.REACT_APP_PERMAINT_ABS_PATH;
 
 const PerMaint = ({
   setPerMaintData,
