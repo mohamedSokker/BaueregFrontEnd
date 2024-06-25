@@ -215,9 +215,18 @@ const EditTables = ({ socket }) => {
                   args.action === "add" &&
                   args.requestType === "save"
                 ) {
+                  const data = args.data;
+                  delete data.ID;
+                  let result = {};
+                  Object.keys(data).map((item) => {
+                    !data[item]
+                      ? (result = { ...result, [item]: "" })
+                      : (result = { ...result, [item]: data[item] });
+                  });
+                  console.log(result);
                   axiosPrivate(`/api/v3/${tableName}`, {
                     method: "POST",
-                    data: JSON.stringify(grid.currentViewData[0]),
+                    data: JSON.stringify(result),
                   });
                 }
               }
