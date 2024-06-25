@@ -31,8 +31,11 @@ const useDropdown = ({
         switch (label) {
           case "Location":
             let sites = [];
+            const sitesObj = siteData?.allSites ? siteData?.allSites : [];
+            sitesObj.map((item) => {
+              sites.push(item?.Location);
+            });
 
-            sites = siteData?.usersResult ? siteData?.usersResult : [];
             if (sites)
               sites = sites?.filter(
                 (value, index, array) => array.indexOf(value) === index
