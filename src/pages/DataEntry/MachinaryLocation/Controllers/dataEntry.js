@@ -37,7 +37,7 @@ const useDataEntry = () => {
           setLoading(true);
           setMessage(`Loading Selection Data...`);
           const URLs = [
-            "/api/v1/getActiveMachinary",
+            "/api/v1/getActiveData",
             "/api/v1/getBreakdowns",
             "/api/v1/getUserSites",
           ];
