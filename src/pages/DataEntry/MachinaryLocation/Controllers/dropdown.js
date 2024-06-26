@@ -32,7 +32,7 @@ const useDropdown = ({
           case "Location":
             let sites = [];
             console.log(siteData);
-            siteData?.sitesResult.map((item) => {
+            siteData?.allBreakdownTypes.map((item) => {
               sites.push(item.Location);
             });
             // sites = siteData?.usersResult ? siteData?.usersResult : [];
