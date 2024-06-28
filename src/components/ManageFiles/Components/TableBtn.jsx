@@ -21,6 +21,7 @@ import {
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 import "../Styles/UploadCard.css";
+import { ColorRing } from "react-loader-spinner";
 
 const TableBtn = ({
   setIsTableBtn,
@@ -32,6 +33,7 @@ const TableBtn = ({
   const [tableGrid, setTableGrid] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
   const [selectedIndex, setSelectedIndex] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -60,6 +62,7 @@ const TableBtn = ({
 
   const getData = async () => {
     try {
+      setIsLoading(true);
       const url = tableBtnURL;
 
       const response = await axiosPrivate(url, {
@@ -69,7 +72,7 @@ const TableBtn = ({
       console.log(response.data);
 
       setTableGrid([]);
-      let targetTable = response.data;
+      let targetTable = response.data.sort((a, b) => b?.ID - a?.ID);
 
       setTableBtnData(targetTable);
       targetTable &&
@@ -85,12 +88,14 @@ const TableBtn = ({
             },
           ]);
         });
+      setIsLoading(false);
     } catch (err) {
       console.log(
         err?.response?.data?.message
           ? err?.response?.data?.message
           : err?.message
       );
+      setIsLoading(false);
     }
   };
 
@@ -150,47 +155,68 @@ const TableBtn = ({
           </div>
         </div>
 
-        <div className="w-full">
-          <GridComponent
-            dataSource={tableBtnData}
-            recordDoubleClick={handleCellDoubleClick}
-            allowPaging
-            allowSorting
-            allowFiltering={true}
-            filterSettings={filterOptions}
-            // height={250}
-            allowResizing={true}
-            pageSettings={{ pageSize: 7 }}
-            autoFit={true}
-            rowSelected={rowsSelected}
-            ref={(g) => (grid = g)}
-            toolbar={["Search", "ExcelExport", "PdfExport"]}
-            toolbarClick={toolbarClick}
-            allowExcelExport={true}
-            allowPdfExport={true}
-          >
-            <ColumnsDirective>
-              {tableGrid.map((item, index) => (
-                <ColumnDirective key={index} {...item} />
-              ))}
-            </ColumnsDirective>
-            <Inject
-              services={[
-                Page,
-                Edit,
-                Toolbar,
-                Selection,
-                Sort,
-                Filter,
-                Search,
-                Resize,
-                ContextMenu,
-                ExcelExport,
-                PdfExport,
+        {isLoading ? (
+          <div className="flex flex-col gap-2 w-full justify-center items-center">
+            <ColorRing
+              type="ColorRing"
+              colors={[
+                "rgb(0,74,128,0.7)",
+                "rgb(0,74,128,0.7)",
+                "rgb(0,74,128,0.7)",
+                "rgb(0,74,128,0.7)",
+                "rgb(0,74,128,0.7)",
               ]}
+              height={40}
+              width={200}
             />
-          </GridComponent>
-        </div>
+            <p className="text-lg text-center px-2 text-[rgb(0,74,128,0.7)] font-bold">
+              {`Loading Table...`}
+            </p>
+          </div>
+        ) : (
+          <div className="w-full">
+            <GridComponent
+              dataSource={tableBtnData}
+              style={{ cursor: "pointer" }}
+              recordDoubleClick={handleCellDoubleClick}
+              allowPaging
+              allowSorting
+              allowFiltering={true}
+              filterSettings={filterOptions}
+              // height={250}
+              allowResizing={true}
+              pageSettings={{ pageSize: 7 }}
+              autoFit={true}
+              rowSelected={rowsSelected}
+              ref={(g) => (grid = g)}
+              toolbar={["Search", "ExcelExport", "PdfExport"]}
+              toolbarClick={toolbarClick}
+              allowExcelExport={true}
+              allowPdfExport={true}
+            >
+              <ColumnsDirective>
+                {tableGrid.map((item, index) => (
+                  <ColumnDirective key={index} {...item} />
+                ))}
+              </ColumnsDirective>
+              <Inject
+                services={[
+                  Page,
+                  Edit,
+                  Toolbar,
+                  Selection,
+                  Sort,
+                  Filter,
+                  Search,
+                  Resize,
+                  ContextMenu,
+                  ExcelExport,
+                  PdfExport,
+                ]}
+              />
+            </GridComponent>
+          </div>
+        )}
 
         <div className="w-full flex flex-row  justify-between items-center p-2 px-6">
           <div className="w-full"></div>

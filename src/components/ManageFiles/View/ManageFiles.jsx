@@ -350,7 +350,7 @@ const ManageFiles = ({
             <div className="h-full flex flex-row gap-2 items-center text-[14px]">
               {enableTableBtn && (
                 <div
-                  className="h-full p-1 flex flex-row items-center justify-center bg-gray-100 border-1 border-gray-300 hover:bg-gray-200 rounded-md hover:cursor-pointer relative"
+                  className="h-full p-3 flex flex-row items-center justify-center bg-gray-100 border-1 border-gray-300 hover:bg-gray-200 rounded-md hover:cursor-pointer relative"
                   onClick={() => setIsTableBtn(true)}
                 >
                   <p>Show Table</p>
