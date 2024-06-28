@@ -19,6 +19,8 @@ const OrderNo = () => {
       enableAnalyze={true}
       enableTable={false}
       enableGraph={false}
+      enableTableBtn={true}
+      tableBtnURL={`/api/v3/OilSamples`}
     />
   );
 };

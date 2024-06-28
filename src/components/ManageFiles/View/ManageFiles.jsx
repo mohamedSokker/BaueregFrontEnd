@@ -20,6 +20,7 @@ import CreateFolderCard from "../Components/CreateFolderCard";
 import { Link } from "react-router-dom";
 import Table from "../Components/Table";
 import RenameFolderCard from "../Components/RenameFolderCard";
+import TableBtn from "../Components/TableBtn";
 
 const ManageFiles = ({
   absPath,
@@ -34,6 +35,8 @@ const ManageFiles = ({
   analyzeFileURL,
   enableCreateFolder,
   enableRenameFolder,
+  enableTableBtn,
+  tableBtnURL,
   enableUpload,
   enableDelete,
   enableRename,
@@ -55,7 +58,9 @@ const ManageFiles = ({
   const [isGraph, setIsGraph] = useState(false);
   const [graphData, setGraphData] = useState({});
   const [isTable, setIsTable] = useState(false);
+  const [isTableBtn, setIsTableBtn] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [tableBtnData, setTableBtnData] = useState([]);
   const [createdFolder, setCreatedFolder] = useState(null);
   const [deletedFile, setDeletedFile] = useState(null);
   const [renamedFile, setRenamedFile] = useState(null);
@@ -236,6 +241,14 @@ const ManageFiles = ({
           values={values}
         />
       )}
+      {enableTableBtn && isTableBtn && (
+        <TableBtn
+          setIsTableBtn={setIsTableBtn}
+          tableBtnData={tableBtnData}
+          setTableBtnData={setTableBtnData}
+          tableBtnURL={tableBtnURL}
+        />
+      )}
       {enableCreateFolder && isCreateFolder && (
         <CreateFolderCard
           setIsCreateFolder={setIsCreateFolder}
@@ -335,6 +348,15 @@ const ManageFiles = ({
               <p>{`${currentPath.replace(absPath, "")}/`}</p>
             </div>
             <div className="h-full flex flex-row gap-2 items-center text-[14px]">
+              {enableTableBtn && (
+                <div
+                  className="h-full p-1 flex flex-row items-center justify-center bg-gray-100 border-1 border-gray-300 hover:bg-gray-200 rounded-md hover:cursor-pointer relative"
+                  onClick={() => setIsTableBtn(true)}
+                >
+                  <p>Show Table</p>
+                </div>
+              )}
+
               <div
                 className="h-full w-[100px] flex flex-row p-1 pl-3 gap-2 items-center justify-center bg-gray-100 border-1 border-gray-300 hover:bg-gray-200 rounded-md hover:cursor-pointer relative"
                 onClick={() => setIsUploadPanel((prev) => !prev)}

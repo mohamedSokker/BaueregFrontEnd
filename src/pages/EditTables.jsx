@@ -103,17 +103,19 @@ const EditTables = ({ socket }) => {
       const data = await axiosPrivate(url, { method: "GET" });
       setTableData(data?.data);
       setTableGrid([]);
-      Object.keys(data?.data[0]).map((item) => {
-        setTableGrid((prev) => [
-          ...prev,
-          {
-            field: item,
-            headerText: item,
-            width: "200",
-            textAlign: "Center",
-          },
-        ]);
-      });
+      data?.data &&
+        data?.data[0] &&
+        Object.keys(data?.data[0]).map((item) => {
+          setTableGrid((prev) => [
+            ...prev,
+            {
+              field: item,
+              headerText: item,
+              width: "200",
+              textAlign: "Center",
+            },
+          ]);
+        });
       setLoading(false);
     } catch (err) {
       setErrorData((prev) => [
