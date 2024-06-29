@@ -111,30 +111,33 @@ const useDataEntry = () => {
         result = isEndWHChecked ? result : { ...result, End_WH: null };
         console.log(result);
 
-        const eqsToolsLocURL = `/api/v3/EqsToolsLocation`;
+        const eqsToolsLocURL = `/api/v3/EqsToolsLocHandleAdd`;
         const eqsToolsLocResponse = await axiosPrivate(eqsToolsLocURL, {
-          method: "GET",
+          method: "POST",
+          data: JSON.stringify(result),
         });
-        const eqsToolsLoc = eqsToolsLocResponse.data;
 
-        const targetEqsToolsLoc = eqsToolsLoc.filter(
-          (item) => item.Type === data.Type && item.Code === data.Code
-        );
+        console.log(eqsToolsLocResponse.data);
+        // const eqsToolsLoc = eqsToolsLocResponse.data;
 
-        console.log(targetEqsToolsLoc);
-        // const body = {
-        //   UserName: usersData[0].username,
-        //   TableName: "Maintenance",
-        //   Data: JSON.stringify(data),
-        //   Sent: "false",
-        // };
-        // const result = isEndDateChecked ? data : { ...data, End_Date: null };
-        // const url = `/api/v3/dataEntryHandleAddMachLocation`;
-        // const response = await axiosPrivate(url, {
+        // const targetEqsToolsLoc = eqsToolsLoc.filter(
+        //   (item) =>
+        //     item.Type === data.Type &&
+        //     item.Code === data.Code &&
+        //     item.End_Date === null
+        // );
+
+        // console.log(targetEqsToolsLoc);
+
+        // await axiosPrivate(eqsToolsLocURL, {
         //   method: "POST",
         //   data: JSON.stringify(result),
         // });
-        // console.log(response);
+
+        // targetEqsToolsLoc.length > 0 && await axiosPrivate(`${eqsToolsLocURL}/Many`, {
+        //   method: "PUT",
+        //   data: JSON.stringify(targetEqsToolsLoc),
+        // });
         setLoading(false);
       }
     } catch (err) {

@@ -135,6 +135,14 @@ const useEditDataEntry = ({ editData }) => {
         let result = isEndDateChecked ? data : { ...data, End_Date: null };
         result = isEndWHChecked ? result : { ...result, End_WH: null };
         console.log(result);
+
+        const eqsToolsLocURL = `/api/v3/EqsToolsLocHandleEdit`;
+        const eqsToolsLocResponse = await axiosPrivate(eqsToolsLocURL, {
+          method: "POST",
+          data: JSON.stringify(result),
+        });
+
+        console.log(eqsToolsLocResponse.data);
         // const body = {
         //   UserName: usersData[0].username,
         //   TableName: "Maintenance",
@@ -167,6 +175,14 @@ const useEditDataEntry = ({ editData }) => {
       setMessage(`Deleting Data...`);
 
       console.log(data.ID);
+
+      const eqsToolsLocURL = `/api/v3/EqsToolsLocHandleDelete`;
+      const eqsToolsLocResponse = await axiosPrivate(eqsToolsLocURL, {
+        method: "POST",
+        data: JSON.stringify({ ID: data.ID }),
+      });
+
+      console.log(eqsToolsLocResponse.data);
       // const url = `/api/v3/Machinary_Location/${data.ID}`;
       // const response = await axiosPrivate(url, {
       //   method: "DELETE",

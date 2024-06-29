@@ -5,6 +5,7 @@ import PageLoading from "../../../../components/PageLoading";
 
 import { regix } from "../Model/model";
 import useDataEntry from "../Controllers/dataEntry";
+import DropdownText from "./DropDownText";
 
 const DataEntry = () => {
   const {
@@ -55,7 +56,7 @@ const DataEntry = () => {
         </div> */}
 
         <div className="flex flex-col items-start">
-          <Dropdown
+          <DropdownText
             label="Type"
             // URL="/api/v1/Location_Bauer"
             column="Type"
@@ -104,8 +105,11 @@ const DataEntry = () => {
         </div>
 
         <div className="flex flex-1 flex-row flex-wrap items-start">
-          {details?.map((item) => (
-            <div className="p-2 flex flex-col justify-center items-center ">
+          {details?.map((item, i) => (
+            <div
+              key={i}
+              className="p-2 flex flex-col justify-center items-center "
+            >
               <p className="w-full h-6 text-[14px] text-gray-400 flex flex-row justify-start">
                 {item}
               </p>
