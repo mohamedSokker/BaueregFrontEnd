@@ -74,6 +74,7 @@ export const allData = async (token) => {
       "Invoice",
       "Order_IncompleteItems",
       "Order_Status",
+      "OrderInvoice_NotFound",
     ],
     Stocks: [
       "Barcode Generation",
@@ -83,7 +84,7 @@ export const allData = async (token) => {
     ],
     StocksList: AllStocks,
     Tables: AllTables,
-    Catalogues: ["true"],
+    Catalogues: [],
     OilSamples: ["true"],
     OilSamplesAnalyzed: ["true"],
     ManageUsers: ["true"],
@@ -122,6 +123,7 @@ export const allDataWithName = async () => {
       { name: "Invoice" },
       { name: "Order_IncompleteItems" },
       { name: "Order_Status" },
+      { name: "OrderInvoice_NotFound" },
     ],
     Stocks: [
       { name: "Barcode Generation" },
@@ -131,7 +133,7 @@ export const allDataWithName = async () => {
     ],
     StocksList: allStocksWithName,
     Tables: allTablesWithName,
-    Catalogues: true,
+    Catalogues: [],
     OilSamples: true,
     OilSamplesAnalyzed: true,
     ManageUsers: [

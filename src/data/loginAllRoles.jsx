@@ -56,6 +56,7 @@ export const allData = async () => {
       "Invoice",
       "Order_IncompleteItems",
       "Order_Status",
+      "OrderInvoice_NotFound",
     ],
     Stocks: [
       "Barcode Generation",
@@ -104,6 +105,7 @@ export const allDataWithName = async (token) => {
       { name: "Invoice" },
       { name: "Order_IncompleteItems" },
       { name: "Order_Status" },
+      { name: "OrderInvoice_NotFound" },
     ],
     Stocks: [
       { name: "Barcode Generation" },
