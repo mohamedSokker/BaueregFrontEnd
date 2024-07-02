@@ -8,6 +8,7 @@ import Quotation from "./DataEntry/Orders/OrderQuotation/View/OrderQuotation";
 import Invoice from "./DataEntry/Orders/OrderInvoice/View/OrderInvoice";
 import OrderIncompleteItems from "./DataEntry/Orders/OrderIncompleteItems/view/OrderIncompleteItems";
 import OrderStatus from "./DataEntry/Orders/OrderStatus/view/OrderStatus";
+import OrderInvoice_NotFound from "./DataEntry/Orders/OrderInvoice_NotFound/view/OrderInvoice_NotFound";
 
 const Orders = () => {
   const { closeSmallSidebar } = useNavContext();
@@ -25,6 +26,8 @@ const Orders = () => {
       return <OrderIncompleteItems />;
     } else if (tableName === "Order_Status") {
       return <OrderStatus />;
+    } else if (tableName === "OrderInvoice_NotFound") {
+      return <OrderInvoice_NotFound />;
     }
   };
 
