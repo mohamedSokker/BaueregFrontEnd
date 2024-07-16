@@ -163,10 +163,17 @@ const useEditDataEntry = ({ editData, targetData }) => {
         let result = { ...data };
         Object.keys(targetData?.[0]?.Fields)?.map((item) => {
           if (targetData?.[0]?.Fields?.[item]?.Type === "Date") {
-            result = {
-              ...result,
-              [item]: dataCheck?.[item] ? data?.[item] : null,
-            };
+            if (targetData?.[0]?.Fields?.[item]?.isCheck) {
+              result = {
+                ...result,
+                [item]: dataCheck?.[item] ? data?.[item] : null,
+              };
+            } else {
+              result = {
+                ...result,
+                [item]: data?.[item],
+              };
+            }
           }
         });
         delete result.ID;
