@@ -118,77 +118,77 @@ const useDataEntry = () => {
   //   getTableData();
   // }, [allData.Table]);
 
-  const validateData = () => {
-    const dataKeys = Object.keys(data);
-    let flag = true;
-    for (let i = 0; i < dataKeys.length; i++) {
-      if (dataKeys[i] === "Details") {
-        let detailsKeys = details;
-        // console.log(details);
-        for (let j = 0; j < detailsKeys.length; j++) {
-          if (
-            !data.Details ||
-            Object.keys(data.Details).length === 0 ||
-            data.Details[detailsKeys[j]] === "" ||
-            !data.Details[detailsKeys[j]]
-          ) {
-            flag = false;
-            break;
-          }
-        }
-      } else {
-        if (
-          data[dataKeys[i]] === "" &&
-          !validationException.includes(dataKeys[i])
-        ) {
-          flag = false;
-          break;
-        }
-        if (regix[dataKeys[i]]) {
-          console.log(regix[dataKeys[i]]);
-          if (!regix[dataKeys[i]].test(data[dataKeys[i]])) {
-            flag = false;
-            break;
-          }
-        }
-      }
-    }
-    return flag;
-  };
+  // const validateData = () => {
+  //   const dataKeys = Object.keys(data);
+  //   let flag = true;
+  //   for (let i = 0; i < dataKeys.length; i++) {
+  //     if (dataKeys[i] === "Details") {
+  //       let detailsKeys = details;
+  //       // console.log(details);
+  //       for (let j = 0; j < detailsKeys.length; j++) {
+  //         if (
+  //           !data.Details ||
+  //           Object.keys(data.Details).length === 0 ||
+  //           data.Details[detailsKeys[j]] === "" ||
+  //           !data.Details[detailsKeys[j]]
+  //         ) {
+  //           flag = false;
+  //           break;
+  //         }
+  //       }
+  //     } else {
+  //       if (
+  //         data[dataKeys[i]] === "" &&
+  //         !validationException.includes(dataKeys[i])
+  //       ) {
+  //         flag = false;
+  //         break;
+  //       }
+  //       if (regix[dataKeys[i]]) {
+  //         console.log(regix[dataKeys[i]]);
+  //         if (!regix[dataKeys[i]].test(data[dataKeys[i]])) {
+  //           flag = false;
+  //           break;
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return flag;
+  // };
 
-  const handleAdd = async () => {
-    try {
-      setLoading(true);
-      setMessage(`Adding Data...`);
-      // console.log({ ...data, Details: JSON.stringify(data.Details) });
-      if (!validateData()) {
-        throw new Error(`Validation Error`);
-      } else {
-        // const body = {
-        //   UserName: usersData[0].username,
-        //   TableName: "Maintenance",
-        //   Data: JSON.stringify(data),
-        //   Sent: "false",
-        // };
-        const result = { ...data, Details: JSON.stringify(data.Details) };
-        const url = `/api/v3/EqsTools`;
-        const response = await axiosPrivate(url, {
-          method: "POST",
-          data: JSON.stringify(result),
-        });
-        console.log(response);
-        setLoading(false);
-      }
-    } catch (err) {
-      setErrorData((prev) => [
-        ...prev,
-        err?.response?.data?.message
-          ? err?.response?.data?.message
-          : err?.message,
-      ]);
-      setLoading(false);
-    }
-  };
+  // const handleAdd = async () => {
+  //   try {
+  //     setLoading(true);
+  //     setMessage(`Adding Data...`);
+  //     // console.log({ ...data, Details: JSON.stringify(data.Details) });
+  //     if (!validateData()) {
+  //       throw new Error(`Validation Error`);
+  //     } else {
+  //       // const body = {
+  //       //   UserName: usersData[0].username,
+  //       //   TableName: "Maintenance",
+  //       //   Data: JSON.stringify(data),
+  //       //   Sent: "false",
+  //       // };
+  //       const result = { ...data, Details: JSON.stringify(data.Details) };
+  //       const url = `/api/v3/EqsTools`;
+  //       const response = await axiosPrivate(url, {
+  //         method: "POST",
+  //         data: JSON.stringify(result),
+  //       });
+  //       console.log(response);
+  //       setLoading(false);
+  //     }
+  //   } catch (err) {
+  //     setErrorData((prev) => [
+  //       ...prev,
+  //       err?.response?.data?.message
+  //         ? err?.response?.data?.message
+  //         : err?.message,
+  //     ]);
+  //     setLoading(false);
+  //   }
+  // };
 
   return {
     loading,

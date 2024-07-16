@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import Dropdown from "./Dropdown";
 import { jsonifyArray } from "../Model/model";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const Columns = ({
   setLoading,
@@ -15,6 +16,8 @@ const Columns = ({
   setErrorData,
   allData,
 }) => {
+  const axiosPrivate = useAxiosPrivate();
+
   const [currentColumns, setCurrentColumns] = useState([]);
   const [canBeEmpty, setCanBeEmpty] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
