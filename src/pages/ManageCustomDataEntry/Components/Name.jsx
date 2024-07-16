@@ -10,6 +10,7 @@ const Name = ({ data, setData, setCategoryCount, categoryCount, allData }) => {
       allData?.Table?.map((item) => {
         result.push(item?.TABLE_NAME);
       });
+      console.log(result);
       setTables(result);
     }
   }, [allData?.Table]);
