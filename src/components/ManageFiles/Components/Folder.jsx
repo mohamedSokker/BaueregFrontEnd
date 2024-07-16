@@ -9,6 +9,7 @@ import { useNavContext } from "../../../contexts/NavContext";
 
 const Folder = ({
   filename,
+  absPath,
   basePath,
   setCurrentPath,
   setCurrentFiles,
@@ -92,6 +93,7 @@ const Folder = ({
         method: "POST",
         data: JSON.stringify({
           fullpath: path,
+          pathabs: `${absPath}/${path}`,
         }),
       });
       setFiles(response?.data?.data);
@@ -200,6 +202,7 @@ const Folder = ({
                   <Folder
                     key={i}
                     filename={file?.file}
+                    absPath={absPath}
                     basePath={path}
                     setCurrentPath={setCurrentPath}
                     setCurrentFiles={setCurrentFiles}

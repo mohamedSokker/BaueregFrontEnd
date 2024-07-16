@@ -7,13 +7,14 @@ import { useNavContext } from "../../../contexts/NavContext";
 
 const UploadCard = ({
   setIsUploadCard,
+  absPath,
   path,
   currentFiles,
   setCurrentFiles,
   uploadURL,
   setUploadedFiles,
 }) => {
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const baseURL = import.meta.env.VITE_BASE_URL;
 
   const [isCanceled, setIsCanceled] = useState(false);
   const [files, setFiles] = useState(null);
@@ -47,7 +48,7 @@ const UploadCard = ({
       });
     });
     console.log(data);
-    fetch(`${baseURL}${uploadURL}?url=${path}`, {
+    fetch(`${baseURL}${uploadURL}?url=${path}&&pathabs=${absPath}/${path}`, {
       method: "POST",
       body: data,
     })

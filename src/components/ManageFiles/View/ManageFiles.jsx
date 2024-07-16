@@ -25,6 +25,7 @@ import TableBtn from "../Components/TableBtn";
 const ManageFiles = ({
   absPath,
   relPath,
+  targetData,
   addDataURL,
   getFilesURL,
   createFolderURL,
@@ -108,6 +109,7 @@ const ManageFiles = ({
         method: "POST",
         data: JSON.stringify({
           fullpath: fullPath,
+          pathabs: `${absPath}/${fullPath}`,
         }),
       });
       setFiles(response?.data?.data);
@@ -133,6 +135,7 @@ const ManageFiles = ({
         method: "POST",
         data: JSON.stringify({
           fullpath: fullPath,
+          pathabs: `${absPath}/${fullPath}`,
         }),
       });
       // setFiles(response?.data?.data);
@@ -194,6 +197,7 @@ const ManageFiles = ({
         method: "POST",
         data: JSON.stringify({
           path: path,
+          pathabs: `${absPath}`,
           search: searchData,
         }),
       });
@@ -222,6 +226,7 @@ const ManageFiles = ({
       {enableUpload && isUpload && (
         <UploadCard
           setIsUploadCard={setIsUploadCard}
+          absPath={absPath}
           path={currentPath}
           currentFiles={currentFiles}
           setCurrentFiles={setCurrentFiles}
@@ -252,6 +257,7 @@ const ManageFiles = ({
       {enableCreateFolder && isCreateFolder && (
         <CreateFolderCard
           setIsCreateFolder={setIsCreateFolder}
+          absPath={absPath}
           path={currentPath}
           currentFiles={currentFiles}
           setCurrentFiles={setCurrentFiles}
@@ -299,6 +305,7 @@ const ManageFiles = ({
                   <Folder
                     key={i}
                     filename={file?.file}
+                    absPath={absPath}
                     basePath={path}
                     setCurrentPath={setCurrentPath}
                     setCurrentFiles={setCurrentFiles}
@@ -434,11 +441,13 @@ const ManageFiles = ({
                   enableAnalyze={enableAnalyze}
                   enableDelete={enableDelete}
                   enableRename={enableRename}
+                  absPath={absPath}
                   relPath={relPath}
                   setDeletedFile={setDeletedFile}
                   setRenamedFile={setRenamedFile}
                   getFilesURL={getFilesURL}
                   setCurrentPath={setCurrentPath}
+                  targetData={targetData}
                 />
               ))
             ) : (

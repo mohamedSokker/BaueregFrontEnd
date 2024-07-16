@@ -39,12 +39,14 @@ const FilesList = ({
   enableAnalyze,
   enableDelete,
   enableRename,
+  absPath,
   relPath,
   setDeletedFile,
   setRenamedFile,
   getFilesURL,
   setCurrentPath,
   setFiles,
+  targetData,
 }) => {
   const [isFilePanel, setIsFilePanel] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,7 @@ const FilesList = ({
 
   const { setErrorData } = useNavContext();
 
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const baseURL = import.meta.env.VITE_BASE_URL;
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -66,6 +68,7 @@ const FilesList = ({
         method: "POST",
         data: JSON.stringify({
           fullpath: fullPath,
+          pathabs: `${absPath}/${fullPath}`,
         }),
       });
       setCurrentFiles(response?.data?.data);
@@ -94,7 +97,7 @@ const FilesList = ({
       const url = deleteFilesURL;
       await axiosPrivate(url, {
         method: "POST",
-        data: JSON.stringify({ path: file }),
+        data: JSON.stringify({ path: file, pathabs: `${absPath}/${file}` }),
       });
       let result = [...currentFiles];
       result = result.filter((f) => f.file !== fileName);
@@ -126,7 +129,11 @@ const FilesList = ({
         const url = analyzeFileURL;
         const data = await axiosPrivate(url, {
           method: "POST",
-          data: JSON.stringify({ path: file }),
+          data: JSON.stringify({
+            path: file,
+            pathabs: `${absPath}/${file}`,
+            targetData: targetData,
+          }),
         });
         console.log(data.data);
         if (enableTable) {
@@ -172,6 +179,7 @@ const FilesList = ({
       {enableRename && isRenameFolder && (
         <RenameFolderCard
           setIsRenameFolder={setIsRenameFolder}
+          absPath={absPath}
           path={path}
           currentFiles={currentFiles}
           setCurrentFiles={setCurrentFiles}

@@ -9,6 +9,7 @@ import { useNavContext } from "../../../contexts/NavContext";
 
 const RenameFolderCard = ({
   setIsRenameFolder,
+  absPath,
   path,
   currentFiles,
   setCurrentFiles,
@@ -19,7 +20,7 @@ const RenameFolderCard = ({
   setNewFileName,
   oldFileName,
 }) => {
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const baseURL = import.meta.env.VITE_BASE_URL;
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -42,6 +43,8 @@ const RenameFolderCard = ({
         data: JSON.stringify({
           path: oldFileName.file,
           endPath: `${path}/${newFileName}`,
+          pathabs: `${absPath}/${oldFileName.file}`,
+          endPathabs: `${absPath}/${path}/${newFileName}`,
         }),
       });
       let result = [];

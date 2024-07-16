@@ -9,6 +9,7 @@ import { useNavContext } from "../../../contexts/NavContext";
 
 const CreateFolderCard = ({
   setIsCreateFolder,
+  absPath,
   path,
   currentFiles,
   setCurrentFiles,
@@ -16,7 +17,7 @@ const CreateFolderCard = ({
   createFolderURL,
   setCreatedFolder,
 }) => {
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const baseURL = import.meta.env.VITE_BASE_URL;
 
   console.log(path);
 
@@ -36,7 +37,10 @@ const CreateFolderCard = ({
       const url = createFolderURL;
       await axiosPrivate(url, {
         method: "POST",
-        data: JSON.stringify({ fullpath: `${path}/${fileName}` }),
+        data: JSON.stringify({
+          fullpath: `${path}/${fileName}`,
+          pathabs: `${absPath}/${path}/${fileName}`,
+        }),
       });
       //   console.log(currentFiles);
       let result = [...currentFiles];
