@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { regix } from "../Model/model";
 const Name = ({ data, setData, setCategoryCount, categoryCount, allData }) => {
   const [tables, setTables] = useState(null);
+  console.log(tables);
 
   useEffect(() => {
     if (!tables) {
@@ -11,7 +12,7 @@ const Name = ({ data, setData, setCategoryCount, categoryCount, allData }) => {
       });
       setTables(result);
     }
-  }, []);
+  }, [allData?.Table]);
   return (
     <div
       className="w-full h-full flex flex-col justify-between flex-shrink-0 flex-grow-0"
