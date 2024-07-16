@@ -6,14 +6,14 @@ const Name = ({ data, setData, setCategoryCount, categoryCount, allData }) => {
   console.log(allData);
 
   useEffect(() => {
-    if (!tables) {
-      const result = [];
-      allData?.Table?.map((item) => {
-        result.push(item?.TABLE_NAME);
-      });
-      console.log(result);
-      setTables(result);
-    }
+    // if (!tables) {
+    const result = [];
+    allData?.Table?.map((item) => {
+      result.push(item?.TABLE_NAME);
+    });
+    console.log(result);
+    setTables(result);
+    // }
   }, [allData?.Table]);
   return (
     <div
