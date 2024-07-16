@@ -64,67 +64,63 @@ const CustomDataEntryDetails = () => {
       className={`w-full flex flex-col bg-gray-100 Main--Page dark:bg-background-logoColor h-full relative`}
       onClick={closeSmallSidebar}
     >
-      {((usersData[0]?.roles?.Editor?.CustomDataEntry ||
+      {(((usersData[0]?.roles?.Editor?.CustomDataEntry ||
         usersData[0]?.roles?.User?.CustomDataEntry) &&
         targetData?.[0]?.Users?.includes(usersData[0]?.username)) ||
-        (usersData[0]?.roles.Admin && (
-          <div className="flex flex-row justify-around h-[10%]">
-            <div
-              className="w-[20%] h-[100%] px-2 py-4 flex justify-center items-center cursor-pointer gap-2 text-green-800"
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor:
-                  currentCat === "Data Entry" ? logoColor : "rgb(243,244,246)",
-              }}
-              onClick={() => setCurrentCat("Data Entry")}
-            >
-              <BsDatabaseAdd />
-              <p className="text-black text-[14px]">Data Entry</p>
-            </div>
-            <div
-              className="w-[20%] h-[100%] px-2 py-4 flex  justify-center items-center cursor-pointer gap-2 text-orange-600"
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor:
-                  currentCat === "Table" ? logoColor : "rgb(243,244,246)",
-              }}
-              onClick={() => setCurrentCat("Table")}
-            >
-              <GrTable />
-              <p className="text-black text-[14px]">Table</p>
-            </div>
-
-            <div
-              className="w-[20%] h-[100%] px-2 py-4 flex  justify-center items-center cursor-pointer gap-2 text-green-600"
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor:
-                  currentCat === "File Manager"
-                    ? logoColor
-                    : "rgb(243,244,246)",
-              }}
-              onClick={() => setCurrentCat("File Manager")}
-            >
-              <SiMicrosoftexcel />
-              <p className="text-black text-[14px]">File Manager</p>
-            </div>
-
-            <div
-              className="w-[20%] h-[100%] px-2 py-4 flex  justify-center items-center cursor-pointer gap-2 text-green-600"
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor:
-                  currentCat === "Upload Files"
-                    ? logoColor
-                    : "rgb(243,244,246)",
-              }}
-              onClick={() => setCurrentCat("Upload Files")}
-            >
-              <SiMicrosoftexcel />
-              <p className="text-black text-[14px]">Upload Files</p>
-            </div>
+        usersData[0]?.roles.Admin) && (
+        <div className="flex flex-row justify-around h-[10%]">
+          <div
+            className="w-[20%] h-[100%] px-2 py-4 flex justify-center items-center cursor-pointer gap-2 text-green-800"
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor:
+                currentCat === "Data Entry" ? logoColor : "rgb(243,244,246)",
+            }}
+            onClick={() => setCurrentCat("Data Entry")}
+          >
+            <BsDatabaseAdd />
+            <p className="text-black text-[14px]">Data Entry</p>
           </div>
-        ))}
+          <div
+            className="w-[20%] h-[100%] px-2 py-4 flex  justify-center items-center cursor-pointer gap-2 text-orange-600"
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor:
+                currentCat === "Table" ? logoColor : "rgb(243,244,246)",
+            }}
+            onClick={() => setCurrentCat("Table")}
+          >
+            <GrTable />
+            <p className="text-black text-[14px]">Table</p>
+          </div>
+
+          <div
+            className="w-[20%] h-[100%] px-2 py-4 flex  justify-center items-center cursor-pointer gap-2 text-green-600"
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor:
+                currentCat === "File Manager" ? logoColor : "rgb(243,244,246)",
+            }}
+            onClick={() => setCurrentCat("File Manager")}
+          >
+            <SiMicrosoftexcel />
+            <p className="text-black text-[14px]">File Manager</p>
+          </div>
+
+          <div
+            className="w-[20%] h-[100%] px-2 py-4 flex  justify-center items-center cursor-pointer gap-2 text-green-600"
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor:
+                currentCat === "Upload Files" ? logoColor : "rgb(243,244,246)",
+            }}
+            onClick={() => setCurrentCat("Upload Files")}
+          >
+            <SiMicrosoftexcel />
+            <p className="text-black text-[14px]">Upload Files</p>
+          </div>
+        </div>
+      )}
 
       {((usersData[0]?.roles?.Editor?.CustomDataEntry ||
         usersData[0]?.roles?.User?.CustomDataEntry) &&
