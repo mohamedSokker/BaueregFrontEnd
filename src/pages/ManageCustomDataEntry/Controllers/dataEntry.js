@@ -201,7 +201,6 @@ const useDataEntry = () => {
     data,
     setData,
     setAllData,
-    handleAdd,
     message,
     siteData,
     isExistingTable,
