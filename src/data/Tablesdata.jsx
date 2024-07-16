@@ -11,22 +11,22 @@ import { RiBookLine } from "react-icons/ri";
 import { BsDatabaseAdd } from "react-icons/bs";
 import { BiListPlus, BiTestTube } from "react-icons/bi";
 import { BiLineChart } from "react-icons/bi";
-import { MdOutlineFireTruck } from "react-icons/md";
+import { MdOutlineFireTruck, MdManageAccounts } from "react-icons/md";
 import { Cookies } from "react-cookie";
 import { dataEntry } from "./dataEntry";
+import CustomDataEntry from "../pages/CustomDataEntry/View/CustomDataEntry";
+import ManageCustomDataEntry from "../pages/ManageCustomDataEntry/View/ManageCustomDataEntry";
 
-const Dashboard = lazy(() => import("../pages/Dashboard/view/Dashboard"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
 const ManageKanban = lazy(() => import("../pages/ManageKanban"));
 const Orders = lazy(() => import("../pages/Orders"));
-const OilSamples = lazy(() => import("../pages/OilSamples/View/OilSamples"));
-const OilSamplesAnalyzed = lazy(() =>
-  import("../pages/OilSamplesAnalyzed/View/OilSamplesAnalyzed")
-);
+const OilSamples = lazy(() => import("../pages/OilSamples"));
+const OilSamplesAnalyzed = lazy(() => import("../pages/OilSamplesAnalyzed"));
 const Locations = lazy(() => import("../pages/Locations"));
 const Equipments = lazy(() => import("../pages/Equipments"));
 const Stocks = lazy(() => import("../pages/Stocks"));
 const EditTables = lazy(() => import("../pages/EditTables"));
-const Catalogues = lazy(() => import("../pages/Catalogues/view/Catalogues"));
+const Catalogues = lazy(() => import("../pages/Catalogues"));
 const ManageUsers = lazy(() => import("../pages/ManageUsers"));
 const ManageAppUsers = lazy(() => import("../pages/ManageAppUsers"));
 const DataEntry = lazy(() => import("../pages/DataEntry"));
@@ -54,6 +54,8 @@ export const allDataTitles = [
   "OilSamplesAnalyzed",
   "ManageUsers",
   "ManageAppUsers",
+  "CustomDataEntry",
+  "ManageCustomDataEntry",
 ];
 
 export const links = [
@@ -132,6 +134,20 @@ export const links = [
     elem: <DataEntry />,
     icon: <BsDatabaseAdd size={20} />,
     data: dataEntry,
+  },
+  {
+    title: "Custom Data Entry",
+    name: "CustomDataEntry",
+    dest: "/CustomDataEntry",
+    elem: <CustomDataEntry />,
+    icon: <BsDatabaseAdd size={20} />,
+  },
+  {
+    title: "Manage Data Entry",
+    name: "ManageDataEntry",
+    dest: "/ManageDataEntry",
+    elem: <ManageCustomDataEntry />,
+    icon: <MdManageAccounts size={20} />,
   },
   {
     title: "Catalogues",

@@ -71,6 +71,8 @@ export const allData = async () => {
     OilSamplesAnalyzed: ["true"],
     ManageUsers: ["true"],
     ManageAppUsers: ["true"],
+    CustomDataEntry: ["true"],
+    ManageCustomDataEntry: ["true"],
   };
 };
 
@@ -128,5 +130,7 @@ export const allDataWithName = async (token) => {
       { name: "Edit User", icon: <FiUserCheck />, dest: "EditAppUser" },
       { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteAppUser" },
     ],
+    CustomDataEntry: true,
+    ManageCustomDataEntry: true,
   };
 };

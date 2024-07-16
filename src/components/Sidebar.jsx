@@ -36,7 +36,10 @@ const Sidebar = () => {
   const doNothing = () => {};
 
   return (
-    <div className="h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto p-4 pl-0 pb-10 dark:text-white relative shadow-lg">
+    <div
+      className="h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto p-4 pl-0 pb-10 dark:text-white relative shadow-lg"
+      style={{ scrollbarWidth: "none" }}
+    >
       <div className="flex flex-row items-center justify-end">
         {/* <Link
           to="/"

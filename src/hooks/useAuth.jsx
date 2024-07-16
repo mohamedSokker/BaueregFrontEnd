@@ -21,13 +21,13 @@ const RequiredAuth = ({ allowedRole }) => {
 
   return usersData &&
     (usersData[0]?.roles.Editor[allowedRole] === true ||
-      usersData[0]?.roles.Editor[allowedRole].length > 0 ||
+      usersData[0]?.roles.Editor[allowedRole]?.length > 0 ||
       usersData[0]?.roles.User[allowedRole] === true ||
-      usersData[0]?.roles.User[allowedRole].length > 0) ? (
+      usersData[0]?.roles.User[allowedRole]?.length > 0) ? (
     <div className={currentMode === "Dark" ? "dark" : ""}>
       <div className="flex w-screen h-screen relative dark:bg-main-dark-bg m-0 p-0">
         <div
-          className="w-72 fixed sidebar dark:bg-logoColor bg-white z-10"
+          className="w-72 fixed sidebar dark:bg-[rgb(0,0,0)] bg-white z-10"
           style={
             activeMenu
               ? {
@@ -43,7 +43,7 @@ const RequiredAuth = ({ allowedRole }) => {
           <Sidebar />
         </div>
         {errorData.length > 0 && (
-          <div className="fixed dark:bg-logoColor z-[11] left-0 bottom-4 flex flex-col gap-4">
+          <div className="fixed dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 z-[11] left-0 bottom-4 flex flex-col gap-4">
             {errorData.map((data, i) => (
               <Error key={i} data={data} setErrorData={setErrorData} ind={i} />
             ))}
@@ -52,11 +52,11 @@ const RequiredAuth = ({ allowedRole }) => {
 
         {/* Navbar + MainPage */}
         <div
-          className={`dark:bg-background-logoColor bg-main-bg min-h-screen w-full `}
+          className={`dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 bg-main-bg min-h-screen w-full `}
         >
           {/* Navbar */}
           <div
-            className="fixed md:static flex dark:bg-background-logoColor bg-gray-100 items-center h-[8vh] navbar"
+            className="fixed md:static flex dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 bg-gray-100 items-center h-[8vh] navbar"
             style={{ width: "100vw" }}
           >
             <Navbar />
@@ -65,7 +65,7 @@ const RequiredAuth = ({ allowedRole }) => {
           {/* Main page */}
           <div
             id="Main--Page"
-            className=" dark:bg-background-logoColor relative bg-white overflow-x-hidden"
+            className=" dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 relative bg-white overflow-x-hidden"
             style={{
               width: "100vw",
               height: "92vh",

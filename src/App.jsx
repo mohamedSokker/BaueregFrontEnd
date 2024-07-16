@@ -31,6 +31,15 @@ const UnAuthorized = lazy(() => import("./pages/UnAuthorized"));
 const Transportaions = lazy(() => import("./pages/Transportaions"));
 const Vnc = lazy(() => import("./pages/Vnc"));
 const Files = lazy(() => import("./pages/BReport/View/Files"));
+const CustomDataEntry = lazy(() =>
+  import("./pages/CustomDataEntry/View/CustomDataEntry")
+);
+const CustomDataEntryDetails = lazy(() =>
+  import("./pages/CustomDataEntryDetail/View/CustomDataEntryDetails")
+);
+const ManageCustomDataEntry = lazy(() =>
+  import("./pages/ManageCustomDataEntry/View/ManageCustomDataEntry")
+);
 
 function App() {
   const { token, usersData } = useNavContext();
@@ -77,6 +86,23 @@ function App() {
           </Route>
           <Route element={<RequiredAuth allowedRole={"Sites"} />}>
             <Route path="/Sites/:tableName" element={<Locations />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"CustomDataEntry"} />}>
+            <Route path="/CustomDataEntry" element={<CustomDataEntry />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"CustomDataEntry"} />}>
+            <Route
+              path="/CustomDataEntry/:id"
+              element={<CustomDataEntryDetails />}
+            />
+          </Route>
+          <Route
+            element={<RequiredAuth allowedRole={"ManageCustomDataEntry"} />}
+          >
+            <Route
+              path="/ManageDataEntry"
+              element={<ManageCustomDataEntry />}
+            />
           </Route>
           <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
             <Route path="/Equipments/:tableName" element={<Equipments />} />
