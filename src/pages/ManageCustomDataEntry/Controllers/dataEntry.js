@@ -17,7 +17,7 @@ const useDataEntry = () => {
 
   const axiosPrivate = useAxiosPrivate();
 
-  console.log(allData);
+  // console.log(allData);
 
   useEffect(() => {
     const getData = async () => {

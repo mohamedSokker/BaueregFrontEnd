@@ -3,6 +3,7 @@ import { regix } from "../Model/model";
 const Name = ({ data, setData, setCategoryCount, categoryCount, allData }) => {
   const [tables, setTables] = useState(null);
   console.log(tables);
+  console.log(allData);
 
   useEffect(() => {
     if (!tables) {
