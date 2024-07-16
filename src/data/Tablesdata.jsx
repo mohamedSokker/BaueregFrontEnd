@@ -17,7 +17,7 @@ import { dataEntry } from "./dataEntry";
 import CustomDataEntry from "../pages/CustomDataEntry/View/CustomDataEntry";
 import ManageCustomDataEntry from "../pages/ManageCustomDataEntry/View/ManageCustomDataEntry";
 
-const Dashboard = lazy(() => import("../pages/Dashboard"));
+const Dashboard = lazy(() => import("../pages/Dashboard/view/Dashboard"));
 const ManageKanban = lazy(() => import("../pages/ManageKanban"));
 const Orders = lazy(() => import("../pages/Orders"));
 const OilSamples = lazy(() => import("../pages/OilSamples"));
