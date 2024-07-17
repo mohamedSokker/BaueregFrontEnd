@@ -5,6 +5,7 @@ import EditPerMaint from "./EditPerMaint";
 import PageLoading from "../../../components/PageLoading";
 
 // import { getDate, perMaintPlan, regix, allAddData } from "../Model/model";
+import { regix } from "../Models/model";
 import useEditDataEntry from "../Controllers/editDataEntry";
 
 const EditDataEntry = ({ editData, targetData }) => {
@@ -47,7 +48,7 @@ const EditDataEntry = ({ editData, targetData }) => {
                 condition={
                   !targetData[0].Fields[item]?.Condition
                     ? true
-                    : targetData[0].Fields[item]?.Condition.every(
+                    : targetData[0].Fields[item]?.Condition?.every(
                         (key) => data[key] !== ""
                       )
                 }
@@ -139,7 +140,9 @@ const EditDataEntry = ({ editData, targetData }) => {
                 key={i}
                 className="p-2 flex flex-col justify-center items-center"
               >
-                {!targetData[0].Fields[item]?.validate?.test(data?.[item]) ? (
+                {!regix[targetData[0].Fields[item]?.validateString]?.test(
+                  data?.[item]
+                ) ? (
                   <div className="w-full h-6 flex flex-row justify-start items-center gap-3">
                     <p className="h-full text-[14px] text-gray-400 flex flex-row justify-start items-center">{`${item}`}</p>
                     <p className="text-[10px] text-red-500 h-full">
