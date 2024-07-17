@@ -83,6 +83,8 @@ const useEditDataEntry = ({ editData }) => {
     let sitesFilter = siteData?.sitesResult ? siteData?.sitesResult : [];
     let eqsLocFilter = siteData?.EqsLocResult ? siteData?.EqsLocResult : [];
 
+    eqsLocFilter.push({ Equipment: "Spare" });
+
     sitesFilter = sitesFilter?.filter(
       (value, index, array) => array.indexOf(value) === index
     );

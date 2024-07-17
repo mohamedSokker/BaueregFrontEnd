@@ -121,6 +121,7 @@ const useDropdown = ({
             eqsLocFilter?.map((d) => {
               eqs.push(d.Equipment);
             });
+            eqs.push("Spare");
             if (eqs)
               eqs = eqs?.filter(
                 (value, index, array) => array.indexOf(value) === index
