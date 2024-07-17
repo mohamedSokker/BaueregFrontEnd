@@ -187,21 +187,30 @@ const useDropdown = ({
             break;
 
           case "Machinery_Status":
-            let status = [];
-            const sitesFilterStatus = siteData?.sitesResult
-              ? siteData?.sitesResult
-              : [];
-            sitesFilterStatus?.map((d) => {
-              status.push(d.Machinery_Status);
-            });
+            // let status = [];
+            // const sitesFilterStatus = siteData?.sitesResult
+            //   ? siteData?.sitesResult
+            //   : [];
+            // sitesFilterStatus?.map((d) => {
+            //   status.push(d.Machinery_Status);
+            // });
 
-            if (status)
-              status = status?.filter(
-                (value, index, array) => array.indexOf(value) === index
-              );
+            // if (status)
+            //   status = status?.filter(
+            //     (value, index, array) => array.indexOf(value) === index
+            //   );
             setAllData((prev) => ({
               ...prev,
-              machStatus: jsonifyArray(status, "Machinery_Status"),
+              machStatus: jsonifyArray(
+                [
+                  "Ready",
+                  "Under Maintenance",
+                  "Yard Service",
+                  "New",
+                  "Damaged",
+                ],
+                "Machinery_Status"
+              ),
             }));
             break;
         }
