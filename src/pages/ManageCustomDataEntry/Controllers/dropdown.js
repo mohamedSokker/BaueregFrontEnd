@@ -324,7 +324,7 @@ const useDropdown = ({
           },
         }));
         setLoading(false);
-      } else if (label === "onDropMakesEmpty") {
+      } else if (label === "onDropMakesEmpty" || label === "Condition") {
         console.log(e.target.selected);
         if (e.target.selected === true) {
           setData((prev) => ({

@@ -45,7 +45,7 @@ const DataEntry = ({ targetData }) => {
                 condition={
                   !targetData[0].Fields[item]?.Condition
                     ? true
-                    : targetData[0].Fields[item]?.Condition.every(
+                    : targetData[0].Fields[item]?.Condition?.every(
                         (key) => data[key] !== ""
                       )
                 }
