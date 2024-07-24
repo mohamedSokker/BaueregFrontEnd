@@ -42,7 +42,7 @@ const useEditDataEntry = ({ editData }) => {
           setMessage(`Loading Selection Data...`);
           const URLs = [
             "/api/v1/getActiveMachinary",
-            "/api/v1/getBreakdowns",
+            "/api/v1/getActiveData",
             "/api/v1/getUserSites",
           ];
 
@@ -102,15 +102,29 @@ const useEditDataEntry = ({ editData }) => {
       (value, index, array) => array.indexOf(value) === index
     );
 
+    let usersFilter = siteData?.allBreakdownTypes
+      ? siteData?.allBreakdownTypes
+      : [];
+
+    usersFilter = usersFilter?.filter(
+      (value, index, array) => array.indexOf(value) === index
+    );
+
     setAllData((prev) => ({
       ...prev,
-      sites: sitesFilter,
+      sites: usersFilter,
       machType: sitesFilter,
       machModel: sitesFilter,
       machSpecs: sitesFilter,
       code: sitesFilter,
       serial: sitesFilter,
-      machStatus: sitesFilter,
+      machStatus: [
+        { Machinery_Status: "Ready" },
+        { Machinery_Status: "Under Maintenance" },
+        { Machinery_Status: "Yard Service" },
+        { Machinery_Status: "New" },
+        { Machinery_Status: "Damaged" },
+      ],
     }));
 
     editData?.End_Date === null ||
