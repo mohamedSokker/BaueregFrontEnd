@@ -50,10 +50,10 @@ const CustomDataEntry = () => {
         {DBdata &&
           DBdata?.map(
             (item, i) =>
-              ((usersData[0]?.roles?.Editor?.CustomDataEntry ||
+              (((usersData[0]?.roles?.Editor?.CustomDataEntry ||
                 usersData[0]?.roles?.User?.CustomDataEntry) &&
                 item?.Users?.includes(usersData[0]?.username)) ||
-              (usersData[0]?.roles.Admin && (
+                usersData[0]?.roles.Admin) && (
                 <div
                   className="border-1 border-gray-300 px-12 py-2 hover:cursor-pointer text-[12px]"
                   key={i}
@@ -61,7 +61,7 @@ const CustomDataEntry = () => {
                 >
                   {item?.Name}
                 </div>
-              ))
+              )
           )}
       </div>
     </div>
