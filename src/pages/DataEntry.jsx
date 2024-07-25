@@ -8,6 +8,7 @@ import Machinary from "../subPages/Machinary";
 import MachinaryLocation from "./DataEntry/MachinaryLocation/View/MachinaryLocation";
 import GearboxTrench from "./DataEntry/GearboxTrench/View/GearboxTrench";
 import ToolsLocation from "./DataEntry/ToolsLocation/View/ToolsLocation";
+import Received_Invoice from "./DataEntry/Recieved_Invoice/View/Received_Invoice";
 
 const DataEntry = () => {
   const { closeSmallSidebar } = useNavContext();
@@ -26,6 +27,8 @@ const DataEntry = () => {
       return <GearboxTrench />;
     } else if (tableName === "ToolsLocation") {
       return <ToolsLocation />;
+    } else if (tableName === "Received_Invoice") {
+      return <Received_Invoice />;
     } else {
       return <Machinary />;
     }
