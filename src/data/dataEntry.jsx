@@ -6,6 +6,7 @@ export const dataEntry = [
   { name: "Machinary" },
   { name: "Tools" },
   { name: "ToolsLocation" },
+  { name: "Received_Invoice" },
 ];
 
 export const dataEntrtArray = [
@@ -15,5 +16,5 @@ export const dataEntrtArray = [
   "MachinaryLocation",
   "Machinary",
   "Tools",
-  "ToolsLocation",
+  "Received_Invoice",
 ];
