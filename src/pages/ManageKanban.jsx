@@ -101,7 +101,8 @@ const ManageKanban = () => {
                   id: d.ID.toString(),
                   desc: d.Description ? d.Description : "",
                   descAr: d.Description_Ar ? d.Description_Ar : "",
-                  pic: d.ToUser ? JSON.parse(d.ToUser) : [],
+                  pic:
+                    d.ToUser && d.ToUser.length > 0 ? JSON.parse(d.ToUser) : [],
                   eq: d.Equipment,
                   periority: d.Periority ? d.Periority : "",
                   title: d.Title ? d.Title : "",
@@ -125,7 +126,8 @@ const ManageKanban = () => {
                   id: d.ID.toString(),
                   desc: d.Description ? d.Description : "",
                   descAr: d.Description_Ar ? d.Description_Ar : "",
-                  pic: d.ToUser ? JSON.parse(d.ToUser) : [],
+                  pic:
+                    d.ToUser && d.ToUser.length > 0 ? JSON.parse(d.ToUser) : [],
                   eq: d.Equipment,
                   periority: d.Periority ? d.Periority : "",
                   title: d.Title ? d.Title : "",
