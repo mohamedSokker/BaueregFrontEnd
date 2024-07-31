@@ -224,8 +224,9 @@ const ManageKanban = () => {
             <p>Yard Task Manager</p>
           </div> */}
           <div className="w-full h-[35px] flex flex-row justify-start items-start overflow-x-auto px-2">
-            {userModel.Tasks.includes(usersData[0].title) &&
-              usersData[0].department === "Maintenance" && (
+            {(userModel.Tasks.includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance") ||
+              (usersData[0]?.roles?.Admin && (
                 <Header
                   name={`Tasks`}
                   isParBorder={true}
@@ -233,28 +234,30 @@ const ManageKanban = () => {
                   category={category}
                   setCategory={setCategory}
                 />
-              )}
+              ))}
 
-            {usersData[0]?.title?.startsWith("Workshop") &&
-              usersData[0].department === "Maintenance" && (
-                <Header
-                  name={`Workshop`}
-                  isParBorder={true}
-                  Par2Cond={`Inspection`}
-                  category={category}
-                  setCategory={setCategory}
-                />
-              )}
-            {userModel.Inspection.includes(usersData[0].title) &&
-              usersData[0].department === "Maintenance" && (
-                <Header
-                  name={`Inspection`}
-                  isParBorder={true}
-                  Par2Cond={`Report`}
-                  category={category}
-                  setCategory={setCategory}
-                />
-              )}
+            {((usersData[0]?.title?.startsWith("Workshop") &&
+              usersData[0].department === "Maintenance") ||
+              usersData[0]?.roles?.Admin) && (
+              <Header
+                name={`Workshop`}
+                isParBorder={true}
+                Par2Cond={`Inspection`}
+                category={category}
+                setCategory={setCategory}
+              />
+            )}
+            {((userModel.Inspection.includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance") ||
+              usersData[0]?.roles?.Admin) && (
+              <Header
+                name={`Inspection`}
+                isParBorder={true}
+                Par2Cond={`Report`}
+                category={category}
+                setCategory={setCategory}
+              />
+            )}
             {(usersData[0].roles.Admin ||
               (userModel.Report.includes(usersData[0].title) &&
                 usersData[0].department === "Maintenance")) && (
@@ -294,25 +297,27 @@ const ManageKanban = () => {
                 setCategory={setCategory}
               />
             )}
-            {userModel.QA.includes(usersData[0].title) &&
-              usersData[0].department === "Maintenance" && (
-                <Header
-                  name={`QA`}
-                  isParBorder={true}
-                  Par2Cond={`QA Inspection`}
-                  category={category}
-                  setCategory={setCategory}
-                />
-              )}
-            {userModel["QA Inspection"].includes(usersData[0].title) &&
-              usersData[0].department === "Maintenance" && (
-                <Header
-                  name={`QA Inspection`}
-                  isParBorder={false}
-                  category={category}
-                  setCategory={setCategory}
-                />
-              )}
+            {((userModel.QA.includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance") ||
+              usersData[0]?.roles?.Admin) && (
+              <Header
+                name={`QA`}
+                isParBorder={true}
+                Par2Cond={`QA Inspection`}
+                category={category}
+                setCategory={setCategory}
+              />
+            )}
+            {((userModel["QA Inspection"].includes(usersData[0].title) &&
+              usersData[0].department === "Maintenance") ||
+              usersData[0]?.roles?.Admin) && (
+              <Header
+                name={`QA Inspection`}
+                isParBorder={false}
+                category={category}
+                setCategory={setCategory}
+              />
+            )}
           </div>
         </div>
         {category === "Tasks" && stores && copiedStores ? (
