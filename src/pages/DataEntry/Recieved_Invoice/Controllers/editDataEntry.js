@@ -133,7 +133,7 @@ const useEditDataEntry = ({ editData }) => {
           ? data
           : { ...data, Received_Date: null };
         console.log(result);
-        const url = `/api/v3/Received_Invoices/${data.ID}`;
+        const url = `/api/v3/Recieved_Invoices/${data.ID}`;
         const response = await axiosPrivate(url, {
           method: "PUT",
           data: JSON.stringify(result),
@@ -159,7 +159,7 @@ const useEditDataEntry = ({ editData }) => {
 
       console.log(data?.ID);
 
-      const url = `/api/v3/Received_Invoices/${data.ID}`;
+      const url = `/api/v3/Recieved_Invoices/${data.ID}`;
       const response = await axiosPrivate(url, {
         method: "DELETE",
       });
