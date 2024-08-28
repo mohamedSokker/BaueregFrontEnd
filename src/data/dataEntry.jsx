@@ -16,5 +16,6 @@ export const dataEntrtArray = [
   "MachinaryLocation",
   "Machinary",
   "Tools",
+  "ToolsLocation",
   "Received_Invoice",
 ];
