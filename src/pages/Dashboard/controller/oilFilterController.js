@@ -41,11 +41,11 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       ).map((site) => {
         sites.push({ checked: false, value: site.name });
       });
-      const avTrenchData = copiedData.oilCons.filter(
+      const avTrenchData = copiedData?.oilCons?.filter(
         (d) =>
-          d["Equipment"].startsWith("BG") ||
-          d["Equipment"].startsWith("BC") ||
-          d["Equipment"].startsWith("MC")
+          d?.["Equipment"]?.startsWith("BG") ||
+          d?.["Equipment"]?.startsWith("BC") ||
+          d?.["Equipment"]?.startsWith("MC")
       );
       avTrenchData.sort((a, b) => a["Date"] - b["Date"]);
       eqs = getUniqueArray(eqs);
