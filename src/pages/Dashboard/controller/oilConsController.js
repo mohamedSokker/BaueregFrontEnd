@@ -24,7 +24,7 @@ const useOil = ({ data }) => {
           (d?.Equipment.startsWith("MC") ||
             d?.Equipment.startsWith("BC") ||
             d?.Equipment.startsWith("BG")) &&
-          eqs?.includes(d.Equipment)
+          eqs?.includes(d?.Equipment)
       );
 
       avTrenchData.sort((a, b) => a["Date"] - b["Date"]);
