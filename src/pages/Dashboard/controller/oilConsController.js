@@ -19,13 +19,14 @@ const useOil = ({ data }) => {
           eqs.push(eq.name);
       });
 
-      const avTrenchData = data?.filter(
-        (d) =>
-          (d?.Equipment?.startsWith("MC") ||
-            d?.Equipment?.startsWith("BC") ||
-            d?.Equipment?.startsWith("BG")) &&
-          eqs?.includes(d?.Equipment)
-      );
+      // const avTrenchData = data.filter(
+      //   (d) =>
+      //     (d?.Equipment?.startsWith("MC") ||
+      //       d?.Equipment?.startsWith("BC") ||
+      //       d?.Equipment?.startsWith("BG")) &&
+      //     eqs.includes(d?.Equipment)
+      // );
+      const avTrenchData = data;
 
       avTrenchData.sort((a, b) => a["Date"] - b["Date"]);
       let s = 0;
@@ -37,14 +38,30 @@ const useOil = ({ data }) => {
           Number(d["TOTAL AZOLLA ZS 68 (L)"]) +
           Number(d["TOTAL Carter SH 220 (L)"]) +
           Number(d["TOTAL FLUIDMATIC D2 (L)"]) +
-          Number(d["TOTAL Rubia 15 W 40 (L)"]);
+          Number(d["TOTAL Rubia 15 W 40 (L)"]) +
+          Number(d["TOTAL AZOLLA ZS 100 (L)"]) +
+          Number(d["TOTAL rubia SAE 50 (L)"]) +
+          Number(d["TOTAL  TRAXIUM AXLE 7 /85W-140 (L)"]) +
+          Number(d["MOBIL ™ ATF 220 (L)"]) +
+          Number(d["MOBIL ™ DTE 26 (L)"]) +
+          Number(d["MOBIL Delvac ™ 15W40 (L)"]) +
+          Number(d["MOBILGEAR ™ 600 XP 150 (L)"]) +
+          Number(d["MOBILGEAR ™ SHC 630 (L)"]);
         x.push(d["Date"]);
         y.push(
           Number(d["TOTAL  Carter EP 150 (L)"]) +
             Number(d["TOTAL AZOLLA ZS 68 (L)"]) +
             Number(d["TOTAL Carter SH 220 (L)"]) +
             Number(d["TOTAL FLUIDMATIC D2 (L)"]) +
-            Number(d["TOTAL Rubia 15 W 40 (L)"])
+            Number(d["TOTAL Rubia 15 W 40 (L)"]) +
+            Number(d["TOTAL AZOLLA ZS 100 (L)"]) +
+            Number(d["TOTAL rubia SAE 50 (L)"]) +
+            Number(d["TOTAL  TRAXIUM AXLE 7 /85W-140 (L)"]) +
+            Number(d["MOBIL ™ ATF 220 (L)"]) +
+            Number(d["MOBIL ™ DTE 26 (L)"]) +
+            Number(d["MOBIL Delvac ™ 15W40 (L)"]) +
+            Number(d["MOBILGEAR ™ 600 XP 150 (L)"]) +
+            Number(d["MOBILGEAR ™ SHC 630 (L)"])
         );
       });
       setXData(x);

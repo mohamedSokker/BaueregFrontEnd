@@ -29,24 +29,25 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       usersData[0].roles?.Editor?.Equipments.concat(
         usersData[0].roles?.User?.Equipments
       ).map((eq) => {
-        if (
-          eq.name.startsWith("BG") ||
-          eq.name.startsWith("BC") ||
-          eq.name.startsWith("MC")
-        )
-          eqs.push({ checked: false, value: eq.name });
+        // if (
+        //   eq.name.startsWith("BG") ||
+        //   eq.name.startsWith("BC") ||
+        //   eq.name.startsWith("MC")
+        // )
+        eqs.push({ checked: false, value: eq.name });
       });
       usersData[0].roles?.Editor?.Sites.concat(
         usersData[0].roles?.User?.Sites
       ).map((site) => {
         sites.push({ checked: false, value: site.name });
       });
-      const avTrenchData = copiedData.fuelCons.filter(
-        (d) =>
-          d?.Equipment?.startsWith("BG") ||
-          d?.Equipment?.startsWith("BC") ||
-          d?.Equipment?.startsWith("MC")
-      );
+      const avTrenchData = copiedData.fuelCons;
+      // .filter(
+      //   (d) =>
+      //     d["Equipment"].startsWith("BG") ||
+      //     d["Equipment"].startsWith("BC") ||
+      //     d["Equipment"].startsWith("MC")
+      // );
       avTrenchData.sort((a, b) => a["Date "] - b["Date "]);
       eqs = getUniqueArray(eqs);
       sites = getUniqueArray(sites);
@@ -234,7 +235,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     fuelFilterModel.filteredData = filteredData;
     fuelFilterModel.count = count;
     fuelFilterModel.checkedItems = items;
-    setData((prev) => ({ ...prev, fuelCons: filteredData }));
+    setData((prev) => ({ fuelCons: filteredData }));
   };
 
   return {

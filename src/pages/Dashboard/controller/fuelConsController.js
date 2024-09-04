@@ -10,22 +10,24 @@ const useFuel = ({ data }) => {
   const { usersData } = useNavContext();
 
   useEffect(() => {
-    if (data) {
+    if (data && data.length > 0) {
       let eqs = [];
+      console.log(data);
       usersData[0].roles?.Editor?.Equipments.concat(
         usersData[0].roles?.User?.Equipments
       ).map((eq) => {
-        if (eq.name.startsWith("MC") || eq.name.startsWith("BC"))
-          eqs.push(eq.name);
+        // if (eq.name.startsWith("MC") || eq.name.startsWith("BC"))
+        eqs.push(eq.name);
       });
 
-      const avTrenchData = data.filter(
-        (d) =>
-          (d?.Equipment?.startsWith("MC") ||
-            d?.Equipment?.startsWith("BC") ||
-            d?.Equipment?.startsWith("BG")) &&
-          eqs.includes(d?.Equipment)
-      );
+      const avTrenchData = data;
+      // .filter(
+      //   (d) =>
+      //     (d?.Equipment?.startsWith("MC") ||
+      //       d?.Equipment?.startsWith("BC") ||
+      //       d?.Equipment?.startsWith("BG")) &&
+      //     eqs.includes(d.Equipment)
+      // );
 
       avTrenchData.sort((a, b) => a["Date "] - b["Date "]);
       let s = 0;

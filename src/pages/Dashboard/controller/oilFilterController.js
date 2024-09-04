@@ -29,24 +29,25 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       usersData[0].roles?.Editor?.Equipments.concat(
         usersData[0].roles?.User?.Equipments
       ).map((eq) => {
-        if (
-          eq.name.startsWith("BG") ||
-          eq.name.startsWith("BC") ||
-          eq.name.startsWith("MC")
-        )
-          eqs.push({ checked: false, value: eq.name });
+        // if (
+        //   eq.name.startsWith("BG") ||
+        //   eq.name.startsWith("BC") ||
+        //   eq.name.startsWith("MC")
+        // )
+        eqs.push({ checked: false, value: eq.name });
       });
       usersData[0].roles?.Editor?.Sites.concat(
         usersData[0].roles?.User?.Sites
       ).map((site) => {
         sites.push({ checked: false, value: site.name });
       });
-      const avTrenchData = copiedData?.oilCons?.filter(
-        (d) =>
-          d?.["Equipment"]?.startsWith("BG") ||
-          d?.["Equipment"]?.startsWith("BC") ||
-          d?.["Equipment"]?.startsWith("MC")
-      );
+      // const avTrenchData = copiedData.oilCons.filter(
+      //   (d) =>
+      //     d["Equipment"].startsWith("BG") ||
+      //     d["Equipment"].startsWith("BC") ||
+      //     d["Equipment"].startsWith("MC")
+      // );
+      const avTrenchData = copiedData.oilCons;
       avTrenchData.sort((a, b) => a["Date"] - b["Date"]);
       eqs = getUniqueArray(eqs);
       sites = getUniqueArray(sites);
@@ -232,7 +233,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     oilFilterModel.filteredData = filteredData;
     oilFilterModel.count = count;
     oilFilterModel.checkedItems = items;
-    setData((prev) => ({ ...prev, oilCons: filteredData }));
+    setData((prev) => ({ oilCons: filteredData }));
   };
 
   return {

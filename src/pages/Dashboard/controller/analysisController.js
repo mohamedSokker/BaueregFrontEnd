@@ -5,21 +5,22 @@ import { useNavContext } from "../../../contexts/NavContext";
 const useAnalysis = ({ data }) => {
   const [chartData, setChartData] = useState([]);
   const { usersData } = useNavContext();
+
   useEffect(() => {
     if (data) {
       let eqs = [];
       usersData[0]?.roles?.Editor?.Equipments?.concat(
         usersData[0]?.roles?.User?.Equipments
       )?.map((eq) => {
-        if (
-          eq.name.startsWith("MC") ||
-          eq.name.startsWith("BC") ||
-          eq.name.startsWith("BG")
-        )
-          eqs.push(eq.name);
+        // if (
+        //   eq.name.startsWith("MC") ||
+        //   eq.name.startsWith("BC") ||
+        //   eq.name.startsWith("BG")
+        // )
+        eqs.push(eq.name);
       });
       let result = {};
-      data.fuelCons.map((d) => {
+      data?.fuelCons?.map((d) => {
         if (eqs.includes(d.Equipment)) {
           result = result[d.Equipment]?.fuelSum
             ? {
@@ -44,7 +45,7 @@ const useAnalysis = ({ data }) => {
         }
       });
 
-      data.oilCons.map((d) => {
+      data?.oilCons?.map((d) => {
         if (eqs.includes(d.Equipment)) {
           result = result[d.Equipment]?.oilSum
             ? {
@@ -57,7 +58,15 @@ const useAnalysis = ({ data }) => {
                     Number(d["TOTAL AZOLLA ZS 68 (L)"]) +
                     Number(d["TOTAL Carter SH 220 (L)"]) +
                     Number(d["TOTAL FLUIDMATIC D2 (L)"]) +
-                    Number(d["TOTAL Rubia 15 W 40 (L)"])
+                    Number(d["TOTAL Rubia 15 W 40 (L)"]) +
+                    Number(d["TOTAL AZOLLA ZS 100 (L)"]) +
+                    Number(d["TOTAL rubia SAE 50 (L)"]) +
+                    Number(d["TOTAL  TRAXIUM AXLE 7 /85W-140 (L)"]) +
+                    Number(d["MOBIL ™ ATF 220 (L)"]) +
+                    Number(d["MOBIL ™ DTE 26 (L)"]) +
+                    Number(d["MOBIL Delvac ™ 15W40 (L)"]) +
+                    Number(d["MOBILGEAR ™ 600 XP 150 (L)"]) +
+                    Number(d["MOBILGEAR ™ SHC 630 (L)"])
                   )?.toFixed(0),
                 },
               }
@@ -70,14 +79,22 @@ const useAnalysis = ({ data }) => {
                     Number(d["TOTAL AZOLLA ZS 68 (L)"]) +
                     Number(d["TOTAL Carter SH 220 (L)"]) +
                     Number(d["TOTAL FLUIDMATIC D2 (L)"]) +
-                    Number(d["TOTAL Rubia 15 W 40 (L)"])
+                    Number(d["TOTAL Rubia 15 W 40 (L)"]) +
+                    Number(d["TOTAL AZOLLA ZS 100 (L)"]) +
+                    Number(d["TOTAL rubia SAE 50 (L)"]) +
+                    Number(d["TOTAL  TRAXIUM AXLE 7 /85W-140 (L)"]) +
+                    Number(d["MOBIL ™ ATF 220 (L)"]) +
+                    Number(d["MOBIL ™ DTE 26 (L)"]) +
+                    Number(d["MOBIL Delvac ™ 15W40 (L)"]) +
+                    Number(d["MOBILGEAR ™ 600 XP 150 (L)"]) +
+                    Number(d["MOBILGEAR ™ SHC 630 (L)"])
                   )?.toFixed(0),
                 },
               };
         }
       });
 
-      data.prodTrench.map((d) => {
+      data?.prodTrench?.map((d) => {
         if (eqs.includes(d["# Machine"])) {
           result = result[d["# Machine"]]?.prod
             ? {
@@ -100,7 +117,7 @@ const useAnalysis = ({ data }) => {
         }
       });
 
-      data.prodDrill.map((d) => {
+      data?.prodDrill?.map((d) => {
         if (eqs.includes(d["# Machine"])) {
           result = result[d["# Machine"]]?.prod
             ? {
