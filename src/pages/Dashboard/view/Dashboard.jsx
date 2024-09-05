@@ -27,6 +27,12 @@ import AvConsCard from "../components/AvConsCard";
 import MinStockCard from "../components/MinStockCard";
 import AvConsRateCard from "../components/AvConsRate";
 import EquipmentConsCard from "../components/EquipmentsCons";
+import AvTrenchTable from "../components/AvTrenchTable";
+import AvDrillTable from "../components/AvDrillTable";
+import ProdTrenchTable from "../components/ProdTrenchTable";
+import ProdDrillTable from "../components/ProdDrillTable";
+import FuelTable from "../components/FuelTable";
+import OilTable from "../components/OilTable";
 
 const Dashboard = ({ socket }) => {
   const [isAvTrenchFilterCard, setIsAvTrenchFilterCard] = useState(false);
@@ -36,6 +42,14 @@ const Dashboard = ({ socket }) => {
   const [isFuelFilterCard, setIsFuelFilterCard] = useState(false);
   const [isOilFilterCard, setIsOilFilterCard] = useState(false);
   const [isBdFilterCard, setIsBdFilterCard] = useState(false);
+
+  const [isAvTrenchTable, setIsAvTrenchTable] = useState(false);
+  const [isAvDrillTable, setIsAvDrillTable] = useState(false);
+  const [isProdTrenchTable, setIsProdTrenchTable] = useState(false);
+  const [isProdDrillTable, setIsProdDrillTable] = useState(false);
+  const [isFuelTable, setIsFuelTable] = useState(false);
+  const [isOilTable, setIsOilTable] = useState(false);
+  const [isBdTable, setIsBdTable] = useState(false);
 
   const [category, setCategory] = useState("Dashboard");
   const [isSelectActive, setIsSelectActive] = useState(false);
@@ -111,12 +125,21 @@ const Dashboard = ({ socket }) => {
               setIsAvTrenchFilterCard={setIsAvTrenchFilterCard}
             />
           )}
+          {isAvTrenchTable && (
+            <AvTrenchTable
+              setIsAvTrenchTable={setIsAvTrenchTable}
+              data={data}
+            />
+          )}
           {isAvDrillFilterCard && (
             <AvDrillFilter
               setData={setData}
               copiedData={copiedData}
               setIsAvDrillFilterCard={setIsAvDrillFilterCard}
             />
+          )}
+          {isAvDrillTable && (
+            <AvDrillTable setIsAvDrillTable={setIsAvDrillTable} data={data} />
           )}
           {isBdFilterCard && (
             <BdFilter
@@ -132,11 +155,23 @@ const Dashboard = ({ socket }) => {
               setIsProdTrenchFilterCard={setIsProdTrenchFilterCard}
             />
           )}
+          {isProdTrenchTable && (
+            <ProdTrenchTable
+              setIsProdTrenchTable={setIsProdTrenchTable}
+              data={data}
+            />
+          )}
           {isProdDrillFilterCard && (
             <ProdDrillFilter
               setData={setData}
               copiedData={copiedData}
               setIsProdDrillFilterCard={setIsProdDrillFilterCard}
+            />
+          )}
+          {isProdDrillTable && (
+            <ProdDrillTable
+              setIsProdDrillTable={setIsProdDrillTable}
+              data={data}
             />
           )}
           {isFuelFilterCard && (
@@ -146,6 +181,9 @@ const Dashboard = ({ socket }) => {
               setIsFuelFilterCard={setIsFuelFilterCard}
             />
           )}
+          {isFuelTable && (
+            <FuelTable setIsFuelTable={setIsFuelTable} data={data} />
+          )}
           {isOilFilterCard && (
             <OilFilter
               setData={setData}
@@ -153,6 +191,7 @@ const Dashboard = ({ socket }) => {
               setIsOilFilterCard={setIsOilFilterCard}
             />
           )}
+          {isOilTable && <OilTable setIsOilTable={setIsOilTable} data={data} />}
           <div className="w-full h-full py-1 Main--Page flex flex-col justify-start items-center overflow-y-scroll md:mt-0 mt-[58px] gap-4 bg-gray-100">
             <div className="w-full h-full flex flex-col gap-1 items-center justify-start bg-gray-100">
               <div className="w-full md:h-[50%] h-auto flex md:flex-row flex-col flex-wrap justify-start items-center px-1 gap-1">
@@ -162,6 +201,7 @@ const Dashboard = ({ socket }) => {
                       setIsAvTrenchFilterCard={setIsAvTrenchFilterCard}
                       title={`Availability (Trench Cutting Machines)`}
                       data={data?.avData}
+                      setIsAvTrenchTable={setIsAvTrenchTable}
                     />
                   </div>
                   <div className="w-full h-[49%] flex flex-row gap-1">
@@ -170,6 +210,7 @@ const Dashboard = ({ socket }) => {
                         setIsProdTrenchFilterCard={setIsProdTrenchFilterCard}
                         title={`Production (Trench)`}
                         data={data?.prodTrench}
+                        setIsProdTrenchTable={setIsProdTrenchTable}
                       />
                     </div>
                     <div className="flex-1 h-full">
@@ -177,6 +218,7 @@ const Dashboard = ({ socket }) => {
                         setIsProdDrillFilterCard={setIsProdDrillFilterCard}
                         title={`Production (Drilling)`}
                         data={data?.prodDrill}
+                        setIsProdDrillTable={setIsProdDrillTable}
                       />
                     </div>
                   </div>
@@ -198,6 +240,7 @@ const Dashboard = ({ socket }) => {
                       setIsAvDrillFilterCard={setIsAvDrillFilterCard}
                       title={`Availability (Drilling Machines)`}
                       data={data?.avData}
+                      setIsAvDrillTable={setIsAvDrillTable}
                     />
                   </div>
                   <div className="w-full h-[49%] flex flex-row gap-1">
@@ -206,6 +249,7 @@ const Dashboard = ({ socket }) => {
                         setIsFuelFilterCard={setIsFuelFilterCard}
                         title={`Fuel Consumption`}
                         data={data?.fuelCons}
+                        setIsFuelTable={setIsFuelTable}
                       />
                     </div>
                     <div className="flex-1 h-full">
@@ -213,6 +257,7 @@ const Dashboard = ({ socket }) => {
                         setIsOilFilterCard={setIsOilFilterCard}
                         title={`Oil Consumption`}
                         data={data?.oilCons}
+                        setIsOilTable={setIsOilTable}
                       />
                     </div>
                   </div>
