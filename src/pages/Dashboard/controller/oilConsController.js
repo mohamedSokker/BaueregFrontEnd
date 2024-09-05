@@ -68,10 +68,10 @@ const useOil = ({ data }) => {
       setYData(y);
       setSum(
         s <= 1000
-          ? `${s.toFixed(0)} L`
+          ? `${s.toFixed(1)} L`
           : s <= 1000000
-          ? `${(s / 1000).toFixed(0)} K L`
-          : `${(s / 1000000).toFixed(0)} M L`
+          ? `${(s / 1000).toFixed(1)} K L`
+          : `${(s / 1000000).toFixed(1)} M L`
       );
     }
   }, [data]);

@@ -36,10 +36,10 @@ const useProd = ({ data }) => {
       setYData(y);
       setSum(
         s <= 1000
-          ? `${s.toFixed(0)} Ml`
+          ? `${s.toFixed(1)} Ml`
           : s <= 1000000
-          ? `${(s / 1000).toFixed(0)} K Ml`
-          : `${(s / 1000000).toFixed(0)} M Ml`
+          ? `${(s / 1000).toFixed(1)} K Ml`
+          : `${(s / 1000000).toFixed(1)} M Ml`
       );
     }
   }, [data]);

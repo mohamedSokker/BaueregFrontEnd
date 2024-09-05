@@ -14,7 +14,7 @@ import useFuel from "../controller/fuelConsController";
 
 Chartjs.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const FuelConsCard = ({ title, data, setIsFuelFilterCard }) => {
+const FuelConsCard = ({ title, data, setIsFuelFilterCard, setIsFuelTable }) => {
   const { sum, xData, yData } = useFuel({ data });
 
   return (
@@ -40,7 +40,10 @@ const FuelConsCard = ({ title, data, setIsFuelFilterCard }) => {
             <p className="text-[18px] font-extrabold">{sum}</p>
           </div>
 
-          <div className="w-[40%] h-[100%] flex flex-row cursor-pointer">
+          <div
+            className="w-[40%] h-[100%] flex flex-row cursor-pointer"
+            onClick={() => setIsFuelTable(true)}
+          >
             <SparkLineChart
               className=" bg-slate-500"
               data={[1, 4, 2, 5, 7, 5, 9]}

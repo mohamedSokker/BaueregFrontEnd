@@ -14,7 +14,12 @@ import useProd from "../controller/prodDrillController";
 
 Chartjs.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const ProdDrillCard = ({ title, data, setIsProdDrillFilterCard }) => {
+const ProdDrillCard = ({
+  title,
+  data,
+  setIsProdDrillFilterCard,
+  setIsProdDrillTable,
+}) => {
   const { sum, xData, yData } = useProd({ data });
 
   return (
@@ -40,7 +45,10 @@ const ProdDrillCard = ({ title, data, setIsProdDrillFilterCard }) => {
             <p className="text-[18px] font-extrabold">{sum}</p>
           </div>
 
-          <div className="w-[40%] h-[100%] flex flex-row cursor-pointer">
+          <div
+            className="w-[40%] h-[100%] flex flex-row cursor-pointer"
+            onClick={() => setIsProdDrillTable(true)}
+          >
             <SparkLineChart
               className=" bg-slate-500"
               data={[9, 5, 7, 5, 2, 4, 1]}

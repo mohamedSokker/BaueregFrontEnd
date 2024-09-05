@@ -16,7 +16,12 @@ import { logoColor } from "../../../BauerColors";
 
 Chartjs.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const AvDrillCard = ({ title, data, setIsAvDrillFilterCard }) => {
+const AvDrillCard = ({
+  title,
+  data,
+  setIsAvDrillFilterCard,
+  setIsAvDrillTable,
+}) => {
   const { sum, xData, yData } = useAv({ data });
 
   return (
@@ -42,7 +47,10 @@ const AvDrillCard = ({ title, data, setIsAvDrillFilterCard }) => {
             <p className="text-[22px] font-extrabold">{sum}</p>
           </div>
 
-          <div className="w-[40%] h-[100%] flex flex-row cursor-pointer">
+          <div
+            className="w-[40%] h-[100%] flex flex-row cursor-pointer"
+            onClick={() => setIsAvDrillTable(true)}
+          >
             <SparkLineChart
               className=" bg-slate-500"
               data={[9, 5, 7, 5, 2, 4, 1, 9, 5, 7, 5, 2, 4, 1]}

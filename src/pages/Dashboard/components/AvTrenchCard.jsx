@@ -14,7 +14,12 @@ import useAv from "../controller/avTrenchController";
 
 Chartjs.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const AvTrenchCard = ({ title, data, setIsAvTrenchFilterCard }) => {
+const AvTrenchCard = ({
+  title,
+  data,
+  setIsAvTrenchFilterCard,
+  setIsAvTrenchTable,
+}) => {
   const { sum, xData, yData } = useAv({ data });
 
   return (
@@ -40,7 +45,10 @@ const AvTrenchCard = ({ title, data, setIsAvTrenchFilterCard }) => {
             <p className="text-[22px] font-extrabold">{sum}</p>
           </div>
 
-          <div className="w-[40%] h-[100%] flex flex-row cursor-pointer">
+          <div
+            className="w-[40%] h-[100%] flex flex-row cursor-pointer"
+            onClick={() => setIsAvTrenchTable(true)}
+          >
             <SparkLineChart
               className=" bg-slate-500"
               data={[1, 4, 2, 5, 7, 5, 9, 1, 4, 2, 5, 7, 5, 9]}

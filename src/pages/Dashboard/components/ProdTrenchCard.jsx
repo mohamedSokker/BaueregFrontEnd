@@ -14,7 +14,12 @@ import useProd from "../controller/prodTrechController";
 
 Chartjs.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const ProdTrenchCard = ({ title, data, setIsProdTrenchFilterCard }) => {
+const ProdTrenchCard = ({
+  title,
+  data,
+  setIsProdTrenchFilterCard,
+  setIsProdTrenchTable,
+}) => {
   const { sum, xData, yData } = useProd({ data });
 
   return (
@@ -40,7 +45,10 @@ const ProdTrenchCard = ({ title, data, setIsProdTrenchFilterCard }) => {
             <p className="text-[18px] font-extrabold">{sum}</p>
           </div>
 
-          <div className="w-[40%] h-[100%] flex flex-row cursor-pointer">
+          <div
+            className="w-[40%] h-[100%] flex flex-row cursor-pointer"
+            onClick={() => setIsProdTrenchTable(true)}
+          >
             <SparkLineChart
               className=" bg-slate-500"
               data={[1, 4, 2, 5, 7, 5, 9]}

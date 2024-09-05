@@ -14,7 +14,7 @@ import useOil from "../controller/oilConsController";
 
 Chartjs.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const OilConsCard = ({ title, data, setIsOilFilterCard }) => {
+const OilConsCard = ({ title, data, setIsOilFilterCard, setIsOilTable }) => {
   const { sum, xData, yData } = useOil({ data });
 
   return (
@@ -40,7 +40,10 @@ const OilConsCard = ({ title, data, setIsOilFilterCard }) => {
             <p className="text-[18px] font-extrabold">{sum}</p>
           </div>
 
-          <div className="w-[40%] h-[100%] flex flex-row cursor-pointer">
+          <div
+            className="w-[40%] h-[100%] flex flex-row cursor-pointer"
+            onClick={() => setIsOilTable(true)}
+          >
             <SparkLineChart
               className=" bg-slate-500"
               data={[1, 4, 2, 5, 7, 5, 9]}
