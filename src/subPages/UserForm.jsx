@@ -50,6 +50,8 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       OilSamples: false,
       OilSamplesAnalyzed: false,
       Catalogues: false,
+      CustomDataEntry: false,
+      ManageCustomDataEntry: false,
     },
     User: {
       ManageUsers: false,
@@ -68,6 +70,8 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       OilSamples: false,
       OilSamplesAnalyzed: false,
       Catalogues: false,
+      CustomDataEntry: false,
+      ManageCustomDataEntry: false,
     },
   });
   // const [active, setActive] = useState(false);
@@ -127,7 +131,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       setPhone(userData.Phone);
       setRules(JSON.parse(userData.UserRole));
       const getImage = async () => {
-        const img = `${process.env.REACT_APP_BASE_URL}/${userData.ProfileImg}`;
+        const img = `${import.meta.env.VITE_BASE_URL}/${userData.ProfileImg}`;
         let imgName = userData.ProfileImg.split("/");
         imgName = imgName[imgName.length - 1];
         fetch(img)
@@ -165,8 +169,9 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
     // console.log(e.target.value);
     let category = e.target.dataset.cat;
     let title = e.target.dataset.title;
-    // console.log(category);
-    // console.log(title);
+    console.log(category);
+    console.log(title);
+    console.log(typeof roles[category][title]);
     if (typeof roles[category][title] === "boolean") {
       setRules((prev) => ({
         ...prev,

@@ -84,13 +84,14 @@ export const allData = async (token) => {
     ],
     StocksList: AllStocks,
     Tables: AllTables,
-    Catalogues: [],
+    Catalogues: ["true"],
     OilSamples: ["true"],
     OilSamplesAnalyzed: ["true"],
     ManageUsers: ["true"],
     ManageAppUsers: ["true"],
     CustomDataEntry: ["true"],
     ManageCustomDataEntry: ["true"],
+    ManageDatabase: ["true"],
   };
 };
 
@@ -135,7 +136,7 @@ export const allDataWithName = async () => {
     ],
     StocksList: allStocksWithName,
     Tables: allTablesWithName,
-    Catalogues: [],
+    Catalogues: true,
     OilSamples: true,
     OilSamplesAnalyzed: true,
     ManageUsers: [
@@ -150,5 +151,6 @@ export const allDataWithName = async () => {
     ],
     CustomDataEntry: true,
     ManageCustomDataEntry: true,
+    ManageDatabase: true,
   };
 };

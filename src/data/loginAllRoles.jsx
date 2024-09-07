@@ -73,6 +73,7 @@ export const allData = async () => {
     ManageAppUsers: ["true"],
     CustomDataEntry: ["true"],
     ManageCustomDataEntry: ["true"],
+    ManageDatabase: ["true"],
   };
 };
 
@@ -132,5 +133,6 @@ export const allDataWithName = async (token) => {
     ],
     CustomDataEntry: true,
     ManageCustomDataEntry: true,
+    ManageDatabase: true,
   };
 };

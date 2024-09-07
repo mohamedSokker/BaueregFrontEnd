@@ -12,6 +12,7 @@ import { BsDatabaseAdd } from "react-icons/bs";
 import { BiListPlus, BiTestTube } from "react-icons/bi";
 import { BiLineChart } from "react-icons/bi";
 import { MdOutlineFireTruck, MdManageAccounts } from "react-icons/md";
+import { BsDatabaseFillGear } from "react-icons/bs";
 import { Cookies } from "react-cookie";
 import { dataEntry } from "./dataEntry";
 import CustomDataEntry from "../pages/CustomDataEntry/View/CustomDataEntry";
@@ -33,6 +34,9 @@ const DataEntry = lazy(() => import("../pages/DataEntry"));
 
 const Transportaions = lazy(() => import("../pages/Transportaions"));
 const Files = lazy(() => import("../pages/BReport/View/Files"));
+const ManageDatabase = lazy(() =>
+  import("../pages/ManageDatabase/View/ManageDatabase")
+);
 
 const cookies = new Cookies();
 const token = cookies?.get("token");
@@ -169,6 +173,13 @@ export const links = [
     dest: "/OilSamplesAnalyzed",
     elem: <OilSamplesAnalyzed />,
     icon: <BiTestTube size={20} />,
+  },
+  {
+    title: "Manage Database",
+    name: "ManageDatabase",
+    dest: "/ManageDatabase",
+    elem: <ManageDatabase />,
+    icon: <BsDatabaseFillGear size={20} />,
   },
   {
     title: "Manage Users",
