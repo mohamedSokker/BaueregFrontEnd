@@ -62,6 +62,7 @@
     "vnc-rfb-client": "^0.2.0"
   },
   "scripts": {
+    "postinstall": "npm install --legacy-peer-deps",
     "start": "GENERATE_SOURCEMAP=false react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
