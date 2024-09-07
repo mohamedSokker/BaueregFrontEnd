@@ -16,7 +16,7 @@ const OilSamples = lazy(() => import("./pages/OilSamples/View/OilSamples"));
 const OilSamplesAnalyzed = lazy(() =>
   import("./pages/OilSamplesAnalyzed/View/OilSamplesAnalyzed")
 );
-const Locations = lazy(() => import("./pages/Locations"));
+const Locations = lazy(() => import("./pages/Location/view/Location"));
 const Equipments = lazy(() => import("./pages/Equipment/view/Equipments"));
 const Stocks = lazy(() => import("./pages/Stocks"));
 const EditTables = lazy(() => import("./pages/EditTables"));
