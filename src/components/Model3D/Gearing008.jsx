@@ -47,105 +47,105 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
         material={materials.SilverMetal}
         position={[-0.051, 0.343, 0]}
         rotation={[0.046, 0, 0]}
-        visible={visible["HOLLOW_WHEEL_(682654)"].visible}
+        // visible={visible["HOLLOW_WHEEL_(682654)"].visible}
         onClick={(e) => console.log(e.intersections[0]?.object?.name)}
       >
-        {visible["HOLLOW_WHEEL_(682654)"].wireFrame && (
+        {/* {visible["HOLLOW_WHEEL_(682654)"].wireFrame && (
           <meshStandardMaterial wireframe />
-        )}
+        )} */}
       </mesh>
       <mesh
         geometry={nodes.Plate_PlantaryGear004.geometry}
         material={materials.SilverMetal}
-        visible={visible["Plate_PlantaryGear004"].visible}
+        // visible={visible["Plate_PlantaryGear004"].visible}
       >
-        {visible["Plate_PlantaryGear004"].wireFrame && (
+        {/* {visible["Plate_PlantaryGear004"].wireFrame && (
           <meshStandardMaterial wireframe />
-        )}
+        )} */}
       </mesh>
       <mesh
         ref={smallPlate}
         geometry={nodes.Plate_PlantaryGear001.geometry}
         material={materials.SilverMetal}
         position={[0.034, 0.343, 0]}
-        visible={visible["Plate_PlantaryGear001"].visible}
+        // visible={visible["Plate_PlantaryGear001"].visible}
       >
-        {visible["Plate_PlantaryGear001"].wireFrame && (
+        {/* {visible["Plate_PlantaryGear001"].wireFrame && (
           <meshStandardMaterial wireframe />
-        )}
+        )} */}
         <mesh
           geometry={nodes.bearing_RSL_182207_A_XL_.geometry}
           material={materials["SilverMetal"]}
           position={[-0.752, -0.34, 0]}
-          visible={visible["bearing_RSL_182207_A_XL_"].visible}
+          // visible={visible["bearing_RSL_182207_A_XL_"].visible}
         >
-          {visible["bearing_RSL_182207_A_XL_"].wireFrame && (
+          {/* {visible["bearing_RSL_182207_A_XL_"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           geometry={nodes.bearing_RSL_182207_A_XL_001.geometry}
           material={materials["SilverMetal"]}
           position={[-0.751, -0.342, 0.002]}
-          visible={visible["bearing_RSL_182207_A_XL_001"].visible}
+          // visible={visible["bearing_RSL_182207_A_XL_001"].visible}
         >
-          {visible["bearing_RSL_182207_A_XL_001"].wireFrame && (
+          {/* {visible["bearing_RSL_182207_A_XL_001"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           geometry={nodes.bearing_RSL_182207_A_XL_002.geometry}
           material={materials["SilverMetal"]}
           position={[-0.018, 0.11, 0.07]}
-          visible={visible["bearing_RSL_182207_A_XL_002"].visible}
+          // visible={visible["bearing_RSL_182207_A_XL_002"].visible}
         >
-          {visible["bearing_RSL_182207_A_XL_002"].wireFrame && (
+          {/* {visible["bearing_RSL_182207_A_XL_002"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           ref={smallSunGear}
           geometry={nodes.SmallSunGear.geometry}
           material={materials.SilverMetal}
           position={[-0.02, -0.112, 0.062]}
-          visible={visible["SmallSunGear"].visible}
+          // visible={visible["SmallSunGear"].visible}
         >
-          {visible["SmallSunGear"].wireFrame && (
+          {/* {visible["SmallSunGear"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           ref={smallSunGear01}
           geometry={nodes.SmallSunGear001.geometry}
           material={materials.SilverMetal}
           position={[-0.019, 0.007, -0.13]}
-          visible={visible["SmallSunGear001"].visible}
+          // visible={visible["SmallSunGear001"].visible}
         >
-          {visible["SmallSunGear001"].wireFrame && (
+          {/* {visible["SmallSunGear001"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           ref={smallSunGear02}
           geometry={nodes.SmallSunGear002.geometry}
           material={materials.SilverMetal}
           position={[-0.018, 0.11, 0.07]}
-          visible={visible["SmallSunGear002"].visible}
+          // visible={visible["SmallSunGear002"].visible}
         >
-          {visible["SmallSunGear002"].wireFrame && (
+          {/* {visible["SmallSunGear002"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           ref={sunGear}
           geometry={nodes["sun_gear_z=13"].geometry}
           material={materials.SilverMetal}
           position={[-0.022, 0.001, 0.001]}
-          visible={visible["sun_gear_z=13"].visible}
+          // visible={visible["sun_gear_z=13"].visible}
         >
-          {visible["sun_gear_z=13"].wireFrame && (
+          {/* {visible["sun_gear_z=13"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
       </mesh>
       <mesh
@@ -153,52 +153,52 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
         geometry={nodes.Plate_PlantaryGear.geometry}
         material={materials.SilverMetal}
         position={[0.135, 0.343, -0.001]}
-        visible={visible["Plate_PlantaryGear"].visible}
+        // visible={visible["Plate_PlantaryGear"].visible}
       >
-        {visible["Plate_PlantaryGear"].wireFrame && (
+        {/* {visible["Plate_PlantaryGear"].wireFrame && (
           <meshStandardMaterial wireframe />
-        )}
+        )} */}
         <mesh
           ref={bigSunGear}
           geometry={nodes.BigSunGear.geometry}
           material={materials.SilverMetal}
           position={[-0.04, 0.002, 0.127]}
-          visible={visible["BigSunGear"].visible}
+          // visible={visible["BigSunGear"].visible}
         >
-          {visible["BigSunGear"].wireFrame && (
+          {/* {visible["BigSunGear"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           ref={bigSunGear05}
           geometry={nodes.BigSunGear005.geometry}
           material={materials.SilverMetal}
           position={[-0.038, 0.108, -0.07]}
-          visible={visible["BigSunGear005"].visible}
+          // visible={visible["BigSunGear005"].visible}
         >
-          {visible["BigSunGear005"].wireFrame && (
+          {/* {visible["BigSunGear005"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           ref={bigSunGear06}
           geometry={nodes.BigSunGear006.geometry}
           material={materials.SilverMetal}
           position={[-0.038, -0.111, -0.066]}
-          visible={visible["BigSunGear006"].visible}
+          // visible={visible["BigSunGear006"].visible}
         >
-          {visible["BigSunGear006"].wireFrame && (
+          {/* {visible["BigSunGear006"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
         </mesh>
         <mesh
           ref={bigPlateSunGear}
           geometry={nodes.Sun_Gear.geometry}
           material={materials.SilverMetal}
           position={[-0.037, -0.001, -0.001]}
-          visible={visible["Sun_Gear"].visible}
+          // visible={visible["Sun_Gear"].visible}
         >
-          {visible["Sun_Gear"].wireFrame && <meshStandardMaterial wireframe />}
+          {/* {visible["Sun_Gear"].wireFrame && <meshStandardMaterial wireframe />} */}
         </mesh>
       </mesh>
       {/* <mesh
@@ -212,11 +212,11 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
         geometry={nodes["ring_cpl_(1040286)"].geometry}
         material={materials["SilverMetal"]}
         position={[0.12, 0.343, 0]}
-        visible={visible["ring_cpl_(1040286)"].visible}
+        // visible={visible["ring_cpl_(1040286)"].visible}
       >
-        {visible["ring_cpl_(1040286)"].wireFrame && (
+        {/* {visible["ring_cpl_(1040286)"].wireFrame && (
           <meshStandardMaterial wireframe />
-        )}
+        )} */}
       </mesh>
       <mesh
         ref={cover}
@@ -224,43 +224,43 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
         material={materials.SilverMetal}
         position={[0.249, 0.343, -0.001]}
         scale={0.001}
-        visible={visible["planetary_stage_2_cpl_(1057542)001"].visible}
+        // visible={visible["planetary_stage_2_cpl_(1057542)001"].visible}
       >
-        {visible["planetary_stage_2_cpl_(1057542)001"].wireFrame && (
+        {/* {visible["planetary_stage_2_cpl_(1057542)001"].wireFrame && (
           <meshStandardMaterial wireframe />
-        )}
+        )} */}
         <mesh
           ref={coverGear}
           geometry={nodes["planet_gear_z=18"].geometry}
           material={materials.SilverMetal}
           position={[-43.306, -39.547, -122.323]}
           scale={1000.013}
-          visible={visible["planet_gear_z=18"].visible}
+          // visible={visible["planet_gear_z=18"].visible}
         >
-          {visible["planet_gear_z=18"].wireFrame && (
+          {/* {visible["planet_gear_z=18"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
           <mesh
             geometry={nodes.Bearing_RNCF3013V.geometry}
             material={materials["SilverMetal"]}
             position={[0.015, 0, 0]}
             rotation={[-0.139, 0, 0]}
-            visible={visible["Bearing_RNCF3013V"].visible}
+            // visible={visible["Bearing_RNCF3013V"].visible}
           >
-            {visible["Bearing_RNCF3013V"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
           <mesh
             geometry={nodes.Bearing_RNCF3013V001.geometry}
             material={materials["SilverMetal"]}
             position={[-0.027, 0, 0]}
             rotation={[-0.139, 0, 0]}
-            visible={visible["Bearing_RNCF3013V001"].visible}
+            // visible={visible["Bearing_RNCF3013V001"].visible}
           >
-            {visible["Bearing_RNCF3013V001"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V001"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
         </mesh>
         <mesh
@@ -269,32 +269,32 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
           material={materials.SilverMetal}
           position={[-43.306, 105.653, -76.552]}
           scale={1000.013}
-          visible={visible["planet_gear_z=18001"].visible}
+          // visible={visible["planet_gear_z=18001"].visible}
         >
-          {visible["planet_gear_z=18001"].wireFrame && (
+          {/* {visible["planet_gear_z=18001"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
           <mesh
             geometry={nodes.Bearing_RNCF3013V002.geometry}
             material={materials["SilverMetal"]}
             position={[0.015, 0, 0]}
             rotation={[-0.395, 0, 0]}
-            visible={visible["Bearing_RNCF3013V002"].visible}
+            // visible={visible["Bearing_RNCF3013V002"].visible}
           >
-            {visible["Bearing_RNCF3013V002"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V002"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
           <mesh
             geometry={nodes.Bearing_RNCF3013V003.geometry}
             material={materials["SilverMetal"]}
             position={[-0.027, 0, 0]}
             rotation={[-0.395, 0, 0]}
-            visible={visible["Bearing_RNCF3013V003"].visible}
+            // visible={visible["Bearing_RNCF3013V003"].visible}
           >
-            {visible["Bearing_RNCF3013V003"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V003"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
         </mesh>
         <mesh
@@ -303,32 +303,32 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
           material={materials.SilverMetal}
           position={[-43.306, -129.639, -0.821]}
           scale={1000.013}
-          visible={visible["planet_gear_z=18002"].visible}
+          // visible={visible["planet_gear_z=18002"].visible}
         >
-          {visible["planet_gear_z=18002"].wireFrame && (
+          {/* {visible["planet_gear_z=18002"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
           <mesh
             geometry={nodes.Bearing_RNCF3013V004.geometry}
             material={materials["SilverMetal"]}
             position={[0.015, 0, 0]}
             rotation={[0.142, 0, 0]}
-            visible={visible["Bearing_RNCF3013V004"].visible}
+            // visible={visible["Bearing_RNCF3013V004"].visible}
           >
-            {visible["Bearing_RNCF3013V004"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V004"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
           <mesh
             geometry={nodes.Bearing_RNCF3013V005.geometry}
             material={materials["SilverMetal"]}
             position={[-0.027, 0, 0]}
             rotation={[0.142, 0, 0]}
-            visible={visible["Bearing_RNCF3013V005"].visible}
+            // visible={visible["Bearing_RNCF3013V005"].visible}
           >
-            {visible["Bearing_RNCF3013V005"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V005"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
         </mesh>
         <mesh
@@ -337,32 +337,32 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
           material={materials.SilverMetal}
           position={[-43.306, -38.308, 121.959]}
           scale={1000.013}
-          visible={visible["planet_gear_z=18003"].visible}
+          // visible={visible["planet_gear_z=18003"].visible}
         >
-          {visible["planet_gear_z=18003"].wireFrame && (
+          {/* {visible["planet_gear_z=18003"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
           <mesh
             geometry={nodes.Bearing_RNCF3013V006.geometry}
             material={materials["SilverMetal"]}
             position={[0.015, 0, 0]}
             rotation={[-0.143, 0, 0]}
-            visible={visible["Bearing_RNCF3013V006"].visible}
+            // visible={visible["Bearing_RNCF3013V006"].visible}
           >
-            {visible["Bearing_RNCF3013V006"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V006"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
           <mesh
             geometry={nodes.Bearing_RNCF3013V007.geometry}
             material={materials["SilverMetal"]}
             position={[-0.027, 0, 0]}
             rotation={[-0.143, 0, 0]}
-            visible={visible["Bearing_RNCF3013V007"].visible}
+            // visible={visible["Bearing_RNCF3013V007"].visible}
           >
-            {visible["Bearing_RNCF3013V007"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V007"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
         </mesh>
         <mesh
@@ -371,32 +371,32 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
           material={materials.SilverMetal}
           position={[-43.306, 105.051, 74.022]}
           scale={1000.013}
-          visible={visible["planet_gear_z=18004"].visible}
+          // visible={visible["planet_gear_z=18004"].visible}
         >
-          {visible["planet_gear_z=18004"].wireFrame && (
+          {/* {visible["planet_gear_z=18004"].wireFrame && (
             <meshStandardMaterial wireframe />
-          )}
+          )} */}
           <mesh
             geometry={nodes.Bearing_RNCF3013V008.geometry}
             material={materials["SilverMetal"]}
             position={[0.015, 0, 0]}
             rotation={[0.122, 0, 0]}
-            visible={visible["Bearing_RNCF3013V008"].visible}
+            // visible={visible["Bearing_RNCF3013V008"].visible}
           >
-            {visible["Bearing_RNCF3013V008"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V008"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
           <mesh
             geometry={nodes.Bearing_RNCF3013V009.geometry}
             material={materials["SilverMetal"]}
             position={[-0.027, 0, 0]}
             rotation={[0.122, 0, 0]}
-            visible={visible["Bearing_RNCF3013V009"].visible}
+            // visible={visible["Bearing_RNCF3013V009"].visible}
           >
-            {visible["Bearing_RNCF3013V009"].wireFrame && (
+            {/* {visible["Bearing_RNCF3013V009"].wireFrame && (
               <meshStandardMaterial wireframe />
-            )}
+            )} */}
           </mesh>
         </mesh>
         <mesh
@@ -405,9 +405,9 @@ export function Gearing008({ scale, isAnimate, isPartsAnimate, rpm }) {
           material={materials.SilverMetal}
           position={[-42.818, 0.001, 0.001]}
           scale={1000.013}
-          visible={visible["SUN"].visible}
+          // visible={visible["SUN"].visible}
         >
-          {visible["SUN"].wireFrame && <meshStandardMaterial wireframe />}
+          {/* {visible["SUN"].wireFrame && <meshStandardMaterial wireframe />} */}
         </mesh>
       </mesh>
     </group>
