@@ -7,6 +7,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@gsap/react": "^2.1.1",
     "@material-ui/core": "^4.12.4",
     "@mui/material": "^5.14.6",
     "@mui/styled-engine-sc": "^5.14.6",
@@ -14,6 +15,8 @@
     "@novnc/novnc": "^1.4.0",
     "@picovoice/web-voice-processor": "^4.0.6",
     "@react-pdf/renderer": "^3.1.12",
+    "@react-three/drei": "^9.112.0",
+    "@react-three/fiber": "^8.17.6",
     "@syncfusion/ej2": "^19.4.48",
     "@syncfusion/ej2-react-buttons": "^21.2.5",
     "@syncfusion/ej2-react-calendars": "^19.4.48",
@@ -29,6 +32,7 @@
     "chart.js": "^4.4.0",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.10",
+    "gsap": "^3.12.5",
     "jimp": "^0.22.10",
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^3.1.2",
@@ -53,6 +57,7 @@
     "recharts": "^2.12.2",
     "socket.io-client": "^4.6.1",
     "styled-components": "^6.0.7",
+    "three": "^0.168.0",
     "vnc-rfb-client": "^0.2.0"
   },
   "scripts": {
