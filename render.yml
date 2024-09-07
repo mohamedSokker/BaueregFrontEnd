@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: my-static-site
+    env: static
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    staticPublishPath: build
