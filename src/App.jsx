@@ -17,7 +17,7 @@ const OilSamplesAnalyzed = lazy(() =>
   import("./pages/OilSamplesAnalyzed/View/OilSamplesAnalyzed")
 );
 const Locations = lazy(() => import("./pages/Locations"));
-const Equipments = lazy(() => import("./pages/Equipments"));
+const Equipments = lazy(() => import("./pages/Equipment/view/Equipments"));
 const Stocks = lazy(() => import("./pages/Stocks"));
 const EditTables = lazy(() => import("./pages/EditTables"));
 const Catalogues = lazy(() => import("./pages/Catalogues/view/Catalogues"));
@@ -39,6 +39,12 @@ const CustomDataEntryDetails = lazy(() =>
 );
 const ManageCustomDataEntry = lazy(() =>
   import("./pages/ManageCustomDataEntry/View/ManageCustomDataEntry")
+);
+const ManageDatabase = lazy(() =>
+  import("./pages/ManageDatabase/View/ManageDatabase")
+);
+const GearboxTrench = lazy(() =>
+  import("./pages/Equipment/components/GearboxTrench")
 );
 
 function App() {
@@ -104,8 +110,14 @@ function App() {
               element={<ManageCustomDataEntry />}
             />
           </Route>
+          <Route element={<RequiredAuth allowedRole={"ManageDatabase"} />}>
+            <Route path="/ManageDatabase" element={<ManageDatabase />} />
+          </Route>
           <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
             <Route path="/Equipments/:tableName" element={<Equipments />} />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
+            <Route path="/GearboxTrench" element={<GearboxTrench />} />
           </Route>
           <Route element={<RequiredAuth allowedRole={"Equipments"} />}>
             <Route path="/breport" element={<Files />} />

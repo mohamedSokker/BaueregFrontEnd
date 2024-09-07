@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useDashboardContext } from "../../../contexts/DashboardContext";
 
@@ -42,8 +44,11 @@ const ExcelDateToJSDate = (serial) => {
   );
 };
 
-const useData = ({ socket }) => {
+const useData = ({ socket, equip }) => {
   const { dashboardData, setDashboardData } = useDashboardContext();
+
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     avData: [],
@@ -53,6 +58,9 @@ const useData = ({ socket }) => {
     oilCons: [],
     prodDrill: [],
     prodTrench: [],
+    toolsLocation: [],
+    tools: [],
+    location: [],
   });
   const [copiedData, setCopiedData] = useState(null);
   const [currentSpare, setCurrentSpare] = useState(null);
@@ -64,9 +72,76 @@ const useData = ({ socket }) => {
   const getData = async () => {
     try {
       setLoading(true);
+
       if (dashboardData?.avData?.length > 0) {
-        setData(dashboardData);
-        setCopiedData(dashboardData);
+        console.log("from Global");
+        const URLs = [
+          "/api/v3/EqsTools",
+          "/api/v3/EqsToolsLocation",
+          "/api/v3/Equipments_Location",
+        ];
+
+        const responseData = await Promise.all(
+          URLs.map((url) => {
+            return axiosPrivate(url, { method: "GET" });
+          })
+        );
+
+        const targetEqsTools = responseData[1].data.filter(
+          (item) => item.End_Date === null && item.Equipment === equip
+        );
+
+        //   console.log(targetEqsTools);
+
+        const targetTools = [];
+
+        targetEqsTools.map((it) => {
+          const filteredData = responseData[0].data?.filter(
+            (item) => item.Type === it?.Type && item.Code === it?.Code
+            //   &&
+            //   item.Serial === it?.Serial
+          )[0];
+          targetTools.push({
+            ...filteredData,
+            Details: filteredData?.Details
+              ? JSON.parse(filteredData?.Details)
+              : {},
+          });
+        });
+
+        const targetLocation = responseData[2]?.data?.filter(
+          (item) => item.Equipment === equip && item.End_Date === null
+        );
+
+        const filteredData = {
+          avData: dashboardData?.avData?.filter(
+            (item) => item.Equipment === equip
+          ),
+          maintData: dashboardData?.maintData?.filter(
+            (item) => item.Equipment === equip
+          ),
+          maintStocksData: dashboardData?.maintStocksData?.filter(
+            (item) => item.Equipment === equip
+          ),
+          fuelCons: dashboardData?.fuelCons?.filter(
+            (item) => item.Equipment === equip
+          ),
+          oilCons: dashboardData?.oilCons?.filter(
+            (item) => item.Equipment === equip
+          ),
+          prodTrench: dashboardData?.prodTrench?.filter(
+            (item) => item?.["# Machine"] === equip
+          ),
+          prodDrill: dashboardData?.prodDrill?.filter(
+            (item) => item?.["# Machine"] === equip
+          ),
+          toolsLocation: targetEqsTools,
+          tools: targetTools,
+          location: targetLocation,
+        };
+
+        setData(filteredData);
+        setCopiedData(filteredData);
         setCurrentSpare(dashboardData?.maintStocksData[3]);
       } else {
         const URLs = [
@@ -77,6 +152,9 @@ const useData = ({ socket }) => {
           "/api/v1/oilCons",
           "/api/v1/prodDrill",
           "/api/v1/prodTrench",
+          "/api/v3/EqsTools",
+          "/api/v3/EqsToolsLocation",
+          "/api/v3/Equipments_Location",
         ];
 
         const responseData = await Promise.all(
@@ -85,7 +163,7 @@ const useData = ({ socket }) => {
           })
         );
 
-        console.log(responseData[4].data);
+        // console.log(responseData[4].data);
 
         for (let i = 0; i < responseData[3].data.length; i++) {
           responseData[3].data[i]["Date "] = ExcelDateToJSDate(
@@ -111,24 +189,66 @@ const useData = ({ socket }) => {
           );
         }
 
+        const targetEqsTools = responseData[8].data.filter(
+          (item) => item.End_Date === null && item.Equipment === equip
+        );
+
+        //   console.log(targetEqsTools);
+
+        const targetTools = [];
+
+        targetEqsTools.map((it) => {
+          const filteredData = responseData[7].data?.filter(
+            (item) => item.Type === it?.Type && item.Code === it?.Code
+            //   &&
+            //   item.Serial === it?.Serial
+          )[0];
+          targetTools.push({
+            ...filteredData,
+            Details: filteredData?.Details
+              ? JSON.parse(filteredData?.Details)
+              : {},
+          });
+        });
+
+        const targetLocation = responseData[9]?.data?.filter(
+          (item) => item.Equipment === equip && item.End_Date === null
+        );
+
         const data = {
-          avData: responseData[0].data,
-          maintData: responseData[1].data,
-          maintStocksData: responseData[2].data,
-          fuelCons: responseData[3].data,
-          oilCons: responseData[4].data,
-          prodDrill: responseData[5].data,
-          prodTrench: responseData[6].data,
+          avData: responseData[0].data?.filter(
+            (item) => item.Equipment === equip
+          ),
+          maintData: responseData[1].data?.filter(
+            (item) => item.Equipment === equip
+          ),
+          maintStocksData: responseData[2].data?.filter(
+            (item) => item.Equipment === equip
+          ),
+          fuelCons: responseData[3].data?.filter(
+            (item) => item.Equipment === equip
+          ),
+          oilCons: responseData[4].data?.filter(
+            (item) => item.Equipment === equip
+          ),
+          prodDrill: responseData[5].data?.filter(
+            (item) => item?.["# Machine"] === equip
+          ),
+          prodTrench: responseData[6].data?.filter(
+            (item) => item?.["# Machine"] === equip
+          ),
+          toolsLocation: targetEqsTools,
+          tools: targetTools,
+          location: targetLocation,
         };
 
         console.log(data.prodDrill);
         console.log(data.prodTrench);
 
         setData(data);
-        setDashboardData(data);
         setCopiedData(data);
         setCurrentSpare(data?.maintStocksData[3]);
-        // console.log(data);
+        // console.log(data);s
       }
 
       setLoading(false);
@@ -140,7 +260,7 @@ const useData = ({ socket }) => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [equip]);
 
   const handleSearchChange = (e) => {
     let targetData = [];
@@ -172,6 +292,12 @@ const useData = ({ socket }) => {
     setIsSearch(false);
   };
 
+  const handleTypeClick = (item) => {
+    if (item.Type === "GearboxTrench") {
+      navigate("/GearboxTrench");
+    }
+  };
+
   return {
     loading,
     data,
@@ -184,6 +310,7 @@ const useData = ({ socket }) => {
     setCurrentSpare,
     handleSearchChange,
     handleSearchClick,
+    handleTypeClick,
   };
 };
 
