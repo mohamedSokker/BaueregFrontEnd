@@ -189,7 +189,7 @@ const useEditDataEntry = ({ editData }) => {
       setLoading(true);
       setMessage(`Deleting Data...`);
 
-      const url = `/api/v3/QCTable/${data.ID}`;
+      const url = `/api/v3/Equipments_Location/${data.ID}`;
       const response = await axiosPrivate(url, {
         method: "DELETE",
       });
