@@ -22,6 +22,8 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
   const [items, setItems] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
 
+  console.log(items?.Time?.data?.currentDate);
+
   useEffect(() => {
     if (!mainFilterModel.checkedItems) {
       let eqs = [];
@@ -113,6 +115,8 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       }
     });
 
+    console.log(eqsCheck);
+
     const avData = copiedData.avData?.filter(
       (item) =>
         new Date(item.Date_Time) >=
@@ -156,42 +160,57 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     // let eqsItem = {};
     const prodDrill = [];
     const prodTrench = [];
+    prodDrill.push(
+      ...copiedData?.prodDrill?.filter(
+        (item) =>
+          new Date(item?.["Pouring Finish"]) >=
+            new Date(items.Time.data.currentDate.start) &&
+          new Date(item?.["Pouring Finish"]) <=
+            new Date(items.Time.data.currentDate.end) &&
+          eqsCheck.includes(item?.["# Machine"])
+      )
+    );
+    prodTrench.push(
+      ...copiedData?.prodTrench?.filter(
+        (item) =>
+          new Date(item?.["Pouring Finish"]) >=
+            new Date(items.Time.data.currentDate.start) &&
+          new Date(item?.["Pouring Finish"]) <=
+            new Date(items.Time.data.currentDate.end) &&
+          eqsCheck.includes(item?.["# Machine"])
+      )
+    );
     copiedData?.location?.map((loc) => {
       sitesCheck.map((site) => {
-        if (loc.Location === site) {
+        if (loc.Location === site && !eqsCheck?.includes(loc.Equipment)) {
           prodDrill.push(
             ...copiedData.prodDrill?.filter(
               (item) =>
-                new Date(item["Pouring Finish"]) >=
+                new Date(item?.["Pouring Finish"]) >=
                   new Date(items.Time.data.currentDate.start) &&
-                new Date(item["Pouring Finish"]) <=
+                new Date(item?.["Pouring Finish"]) <=
                   new Date(items.Time.data.currentDate.end) &&
-                (eqsCheck.includes(item["# Machine"]) ||
-                  (item?.["# Machine"] === loc.Equipment &&
-                    new Date(item?.["Pouring Finish"]) >=
-                      new Date(loc.Start_Date) &&
-                    new Date(item?.["Pouring Finish"]) <=
-                      new Date(
-                        loc.End_Date === null ? new Date() : loc.End_Date
-                      )))
+                item?.["# Machine"] === loc.Equipment &&
+                new Date(item?.["Pouring Finish"]) >=
+                  new Date(loc.Start_Date) &&
+                new Date(item?.["Pouring Finish"]) <=
+                  new Date(loc.End_Date === null ? new Date() : loc.End_Date)
             )
           );
           prodTrench.push(
-            ...copiedData.prodTrench?.filter(
-              (item) =>
-                new Date(item["Pouring Finish"]) >=
+            ...copiedData.prodTrench?.filter((item) => {
+              return (
+                new Date(item?.["Pouring Finish"]) >=
                   new Date(items.Time.data.currentDate.start) &&
-                new Date(item["Pouring Finish"]) <=
+                new Date(item?.["Pouring Finish"]) <=
                   new Date(items.Time.data.currentDate.end) &&
-                (eqsCheck.includes(item["# Machine"]) ||
-                  (item?.["# Machine"] === loc.Equipment &&
-                    new Date(item?.["Pouring Finish"]) >=
-                      new Date(loc.Start_Date) &&
-                    new Date(item?.["Pouring Finish"]) <=
-                      new Date(
-                        loc.End_Date === null ? new Date() : loc.End_Date
-                      )))
-            )
+                item?.["# Machine"] === loc.Equipment &&
+                new Date(item?.["Pouring Finish"]) >=
+                  new Date(loc.Start_Date) &&
+                new Date(item?.["Pouring Finish"]) <=
+                  new Date(loc.End_Date === null ? new Date() : loc.End_Date)
+              );
+            })
           );
         }
       });
@@ -234,6 +253,8 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       },
     }));
 
+    console.log(items);
+
     let eqsCheck = [];
     let sitesCheck = [];
 
@@ -253,8 +274,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
 
     const avData = copiedData.avData?.filter(
       (item) =>
-        new Date(item.Date_Time) >=
-          new Date(items.Time.data.currentDate.start) &&
+        new Date(item.Date_Time) >= new Date(e.target.value) &&
         new Date(item.Date_Time) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item.Equipment) ||
           sitesCheck.includes(item.Location))
@@ -263,8 +283,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
 
     const maintData = copiedData.maintData?.filter(
       (item) =>
-        new Date(item.Date_Time) >=
-          new Date(items.Time.data.currentDate.start) &&
+        new Date(item.Date_Time) >= new Date(e.target.value) &&
         new Date(item.Date_Time) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item.Equipment) ||
           sitesCheck.includes(item.Location))
@@ -273,8 +292,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
 
     const fuelCons = copiedData.fuelCons?.filter(
       (item) =>
-        new Date(item["Date "]) >=
-          new Date(items.Time.data.currentDate.start) &&
+        new Date(item["Date "]) >= new Date(e.target.value) &&
         new Date(item["Date "]) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item["Equipment"]) ||
           sitesCheck.includes(item["Job Site"]))
@@ -283,52 +301,64 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
 
     const oilCons = copiedData.oilCons?.filter(
       (item) =>
-        new Date(item["Date"]) >= new Date(items.Time.data.currentDate.start) &&
+        new Date(item["Date"]) >= new Date(e.target.value) &&
         new Date(item["Date"]) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item["Equipment"]) ||
           sitesCheck.includes(item["Job Site"]))
     );
     oilCons.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
 
-    const eqs = [];
+    // const eqs = [];
     // let eqsItem = {};
     const prodDrill = [];
     const prodTrench = [];
+
+    prodDrill.push(
+      ...copiedData?.prodDrill?.filter(
+        (item) =>
+          new Date(item?.["Pouring Finish"]) >= new Date(e.target.value) &&
+          new Date(item?.["Pouring Finish"]) <=
+            new Date(items.Time.data.currentDate.end) &&
+          eqsCheck.includes(item?.["# Machine"])
+      )
+    );
+    prodTrench.push(
+      ...copiedData?.prodTrench?.filter(
+        (item) =>
+          new Date(item?.["Pouring Finish"]) >= new Date(e.target.valuet) &&
+          new Date(item?.["Pouring Finish"]) <=
+            new Date(items.Time.data.currentDate.end) &&
+          eqsCheck.includes(item?.["# Machine"])
+      )
+    );
+
     copiedData?.location?.map((loc) => {
-      sitesCheck.map((site) => {
-        if (loc.Location === site) {
+      sitesCheck?.map((site) => {
+        if (loc.Location === site && !eqsCheck?.includes(loc.Equipment)) {
           prodDrill.push(
             ...copiedData.prodDrill?.filter(
               (item) =>
-                new Date(item["Pouring Finish"]) >=
-                  new Date(items.Time.data.currentDate.start) &&
+                new Date(item["Pouring Finish"]) >= new Date(e.target.value) &&
                 new Date(item["Pouring Finish"]) <=
                   new Date(items.Time.data.currentDate.end) &&
-                (eqsCheck.includes(item["# Machine"]) ||
-                  (item?.["# Machine"] === loc.Equipment &&
-                    new Date(item?.["Pouring Finish"]) >=
-                      new Date(loc.Start_Date) &&
-                    new Date(item?.["Pouring Finish"]) <=
-                      new Date(
-                        loc.End_Date === null ? new Date() : loc.End_Date
-                      )))
+                item?.["# Machine"] === loc.Equipment &&
+                new Date(item?.["Pouring Finish"]) >=
+                  new Date(loc.Start_Date) &&
+                new Date(item?.["Pouring Finish"]) <=
+                  new Date(loc.End_Date === null ? new Date() : loc.End_Date)
             )
           );
           prodTrench.push(
             ...copiedData.prodTrench?.filter(
               (item) =>
-                new Date(item["Pouring Finish"]) >=
-                  new Date(items.Time.data.currentDate.start) &&
+                new Date(item["Pouring Finish"]) >= new Date(e.target.value) &&
                 new Date(item["Pouring Finish"]) <=
                   new Date(items.Time.data.currentDate.end) &&
-                (eqsCheck.includes(item["# Machine"]) ||
-                  (item?.["# Machine"] === loc.Equipment &&
-                    new Date(item?.["Pouring Finish"]) >=
-                      new Date(loc.Start_Date) &&
-                    new Date(item?.["Pouring Finish"]) <=
-                      new Date(
-                        loc.End_Date === null ? new Date() : loc.End_Date
-                      )))
+                item?.["# Machine"] === loc.Equipment &&
+                new Date(item?.["Pouring Finish"]) >=
+                  new Date(loc.Start_Date) &&
+                new Date(item?.["Pouring Finish"]) <=
+                  new Date(loc.End_Date === null ? new Date() : loc.End_Date)
             )
           );
         }
@@ -393,7 +423,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       (item) =>
         new Date(item.Date_Time) >=
           new Date(items.Time.data.currentDate.start) &&
-        new Date(item.Date_Time) <= new Date(items.Time.data.currentDate.end) &&
+        new Date(item.Date_Time) <= new Date(e.target.value) &&
         (eqsCheck.includes(item.Equipment) ||
           sitesCheck.includes(item.Location))
     );
@@ -403,7 +433,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       (item) =>
         new Date(item.Date_Time) >=
           new Date(items.Time.data.currentDate.start) &&
-        new Date(item.Date_Time) <= new Date(items.Time.data.currentDate.end) &&
+        new Date(item.Date_Time) <= new Date(e.target.value) &&
         (eqsCheck.includes(item.Equipment) ||
           sitesCheck.includes(item.Location))
     );
@@ -413,7 +443,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       (item) =>
         new Date(item["Date "]) >=
           new Date(items.Time.data.currentDate.start) &&
-        new Date(item["Date "]) <= new Date(items.Time.data.currentDate.end) &&
+        new Date(item["Date "]) <= new Date(e.target.value) &&
         (eqsCheck.includes(item["Equipment"]) ||
           sitesCheck.includes(item["Job Site"]))
     );
@@ -422,34 +452,50 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     const oilCons = copiedData.oilCons?.filter(
       (item) =>
         new Date(item["Date"]) >= new Date(items.Time.data.currentDate.start) &&
-        new Date(item["Date"]) <= new Date(items.Time.data.currentDate.end) &&
+        new Date(item["Date"]) <= new Date(e.target.value) &&
         (eqsCheck.includes(item["Equipment"]) ||
           sitesCheck.includes(item["Job Site"]))
     );
     oilCons.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
 
-    const eqs = [];
+    // const eqs = [];
     // let eqsItem = {};
     const prodDrill = [];
     const prodTrench = [];
+
+    prodDrill.push(
+      ...copiedData?.prodDrill?.filter(
+        (item) =>
+          new Date(item?.["Pouring Finish"]) >=
+            new Date(items.Time.data.currentDate.start) &&
+          new Date(item?.["Pouring Finish"]) <= new Date(e.target.value) &&
+          eqsCheck.includes(item?.["# Machine"])
+      )
+    );
+    prodTrench.push(
+      ...copiedData?.prodTrench?.filter(
+        (item) =>
+          new Date(item?.["Pouring Finish"]) >=
+            new Date(items.Time.data.currentDate.start) &&
+          new Date(item?.["Pouring Finish"]) <= new Date(e.target.value) &&
+          eqsCheck.includes(item?.["# Machine"])
+      )
+    );
+
     copiedData?.location?.map((loc) => {
       sitesCheck.map((site) => {
-        if (loc.Location === site) {
+        if (loc.Location === site && !eqsCheck?.includes(loc.Equipment)) {
           prodDrill.push(
             ...copiedData.prodDrill?.filter(
               (item) =>
                 new Date(item["Pouring Finish"]) >=
                   new Date(items.Time.data.currentDate.start) &&
-                new Date(item["Pouring Finish"]) <=
-                  new Date(items.Time.data.currentDate.end) &&
-                (eqsCheck.includes(item["# Machine"]) ||
-                  (item?.["# Machine"] === loc.Equipment &&
-                    new Date(item?.["Pouring Finish"]) >=
-                      new Date(loc.Start_Date) &&
-                    new Date(item?.["Pouring Finish"]) <=
-                      new Date(
-                        loc.End_Date === null ? new Date() : loc.End_Date
-                      )))
+                new Date(item["Pouring Finish"]) <= new Date(e.target.value) &&
+                item?.["# Machine"] === loc.Equipment &&
+                new Date(item?.["Pouring Finish"]) >=
+                  new Date(loc.Start_Date) &&
+                new Date(item?.["Pouring Finish"]) <=
+                  new Date(loc.End_Date === null ? new Date() : loc.End_Date)
             )
           );
           prodTrench.push(
@@ -457,16 +503,12 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
               (item) =>
                 new Date(item["Pouring Finish"]) >=
                   new Date(items.Time.data.currentDate.start) &&
-                new Date(item["Pouring Finish"]) <=
-                  new Date(items.Time.data.currentDate.end) &&
-                (eqsCheck.includes(item["# Machine"]) ||
-                  (item?.["# Machine"] === loc.Equipment &&
-                    new Date(item?.["Pouring Finish"]) >=
-                      new Date(loc.Start_Date) &&
-                    new Date(item?.["Pouring Finish"]) <=
-                      new Date(
-                        loc.End_Date === null ? new Date() : loc.End_Date
-                      )))
+                new Date(item["Pouring Finish"]) <= new Date(e.target.value) &&
+                item?.["# Machine"] === loc.Equipment &&
+                new Date(item?.["Pouring Finish"]) >=
+                  new Date(loc.Start_Date) &&
+                new Date(item?.["Pouring Finish"]) <=
+                  new Date(loc.End_Date === null ? new Date() : loc.End_Date)
             )
           );
         }

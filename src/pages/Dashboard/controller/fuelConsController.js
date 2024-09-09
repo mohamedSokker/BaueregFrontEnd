@@ -10,7 +10,7 @@ const useFuel = ({ data }) => {
   const { usersData } = useNavContext();
 
   useEffect(() => {
-    if (data && data.length > 0) {
+    if (data) {
       let eqs = [];
       console.log(data);
       usersData[0].roles?.Editor?.Equipments.concat(
