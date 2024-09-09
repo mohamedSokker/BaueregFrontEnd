@@ -325,7 +325,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     prodTrench.push(
       ...copiedData?.prodTrench?.filter(
         (item) =>
-          new Date(item?.["Pouring Finish"]) >= new Date(e.target.valuet) &&
+          new Date(item?.["Pouring Finish"]) >= new Date(e.target.value) &&
           new Date(item?.["Pouring Finish"]) <=
             new Date(items.Time.data.currentDate.end) &&
           eqsCheck.includes(item?.["# Machine"])
