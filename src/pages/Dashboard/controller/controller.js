@@ -53,6 +53,7 @@ const useData = ({ socket }) => {
     oilCons: [],
     prodDrill: [],
     prodTrench: [],
+    location: [],
   });
   const [copiedData, setCopiedData] = useState(null);
   const [currentSpare, setCurrentSpare] = useState(null);
@@ -64,7 +65,7 @@ const useData = ({ socket }) => {
   const getData = async () => {
     try {
       setLoading(true);
-      if (dashboardData?.avData?.length > 0) {
+      if (dashboardData?.location?.length > 0) {
         setData(dashboardData);
         setCopiedData(dashboardData);
         setCurrentSpare(dashboardData?.maintStocksData[3]);
@@ -77,6 +78,7 @@ const useData = ({ socket }) => {
           "/api/v1/oilCons",
           "/api/v1/prodDrill",
           "/api/v1/prodTrench",
+          "/api/v3/Equipments_Location",
         ];
 
         const responseData = await Promise.all(
@@ -119,6 +121,7 @@ const useData = ({ socket }) => {
           oilCons: responseData[4].data,
           prodDrill: responseData[5].data,
           prodTrench: responseData[6].data,
+          location: responseData[7].data,
         };
 
         console.log(data.prodDrill);

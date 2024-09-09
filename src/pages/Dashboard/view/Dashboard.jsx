@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { HiWrenchScrewdriver } from "react-icons/hi2";
 import { VscGraphLine } from "react-icons/vsc";
+import { IoFilter } from "react-icons/io5";
 
 import PageLoading from "../../../components/PageLoading";
 
@@ -33,8 +34,10 @@ import ProdTrenchTable from "../components/ProdTrenchTable";
 import ProdDrillTable from "../components/ProdDrillTable";
 import FuelTable from "../components/FuelTable";
 import OilTable from "../components/OilTable";
+import MainFilter from "../components/MainFilter";
 
 const Dashboard = ({ socket }) => {
+  const [isMainFilter, setIsMainFilter] = useState(false);
   const [isAvTrenchFilterCard, setIsAvTrenchFilterCard] = useState(false);
   const [isAvDrillFilterCard, setIsAvDrillFilterCard] = useState(false);
   const [isProdTrenchFilterCard, setIsProdTrenchFilterCard] = useState(false);
@@ -72,6 +75,16 @@ const Dashboard = ({ socket }) => {
   return (
     <>
       {loading && <PageLoading message={`Loading Data...`} />}
+
+      <div className="w-full px-1 flex flex-row items-center gap-4 h-[40px]">
+        <div
+          className="w-full flex flex-row items-center gap-2 h-full justify-end border-1 border-gray-300 rounded-[8px] px-2 hover:cursor-pointer"
+          onClick={() => setIsMainFilter(true)}
+        >
+          <IoFilter />
+        </div>
+      </div>
+
       <div
         className="absolute right-0 top-0 h-full flex flex-col items-center justify-center z-[1000]"
         style={
@@ -118,6 +131,13 @@ const Dashboard = ({ socket }) => {
 
       {category === "Dashboard" ? (
         <>
+          {isMainFilter && (
+            <MainFilter
+              setData={setData}
+              copiedData={copiedData}
+              setIsMainFilter={setIsMainFilter}
+            />
+          )}
           {isAvTrenchFilterCard && (
             <AvTrenchFilter
               setData={setData}

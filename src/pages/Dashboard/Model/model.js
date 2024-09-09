@@ -1,3 +1,10 @@
+export const mainFilterModel = {
+  count: 0,
+  checkedItems: null,
+  filteredData: null,
+  currentData: null,
+};
+
 export const avTrenchFilterModel = {
   count: 0,
   checkedItems: null,

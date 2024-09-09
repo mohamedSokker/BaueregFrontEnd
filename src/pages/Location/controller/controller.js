@@ -74,80 +74,73 @@ const useData = ({ socket, equip }) => {
       if (dashboardData?.location?.length > 0) {
         console.log("from Global");
 
-        const eqs = [];
-        const eqsItem = {};
-        dashboardData?.location?.map((item) => {
-          if (item.Location === equip) {
-            eqs.push(item.Equipment);
-            eqsItem = {
-              ...eqsItem,
-              [item.Equipment]: {
-                startDate: item.Start_Date,
-                endDate: item.End_Date === null ? new Date() : item.End_Date,
-              },
-            };
+        const filteredData = {
+          avData: [],
+          maintData: [],
+          maintStocksData: [],
+          fuelCons: [],
+          oilCons: [],
+          prodDrill: [],
+          prodTrench: [],
+          location: [],
+        };
+        dashboardData?.location?.map((site) => {
+          if (site.Location === equip) {
+            filteredData.avData?.push(
+              ...dashboardData?.avData?.filter(
+                (item) =>
+                  site?.Equipment === item.Equipment &&
+                  new Date(item.Date_Time) >= new Date(site?.Start_Date) &&
+                  new Date(item.Date_Time) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.maintData?.push(
+              ...dashboardData?.maintData?.filter(
+                (item) =>
+                  site?.Equipment === item.Equipment &&
+                  new Date(item.Date_Time) >= new Date(site?.Start_Date) &&
+                  new Date(item.Date_Time) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.maintStocksData?.push(
+              ...dashboardData?.maintStocksData
+            );
+            filteredData?.fuelCons?.push(
+              ...dashboardData?.fuelCons?.filter(
+                (item) =>
+                  site?.Equipment === item.Equipment &&
+                  new Date(item?.["Date "]) >= new Date(site?.Start_Date) &&
+                  new Date(item?.["Date "]) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.oilCons?.push(
+              ...dashboardData?.oilCons?.filter(
+                (item) =>
+                  site?.Equipment === item.Equipment &&
+                  new Date(item.Date) >= new Date(site?.Start_Date) &&
+                  new Date(item.date) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.prodDrill?.push(
+              ...dashboardData?.prodDrill?.filter(
+                (item) =>
+                  site?.Equipment === item?.["# Machine"] &&
+                  new Date(item?.["Pouring Finish"]) >=
+                    new Date(site?.Start_Date) &&
+                  new Date(item?.["Pouring Finish"]) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.prodTrench?.push(
+              ...dashboardData?.prodTrench?.filter(
+                (item) =>
+                  site?.Equipment === item?.["# Machine"] &&
+                  new Date(item?.["Pouring Finish"]) >=
+                    new Date(site?.Start_Date) &&
+                  new Date(item?.["Pouring Finish"]) <= new Date(site?.End_Date)
+              )
+            );
           }
         });
-
-        console.lof(eqsItem);
-
-        const filteredData = {
-          avData: dashboardData?.avData?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item.Date_Time) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item.Date_Time) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          maintData: dashboardData?.maintData?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item.Date_Time) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item.Date_Time) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          maintStocksData: dashboardData?.maintStocksData?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item.DateTime) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item.DateTime) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          fuelCons: dashboardData?.fuelCons?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item?.["Date "]) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item?.["Date "]) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          oilCons: dashboardData?.oilCons?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item.Date) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item.Date) < new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          prodTrench: dashboardData?.prodTrench?.filter(
-            (item) =>
-              eqs.includes(item?.["# Machine"]) &&
-              new Date(item?.["Pouring Finish"]) >
-                new Date(eqsItem?.[item?.["# Machine"]]?.startDate) &&
-              new Date(item?.["Pouring Finish"]) <
-                new Date(eqsItem?.[item?.["# Machine"]]?.endDate)
-          ),
-          prodDrill: dashboardData?.prodDrill?.filter(
-            (item) =>
-              eqs.includes(item?.["# Machine"]) &&
-              new Date(item?.["Pouring Finish"]) >
-                new Date(eqsItem?.[item?.["# Machine"]]?.startDate) &&
-              new Date(item?.["Pouring Finish"]) <
-                new Date(eqsItem?.[item?.["# Machine"]]?.endDate)
-          ),
-        };
 
         setData(filteredData);
         setCopiedData(filteredData);
@@ -196,88 +189,77 @@ const useData = ({ socket, equip }) => {
           );
         }
 
-        const eqs = [];
-        let eqsItem = {};
-        responseData[7]?.data?.map((item) => {
-          if (item.Location === equip) {
-            eqs.push(item.Equipment);
-            eqsItem = {
-              ...eqsItem,
-              [item.Equipment]: {
-                startDate: item.Start_Date,
-                endDate: item.End_Date === null ? new Date() : item.End_Date,
-              },
-            };
+        const filteredData = {
+          avData: [],
+          maintData: [],
+          maintStocksData: [],
+          fuelCons: [],
+          oilCons: [],
+          prodDrill: [],
+          prodTrench: [],
+          location: [],
+        };
+
+        responseData[7]?.data?.map((site) => {
+          if (site.Location === equip) {
+            filteredData.avData?.push(
+              ...responseData[0]?.data?.filter(
+                (item) =>
+                  site?.Equipment === item.Equipment &&
+                  new Date(item.Date_Time) >= new Date(site?.Start_Date) &&
+                  new Date(item.Date_Time) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.maintData?.push(
+              ...responseData[1]?.data?.filter(
+                (item) =>
+                  site?.Equipment === item.Equipment &&
+                  new Date(item.Date_Time) >= new Date(site?.Start_Date) &&
+                  new Date(item.Date_Time) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.maintStocksData?.push(...responseData[2]?.data);
+            filteredData?.fuelCons?.push(
+              ...responseData[3]?.data?.filter(
+                (item) =>
+                  site?.Equipment === item.Equipment &&
+                  new Date(item?.["Date "]) >= new Date(site?.Start_Date) &&
+                  new Date(item?.["Date "]) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.oilCons?.push(
+              ...responseData[4]?.data?.filter(
+                (item) =>
+                  site?.Equipment === item.Equipment &&
+                  new Date(item?.["Date"]) >= new Date(site?.Start_Date) &&
+                  new Date(item?.["Date"]) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.prodDrill?.push(
+              ...responseData[5]?.data?.filter(
+                (item) =>
+                  site?.Equipment === item?.["# Machine"] &&
+                  new Date(item?.["Pouring Finish"]) >=
+                    new Date(site?.Start_Date) &&
+                  new Date(item?.["Pouring Finish"]) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.prodTrench?.push(
+              ...responseData[6]?.data?.filter(
+                (item) =>
+                  site?.Equipment === item?.["# Machine"] &&
+                  new Date(item?.["Pouring Finish"]) >=
+                    new Date(site?.Start_Date) &&
+                  new Date(item?.["Pouring Finish"]) <= new Date(site?.End_Date)
+              )
+            );
+            filteredData?.location?.push(...responseData[7]?.data);
           }
         });
 
-        const data = {
-          avData: responseData[0].data?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item?.["Date_Time"]) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item?.["Date_Time"]) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          maintData: responseData[1].data?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item?.["Date_Time"]) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item?.["Date_Time"]) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          maintStocksData: responseData[2].data?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item?.["DateTime"]) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item?.["DateTime"]) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          fuelCons: responseData[3].data?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item?.["Date "]) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item?.["Date "]) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          oilCons: responseData[4].data?.filter(
-            (item) =>
-              eqs.includes(item.Equipment) &&
-              new Date(item?.["Date"]) >
-                new Date(eqsItem?.[item.Equipment]?.startDate) &&
-              new Date(item?.["Date"]) <
-                new Date(eqsItem?.[item.Equipment]?.endDate)
-          ),
-          prodDrill: responseData[5].data?.filter(
-            (item) =>
-              eqs.includes(item?.["# Machine"]) &&
-              new Date(item?.["Pouring Finish"]) >
-                new Date(eqsItem?.[item?.["# Machine"]]?.startDate) &&
-              new Date(item?.["Pouring Finish"]) <
-                new Date(eqsItem?.[item?.["# Machine"]]?.endDate)
-          ),
-          prodTrench: responseData[6].data?.filter(
-            (item) =>
-              eqs.includes(item?.["# Machine"]) &&
-              new Date(item?.["Pouring Finish"]) >
-                new Date(eqsItem?.[item?.["# Machine"]]?.startDate) &&
-              new Date(item?.["Pouring Finish"]) <
-                new Date(eqsItem?.[item?.["# Machine"]]?.endDate)
-          ),
-          location: responseData[7]?.data,
-        };
-
-        console.log(data.prodDrill);
-        console.log(data.prodTrench);
-
-        setData(data);
-        setCopiedData(data);
-        setCurrentSpare(data?.maintStocksData[3]);
-        // console.log(data);s
+        setData(filteredData);
+        setCopiedData(filteredData);
+        setCurrentSpare(filteredData?.maintStocksData[3]);
       }
 
       setLoading(false);
@@ -294,11 +276,6 @@ const useData = ({ socket, equip }) => {
   const handleSearchChange = (e) => {
     let targetData = [];
     let history = [];
-    // const targetData = data.maintStocksData.filter(
-    //   (item) =>
-    //     item.SparePart_Code.includes(e.target.value) ||
-    //     item.Description.includes(e.target.value)
-    // );
 
     data.maintStocksData.map((item) => {
       if (

@@ -51,7 +51,7 @@ const AvDrillTable = ({ setIsAvDrillTable, data }) => {
   const getData = async () => {
     try {
       setTableGrid([]);
-      setTableData(data?.avData);
+      setTableData(data?.avData?.filter((d) => d.Equipment.startsWith("BG")));
       data?.avData &&
         data?.avData[0] &&
         Object.keys(data?.avData[0]).map((item, i) => {

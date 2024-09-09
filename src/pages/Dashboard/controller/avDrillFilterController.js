@@ -47,11 +47,19 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
         Time: {
           col: "Date_Time",
           data: {
-            minDate: avTrenchData[0].Date_Time,
-            maxDate: avTrenchData[avTrenchData.length - 1].Date_Time,
+            minDate: new Date(avTrenchData[0].Date_Time)
+              .toISOString()
+              .slice(0, 10),
+            maxDate: new Date(avTrenchData[avTrenchData.length - 1].Date_Time)
+              .toISOString()
+              .slice(0, 10),
             currentDate: {
-              start: avTrenchData[0].Date_Time,
-              end: avTrenchData[avTrenchData.length - 1].Date_Time,
+              start: new Date(avTrenchData[0].Date_Time)
+                .toISOString()
+                .slice(0, 10),
+              end: new Date(avTrenchData[avTrenchData.length - 1].Date_Time)
+                .toISOString()
+                .slice(0, 10),
             },
           },
         },
