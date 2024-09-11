@@ -131,7 +131,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       setPhone(userData.Phone);
       setRules(JSON.parse(userData.UserRole));
       const getImage = async () => {
-        const img = `${import.meta.env.VITE_BASE_URL}/${userData.ProfileImg}`;
+        const img = `${process.env.REACT_APP_BASE_URL}/${userData.ProfileImg}`;
         let imgName = userData.ProfileImg.split("/");
         imgName = imgName[imgName.length - 1];
         fetch(img)
