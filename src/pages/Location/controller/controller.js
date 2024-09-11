@@ -74,6 +74,8 @@ const useData = ({ socket, equip }) => {
       if (dashboardData?.location?.length > 0) {
         console.log("from Global");
 
+        // const eqs = [];
+        // let eqsItem = {};
         const filteredData = {
           avData: [],
           maintData: [],
@@ -200,14 +202,20 @@ const useData = ({ socket, equip }) => {
           location: [],
         };
 
+        // const eqs = [];
+        // let eqsItem = {};
         responseData[7]?.data?.map((site) => {
           if (site.Location === equip) {
+            console.log(site);
             filteredData.avData?.push(
               ...responseData[0]?.data?.filter(
                 (item) =>
                   site?.Equipment === item.Equipment &&
                   new Date(item.Date_Time) >= new Date(site?.Start_Date) &&
-                  new Date(item.Date_Time) <= new Date(site?.End_Date)
+                  new Date(item.Date_Time) <=
+                    new Date(
+                      site?.End_Date === null ? new Date() : site?.End_Date
+                    )
               )
             );
             filteredData?.maintData?.push(
@@ -215,7 +223,10 @@ const useData = ({ socket, equip }) => {
                 (item) =>
                   site?.Equipment === item.Equipment &&
                   new Date(item.Date_Time) >= new Date(site?.Start_Date) &&
-                  new Date(item.Date_Time) <= new Date(site?.End_Date)
+                  new Date(item.Date_Time) <=
+                    new Date(
+                      site?.End_Date === null ? new Date() : site?.End_Date
+                    )
               )
             );
             filteredData?.maintStocksData?.push(...responseData[2]?.data);
@@ -224,7 +235,10 @@ const useData = ({ socket, equip }) => {
                 (item) =>
                   site?.Equipment === item.Equipment &&
                   new Date(item?.["Date "]) >= new Date(site?.Start_Date) &&
-                  new Date(item?.["Date "]) <= new Date(site?.End_Date)
+                  new Date(item?.["Date "]) <=
+                    new Date(
+                      site?.End_Date === null ? new Date() : site?.End_Date
+                    )
               )
             );
             filteredData?.oilCons?.push(
@@ -232,7 +246,10 @@ const useData = ({ socket, equip }) => {
                 (item) =>
                   site?.Equipment === item.Equipment &&
                   new Date(item?.["Date"]) >= new Date(site?.Start_Date) &&
-                  new Date(item?.["Date"]) <= new Date(site?.End_Date)
+                  new Date(item?.["Date"]) <=
+                    new Date(
+                      site?.End_Date === null ? new Date() : site?.End_Date
+                    )
               )
             );
             filteredData?.prodDrill?.push(
@@ -241,7 +258,10 @@ const useData = ({ socket, equip }) => {
                   site?.Equipment === item?.["# Machine"] &&
                   new Date(item?.["Pouring Finish"]) >=
                     new Date(site?.Start_Date) &&
-                  new Date(item?.["Pouring Finish"]) <= new Date(site?.End_Date)
+                  new Date(item?.["Pouring Finish"]) <=
+                    new Date(
+                      site?.End_Date === null ? new Date() : site?.End_Date
+                    )
               )
             );
             filteredData?.prodTrench?.push(
@@ -250,7 +270,10 @@ const useData = ({ socket, equip }) => {
                   site?.Equipment === item?.["# Machine"] &&
                   new Date(item?.["Pouring Finish"]) >=
                     new Date(site?.Start_Date) &&
-                  new Date(item?.["Pouring Finish"]) <= new Date(site?.End_Date)
+                  new Date(item?.["Pouring Finish"]) <=
+                    new Date(
+                      site?.End_Date === null ? new Date() : site?.End_Date
+                    )
               )
             );
             filteredData?.location?.push(...responseData[7]?.data);
@@ -260,6 +283,7 @@ const useData = ({ socket, equip }) => {
         setData(filteredData);
         setCopiedData(filteredData);
         setCurrentSpare(filteredData?.maintStocksData[3]);
+        // console.log(data);s
       }
 
       setLoading(false);
@@ -276,6 +300,11 @@ const useData = ({ socket, equip }) => {
   const handleSearchChange = (e) => {
     let targetData = [];
     let history = [];
+    // const targetData = data.maintStocksData.filter(
+    //   (item) =>
+    //     item.SparePart_Code.includes(e.target.value) ||
+    //     item.Description.includes(e.target.value)
+    // );
 
     data.maintStocksData.map((item) => {
       if (
