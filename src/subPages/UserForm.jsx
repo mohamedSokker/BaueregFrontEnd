@@ -51,7 +51,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       OilSamplesAnalyzed: false,
       Catalogues: false,
       CustomDataEntry: false,
-      ManageCustomDataEntry: false,
+      ManageDataEntry: false,
     },
     User: {
       ManageUsers: false,
@@ -71,7 +71,7 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       OilSamplesAnalyzed: false,
       Catalogues: false,
       CustomDataEntry: false,
-      ManageCustomDataEntry: false,
+      ManageDataEntry: false,
     },
   });
   // const [active, setActive] = useState(false);

@@ -102,9 +102,7 @@ function App() {
               element={<CustomDataEntryDetails />}
             />
           </Route>
-          <Route
-            element={<RequiredAuth allowedRole={"ManageCustomDataEntry"} />}
-          >
+          <Route element={<RequiredAuth allowedRole={"ManageDataEntry"} />}>
             <Route
               path="/ManageDataEntry"
               element={<ManageCustomDataEntry />}

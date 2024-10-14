@@ -59,7 +59,7 @@ export const allDataTitles = [
   "ManageUsers",
   "ManageAppUsers",
   "CustomDataEntry",
-  "ManageCustomDataEntry",
+  "ManageDataEntry",
 ];
 
 export const links = [

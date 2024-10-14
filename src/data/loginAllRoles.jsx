@@ -72,7 +72,7 @@ export const allData = async () => {
     ManageUsers: ["true"],
     ManageAppUsers: ["true"],
     CustomDataEntry: ["true"],
-    ManageCustomDataEntry: ["true"],
+    ManageDataEntry: ["true"],
     ManageDatabase: ["true"],
   };
 };
@@ -132,7 +132,7 @@ export const allDataWithName = async (token) => {
       { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteAppUser" },
     ],
     CustomDataEntry: true,
-    ManageCustomDataEntry: true,
+    ManageDataEntry: true,
     ManageDatabase: true,
   };
 };

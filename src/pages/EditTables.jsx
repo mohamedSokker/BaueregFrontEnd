@@ -163,7 +163,7 @@ const EditTables = ({ socket }) => {
           rowSelected={rowsSelected}
           ref={(g) => (grid = g)}
           toolbar={
-            CheckEditorRole(tableName, usersData)
+            usersData[0]?.roles?.Admin || CheckEditorRole(tableName, usersData)
               ? ["Add", "Edit", "Delete", "Search", "ExcelExport", "PdfExport"]
               : ["ExcelExport", "PdfExport", "Search"]
           }
