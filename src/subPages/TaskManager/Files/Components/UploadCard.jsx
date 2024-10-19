@@ -15,6 +15,10 @@ const UploadCard = ({
   const [isCanceled, setIsCanceled] = useState(false);
   const [files, setFiles] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
+  const [progress, setProgress] = useState(0);
+
+  const { setErrorData } = useNavContext();
 
   const inputRef = useRef();
 
