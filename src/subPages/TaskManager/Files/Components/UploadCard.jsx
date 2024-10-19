@@ -10,7 +10,7 @@ const UploadCard = ({
   currentFiles,
   setCurrentFiles,
 }) => {
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  const baseURL = process.env.REACT_BASE_URL;
 
   const [isCanceled, setIsCanceled] = useState(false);
   const [files, setFiles] = useState(null);
@@ -27,37 +27,112 @@ const UploadCard = ({
     setFiles(e.dataTransfer.files);
   };
 
+  // const handleUpload = () => {
+  //   // console.log(Array.from(files));
+  //   setLoading(true);
+  //   const data = new FormData();
+  //   let targetFiles = [];
+  //   Array.from(files).map((file) => {
+  //     data.append("files", file);
+  //     targetFiles.push({
+  //       file: file?.name,
+  //       type: "file",
+  //       dateCreated: new Date(),
+  //       size: file.size,
+  //     });
+  //   });
+  //   console.log(data);
+  //   fetch(`${baseURL}/api/v1/taskManagerUploadItems?url=${path}`, {
+  //     method: "POST",
+  //     body: data,
+  //   })
+  //     .then((res) => {})
+  //     .then((data) => {
+  //       console.log(targetFiles);
+  //       let result = [...currentFiles];
+  //       result = result.concat(targetFiles);
+  //       setCurrentFiles(result);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.message);
+  //       setLoading(false);
+  //     });
+  // };
+
   const handleUpload = () => {
     // console.log(Array.from(files));
     setLoading(true);
-    const data = new FormData();
     let targetFiles = [];
     Array.from(files).map((file) => {
-      data.append("files", file);
-      targetFiles.push({
-        file: file?.name,
-        type: "file",
-        dateCreated: new Date(),
-        size: file.size,
-      });
+      const chunkSize = 5 * 1024; // 5MB (adjust based on your requirements)
+      const totalChunks = Math.ceil(file.size / chunkSize);
+      const chunkProgress = 100 / totalChunks;
+      let chunkNumber = 0;
+      let start = 0;
+      let end = 0;
+
+      const uploadNextChunk = async () => {
+        if (end <= file.size) {
+          const chunk = file.slice(start, end);
+          const formData = new FormData();
+          formData.append("files", chunk);
+          formData.append("chunkNumber", chunkNumber);
+          formData.append("totalChunks", totalChunks);
+          formData.append("originalname", file.name);
+
+          fetch(`${baseURL}/api/v1/taskManagerUploadItems?url=${path}`, {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => {})
+            .then((data) => {
+              console.log({ data });
+              const temp = `Chunk ${
+                chunkNumber + 1
+              }/${totalChunks} uploaded successfully`;
+              setStatus(temp);
+              setProgress(Number((chunkNumber + 1) * chunkProgress));
+              console.log(temp);
+              chunkNumber++;
+              start = end;
+              end = start + chunkSize;
+
+              uploadNextChunk();
+            })
+            .catch((err) => {
+              setErrorData((prev) => [
+                ...prev,
+                err?.response?.data?.message
+                  ? err?.response?.data?.message
+                  : err?.message,
+              ]);
+              console.log(err.message);
+              setLoading(false);
+            });
+        } else {
+          targetFiles.push({
+            file: file?.name,
+            type: "file",
+            dateCreated: new Date(),
+            size: file.size,
+          });
+
+          console.log(targetFiles);
+          let result = [...currentFiles];
+          result = result.concat(targetFiles);
+          setCurrentFiles(result);
+          setUploadedFiles(result);
+          // setFile(result);
+
+          setProgress(100);
+          setLoading(false);
+          setStatus("File upload completed");
+        }
+      };
+
+      uploadNextChunk();
     });
-    console.log(data);
-    fetch(`${baseURL}/api/v1/taskManagerUploadItems?url=${path}`, {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => {})
-      .then((data) => {
-        console.log(targetFiles);
-        let result = [...currentFiles];
-        result = result.concat(targetFiles);
-        setCurrentFiles(result);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setLoading(false);
-      });
   };
 
   return (
