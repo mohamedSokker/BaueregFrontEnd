@@ -3,6 +3,7 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { ColorRing } from "react-loader-spinner";
 
 import "../Styles/UploadCard.css";
+import { useNavContext } from "../../../../contexts/NavContext";
 
 const UploadCard = ({
   setIsUploadCard,
@@ -115,18 +116,23 @@ const UploadCard = ({
               setLoading(false);
             });
         } else {
-          targetFiles.push({
-            file: file?.name,
-            type: "file",
-            dateCreated: new Date(),
-            size: file.size,
-          });
-
-          console.log(targetFiles);
           let result = [...currentFiles];
           result = result.concat(targetFiles);
           setCurrentFiles(result);
-          setUploadedFiles(result);
+          setLoading(false);
+
+          // targetFiles.push({
+          //   file: file?.name,
+          //   type: "file",
+          //   dateCreated: new Date(),
+          //   size: file.size,
+          // });
+
+          // console.log(targetFiles);
+          // let result = [...currentFiles];
+          // result = result.concat(targetFiles);
+          // setCurrentFiles(result);
+          // setUploadedFiles(result);
           // setFile(result);
 
           setProgress(100);
