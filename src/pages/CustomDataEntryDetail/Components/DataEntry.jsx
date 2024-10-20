@@ -104,6 +104,52 @@ const DataEntry = ({ targetData }) => {
                   }
                 />
               </div>
+            ) : targetData[0].Fields[item]?.Type === "Decimal" &&
+              targetData[0].Fields[item]?.isCheck ? (
+              <div className="p-2 flex flex-col justify-center items-center">
+                <p className="w-full h-6 text-[14px] text-gray-400 flex flex-row justify-start">{`${item}`}</p>
+                <div className="w-[30vw] flex flex-row items-center gap-4">
+                  <input
+                    type="checkbox"
+                    checked={dataCheck?.[item]}
+                    onChange={() => {
+                      setDataCheck((prev) => ({
+                        ...prev,
+                        [item]: !prev[item],
+                      }));
+                    }}
+                  />
+                  <input
+                    type="text"
+                    value={data?.[item]}
+                    className="w-full border-b-1 border-logoColor outline-none p-2 bg-gray-100 text-[14px]"
+                    onChange={(e) => {
+                      setData((prev) => ({
+                        ...prev,
+                        [item]: e.target.value,
+                      }));
+                    }}
+                  />
+                </div>
+              </div>
+            ) : targetData[0].Fields[item]?.Type === "Decimal" ? (
+              <div
+                className="p-2 flex flex-col justify-center items-center"
+                key={i}
+              >
+                <p className="w-full h-6 text-[14px] text-gray-400 flex flex-row justify-start">{`${item}`}</p>
+                <input
+                  type="text"
+                  value={data?.[item]}
+                  className="w-[30vw] border-b-1 border-logoColor outline-none p-2 bg-gray-100 text-[14px]"
+                  onChange={(e) =>
+                    setData((prev) => ({
+                      ...prev,
+                      [item]: e?.target?.value,
+                    }))
+                  }
+                />
+              </div>
             ) : targetData[0].Fields[item]?.Type === "Text" &&
               targetData[0].Fields[item]?.isCheck ? (
               <div className="p-2 flex flex-col justify-center items-center">
