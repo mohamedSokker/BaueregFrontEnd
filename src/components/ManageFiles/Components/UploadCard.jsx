@@ -130,6 +130,7 @@ const UploadCard = ({
             chunkNumber++;
             start = end;
             end = start + chunkSize;
+            if (end >= filesArr[i].size) end = filesArr[i].size - start;
 
             await uploadNextChunk();
           } catch (err) {
