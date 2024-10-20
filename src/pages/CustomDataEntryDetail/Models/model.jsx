@@ -10,6 +10,7 @@ export const regix = {
   nvarChar255: /^[0-9a-zA-Z\#\s\/\-\_\.\,]{0,255}$/,
   nvarchar255Empty: /^$|^.{0,255}$/,
   decimal81: /^\d{1,7}(\.\d{1})?$/,
+  "decimal(8,1)": /^\d{1,7}(\.\d{1,})?$/,
   decimal82: /^\d{1,7}(\.\d{2})?$/,
   text: /^[a-zA-Z0-9 :,"{}[\]]*$/,
 };
