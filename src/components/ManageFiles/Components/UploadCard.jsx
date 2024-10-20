@@ -104,8 +104,14 @@ const UploadCard = ({
       let end = 0;
 
       const uploadNextChunk = async () => {
+        let chunk;
         if (end <= filesArr[i].size) {
-          const chunk = filesArr[i].slice(start, end);
+          if (chunkNumber === totalChunks - 1) {
+            chunk = filesArr[i].slice(start);
+          } else {
+            chunk = filesArr[i].slice(start, end);
+          }
+          // const chunk = filesArr[i].slice(start, end);
           const formData = new FormData();
           formData.append("files", chunk);
           formData.append("chunkNumber", chunkNumber);
@@ -130,7 +136,7 @@ const UploadCard = ({
             chunkNumber++;
             start = end;
             end = start + chunkSize;
-            if (end >= filesArr[i].size) end = filesArr[i].size - start;
+            // if (end >= filesArr[i].size) end = filesArr[i].size;
 
             await uploadNextChunk();
           } catch (err) {
