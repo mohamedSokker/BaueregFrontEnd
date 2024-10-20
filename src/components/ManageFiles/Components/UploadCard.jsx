@@ -91,7 +91,7 @@ const UploadCard = ({
       setCurrentFileName(filesArr[i].name);
       console.log(`Current Number: ${i}`);
       const minchunckSize =
-        filesArr[i].size <= 5 * 1024
+        filesArr[i].size <= 20 * 1024
           ? 1 * 1024
           : filesArr[i].size <= 10 * 1024 * 1024
           ? 5 * 1024
