@@ -18,7 +18,7 @@ const NonExistingColumns = ({
 }) => {
   const axiosPrivate = useAxiosPrivate();
 
-  const [currentColumns, setCurrentColumns] = useState([]);
+  const [currentColumns, setCurrentColumns] = useState({});
   const [canBeEmpty, setCanBeEmpty] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
   const [isException, setIsException] = useState(false);
@@ -158,7 +158,7 @@ const NonExistingColumns = ({
                         column="name"
                         condition={true}
                         local={true}
-                        localData={currentColumns}
+                        localData={currentColumns[item?.name]}
                         data={data}
                         setData={setData}
                         errorData={errorData}

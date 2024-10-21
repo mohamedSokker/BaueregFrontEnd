@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import { jsonifyArray } from "../Model/model";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 const useDropdown = ({
   name,
   label,
-  URL,
-  column,
-  local,
   localData,
   data,
   setData,
-  siteData,
-  setAllData,
   condition,
   setErrorData,
-  setDetails,
   setLoading,
   setMessage,
   setTableColumns,
@@ -311,7 +304,10 @@ const useDropdown = ({
             return axiosPrivate(url, { method: "GET" });
           })
         );
-        setCurrentColumns(responseData[0]?.data);
+        setCurrentColumns((prev) => ({
+          ...prev,
+          [name]: responseData[0]?.data,
+        }));
         setData((prev) => ({
           ...prev,
           Fields: {
@@ -379,13 +375,6 @@ const useDropdown = ({
           setData((prev) => ({
             ...prev,
             Users: result,
-            // Fields: {
-            //   ...prev?.Fields,
-            //   [name]: {
-            //     ...prev?.Fields?.[name],
-            //     [label]: result,
-            //   },
-            // },
           }));
         }
       } else {
