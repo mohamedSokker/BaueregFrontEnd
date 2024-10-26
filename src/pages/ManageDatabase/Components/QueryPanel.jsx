@@ -78,6 +78,8 @@ const QueryPanel = ({
         query={query}
         setDBResult={setDBResult}
         setCategory={setCategory}
+        selectedTable={selectedTable}
+        setLoading={setLoading}
       />
       {loading ? (
         <div className="w-full h-full flex flex-col justify-center items-center">
@@ -110,7 +112,9 @@ const QueryPanel = ({
                 Result
               </button>
             </div>
-            <div className="bg-white w-full h-full">{DBResult}</div>
+            <div className="bg-white w-full h-full p-2 text-[12px]">
+              {DBResult}
+            </div>
           </div>
         </>
       )}
