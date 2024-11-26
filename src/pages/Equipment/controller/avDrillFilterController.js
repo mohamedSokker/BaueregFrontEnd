@@ -37,10 +37,10 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       // ).map((site) => {
       //   sites.push({ checked: false, value: site.name });
       // });
-      // const avTrenchData = copiedData.avData.filter((d) =>
-      //   d.Equipment.startsWith("BG")
-      // );
-      // avTrenchData.sort((a, b) => a.Date_Time - b.Date_Time);
+      const avTrenchData = copiedData.avData.filter((d) =>
+        d.Equipment.startsWith("BG")
+      );
+      avTrenchData.sort((a, b) => a.Date_Time - b.Date_Time);
       // eqs = getUniqueArray(eqs);
       // sites = getUniqueArray(sites);
       setItems({
