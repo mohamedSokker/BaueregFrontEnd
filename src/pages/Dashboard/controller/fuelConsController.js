@@ -21,6 +21,7 @@ const useFuel = ({ data }) => {
       });
 
       const avTrenchData = data;
+      console.log(avTrenchData);
       // .filter(
       //   (d) =>
       //     (d?.Equipment?.startsWith("MC") ||
@@ -29,15 +30,18 @@ const useFuel = ({ data }) => {
       //     eqs.includes(d.Equipment)
       // );
 
-      avTrenchData.sort((a, b) => a["Date "] - b["Date "]);
+      avTrenchData.sort((a, b) => a["Date"] - b["Date"]);
       let s = 0;
       let x = [];
       let y = [];
       avTrenchData.map((d) => {
-        s += Number(d["Fuel Consumption Quantity (Liter)"]);
-        x.push(d["Date "]);
-        y.push(Number(d["Fuel Consumption Quantity (Liter)"]));
+        // s += Number(d["Fuel Consumption Quantity (Liter)"]);
+        s += Number(d["Quantity"]);
+        x.push(d["Date"]);
+        // y.push(Number(d["Fuel Consumption Quantity (Liter)"]));
+        y.push(Number(d["Quantity"]));
       });
+      console.log(s);
       setXData(x);
       setYData(y);
       setSum(

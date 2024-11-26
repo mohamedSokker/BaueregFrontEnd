@@ -48,24 +48,24 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
       //     d["Equipment"].startsWith("BC") ||
       //     d["Equipment"].startsWith("MC")
       // );
-      avTrenchData.sort((a, b) => a["Date "] - b["Date "]);
+      avTrenchData.sort((a, b) => a["Date"] - b["Date"]);
       eqs = getUniqueArray(eqs);
       sites = getUniqueArray(sites);
       setItems({
         Time: {
           col: "Date_Time",
           data: {
-            minDate: new Date(avTrenchData[0]["Date "])
+            minDate: new Date(avTrenchData[0]["Date"])
               .toISOString()
               .slice(0, 10),
-            maxDate: new Date(avTrenchData[avTrenchData.length - 1]["Date "])
+            maxDate: new Date(avTrenchData[avTrenchData.length - 1]["Date"])
               .toISOString()
               .slice(0, 10),
             currentDate: {
-              start: new Date(avTrenchData[0]["Date "])
+              start: new Date(avTrenchData[0]["Date"])
                 .toISOString()
                 .slice(0, 10),
-              end: new Date(avTrenchData[avTrenchData.length - 1]["Date "])
+              end: new Date(avTrenchData[avTrenchData.length - 1]["Date"])
                 .toISOString()
                 .slice(0, 10),
             },
@@ -122,13 +122,12 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
 
     const filterData = copiedData.fuelCons?.filter(
       (item) =>
-        new Date(item["Date "]) >=
-          new Date(items.Time.data.currentDate.start) &&
-        new Date(item["Date "]) <= new Date(items.Time.data.currentDate.end) &&
+        new Date(item["Date"]) >= new Date(items.Time.data.currentDate.start) &&
+        new Date(item["Date"]) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item["Equipment"]) ||
-          sitesCheck.includes(item["Job Site"]))
+          sitesCheck.includes(item["Location"]))
     );
-    filterData.sort((a, b) => new Date(a["Date "]) - new Date(b["Date "]));
+    filterData.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
     setFilteredData(filterData);
 
     //get sum
@@ -170,12 +169,12 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
 
     const filterData = copiedData.fuelCons?.filter(
       (item) =>
-        new Date(item["Date "]) >= new Date(e.target.value) &&
-        new Date(item["Date "]) <= new Date(items.Time.data.currentDate.end) &&
+        new Date(item["Date"]) >= new Date(e.target.value) &&
+        new Date(item["Date"]) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item["Equipment"]) ||
-          sitesCheck.includes(item["Job Site"]))
+          sitesCheck.includes(item["Location"]))
     );
-    filterData.sort((a, b) => new Date(a["Date "]) - new Date(b["Date "]));
+    filterData.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
     setFilteredData(filterData);
 
     //get sum
@@ -217,13 +216,12 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
 
     const filterData = copiedData.fuelCons?.filter(
       (item) =>
-        new Date(item["Date "]) >=
-          new Date(items.Time.data.currentDate.start) &&
-        new Date(item["Date "]) <= new Date(e.target.value) &&
+        new Date(item["Date"]) >= new Date(items.Time.data.currentDate.start) &&
+        new Date(item["Date"]) <= new Date(e.target.value) &&
         (eqsCheck.includes(item["Equipment"]) ||
-          sitesCheck.includes(item["Job Site"]))
+          sitesCheck.includes(item["Location"]))
     );
-    filterData.sort((a, b) => new Date(a["Date "]) - new Date(b["Date "]));
+    filterData.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
     setFilteredData(filterData);
 
     //get sum

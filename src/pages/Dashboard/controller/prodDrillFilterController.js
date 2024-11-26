@@ -247,7 +247,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     prodDrillFilterModel.filteredData = filteredData;
     prodDrillFilterModel.count = count;
     prodDrillFilterModel.checkedItems = items;
-    setData((prev) => ({ ...prev, prodDrill: filteredData }));
+    setData((prev) => ({ prodDrill: filteredData }));
   };
 
   return {

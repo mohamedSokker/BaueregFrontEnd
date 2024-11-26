@@ -125,7 +125,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
         new Date(item["Date"]) >= new Date(items.Time.data.currentDate.start) &&
         new Date(item["Date"]) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item["Equipment"]) ||
-          sitesCheck.includes(item["Job Site"]))
+          sitesCheck.includes(item["Location"]))
     );
     filterData.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
     setFilteredData(filterData);
@@ -172,7 +172,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
         new Date(item["Date"]) >= new Date(e.target.value) &&
         new Date(item["Date"]) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item["Equipment"]) ||
-          sitesCheck.includes(item["Job Site"]))
+          sitesCheck.includes(item["Location"]))
     );
     filterData.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
     setFilteredData(filterData);
@@ -219,7 +219,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
         new Date(item["Date"]) >= new Date(items.Time.data.currentDate.start) &&
         new Date(item["Date"]) <= new Date(e.target.value) &&
         (eqsCheck.includes(item["Equipment"]) ||
-          sitesCheck.includes(item["Job Site"]))
+          sitesCheck.includes(item["Location"]))
     );
     filterData.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
     setFilteredData(filterData);

@@ -72,6 +72,8 @@ const Dashboard = ({ socket }) => {
     handleSearchClick,
   } = useData({ socket });
 
+  // console.log(data);
+
   return (
     <>
       {loading && <PageLoading message={`Loading Data...`} />}

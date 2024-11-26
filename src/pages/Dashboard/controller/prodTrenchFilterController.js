@@ -248,7 +248,7 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
     prodTrenchFilterModel.filteredData = filteredData;
     prodTrenchFilterModel.count = count;
     prodTrenchFilterModel.checkedItems = items;
-    setData((prev) => ({ ...prev, prodTrench: filteredData }));
+    setData((prev) => ({ prodTrench: filteredData }));
   };
 
   return {

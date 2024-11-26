@@ -46,13 +46,13 @@ const useGearing = ({ isAnimate, isPartsAnimate, rpm }) => {
   let visible = {};
 
   // useEffect(() => {
-  // objects3D.map((item) => {
-  //   visible = {
-  //     ...visible,
-  //     [item]: useControls(item, { visible: true, wireFrame: false }),
-  //   };
-  //   // console.log(visible);
-  // });
+  objects3D.map((item) => {
+    visible = {
+      ...visible,
+      [item]: useControls(item, { visible: true, wireFrame: false }),
+    };
+    // console.log(visible);
+  });
   // }, []);
   console.log(visible);
 

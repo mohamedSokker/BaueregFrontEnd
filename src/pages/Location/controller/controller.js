@@ -111,8 +111,8 @@ const useData = ({ socket, equip }) => {
               ...dashboardData?.fuelCons?.filter(
                 (item) =>
                   site?.Equipment === item.Equipment &&
-                  new Date(item?.["Date "]) >= new Date(site?.Start_Date) &&
-                  new Date(item?.["Date "]) <= new Date(site?.End_Date)
+                  new Date(item?.["Date"]) >= new Date(site?.Start_Date) &&
+                  new Date(item?.["Date"]) <= new Date(site?.End_Date)
               )
             );
             filteredData?.oilCons?.push(
@@ -120,7 +120,7 @@ const useData = ({ socket, equip }) => {
                 (item) =>
                   site?.Equipment === item.Equipment &&
                   new Date(item.Date) >= new Date(site?.Start_Date) &&
-                  new Date(item.date) <= new Date(site?.End_Date)
+                  new Date(item.Date) <= new Date(site?.End_Date)
               )
             );
             filteredData?.prodDrill?.push(
@@ -167,17 +167,17 @@ const useData = ({ socket, equip }) => {
 
         // console.log(responseData[4].data);
 
-        for (let i = 0; i < responseData[3].data.length; i++) {
-          responseData[3].data[i]["Date "] = ExcelDateToJSDate(
-            responseData[3].data[i]["Date "]
-          );
-        }
+        // for (let i = 0; i < responseData[3].data.length; i++) {
+        //   responseData[3].data[i]["Date "] = ExcelDateToJSDate(
+        //     responseData[3].data[i]["Date "]
+        //   );
+        // }
 
-        for (let i = 0; i < responseData[4].data.length; i++) {
-          responseData[4].data[i]["Date"] = ExcelDateToJSDate(
-            responseData[4].data[i]["Date"]
-          );
-        }
+        // for (let i = 0; i < responseData[4].data.length; i++) {
+        //   responseData[4].data[i]["Date"] = ExcelDateToJSDate(
+        //     responseData[4].data[i]["Date"]
+        //   );
+        // }
 
         for (let i = 0; i < responseData[5].data.length; i++) {
           responseData[5].data[i]["Pouring Finish"] = ExcelDateToJSDate(
@@ -234,8 +234,8 @@ const useData = ({ socket, equip }) => {
               ...responseData[3]?.data?.filter(
                 (item) =>
                   site?.Equipment === item.Equipment &&
-                  new Date(item?.["Date "]) >= new Date(site?.Start_Date) &&
-                  new Date(item?.["Date "]) <=
+                  new Date(item?.["Date"]) >= new Date(site?.Start_Date) &&
+                  new Date(item?.["Date"]) <=
                     new Date(
                       site?.End_Date === null ? new Date() : site?.End_Date
                     )
@@ -277,8 +277,81 @@ const useData = ({ socket, equip }) => {
               )
             );
             filteredData?.location?.push(...responseData[7]?.data);
+            // eqs.push(item.Equipment);
+            // eqsItem = {
+            //   ...eqsItem,
+            //   [item.Equipment]: {
+            //     startDate: item.Start_Date,
+            //     endDate: item.End_Date === null ? new Date() : item.End_Date,
+            //   },
+            // };
           }
         });
+
+        // const data = {
+        //   avData: responseData[0].data?.filter(
+        //     (item) =>
+        //       eqs.includes(item.Equipment) &&
+        //       new Date(item?.["Date_Time"]) >=
+        //         new Date(eqsItem?.[item.Equipment]?.startDate) &&
+        //       new Date(item?.["Date_Time"]) <=
+        //         new Date(eqsItem?.[item.Equipment]?.endDate)
+        //   ),
+        //   maintData: responseData[1].data?.filter(
+        //     (item) =>
+        //       eqs.includes(item.Equipment) &&
+        //       new Date(item?.["Date_Time"]) >=
+        //         new Date(eqsItem?.[item.Equipment]?.startDate) &&
+        //       new Date(item?.["Date_Time"]) <=
+        //         new Date(eqsItem?.[item.Equipment]?.endDate)
+        //   ),
+        //   maintStocksData: responseData[2].data
+        //   // ?.filter(
+        //   //   (item) =>
+        //   //     eqs.includes(item.Equipment) &&
+        //   //     new Date(item?.["DateTime"]) >=
+        //   //       new Date(eqsItem?.[item.Equipment]?.startDate) &&
+        //   //     new Date(item?.["DateTime"]) <=
+        //   //       new Date(eqsItem?.[item.Equipment]?.endDate)
+        //   // )
+        //   ,
+        //   fuelCons: responseData[3].data?.filter(
+        //     (item) =>
+        //       eqs.includes(item.Equipment) &&
+        //       new Date(item?.["Date "]) >=
+        //         new Date(eqsItem?.[item.Equipment]?.startDate) &&
+        //       new Date(item?.["Date "]) <=
+        //         new Date(eqsItem?.[item.Equipment]?.endDate)
+        //   ),
+        //   oilCons: responseData[4].data?.filter(
+        //     (item) =>
+        //       eqs.includes(item.Equipment) &&
+        //       new Date(item?.["Date"]) >=
+        //         new Date(eqsItem?.[item.Equipment]?.startDate) &&
+        //       new Date(item?.["Date"]) <=
+        //         new Date(eqsItem?.[item.Equipment]?.endDate)
+        //   ),
+        //   prodDrill: responseData[5].data?.filter(
+        //     (item) =>
+        //       eqs.includes(item?.["# Machine"]) &&
+        //       new Date(item?.["Pouring Finish"]) >=
+        //         new Date(eqsItem?.[item?.["# Machine"]]?.startDate) &&
+        //       new Date(item?.["Pouring Finish"]) <=
+        //         new Date(eqsItem?.[item?.["# Machine"]]?.endDate)
+        //   ),
+        //   prodTrench: responseData[6].data?.filter(
+        //     (item) =>
+        //       eqs.includes(item?.["# Machine"]) &&
+        //       new Date(item?.["Pouring Finish"]) >=
+        //         new Date(eqsItem?.[item?.["# Machine"]]?.startDate) &&
+        //       new Date(item?.["Pouring Finish"]) <=
+        //         new Date(eqsItem?.[item?.["# Machine"]]?.endDate)
+        //   ),
+        //   location: responseData[7]?.data,
+        // };
+
+        // console.log(data.prodDrill);
+        // console.log(data.prodTrench);
 
         setData(filteredData);
         setCopiedData(filteredData);

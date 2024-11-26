@@ -165,17 +165,17 @@ const useData = ({ socket, equip }) => {
 
         // console.log(responseData[4].data);
 
-        for (let i = 0; i < responseData[3].data.length; i++) {
-          responseData[3].data[i]["Date "] = ExcelDateToJSDate(
-            responseData[3].data[i]["Date "]
-          );
-        }
+        // for (let i = 0; i < responseData[3].data.length; i++) {
+        //   responseData[3].data[i]["Date "] = ExcelDateToJSDate(
+        //     responseData[3].data[i]["Date "]
+        //   );
+        // }
 
-        for (let i = 0; i < responseData[4].data.length; i++) {
-          responseData[4].data[i]["Date"] = ExcelDateToJSDate(
-            responseData[4].data[i]["Date"]
-          );
-        }
+        // for (let i = 0; i < responseData[4].data.length; i++) {
+        //   responseData[4].data[i]["Date"] = ExcelDateToJSDate(
+        //     responseData[4].data[i]["Date"]
+        //   );
+        // }
 
         for (let i = 0; i < responseData[5].data.length; i++) {
           responseData[5].data[i]["Pouring Finish"] = ExcelDateToJSDate(

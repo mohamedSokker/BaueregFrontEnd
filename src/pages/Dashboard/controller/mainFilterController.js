@@ -139,20 +139,19 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
 
     const fuelCons = copiedData.fuelCons?.filter(
       (item) =>
-        new Date(item["Date "]) >=
-          new Date(items.Time.data.currentDate.start) &&
-        new Date(item["Date "]) <= new Date(items.Time.data.currentDate.end) &&
+        new Date(item["Date"]) >= new Date(items.Time.data.currentDate.start) &&
+        new Date(item["Date"]) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item["Equipment"]) ||
-          sitesCheck.includes(item["Job Site"]))
+          sitesCheck.includes(item["Location"]))
     );
-    fuelCons.sort((a, b) => new Date(a["Date "]) - new Date(b["Date "]));
+    fuelCons.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
 
     const oilCons = copiedData.oilCons?.filter(
       (item) =>
         new Date(item["Date"]) >= new Date(items.Time.data.currentDate.start) &&
         new Date(item["Date"]) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item["Equipment"]) ||
-          sitesCheck.includes(item["Job Site"]))
+          sitesCheck.includes(item["Location"]))
     );
     oilCons.sort((a, b) => new Date(a["Date"]) - new Date(b["Date"]));
 

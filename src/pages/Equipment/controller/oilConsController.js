@@ -35,34 +35,34 @@ const useOil = ({ data }) => {
       let y = [];
       avTrenchData.map((d) => {
         s +=
-          Number(d["TOTAL  Carter EP 150 (L)"]) +
-          Number(d["TOTAL AZOLLA ZS 68 (L)"]) +
-          Number(d["TOTAL Carter SH 220 (L)"]) +
-          Number(d["TOTAL FLUIDMATIC D2 (L)"]) +
-          Number(d["TOTAL Rubia 15 W 40 (L)"]) +
-          Number(d["TOTAL AZOLLA ZS 100 (L)"]) +
-          Number(d["TOTAL rubia SAE 50 (L)"]) +
-          Number(d["TOTAL  TRAXIUM AXLE 7 /85W-140 (L)"]) +
-          Number(d["MOBIL ™ ATF 220 (L)"]) +
-          Number(d["MOBIL ™ DTE 26 (L)"]) +
-          Number(d["MOBIL Delvac ™ 15W40 (L)"]) +
-          Number(d["MOBILGEAR ™ 600 XP 150 (L)"]) +
-          Number(d["MOBILGEAR ™ SHC 630 (L)"]);
+          Number(d["TOTAL_FLUIDMATIC_D2"]) +
+          Number(d["TOTAL_AZOLLA_ZS_68"]) +
+          Number(d["TOTAL_AZOLLA_ZS_100"]) +
+          Number(d["TOTAL_Rubia_15_W_40"]) +
+          Number(d["TOTAL_Rubia_SAE_50"]) +
+          Number(d["TOTAL_TRAXIUM_AXLE_7_85W_140"]) +
+          Number(d["TOTAL _Carter_EP_150"]) +
+          Number(d["TOTAL_Carter_SH_220"]) +
+          Number(d["MOBIL_ATF_220"]) +
+          Number(d["MOBIL_DTE_26"]) +
+          Number(d["MOBIL_Delvac_15W40"]) +
+          Number(d["MOBILGEAR_600_XP_150"]) +
+          Number(d["MOBILGEAR_SHC_630"]);
         x.push(d["Date"]);
         y.push(
-          Number(d["TOTAL  Carter EP 150 (L)"]) +
-            Number(d["TOTAL AZOLLA ZS 68 (L)"]) +
-            Number(d["TOTAL Carter SH 220 (L)"]) +
-            Number(d["TOTAL FLUIDMATIC D2 (L)"]) +
-            Number(d["TOTAL Rubia 15 W 40 (L)"]) +
-            Number(d["TOTAL AZOLLA ZS 100 (L)"]) +
-            Number(d["TOTAL rubia SAE 50 (L)"]) +
-            Number(d["TOTAL  TRAXIUM AXLE 7 /85W-140 (L)"]) +
-            Number(d["MOBIL ™ ATF 220 (L)"]) +
-            Number(d["MOBIL ™ DTE 26 (L)"]) +
-            Number(d["MOBIL Delvac ™ 15W40 (L)"]) +
-            Number(d["MOBILGEAR ™ 600 XP 150 (L)"]) +
-            Number(d["MOBILGEAR ™ SHC 630 (L)"])
+          Number(d["TOTAL_FLUIDMATIC_D2"]) +
+            Number(d["TOTAL_AZOLLA_ZS_68"]) +
+            Number(d["TOTAL_AZOLLA_ZS_100"]) +
+            Number(d["TOTAL_Rubia_15_W_40"]) +
+            Number(d["TOTAL_Rubia_SAE_50"]) +
+            Number(d["TOTAL_TRAXIUM_AXLE_7_85W_140"]) +
+            Number(d["TOTAL _Carter_EP_150"]) +
+            Number(d["TOTAL_Carter_SH_220"]) +
+            Number(d["MOBIL_ATF_220"]) +
+            Number(d["MOBIL_DTE_26"]) +
+            Number(d["MOBIL_Delvac_15W40"]) +
+            Number(d["MOBILGEAR_600_XP_150"]) +
+            Number(d["MOBILGEAR_SHC_630"])
         );
       });
       setXData(x);

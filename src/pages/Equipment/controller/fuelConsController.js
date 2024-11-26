@@ -35,9 +35,9 @@ const useFuel = ({ data }) => {
       let x = [];
       let y = [];
       avTrenchData.map((d) => {
-        s += Number(d["Fuel Consumption Quantity (Liter)"]);
+        s += Number(d["Quantity"]);
         x.push(d["Date "]);
-        y.push(Number(d["Fuel Consumption Quantity (Liter)"]));
+        y.push(Number(d["Quantity"]));
       });
       console.log(s);
       setXData(x);
