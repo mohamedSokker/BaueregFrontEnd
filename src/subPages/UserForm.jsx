@@ -52,6 +52,8 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       Catalogues: false,
       CustomDataEntry: false,
       ManageDataEntry: false,
+      ManageMiniPowerBi: false,
+      MiniPowerBi: false,
     },
     User: {
       ManageUsers: false,
@@ -72,6 +74,8 @@ const UserForm = ({ handleSaveUser, getChildData, userData }) => {
       Catalogues: false,
       CustomDataEntry: false,
       ManageDataEntry: false,
+      ManageMiniPowerBi: false,
+      MiniPowerBi: false,
     },
   });
   // const [active, setActive] = useState(false);

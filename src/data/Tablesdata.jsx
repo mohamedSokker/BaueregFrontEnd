@@ -17,6 +17,8 @@ import { Cookies } from "react-cookie";
 import { dataEntry } from "./dataEntry";
 import CustomDataEntry from "../pages/CustomDataEntry/View/CustomDataEntry";
 import ManageCustomDataEntry from "../pages/ManageCustomDataEntry/View/ManageCustomDataEntry";
+import ManageMiniPowerBi from "../pages/ManageMiniPowerBi/View/ManageMiniPowerBi";
+import MiniPowerBi from "../pages/MiniPowerBi/View/MiniPowerBi";
 
 const Dashboard = lazy(() => import("../pages/Dashboard/view/Dashboard"));
 const ManageKanban = lazy(() => import("../pages/ManageKanban"));
@@ -60,6 +62,8 @@ export const allDataTitles = [
   "ManageAppUsers",
   "CustomDataEntry",
   "ManageDataEntry",
+  "ManageMiniPowerBi",
+  "MiniPowerBi",
 ];
 
 export const links = [
@@ -180,6 +184,20 @@ export const links = [
     dest: "/ManageDatabase",
     elem: <ManageDatabase />,
     icon: <BsDatabaseFillGear size={20} />,
+  },
+  {
+    title: "Manage Mini PowerBi",
+    name: "ManageMiniPowerBi",
+    dest: "/ManageMiniPowerBi",
+    elem: <ManageMiniPowerBi />,
+    icon: <VscGraph size={20} />,
+  },
+  {
+    title: "Mini PowerBi",
+    name: "MiniPowerBi",
+    dest: "/MiniPowerBi",
+    elem: <MiniPowerBi />,
+    icon: <VscGraph size={20} />,
   },
   {
     title: "Manage Users",

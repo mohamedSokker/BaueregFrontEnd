@@ -92,6 +92,8 @@ export const allData = async (token) => {
     CustomDataEntry: ["true"],
     ManageDataEntry: ["true"],
     ManageDatabase: ["true"],
+    ManageMiniPowerBi: ["true"],
+    MiniPowerBi: ["true"],
   };
 };
 
@@ -152,5 +154,7 @@ export const allDataWithName = async () => {
     CustomDataEntry: true,
     ManageDataEntry: true,
     ManageDatabase: true,
+    ManageMiniPowerBi: true,
+    MiniPowerBi: true,
   };
 };
