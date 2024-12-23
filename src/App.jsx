@@ -47,6 +47,11 @@ const GearboxTrench = lazy(() =>
   import("./pages/Equipment/components/GearboxTrench")
 );
 
+const MiniPowerBi = lazy(() => import("./pages/MiniPowerBi/View/MiniPowerBi"));
+const ManageMiniPowerBi = lazy(() =>
+  import("./pages/ManageMiniPowerBi/View/ManageMiniPowerBi")
+);
+
 function App() {
   const { token, usersData } = useNavContext();
 
@@ -153,6 +158,15 @@ function App() {
           <Route element={<RequiredAuth allowedRole={"ManageUsers"} />}>
             <Route path="/ManageUsers/:tableName" element={<ManageUsers />} />
           </Route>
+
+          <Route element={<RequiredAuth allowedRole={"ManageMiniPowerBi"} />}>
+            <Route path="/ManageMiniPowerBi" element={<ManageMiniPowerBi />} />
+          </Route>
+
+          <Route element={<RequiredAuth allowedRole={"MiniPowerBi"} />}>
+            <Route path="/MiniPowerBi" element={<MiniPowerBi />} />
+          </Route>
+
           <Route element={<RequiredAuth allowedRole={"ManageAppUsers"} />}>
             <Route
               path="/ManageAppUsers/:tableName"
