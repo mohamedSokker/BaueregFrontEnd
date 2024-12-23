@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { FiUserPlus, FiUserMinus, FiUserCheck } from "react-icons/fi";
 import { IoMdGrid } from "react-icons/io";
+import { VscGraph } from "react-icons/vsc";
 import { GiCrane, GiCargoCrane } from "react-icons/gi";
 import { TbReportAnalytics } from "react-icons/tb";
 import { TbTransferIn } from "react-icons/tb";

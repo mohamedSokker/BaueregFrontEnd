@@ -7,6 +7,7 @@ import {
   MdOutlinePlaylistAdd,
 } from "react-icons/md";
 import { ColorRing } from "react-loader-spinner";
+import { logoColor } from "../../../../BauerColors";
 
 const TablesList = ({
   isDataReady,
