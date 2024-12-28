@@ -35,41 +35,47 @@ const useTablesData = () => {
       try {
         setLoading(true);
         setMessage(`Loading Selection Data...`);
-        const URLs = [
-          "/api/v3/AllTables",
-          "/api/v3/AdminUsersApp",
-          "/api/v3/PowerBiRelationShips",
-        ];
+        if (
+          DBdata.length === 0 &&
+          relationsTable.length === 0 &&
+          allData.length === 0
+        ) {
+          const URLs = [
+            "/api/v3/AllTables",
+            "/api/v3/AdminUsersApp",
+            "/api/v3/PowerBiRelationShips",
+          ];
 
-        const responseData = await Promise.all(
-          URLs.map((url) => {
-            return axiosPrivate(url, { method: "GET" });
-          })
-        );
-
-        let users = [];
-
-        responseData[1].data?.map((item) => {
-          users.push(item?.UserName);
-        });
-
-        if (users)
-          users = users?.filter(
-            (value, index, array) => array.indexOf(value) === index
+          const responseData = await Promise.all(
+            URLs.map((url) => {
+              return axiosPrivate(url, { method: "GET" });
+            })
           );
 
-        setAllData((prev) => ({
-          ...prev,
-          Users: jsonifyArray(users, "UserName"),
-        }));
+          let users = [];
 
-        setDBData(
-          responseData[0]?.data.sort((a, b) => a.TABLE_NAME > b.TABLE_NAME)
-        );
+          responseData[1].data?.map((item) => {
+            users.push(item?.UserName);
+          });
 
-        // setRelationshipData(responseData[1]?.data);
+          if (users)
+            users = users?.filter(
+              (value, index, array) => array.indexOf(value) === index
+            );
 
-        setRelationsTable(responseData[2]?.data);
+          setAllData((prev) => ({
+            ...prev,
+            Users: jsonifyArray(users, "UserName"),
+          }));
+
+          setDBData(
+            responseData[0]?.data.sort((a, b) => a.TABLE_NAME > b.TABLE_NAME)
+          );
+
+          // setRelationshipData(responseData[1]?.data);
+
+          setRelationsTable(responseData[2]?.data);
+        }
 
         setLoading(false);
       } catch (err) {

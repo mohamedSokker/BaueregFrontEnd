@@ -7,26 +7,29 @@ import Graph from "../Graph";
 import Card from "../Card";
 import { logoColor } from "../../../../BauerColors";
 import Slicer from "../Slicer";
+import { useInitContext } from "../../Contexts/InitContext";
 
-const MainArea = ({
-  tablesData,
-  setTablesData,
-  copiedTablesData,
-  setCopiedTablesData,
-  data,
-  setData,
-  mouseUpMove,
-  mouseMoveMove,
-  mouseDownMove,
-  mouseDownLeftResize,
-  mouseDownTopResize,
-  mouseDownRightResize,
-  mouseDownBottomResize,
-  selectedItem,
-  setSelectedItem,
-  checkArray,
-  setCheckArray,
-}) => {
+const MainArea = () => {
+  const {
+    tablesData,
+    setTablesData,
+    copiedTablesData,
+    setCopiedTablesData,
+    data,
+    setData,
+    mouseUpMove,
+    mouseMoveMove,
+    mouseDownMove,
+    mouseDownLeftResize,
+    mouseDownTopResize,
+    mouseDownRightResize,
+    mouseDownBottomResize,
+    selectedItem,
+    setSelectedItem,
+    checkArray,
+    setCheckArray,
+  } = useInitContext();
+
   const updateSize = () => {
     console.log(`updateSize Event`);
     const container = document.getElementById("Main-Area");

@@ -6,6 +6,10 @@ import "./App.css";
 import logo from "./assets/logoblue.jpg";
 import { socket } from "./socket/socket";
 import MainLoading from "./components/MainLoading";
+import { ManagePowerPiDataContextProvider } from "./pages/ManageMiniPowerBi/Contexts/DataContext";
+import { ManagePowerPiInitContextProvider } from "./pages/ManageMiniPowerBi/Contexts/InitContext";
+import { PowerPiDataContextProvider } from "./pages/MiniPowerBi/Contexts/DataContext";
+import { PowerPiInitContextProvider } from "./pages/MiniPowerBi/Contexts/InitContext";
 
 const Dashboard = lazy(() => import("./pages/Dashboard/view/Dashboard"));
 const ManageKanban = lazy(() => import("./pages/ManageKanban"));
@@ -47,6 +51,9 @@ const GearboxTrench = lazy(() =>
   import("./pages/Equipment/components/GearboxTrench")
 );
 
+const MiniPowerBiCat = lazy(() =>
+  import("./pages/MiniPowerBiCat/View/MiniPowerBiCat")
+);
 const MiniPowerBi = lazy(() => import("./pages/MiniPowerBi/View/MiniPowerBi"));
 const ManageMiniPowerBi = lazy(() =>
   import("./pages/ManageMiniPowerBi/View/ManageMiniPowerBi")
@@ -160,11 +167,33 @@ function App() {
           </Route>
 
           <Route element={<RequiredAuth allowedRole={"ManageMiniPowerBi"} />}>
-            <Route path="/ManageMiniPowerBi" element={<ManageMiniPowerBi />} />
+            <Route
+              path="/ManageMiniPowerBi"
+              element={
+                <ManagePowerPiDataContextProvider>
+                  <ManagePowerPiInitContextProvider>
+                    <ManageMiniPowerBi />
+                  </ManagePowerPiInitContextProvider>
+                </ManagePowerPiDataContextProvider>
+              }
+            />
           </Route>
 
           <Route element={<RequiredAuth allowedRole={"MiniPowerBi"} />}>
-            <Route path="/MiniPowerBi" element={<MiniPowerBi />} />
+            <Route path="/MiniPowerBi" element={<MiniPowerBiCat />} />
+          </Route>
+
+          <Route element={<RequiredAuth allowedRole={"MiniPowerBi"} />}>
+            <Route
+              path="/MiniPowerBi/:id"
+              element={
+                <PowerPiDataContextProvider>
+                  <PowerPiInitContextProvider>
+                    <MiniPowerBi />
+                  </PowerPiInitContextProvider>
+                </PowerPiDataContextProvider>
+              }
+            />
           </Route>
 
           <Route element={<RequiredAuth allowedRole={"ManageAppUsers"} />}>
