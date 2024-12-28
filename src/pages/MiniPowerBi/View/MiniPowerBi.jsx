@@ -13,9 +13,13 @@ import PageLoading from "../../../components/PageLoading.jsx";
 import { useDataContext } from "../Contexts/DataContext.jsx";
 import { useInitContext } from "../Contexts/InitContext.jsx";
 
+import { getHelperFunction } from "../Controllers/Expressions/KeyWordsHelper";
+
 const MiniPowerBi = () => {
   const axiosPrivate = useAxiosPrivate();
   const { id } = useParams();
+
+  const [dataExpressions, setDataExpressions] = useState([]);
 
   const {
     mouseMoveMove,
@@ -28,6 +32,7 @@ const MiniPowerBi = () => {
     copiedTablesData,
     setCopiedTablesData,
     isChoose,
+    setIsChoose,
     isRelationshipChoose,
     setIsRelationshipChoose,
     closeSmallSidebar,
@@ -35,7 +40,6 @@ const MiniPowerBi = () => {
   } = useInitContext();
 
   // console.log(tablesData);
-  // console.log(copiedTablesData);
 
   const {
     loading,
@@ -48,44 +52,91 @@ const MiniPowerBi = () => {
     setRelationsTable,
   } = useDataContext();
 
-  // console.log(relationshipdata);
+  useEffect(() => {
+    if (
+      Object.keys(tablesData).length ===
+        [...isChoose, ...isRelationshipChoose].length &&
+      Object.keys(tablesData).length !== 0
+    ) {
+      Object.keys(dataExpressions)?.map((table) => {
+        const allowedKeys = [...Object.keys(tablesData?.[table]?.data?.[0])];
+        console.log(dataExpressions);
+        const cols = Object.keys(dataExpressions?.[table]);
+        cols.map((ex) => {
+          const exp = dataExpressions?.[table]?.[ex];
+          const isChooseValue = exp.split("(")[0];
+
+          const expressionFunction = new Function(
+            ...allowedKeys,
+            `${getHelperFunction(exp, isChooseValue)};`
+          );
+          let copiedData = { ...tablesData };
+          const result = tablesData?.[table]?.data?.map((row) => ({
+            ...row,
+            [ex]: expressionFunction(...allowedKeys.map((key) => row[key])),
+          }));
+          copiedData[table].data = result;
+          setTablesData(copiedData);
+        });
+      });
+    }
+  }, [isChoose, isRelationshipChoose, dataExpressions]);
 
   const getTablesData = async (d, rshipd) => {
-    d?.map(async (item) => {
-      const url = `/api/v3/${item}`;
-      const data = await axiosPrivate(url, { method: "GET" });
+    const urls = [];
+    d.map((item) => {
+      urls.push(`/api/v3/${item}`);
+    });
+
+    const relUrls = [];
+    rshipd.map((item) => {
+      const content = item.split(",");
+      content.map((el) => {
+        relUrls.push(`/api/v3/${el}`);
+      });
+    });
+
+    const data = await Promise.all(
+      urls.map((url) => {
+        return axiosPrivate(url, { method: "GET" });
+      })
+    );
+
+    const relData = await Promise.all(
+      relUrls.map((url) => {
+        return axiosPrivate(url, { method: "GET" });
+      })
+    );
+
+    d.map((item, idx) => {
       setTablesData((prev) => ({
         ...prev,
-        [item]: { ...d[item], data: data.data },
+        [item]: { ...d[item], data: data[idx].data },
       }));
       setCopiedTablesData((prev) => ({
         ...prev,
-        [item]: { ...d[item], data: data.data },
+        [item]: { ...d[item], data: data[idx].data },
       }));
     });
 
-    // let relationShipData = {};
-    rshipd?.map(async (item) => {
+    rshipd.map((item) => {
       const content = item.split(",");
-      // console.log(relHandles);
-      content.map(async (el) => {
-        const data = await getTableData(el);
+      content.map((el, idx) => {
         setRelationshipData((prev) => ({
           ...prev,
-          [el]: data,
+          [el]: relData[idx]?.data,
         }));
-        // relationShipData = { ...relationShipData, [el]: data };
       });
     });
-    // console.log(relationShipData);
   };
 
   useEffect(() => {
+    setLoading(true);
+    setMessage(`Performing Relations...`);
     relationsTable?.map(async (item) => {
       if (isRelationshipChoose?.includes(item.Name)) {
         const relationships = JSON.parse(item?.RelationShips);
         let sourceTable = relationships?.[0]?.source;
-        // const data = await getTableData(sourceTable);
         let sourceData = relationshipdata?.[sourceTable]
           ? relationshipdata?.[sourceTable]
           : [];
@@ -116,6 +167,7 @@ const MiniPowerBi = () => {
         }));
       }
     });
+    setLoading(false);
   }, [relationshipdata]);
 
   const getData = async () => {
@@ -136,16 +188,17 @@ const MiniPowerBi = () => {
 
       setRelationsTable(responseData[1]?.data);
 
-      const allowedUsers = JSON.parse(targetItem?.UsersToView);
-      const createdUser = targetItem?.CreatedBy;
       const viewData = JSON.parse(targetItem?.ViewData);
+
+      setIsChoose(Object.keys(viewData?.tablesData));
 
       setIsRelationshipChoose(viewData?.isRelationshipChoose);
       await getTablesData(viewData?.isChoose, viewData?.isRelationshipChoose);
 
+      setDataExpressions(viewData?.expressions);
+
       setData(viewData.data);
 
-      console.log(viewData);
       setLoading(false);
     } catch (err) {
       console.log(
@@ -153,12 +206,6 @@ const MiniPowerBi = () => {
           ? err?.response?.data?.message
           : err?.message
       );
-      // setErrorData((prev) => [
-      //   ...prev,
-      //   err?.response?.data?.message
-      //     ? err?.response?.data?.message
-      //     : err?.message,
-      // ]);
       setLoading(false);
     }
   };
@@ -166,9 +213,6 @@ const MiniPowerBi = () => {
   useEffect(() => {
     getData();
   }, []);
-
-  // console.log(data);
-  // console.log(expressions);
 
   useLayoutEffect(() => {
     const container = document.getElementById("Main-Area");

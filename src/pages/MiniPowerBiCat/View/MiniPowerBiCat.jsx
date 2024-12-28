@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { PageLoading } from "../../../components";
+import { useNavContext } from "../../../contexts/NavContext";
 
 const MiniPowerBiCat = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
+  const { usersData } = useNavContext();
 
   const [loading, setLoading] = useState(false);
   const [viewData, setViewData] = useState([]);
@@ -21,18 +23,23 @@ const MiniPowerBiCat = () => {
       const viewDataJSON = responseData?.data;
       let result = {};
       viewDataJSON?.map((item) => {
-        result = result?.[item?.Group]
-          ? {
-              ...result,
-              [item?.Group]: [
-                ...result?.[item?.Group],
-                { name: item?.Name, id: item?.ID },
-              ],
-            }
-          : {
-              ...result,
-              [item?.Group]: [{ name: item?.Name, id: item?.ID }],
-            };
+        const createdUser = item.CreatedBy;
+        const viewUser = JSON.parse(item.UsersToView)?.Users;
+
+        if ([createdUser, ...viewUser].includes(usersData[0].username)) {
+          result = result?.[item?.Group]
+            ? {
+                ...result,
+                [item?.Group]: [
+                  ...result?.[item?.Group],
+                  { name: item?.Name, id: item?.ID },
+                ],
+              }
+            : {
+                ...result,
+                [item?.Group]: [{ name: item?.Name, id: item?.ID }],
+              };
+        }
       });
       setViewData(result);
       setLoading(false);
