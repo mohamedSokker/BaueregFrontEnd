@@ -117,7 +117,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
     if (tableRef.current) {
       // Trigger a reflow to ensure alignment
       tableRef.current.style.display = "none";
-      tableRef.current.offsetHeight = 0; // Trigger reflow
+      // tableRef.current.offsetHeight = 0; // Trigger reflow
       tableRef.current.style.display = "";
     }
   }, [columnWidths]);
