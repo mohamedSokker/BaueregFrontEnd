@@ -1,18 +1,18 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate.jsx";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
-import Analysis from "../Components/Pages/Analysis.jsx";
-import SelectTables from "../Components/Pages/SelectTables.jsx";
-import TablesRelations from "../Components/Pages/TablesRelations.jsx";
-import VirtualTable from "../Components/Pages/VirtualTable.jsx";
-import FiltersCards from "../Components/FiltersCards.jsx";
-import ManageTables from "../Components/Pages/ManageTable.jsx";
-import ChooseUsers from "../Components/Pages/ChooseUsers.jsx";
-import PageLoading from "../../../components/PageLoading.jsx";
-import { useDataContext } from "../Contexts/DataContext.jsx";
-import { useInitContext } from "../Contexts/InitContext.jsx";
-import { detectTableColumnTypes } from "../Services/getTypes.js";
+import Analysis from "../Components/Pages/Analysis";
+import SelectTables from "../Components/Pages/SelectTables";
+import TablesRelations from "../Components/Pages/TablesRelations";
+import VirtualTable from "../Components/Pages/VirtualTable";
+import FiltersCards from "../Components/FiltersCards";
+import ManageTables from "../Components/Pages/ManageTable";
+import ChooseUsers from "../Components/Pages/ChooseUsers";
+import PageLoading from "../../../components/PageLoading";
+import { useDataContext } from "../Contexts/DataContext";
+import { useInitContext } from "../Contexts/InitContext";
+import { detectTableColumnTypes } from "../Services/getTypes";
 
 const ManageMiniPowerBi = () => {
   const axiosPrivate = useAxiosPrivate();

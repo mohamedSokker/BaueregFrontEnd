@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 // import { determineRelationshipsAmongTables } from "../../pages/ManageMiniPowerBi/Services/getRelships.js";
-import { determineRelationshipsAmongTables } from "../../Services/getRelships.js";
+import { determineRelationshipsAmongTables } from "../../Services/getRelships";
 import "./CustomTable1.css"; // Import the CSS file for styling
 import {
   categorizeColumns,
