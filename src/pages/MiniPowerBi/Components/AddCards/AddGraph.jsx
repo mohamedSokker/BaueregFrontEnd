@@ -38,7 +38,7 @@ const AddGraph = ({
 }) => {
   return (
     <div className="w-full p-2">
-      <div className="w-full border-[1px] border-black flex flex-row flex-wrap justify-center items-center gap-4 p-1">
+      <div className="w-full border-[1px] border-gray-400 flex flex-row flex-wrap justify-center items-center gap-4 p-1">
         <TooltipComponent content={`Bar Chart`} position="BottomCenter">
           <div
             className="cursor-pointer"
@@ -48,7 +48,7 @@ const AddGraph = ({
               // const containerStyles = window.getComputedStyle(container);
               const currentData = {
                 ID: data.el?.length,
-                ...barOptions,
+                ...JSON.parse(JSON.stringify(barOptions)),
                 width: `${
                   ((data.containerStyles.scale * 200) /
                     parseFloat(data.containerStyles.width)) *
@@ -80,7 +80,7 @@ const AddGraph = ({
               // const containerStyles = window.getComputedStyle(container);
               const currentData = {
                 ID: data.el?.length,
-                ...timelineOptions,
+                ...JSON.parse(JSON.stringify(timelineOptions)),
                 width: `${
                   ((data.containerStyles.scale * 200) /
                     parseFloat(data.containerStyles.width)) *
@@ -112,7 +112,7 @@ const AddGraph = ({
               // const containerStyles = window.getComputedStyle(container);
               const currentData = {
                 ID: data.el?.length,
-                ...pieOptions,
+                ...JSON.parse(JSON.stringify(pieOptions)),
                 width: `${
                   ((data.containerStyles.scale * 200) /
                     parseFloat(data.containerStyles.width)) *
@@ -150,7 +150,7 @@ const AddGraph = ({
               // const containerStyles = window.getComputedStyle(container);
               const currentData = {
                 ID: data.el?.length,
-                ...lineOptions,
+                ...JSON.parse(JSON.stringify(lineOptions)),
                 width: `${
                   ((data.containerStyles.scale * 200) /
                     parseFloat(data.containerStyles.width)) *
@@ -194,7 +194,7 @@ const AddGraph = ({
               // const containerStyles = window.getComputedStyle(container);
               const currentData = {
                 ID: data.el?.length,
-                ...gaugeOptions,
+                ...JSON.parse(JSON.stringify(gaugeOptions)),
                 width: `${
                   ((data.containerStyles.scale * 200) /
                     parseFloat(data.containerStyles.width)) *
@@ -226,7 +226,7 @@ const AddGraph = ({
               // const containerStyles = window.getComputedStyle(container);
               const currentData = {
                 ID: data.el?.length,
-                ...tablesOptions,
+                ...JSON.parse(JSON.stringify(tablesOptions)),
                 width: `${
                   ((data.containerStyles.scale * 200) /
                     parseFloat(data.containerStyles.width)) *
@@ -258,7 +258,7 @@ const AddGraph = ({
               // const containerStyles = window.getComputedStyle(container);
               const currentData = {
                 ID: data.el?.length,
-                ...cardOptions,
+                ...JSON.parse(JSON.stringify(cardOptions)),
                 width: `${
                   ((data.containerStyles.scale * 200) /
                     parseFloat(data.containerStyles.width)) *
@@ -290,7 +290,7 @@ const AddGraph = ({
               // const containerStyles = window.getComputedStyle(container);
               const currentData = {
                 ID: data.el?.length,
-                ...slicerOptions,
+                ...JSON.parse(JSON.stringify(slicerOptions)),
                 width: `${
                   ((data.containerStyles.scale * 200) /
                     parseFloat(data.containerStyles.width)) *

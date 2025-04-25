@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowRight,
@@ -7,30 +7,21 @@ import {
 } from "react-icons/md";
 import { ColorRing } from "react-loader-spinner";
 import { useInitContext } from "../../Contexts/InitContext";
+import PropertyCard from "../Customs/PropertyCard";
+import Drag from "../Customs/Drag";
+import Drop from "../Customs/Drop";
+import PropsComponents from "./PropsComponents";
+
+import "../../Styles/EditCard.css";
 
 const Properties = () => {
-  const { data, setData, selectedItem, tablesData } = useInitContext();
+  const { data, setData, selectedItem, tablesData, isPerview } =
+    useInitContext();
   const [isOpenPanel, setIsOpenPanel] = useState(true);
+  const [isCategoryOpen, setIsCategoryOpen] = useState({});
 
   const handleClick = () => {
     setIsOpenPanel((prev) => !prev);
-    // const result = [];
-    // const scale = isOpenPanel
-    //   ? (parseInt(data.containerStyles.width) + 170) /
-    //     parseInt(data.containerStyles.width)
-    //   : (parseInt(data.containerStyles.width) - 170) /
-    //     parseInt(data.containerStyles.width);
-    // data?.el?.map((item) => {
-    //   result.push({
-    //     ...item,
-    //     left: `${Math.round(parseInt(item.left) * scale)}%`,
-    //   });
-    // });
-    // setData((prev) => ({
-    //   ...prev,
-    //   el: result,
-    //   containerStyles: { ...prev.containerStyles },
-    // }));
   };
 
   const handleChange = (e, item) => {
@@ -45,12 +36,28 @@ const Properties = () => {
     setData(copiedData);
   };
 
+  useEffect(() => {
+    const copiedCat = { ...isCategoryOpen };
+    setIsCategoryOpen({});
+    setTimeout(() => {
+      setIsCategoryOpen(copiedCat);
+    }, 0);
+  }, [selectedItem]);
+
   // console.log(data?.el?.[selectedItem]?.props);
 
   return isOpenPanel ? (
     <div
-      className="flex w-[200px] h-full flex-col border-l-[1px] overflow-y-scroll bg-gray-300 p-2"
-      style={{ transition: "width 0.5s ease-in-out" }}
+      className="flex w-[200px] h-full flex-col overflow-y-scroll bg-gray-300 p-2 relative z-[1]"
+      style={{
+        width: isPerview ? "0px" : "200px",
+        padding: isPerview ? "0px" : "8px",
+        transition: "width 0.5s ease-in-out",
+        // animation: isPerview
+        //   ? "animate-in 0.5s ease-in-out"
+        //   : "animate-out 0.5s ease-in-out",
+      }}
+      // style={{ transition: "width 0.5s ease-in-out" }}
     >
       <div className="w-full">
         <div className="w-full flex flex-row justify-between p-1">
@@ -60,262 +67,140 @@ const Properties = () => {
           </div>
         </div>
       </div>
-      <div className="w-full h-full flex flex-col items-start justify-start p-1 overflow-scroll gap-2">
-        {data?.el?.[selectedItem]?.props?.map((item, idx) => (
-          <div
-            key={idx}
-            className="w-full flex flex-col items-start justify-center gap-1"
-          >
-            <div>
-              <p className="text-[10px] font-[800]">{item?.name}</p>
-            </div>
-            <div className="w-full flex flex-row justify-start items-center gap-2">
-              {item?.inputType === "number" && item.name === "count" ? (
-                <input
-                  className="w-[70%] text-[10px] p-1"
-                  type="number"
-                  value={parseInt(data?.el?.[selectedItem]?.[item?.name], 10)}
-                  onChange={(e) => {
-                    const copiedData = { ...data };
-                    if (item?.ref) {
-                      copiedData.el[selectedItem] = {
-                        ...copiedData.el[selectedItem],
-                        [item?.name]: item?.unit
-                          ? `${e.target.value}${item?.unit}`
-                          : `${e.target.value}`,
-                        [item?.ref]:
-                          data?.el?.[selectedItem]?.[item?.ref]?.length >
-                          Number(e.target.value)
-                            ? [
-                                ...data?.el?.[selectedItem]?.[item?.ref]?.slice(
-                                  0,
-                                  data?.el?.[selectedItem]?.[item?.ref]
-                                    ?.length - 1
-                                ),
-                              ]
-                            : [...data?.el?.[selectedItem]?.[item?.ref], "ID"],
-                      };
-                    } else {
-                      copiedData.el[selectedItem] = {
-                        ...copiedData.el[selectedItem],
-                        [item?.name]: item?.unit
-                          ? `${e.target.value}${item?.unit}`
-                          : `${e.target.value}`,
-                      };
-                    }
-
-                    setData(copiedData);
-                    // console.log(copiedData);
-                  }}
-                />
-              ) : (
-                item?.inputType === "number" && (
-                  <input
-                    className="w-[70%] text-[10px] p-1"
-                    type="number"
-                    value={parseInt(data?.el?.[selectedItem]?.[item?.name], 10)}
-                    onChange={(e) => handleChange(e, item)}
-                  />
-                )
-              )}
-
-              {/* {item?.inputType === "text" && (
-                <input
-                  className="w-[70%] text-[10px] p-1"
-                  type="number"
-                  value={data?.el?.[selectedItem]?.[item?.name]}
-                  onChange={(e) => handleChange(e, item)}
-                />
-              )} */}
-
-              {item?.inputType === "toggle" && (
-                <input
-                  className="text-[10px] p-1 flex flex-row justify-start items-center"
-                  type="checkbox"
-                  checked={data?.el?.[selectedItem]?.[item?.name]}
-                  // value={parseInt(data?.el?.[selectedItem]?.[item?.name], 10)}
-                  onChange={(e) => {
-                    const copiedData = { ...data };
-                    copiedData.el[selectedItem] = {
-                      ...copiedData.el[selectedItem],
-                      [item?.name]: !copiedData.el[selectedItem][item?.name],
-                    };
-                    setData(copiedData);
-                    console.log(copiedData);
-                  }}
-                />
-              )}
-              {item?.inputType === "text" && (
-                <input
-                  className="w-[70%] text-[10px] p-1"
-                  type="text"
-                  value={data?.el?.[selectedItem]?.[item?.name]}
-                  onChange={(e) => handleChange(e, item)}
-                />
-              )}
-              {item?.inputType === "select" && item.dataType === "list" && (
-                <select
-                  className=" w-[70%] text-[10px] p-1"
-                  value={data?.el?.[selectedItem]?.[item?.name]}
-                  onChange={(e) => handleChange(e, item)}
-                >
-                  <option hidden selected disabled>
-                    {""}
-                  </option>
-                  {item?.data?.map((item, idx) => (
-                    <option key={idx}>{item}</option>
-                  ))}
-                </select>
-              )}
-              {item?.inputType === "select" &&
-                item.dataType === "ref" &&
-                item.ref === "Tables" && (
-                  <select
-                    className=" w-[70%] text-[10px] p-1"
-                    value={data?.el?.[selectedItem]?.table}
-                    onChange={(e) => {
-                      console.log(e.target.value);
-                      const copiedData = { ...data };
-                      copiedData.el[selectedItem] = {
-                        ...copiedData.el[selectedItem],
-                        table: `${e.target.value}`,
-                        name: `${e.target.value}`,
-                      };
-                      setData(copiedData);
-                    }}
-                  >
-                    <option hidden selected disabled>
-                      {""}
-                    </option>
-                    {Object.keys(tablesData)?.map((item, idx) => (
-                      <option key={idx}>{item}</option>
-                    ))}
-                  </select>
-                )}
-              {item?.inputType === "select" &&
-                item.dataType === "ref" &&
-                item.ref === "columns" && (
-                  <select
-                    className=" w-[70%] text-[10px] p-1"
-                    value={data?.el?.[selectedItem]?.[item?.name]}
-                    onChange={(e) => handleChange(e, item)}
-                  >
-                    <option hidden selected disabled>
-                      {""}
-                    </option>
-                    {tablesData?.[data?.el?.[selectedItem]?.table]?.data?.[0] &&
-                      Object.keys(
-                        tablesData?.[data?.el?.[selectedItem]?.table]?.data?.[0]
-                      )?.map((item, idx) => <option key={idx}>{item}</option>)}
-                  </select>
-                )}
-              {item?.inputType === "listtext" && item.name === "Colors" && (
-                <div className="w-full flex flex-col items-start justify-center gap-1">
-                  {item?.data
-                    ?.slice(0, data?.el?.[selectedItem]?.count)
-                    ?.map((el, idx) => (
-                      <input
-                        key={idx}
-                        className="w-[70%] text-[10px] p-1"
-                        type="color"
-                        value={data.el[selectedItem].Colors[idx]}
-                        onChange={(e) => {
-                          const copiedData = { ...data };
-                          copiedData.el[selectedItem].Colors[idx] =
-                            e.target.value;
-                          setData(copiedData);
-                          // console.log(copiedData);
-                        }}
-                      />
-                    ))}
-                </div>
-              )}
-
-              {item?.inputType === "listDropsRefColumns" && (
-                <div className="w-full flex flex-col items-start justify-center gap-1">
-                  {data?.el?.[selectedItem]?.[item.name]
-                    ?.slice(0, data?.el?.[selectedItem]?.count)
-                    ?.map((el, idx) => (
-                      <select
-                        key={idx}
-                        className=" w-[70%] text-[10px] p-1"
-                        value={
-                          data?.el?.[selectedItem]?.[item?.name][idx]
-                            ? data?.el?.[selectedItem]?.[item?.name][idx]
-                            : ""
-                        }
-                        onChange={(e) => {
-                          const copiedData = { ...data };
-                          copiedData.el[selectedItem][item.name][idx] =
-                            e.target.value;
-                          setData(copiedData);
-                          // console.log(copiedData);
-                        }}
-                      >
-                        <option hidden selected disabled>
-                          {""}
-                        </option>
-                        {tablesData?.[data?.el?.[selectedItem]?.table]
-                          ?.data?.[0] &&
-                          Object.keys(
-                            tablesData?.[data?.el?.[selectedItem]?.table]
-                              ?.data?.[0]
-                          )?.map((item, idx) => (
-                            <option key={idx}>{item}</option>
-                          ))}
-                      </select>
-                    ))}
-                </div>
-              )}
-
-              {item?.inputType === "listDropsRefTables" && tablesData && (
-                <div className="w-full flex flex-col items-start justify-center gap-1">
-                  {tablesData &&
-                    Object.keys(tablesData)?.map((el, idx) => (
-                      <div key={idx} className="w-full flex flex-row gap-2">
-                        <input
-                          type="checkbox"
-                          onChange={(e) => {
-                            const copiedData = { ...data };
-                            if (e.target.checked === true) {
-                              const result = [
-                                ...data?.el?.[selectedItem]?.[item?.name],
-                              ];
-                              result.push(el);
-                              copiedData.el[selectedItem] = {
-                                ...copiedData.el[selectedItem],
-                                [item?.name]: [...result],
-                              };
-                            } else if (e.target.checked === false) {
-                              const array = [
-                                ...data?.el?.[selectedItem]?.[item?.name],
-                              ];
-                              const result = array.filter((elt) => elt !== el);
-                              copiedData.el[selectedItem] = {
-                                ...copiedData.el[selectedItem],
-                                [item?.name]: [...result],
-                              };
-                            }
-
-                            setData(copiedData);
-                            // console.log(copiedData);
-                          }}
-                          checked={
-                            data?.el?.[selectedItem]?.[item?.name]?.includes(el)
-                              ? true
-                              : false
-                          }
-                        />
-                        <p className="text-[10px]">{el}</p>
-                      </div>
-                    ))}
-                </div>
-              )}
-              <p className="text-[10px]">{item?.unit}</p>
+      {data?.el?.length > 0 && selectedItem !== null && (
+        <div className="w-full h-full flex flex-col items-start justify-start p-1 gap-2 relative z-[11]">
+          <div className="w-full p-2 text-[14px] font-[800] flex flex-row items-center justify-between bg-gray-400">
+            <p>Position & Size</p>
+            <div
+              className="cursor-pointer arrow"
+              style={{
+                transform: isCategoryOpen?.Position
+                  ? "rotate(90deg)"
+                  : "rotate(0deg)",
+              }}
+              onClick={() =>
+                setIsCategoryOpen((prev) => ({
+                  ...prev,
+                  Position: !prev?.Position,
+                }))
+              }
+            >
+              <MdKeyboardDoubleArrowRight />
             </div>
           </div>
-        ))}
-      </div>
+          {isCategoryOpen?.Position && <PropsComponents cat={`Position`} />}
+          <div className="w-full p-2 text-[14px] font-[800] flex flex-row items-center justify-between bg-gray-400">
+            <p>Fonts</p>
+            <div
+              className="cursor-pointer arrow"
+              style={{
+                transform: isCategoryOpen?.Fonts
+                  ? "rotate(90deg)"
+                  : "rotate(0deg)",
+              }}
+              onClick={() =>
+                setIsCategoryOpen((prev) => ({
+                  ...prev,
+                  Fonts: !prev?.Fonts,
+                }))
+              }
+            >
+              <MdKeyboardDoubleArrowRight />
+            </div>
+          </div>
+          {isCategoryOpen?.Fonts && <PropsComponents cat={`Fonts`} />}
+          <div className="w-full p-2 text-[14px] font-[800] flex flex-row items-center justify-between bg-gray-400">
+            <p>Data</p>
+            <div
+              className="cursor-pointer arrow"
+              style={{
+                transform: isCategoryOpen?.Data
+                  ? "rotate(90deg)"
+                  : "rotate(0deg)",
+              }}
+              onClick={() =>
+                setIsCategoryOpen((prev) => ({
+                  ...prev,
+                  Data: !prev?.Data,
+                }))
+              }
+            >
+              <MdKeyboardDoubleArrowRight />
+            </div>
+          </div>
+          {isCategoryOpen?.Data && <PropsComponents cat={`Data`} />}
+          <div className="w-full p-2 text-[14px] font-[800] flex flex-row items-center justify-between bg-gray-400">
+            <p>Colors</p>
+            <div
+              className="cursor-pointer arrow"
+              style={{
+                transform: isCategoryOpen?.Colors
+                  ? "rotate(90deg)"
+                  : "rotate(0deg)",
+              }}
+              onClick={() =>
+                setIsCategoryOpen((prev) => ({
+                  ...prev,
+                  Colors: !prev?.Colors,
+                }))
+              }
+            >
+              <MdKeyboardDoubleArrowRight />
+            </div>
+          </div>
+          {isCategoryOpen?.Colors && <PropsComponents cat={`Colors`} />}
+          <div className="w-full p-2 text-[14px] font-[800] flex flex-row items-center justify-between bg-gray-400">
+            <p>Customs</p>
+            <div
+              className="cursor-pointer arrow"
+              style={{
+                transform: isCategoryOpen?.Customs
+                  ? "rotate(90deg)"
+                  : "rotate(0deg)",
+              }}
+              onClick={() =>
+                setIsCategoryOpen((prev) => ({
+                  ...prev,
+                  Customs: !prev?.Customs,
+                }))
+              }
+            >
+              <MdKeyboardDoubleArrowRight />
+            </div>
+          </div>
+          {isCategoryOpen?.Customs && <PropsComponents cat={`Customs`} />}
+
+          {/* <PropsComponents /> */}
+
+          {/* <Drag
+          category={`ManageDataEntry`}
+          name={`Count of breakdowns`}
+          targets={[`Fonts`, `Colors`]}
+        >
+          <PropertyCard propName={`Count of breakdowns`} />
+        </Drag>
+
+        <Drag
+          category={`ManageDataEntry`}
+          name={`Count of equipments`}
+          targets={[`Fonts`, `Colors`]}
+        >
+          <PropertyCard propName={`Count of equipments`} />
+        </Drag>
+
+        <PropertyCard propName={`Sum of equipments`} />
+        <PropertyCard propName={`Average of equipments`} />
+        <PropertyCard propName={`Sum of breakdowns`} />
+
+        <div className="w-full min-h-[50px]">
+          <Drop category={`Fonts`} />
+        </div>
+
+        <div className="w-full min-h-[50px]">
+          <Drop category={`Colors`} />
+        </div> */}
+        </div>
+      )}
     </div>
   ) : (
     <div

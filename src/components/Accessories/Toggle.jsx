@@ -2,15 +2,11 @@ import React from "react";
 
 import "./CSS/Toggle.css";
 
-const Toggle = (value, setValue) => {
+const Toggle = ({ value, onChange, props }) => {
   return (
     <>
       <label className="switch">
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={() => setValue((prev) => !prev)}
-        />
+        <input type="checkbox" checked={value} onChange={onChange} />
         <span className="slider"></span>
       </label>
     </>

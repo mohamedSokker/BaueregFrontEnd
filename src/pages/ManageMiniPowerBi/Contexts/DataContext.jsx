@@ -69,9 +69,14 @@ export const ManagePowerPiDataContextProvider = ({ children }) => {
           Users: jsonifyArray(users, "UserName"),
         }));
 
-        setDBData(
-          responseData[0]?.data.sort((a, b) => a.TABLE_NAME > b.TABLE_NAME)
-        );
+        const targetDBData = responseData[0]?.data.sort((a, b) => {
+          const aValue = JSON.stringify(Object.values(a).sort());
+          const bValue = JSON.stringify(Object.values(b).sort());
+          if (aValue < bValue) return -1;
+          if (aValue > bValue) return 1;
+          return 0;
+        });
+        setDBData(targetDBData);
 
         // setRelationshipData(responseData[1]?.data);
 

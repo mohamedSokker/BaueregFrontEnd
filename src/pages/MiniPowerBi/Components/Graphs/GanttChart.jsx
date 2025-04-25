@@ -14,7 +14,7 @@ import { Bar } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import "chartjs-adapter-date-fns";
 
-import { useCurrentYearStartAndEndDates } from "../../Services/userCurrentYearStartAndEndDates";
+// import { useCurrentYearStartAndEndDates } from "../../Services/userCurrentYearStartAndEndDates";
 // import { formatDateInLocal } from "../../Services/formattedDate";
 import { useEffect, useState } from "react";
 import { COLORS } from "../../Model/model";
@@ -46,11 +46,12 @@ Tooltip.positioners.custom = (_elements, eventPosition) => {
 };
 
 function GanttChart({ tableData, item, data }) {
-  const { startDate, endDate } = useCurrentYearStartAndEndDates();
+  // const { startDate, endDate } = useCurrentYearStartAndEndDates();
 
   const [ganttData, setGanttData] = useState([]);
   const [minDate, setMinDate] = useState(new Date("2020-01-01"));
   const [maxDate, setMaxDate] = useState(new Date("2050-01-01"));
+  const [containerHeight, setContainerHeight] = useState(400); // State for container height
 
   const {
     label,
@@ -69,9 +70,14 @@ function GanttChart({ tableData, item, data }) {
     start,
     end,
     category,
+    barHeight,
   } = item;
 
   const formatDateToString = (date) => {
+    if (!date || !(date instanceof Date) || isNaN(date)) {
+      return "2020-01-01"; // or return a default date string
+    }
+
     const year = date?.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed
     const day = String(date.getDate()).padStart(2, "0");
@@ -79,6 +85,10 @@ function GanttChart({ tableData, item, data }) {
   };
 
   useEffect(() => {
+    if (!tableData || !Array.isArray(tableData)) {
+      return;
+    }
+
     let result = [];
     let min = new Date("2020-01-01");
     let max = new Date("2050-01-01");
@@ -120,18 +130,27 @@ function GanttChart({ tableData, item, data }) {
         }
       }
     });
-    const containerBody = document.getElementById("containerBody");
-    const totalLabels = result.length;
-    if (totalLabels > 7) {
-      const newHeight = 400 + (totalLabels - 7) * 50;
-      containerBody.style.height =
-        newHeight > 20000 ? `${newHeight / 10}px` : `${newHeight / 6}px`;
-    }
+    // const containerBody = document.getElementById("containerBody");
+    // const totalLabels = result.length;
+    // if (totalLabels > 7) {
+    //   const newHeight = 400 + (totalLabels - 7) * 50;
+    //   containerBody.style.height = `${Math.min(newHeight, barHeight)}px`; // Limit height to 1000px
+    //   // containerBody.style.height =
+    //   //   newHeight > 20000 ? `${newHeight / 10}px` : `${newHeight / 6}px`;
+    // }
     // result = result.slice(0, 10);
     setMinDate(formatDateToString(min));
     setMaxDate(formatDateToString(max));
     setGanttData(result);
+    setContainerHeight(barHeight);
   }, [tableData, data]);
+
+  useEffect(() => {
+    const containerBody = document.getElementById("containerBody");
+    if (containerBody) {
+      containerBody.style.height = `${containerHeight}px`;
+    }
+  }, [containerHeight]);
 
   const chartData = {
     labels: [],
@@ -157,6 +176,7 @@ function GanttChart({ tableData, item, data }) {
         borderSkipped: false,
         borderRadius: 0,
         barPercentage: 0.9,
+        // barThickness: barHeight,
       },
     ],
   };
@@ -195,9 +215,22 @@ function GanttChart({ tableData, item, data }) {
       zoom: {
         pan: {
           enabled: true,
+          mode: "xy",
+          threshold: 10,
         },
         zoom: {
           enabled: true,
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: "xy",
+          limits: {
+            x: { min: minDate, max: maxDate },
+            y: { min: 0, max: ganttData.length },
+          },
         },
       },
       tooltip: {
@@ -239,17 +272,26 @@ function GanttChart({ tableData, item, data }) {
             whiteSpace: "nowrap",
             overflow: "hidden",
             font: { size: 12, weight: 400, lineHeight: 1.7 },
-            formatter(value) {
-              // const startDate = new Date(value?.x?.[0]);
-              // const endDate = new Date(value?.x?.[1]);
-              return value.EventName?.length > 3
-                ? `${value.EventName?.slice(0, 3)}...`
+            // formatter(value) {
+            //   // const startDate = new Date(value?.x?.[0]);
+            //   // const endDate = new Date(value?.x?.[1]);
+            //   return value.EventName?.length > 3
+            //     ? `${value.EventName?.slice(0, 3)}...`
+            //     : value.EventName;
+            //   // +
+            //   // "\n" +
+            //   // formatDateInLocal(startDate) +
+            //   // " - " +
+            //   // formatDateInLocal(endDate)
+            // },
+            formatter: (value, context) => {
+              const barWidth = context.chart.getDatasetMeta(
+                context.datasetIndex
+              ).data[context.dataIndex].width;
+              const maxChars = Math.floor(barWidth / 12); // Adjust divisor based on font size
+              return value.EventName?.length > maxChars
+                ? `${value.EventName.slice(0, maxChars)}`
                 : value.EventName;
-              // +
-              // "\n" +
-              // formatDateInLocal(startDate) +
-              // " - " +
-              // formatDateInLocal(endDate)
             },
           },
         },
@@ -261,7 +303,11 @@ function GanttChart({ tableData, item, data }) {
   // console.log(baseOptions);
 
   return (
-    <div className="max-h-[200px] h-[200px] w-full" id="container">
+    <div
+      className="max-h-[200px] h-[200px] w-full"
+      // className="h-[200px] w-full overflow-auto"
+      id="container"
+    >
       <div id="containerBody" className="w-full">
         <Bar data={chartData} options={baseOptions} />
       </div>

@@ -19,6 +19,7 @@ export const keywords = [
   //   "XLOOKUP",
   "Blank()",
   "Today()",
+  "YEAR",
 ];
 
 export const getHelperText = (text) => {
@@ -39,6 +40,8 @@ export const getHelperText = (text) => {
       return `CALCIF(Condition, Expression if true, Expression if False)`;
     case "CALCIFS":
       return `CALCIFS(Conditions, Expression if true, Expression if False)`;
+    case "YEAR":
+      return `YEAR(Date)`;
     // case "COUNT":
     //   return `COUNT('Column')`;
     // case "COUNTA":
@@ -64,7 +67,12 @@ export const getHelperText = (text) => {
   }
 };
 
-export const getHelperFunction = (input, key) => {
+//  const keywordReplacer = (text) => {
+//   return
+//  }
+
+export const getHelperFunction = (input) => {
+  const key = input?.split("(")[0];
   if (key === "IF") {
     const openParen = input.indexOf("(");
     const closeParen = input.lastIndexOf(")");
@@ -90,7 +98,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
     const valueIfTrue = parts[1]
       .trim()
       .split("=")
@@ -98,7 +106,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
     const valueIfFalse = parts[2]
       .trim()
       .split("=")
@@ -106,7 +114,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
 
     return `if (${condition}) {\n  return ${valueIfTrue};\n} else {\n  return ${valueIfFalse};\n}`;
   } else if (key === "IFS") {
@@ -138,7 +146,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
     const valueIfTrue = parts[1]
       .trim()
       .split("=")
@@ -146,7 +154,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
     const valueIfFalse = parts[2]
       .trim()
       .split("=")
@@ -154,7 +162,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
 
     return `if (${condition}) {\n  return ${valueIfTrue};\n} else {\n  return ${valueIfFalse};\n}`;
   } else if (key === "SUM") {
@@ -194,7 +202,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
 
     let sum = ``;
     parts.map((item, idx) => {
@@ -227,7 +235,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
 
     let sum = ``;
     parts.map((item, idx) => {
@@ -271,7 +279,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
     const valueIfTrue = parts[1]
       .trim()
       .split("*")
@@ -283,7 +291,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
     const valueIfFalse = parts[2]
       .trim()
       .split("*")
@@ -295,7 +303,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
 
     return `if (${condition}) {\n  return ${valueIfTrue};\n} else {\n  return ${valueIfFalse};\n}`;
   } else if (key === "CALCIFS") {
@@ -321,7 +329,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
     const valueIfTrue = parts[1]
       .trim()
       .split("*")
@@ -333,7 +341,7 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
     const valueIfFalse = parts[2]
       .trim()
       .split("*")
@@ -345,10 +353,27 @@ export const getHelperFunction = (input, key) => {
       .split("Blank()")
       .join("null")
       .split("Today()")
-      .join("new Date()");
+      .join("new window.Date().toISOString()");
 
     return `if (${condition}) {\n  return ${valueIfTrue};\n} else {\n  return ${valueIfFalse};\n}`;
+  } else if (key === "YEAR") {
+    const openParen = input.indexOf("(");
+    const closeParen = input.lastIndexOf(")");
+
+    if (openParen === -1 || closeParen === -1) {
+      console.log("Input string is not in the correct format");
+    }
+
+    const content = input.substring(openParen + 1, closeParen);
+
+    return `if (${content} !== null) {\n return new window.Date(${content}).getFullYear();\n} else {\n return new window.Date().getFullYear();\n}`;
   } else {
     return `${input}`;
   }
 };
+
+// if (End_Date === null) {
+//   return new Date().toISOString();
+// } else {
+//   return End_Date;
+// }

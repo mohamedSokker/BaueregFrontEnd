@@ -14,6 +14,7 @@ const GaugeChart = ({ tableData, item, data }) => {
 
   const {
     label,
+    Y_Axis,
     value,
     operationType,
     cx,
@@ -30,47 +31,62 @@ const GaugeChart = ({ tableData, item, data }) => {
     let result = {};
     let resultArray = [];
     let total = 0;
-    if (operationType === "Count") {
+    if (Y_Axis?.[0]?.opType === "Count") {
       tableData?.map((row) => {
         total += 1;
       });
       resultArray = [
-        { id: 1, label: label, name: label, value: total },
+        {
+          id: 1,
+          label: Y_Axis?.[0].name,
+          name: Y_Axis?.[0].name,
+          value: total,
+        },
         {
           id: 2,
-          label: label,
-          name: label,
+          label: Y_Axis?.[0].name,
+          name: Y_Axis?.[0].name,
           value: total < max ? max - total : 0,
         },
       ];
-    } else if (operationType === "Sum") {
+    } else if (Y_Axis?.[0]?.opType === "Sum") {
       tableData?.map((row) => {
-        total += row?.[label];
+        total += row?.[Y_Axis?.[0].name];
       });
       resultArray = [
-        { id: 1, label: label, name: label, value: total },
+        {
+          id: 1,
+          label: Y_Axis?.[0].name,
+          name: Y_Axis?.[0].name,
+          value: total,
+        },
         {
           id: 2,
-          label: label,
-          name: label,
+          label: Y_Axis?.[0].name,
+          name: Y_Axis?.[0].name,
           value: total < max ? max - total : 0,
         },
       ];
-    } else if (operationType === "Average") {
+    } else if (Y_Axis?.[0]?.opType === "Average") {
       let sum = 0;
       let count = 0;
       tableData?.map((row) => {
-        sum += row?.[label];
+        sum += row?.[Y_Axis?.[0].name];
         count += 1;
       });
       console.log(sum);
       total = count && count > 0 ? Number(sum / count).toFixed(2) : 0;
       resultArray = [
-        { id: 1, label: label, name: label, value: Number(total) },
+        {
+          id: 1,
+          label: Y_Axis?.[0].name,
+          name: Y_Axis?.[0].name,
+          value: Number(total),
+        },
         {
           id: 2,
-          label: label,
-          name: label,
+          label: Y_Axis?.[0].name,
+          name: Y_Axis?.[0].name,
           value: total < Number(max) ? Number(max) - total : 0,
         },
       ];

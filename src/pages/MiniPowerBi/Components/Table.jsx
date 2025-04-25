@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { CiWarning } from "react-icons/ci";
 import {
   GridComponent,
   ColumnsDirective,
@@ -13,130 +11,79 @@ import {
   Filter,
   Resize,
   ContextMenu,
+  InfiniteScroll,
 } from "@syncfusion/ej2-react-grids";
-// import {
-//   RxCornerBottomLeft,
-//   RxCornerBottomRight,
-//   RxCornerTopLeft,
-//   RxCornerTopRight,
-// } from "react-icons/rx";
-// import { TbMinusVertical, TbMinus } from "react-icons/tb";
 
-import { Spinner } from "../../../components";
-// import { Header } from "../../../components";
-// import { useNavContext } from "../../../contexts/NavContext";
-// import { CheckEditorRole } from "../../../Functions/checkEditorRole";
-// import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import "../Styles/EditCard.css";
 
 const Table = ({ item, tableData, data }) => {
-  // const [tableData, setTableData] = useState({});
-  const [tableGrid, setTableGrid] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // const { token, setErrorData } = useNavContext();
-  // const axiosPrivate = useAxiosPrivate();
-
-  // console.log(item);
-  // console.log(data);
-
-  const getData = async () => {
-    try {
-      setLoading(true);
-      // const url = `/api/v3/${tableName}`;
-      // const data = await axiosPrivate(url, { method: "GET" });
-      // setTableData(data?.data);
-      setTableGrid([]);
-      item?.columns
-        ? item?.columns.map((el) => {
-            setTableGrid((prev) => [
-              ...prev,
-              {
-                field: el,
-                headerText: el,
-                width: "100",
-                textAlign: "Center",
-              },
-            ]);
-          })
-        : Object.keys(tableData[0]).map((el) => {
-            setTableGrid((prev) => [
-              ...prev,
-              {
-                field: el,
-                headerText: el,
-                width: "100",
-                textAlign: "Center",
-              },
-            ]);
-          });
-      setLoading(false);
-    } catch (err) {
-      // setErrorData((prev) => [
-      //   ...prev,
-      //   err?.response?.data?.message
-      //     ? err?.response?.data?.message
-      //     : err?.message,
-      // ]);
-      setLoading(false);
-    }
-  };
+  const [tableHeight, setTableHeight] = useState(100);
 
   useEffect(() => {
-    // let isMounted = true;
-    // const controller = new AbortController();
-    getData();
-    // return () => {
-    //   isMounted = false;
-    //   controller.abort();
-    // };
-  }, [tableData, data]);
+    const container = document.getElementById("Main-Area");
+    const containerStyles = container && window.getComputedStyle(container);
+    const containerHeight = containerStyles?.height;
+    const targetHeight =
+      (parseInt(item?.height) * parseInt(containerHeight)) /
+      100 /
+      parseFloat(item?.heightFactor);
+    setTableHeight(targetHeight);
+  }, [tableData, data, item]);
 
   const filterOptions = { ignoreAccent: true, type: "Excel" };
 
-  if (loading)
-    return (
-      <div className="relative z-[1] p-1" style={item?.style}>
-        <Spinner message={`Loading Table Data`} />
-      </div>
-    );
   return (
-    <div
-      className="w-full h-full relative overflow-scroll p-1"
-      // style={item?.style}
-    >
-      {(item || tableData) && (
-        <GridComponent
-          dataSource={tableData}
-          // allowPaging
-          allowSorting
-          allowFiltering={true}
-          filterSettings={filterOptions}
-          // height={`100%`}
-          rowHeight={item?.rowHeight}
-          // height={250}
-          allowResizing={true}
-          // pageSettings={
-          //   item?.pagging ? { pageSize: Number(item?.pageCount) } : undefined
-          // }
-          autoFit={true}
-        >
-          <ColumnsDirective>
-            {tableGrid.map((item, index) => (
-              <ColumnDirective key={index} {...item} />
-            ))}
-          </ColumnsDirective>
-          <Inject
-            services={[
-              Toolbar,
-              Selection,
-              Edit,
-              Sort,
-              Filter,
-              Resize,
-              ContextMenu,
-            ]}
-          />
-        </GridComponent>
-      )}
+    <div className="w-full h-full relative pr-1 table_body">
+      {(item || tableData) &&
+        (item?.columns?.length > 0 || tableData ? (
+          <GridComponent
+            dataSource={tableData}
+            allowSorting
+            // allowFiltering={true}
+            // filterSettings={filterOptions}
+            rowHeight={item?.rowHeight}
+            height={tableHeight}
+            allowResizing={true}
+            autoFit={true}
+            enableInfiniteScrolling={true}
+            pageSettings={{ pageSize: 12 }}
+          >
+            {tableData?.length > 0 && (
+              <ColumnsDirective>
+                {tableData?.[0] &&
+                  Object.keys(tableData?.[0])?.map(
+                    (col, index) =>
+                      item?.columns?.includes(col) && (
+                        <ColumnDirective
+                          key={index}
+                          field={col}
+                          headerText={col}
+                          width={`100`}
+                          textAlign="Center"
+                        />
+                      )
+                  )}
+              </ColumnsDirective>
+            )}
+
+            <Inject
+              services={[
+                Toolbar,
+                Selection,
+                Edit,
+                Sort,
+                // Filter,
+                Resize,
+                ContextMenu,
+                InfiniteScroll,
+              ]}
+            />
+          </GridComponent>
+        ) : (
+          <div className="text-[10px] w-full h-full flex justify-center items-center">
+            No Records
+          </div>
+        ))}
     </div>
   );
 };

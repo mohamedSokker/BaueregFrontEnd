@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AiFillEdit } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
 
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { PageLoading } from "../../../components";
@@ -32,15 +34,28 @@ const MiniPowerBiCat = () => {
                 ...result,
                 [item?.Group]: [
                   ...result?.[item?.Group],
-                  { name: item?.Name, id: item?.ID },
+                  {
+                    name: item?.Name,
+                    id: item?.ID,
+                    createdBy: item.CreatedBy,
+                    users: viewUser,
+                  },
                 ],
               }
             : {
                 ...result,
-                [item?.Group]: [{ name: item?.Name, id: item?.ID }],
+                [item?.Group]: [
+                  {
+                    name: item?.Name,
+                    id: item?.ID,
+                    createdBy: item.CreatedBy,
+                    users: viewUser,
+                  },
+                ],
               };
         }
       });
+      console.log(result);
       setViewData(result);
       setLoading(false);
     } catch (err) {
@@ -56,6 +71,23 @@ const MiniPowerBiCat = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      const url = `/api/v3/PowerBiView/${id}`;
+      await axiosPrivate(url, { method: "DELETE" });
+      await getData();
+      setLoading(false);
+    } catch (err) {
+      console.log(
+        err?.response?.data?.message
+          ? err?.response?.data?.message
+          : err?.message
+      );
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full flex flex-col px-4 bg-gray-100 Main--Page dark:bg-background-logoColor h-full relative text-[14px]">
@@ -74,12 +106,35 @@ const MiniPowerBiCat = () => {
               {viewData?.[el]?.map((item, i) => (
                 <div
                   key={i}
-                  className="w-full p-1 text-black text-[10px] px-3 cursor-pointer hover:bg-white"
-                  onClick={() => {
-                    navigate(`/MiniPowerBi/${item?.id}`);
-                  }}
+                  className="w-full text-black text-[10px] flex flex-row items-center justify-between"
                 >
-                  {item?.name}
+                  <div
+                    className="hover:bg-white w-full px-3 p-1 cursor-pointer"
+                    onClick={() => {
+                      navigate(`/MiniPowerBi/${item?.id}`);
+                    }}
+                  >
+                    <p>{item?.name}</p>
+                  </div>
+
+                  {[item.createdBy].includes(usersData[0].username) && (
+                    <div className="flex flex-row items-center ">
+                      <div
+                        className="cursor-pointer hover:bg-white px-[6px] p-1 rounded-sm"
+                        onClick={() => {
+                          navigate(`/MiniPowerBi/Edit/${item?.id}`);
+                        }}
+                      >
+                        <AiFillEdit />
+                      </div>
+                      <div
+                        className="cursor-pointer hover:bg-white px-[6px]  p-1 rounded-sm"
+                        onClick={() => handleDelete(item?.id)}
+                      >
+                        <MdDelete />
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

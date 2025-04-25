@@ -6,28 +6,36 @@ import Table from "../Table";
 import Graph from "../Graph";
 import Card from "../Card";
 import { logoColor } from "../../../../BauerColors";
-import Slicer from "../Slicer";
+import Slicer from "../Slicers/Slicer";
 import { useInitContext } from "../../Contexts/InitContext";
+import ProffesionalTable from "../Customs/CustomTable1";
+import "../../Styles/EditCard.css";
 
 const MainArea = () => {
   const {
     tablesData,
     setTablesData,
     copiedTablesData,
-    // setCopiedTablesData,
+    setCopiedTablesData,
     data,
     setData,
-    // mouseUpMove,
-    // mouseMoveMove,
-    // mouseDownMove,
-    // mouseDownLeftResize,
-    // mouseDownTopResize,
-    // mouseDownRightResize,
-    // mouseDownBottomResize,
+    mouseUpMove,
+    mouseMoveMove,
+    mouseDownMove,
+    mouseDownLeftResize,
+    mouseDownTopResize,
+    mouseDownRightResize,
+    mouseDownBottomResize,
     selectedItem,
     setSelectedItem,
     checkArray,
     setCheckArray,
+    slicersCheckedItems,
+    setSlicersCheckedItems,
+    slicerMinDates,
+    setSlicersMinDates,
+    slicerMaxDates,
+    setSlicersMaxDates,
   } = useInitContext();
 
   const updateSize = () => {
@@ -66,18 +74,18 @@ const MainArea = () => {
         data?.el?.map((item, i) => (
           <div
             key={i}
-            className="absolute p-1 rounded-[3px] min-w-[15px] min-h-[15px] resizable-box"
+            className="absolute p-0 rounded-[3px] min-w-[15px] min-h-[15px] resizable-box nonSelect"
             style={{
               width: item?.width,
               height: item?.height,
               top: item?.top,
               left: item?.left,
-              borderColor: selectedItem === i ? "orange" : "transparent",
-              borderWidth: selectedItem === i ? "1px" : "0",
+              borderColor: selectedItem === i ? "orange" : "rgb(209,213,219)",
+              borderWidth: selectedItem === i ? "1px" : "1px",
               // transition: "all 0.5s ease-in-out",
             }}
             id={`resizable${i}`}
-            onClick={() => setSelectedItem(i)}
+            // onClick={() => setSelectedItem(i)}
           >
             {/* <div
               className="absolute p-[2px] -right-4 -top-0 z-[2] bg-gray-400 cursor-move opacity-60"
@@ -97,32 +105,38 @@ const MainArea = () => {
               <CiSquareRemove size={12} color={logoColor} />
             </div> */}
             {/* <div
-              className="resizer absolute bg-white cursor-col-resize h-[100%] left-0 top-0 w-[5px] rl"
+              className="resizer absolute bg-white cursor-col-resize h-[100%] left-0 top-0 w-[4px] rl z-[2]"
               onMouseDown={(e) => mouseDownLeftResize(e, i)}
             ></div>
             <div
-              className="resizer absolute bg-white cursor-row-resize h-[5px] left-0 top-0 w-[100%] rt"
+              className="resizer absolute bg-white cursor-row-resize h-[4px] left-0 top-0 w-[100%] rt z-[2]"
               onMouseDown={(e) => mouseDownTopResize(e, i)}
             ></div>
             <div
-              className="resizer absolute bg-white cursor-col-resize h-[100%] right-0 top-0 w-[5px] rr"
+              className="resizer absolute bg-white cursor-col-resize h-[100%] right-0 top-0 w-[4px] rr z-[2]"
               onMouseDown={(e) => mouseDownRightResize(e, i)}
             ></div>
             <div
-              className="resizer absolute bg-white cursor-row-resize h-[5px] left-0 bottom-0 w-[100%] rb"
+              className="resizer absolute bg-white cursor-row-resize h-[4px] left-0 bottom-0 w-[100%] rb z-[2]"
               onMouseDown={(e) => mouseDownBottomResize(e, i)}
             ></div> */}
             {item.Type === "Table" ? (
-              <Table
+              <ProffesionalTable
+                data={tablesData}
                 item={item}
-                tableData={tablesData?.[item?.name]?.data}
-                data={data}
+                defaultWidth={`100px`}
               />
-            ) : item.Type === "Graph" ? (
+            ) : // <Table
+            //   item={item}
+            //   tableData={tablesData?.[item?.name]?.data}
+            //   data={data}
+            // />
+            item.Type === "Graph" ? (
               <Graph
                 item={item}
                 tableData={tablesData?.[item?.name]?.data}
                 data={data}
+                tablesData={tablesData}
               />
             ) : item.Type === "Slicer" ? (
               <Slicer
@@ -134,6 +148,12 @@ const MainArea = () => {
                 setData={setData}
                 checkArray={checkArray}
                 setCheckArray={setCheckArray}
+                slicersCheckedItems={slicersCheckedItems}
+                setSlicersCheckedItems={setSlicersCheckedItems}
+                slicerMinDates={slicerMinDates}
+                setSlicersMinDates={setSlicersMinDates}
+                slicerMaxDates={slicerMaxDates}
+                setSlicersMaxDates={setSlicersMaxDates}
               />
             ) : (
               item.Type === "Card" && (

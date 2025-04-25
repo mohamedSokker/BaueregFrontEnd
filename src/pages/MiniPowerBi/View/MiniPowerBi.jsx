@@ -14,6 +14,7 @@ import { useDataContext } from "../Contexts/DataContext.jsx";
 import { useInitContext } from "../Contexts/InitContext.jsx";
 
 import { getHelperFunction } from "../Controllers/Expressions/KeyWordsHelper";
+import { detectTableColumnTypes } from "../Services/getTypes.js";
 
 const MiniPowerBi = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -37,6 +38,10 @@ const MiniPowerBi = () => {
     setIsRelationshipChoose,
     closeSmallSidebar,
     message,
+    setSelectedRelationshipsTable,
+    selectedRelationshipsTable,
+    setSelectedTable,
+    selectedTable,
   } = useInitContext();
 
   // console.log(tablesData);
@@ -86,13 +91,20 @@ const MiniPowerBi = () => {
     const urls = [];
     d.map((item) => {
       urls.push(`/api/v3/${item}`);
+      if (!selectedTable.includes(item)) {
+        setSelectedTable((prev) => [...prev, item]);
+      }
     });
 
     const relUrls = [];
+    const tbles = [];
     rshipd.map((item) => {
       const content = item.split(",");
       content.map((el) => {
-        relUrls.push(`/api/v3/${el}`);
+        if (el !== "" && !relUrls.includes(`/api/v3/${el}`)) {
+          relUrls.push(`/api/v3/${el}`);
+          tbles.push(el);
+        }
       });
     });
 
@@ -111,21 +123,35 @@ const MiniPowerBi = () => {
     d.map((item, idx) => {
       setTablesData((prev) => ({
         ...prev,
-        [item]: { ...d[item], data: data[idx].data },
+        [item]: {
+          ...d[item],
+          data: data[idx].data,
+          name: item,
+          dataTypes: detectTableColumnTypes(data[idx].data),
+        },
       }));
       setCopiedTablesData((prev) => ({
         ...prev,
-        [item]: { ...d[item], data: data[idx].data },
+        [item]: {
+          ...d[item],
+          data: data[idx].data,
+          name: item,
+          dataTypes: detectTableColumnTypes(data[idx].data),
+        },
       }));
     });
 
     rshipd.map((item) => {
-      const content = item.split(",");
-      content.map((el, idx) => {
-        setRelationshipData((prev) => ({
-          ...prev,
-          [el]: relData[idx]?.data,
-        }));
+      if (!selectedRelationshipsTable.includes(item)) {
+        setSelectedRelationshipsTable((prev) => [...prev, item]);
+      }
+      // const content = item.split(",");
+      tbles.map((el, idx) => {
+        if (el !== "")
+          setRelationshipData((prev) => ({
+            ...prev,
+            [el]: relData[idx]?.data,
+          }));
       });
     });
   };
@@ -133,40 +159,68 @@ const MiniPowerBi = () => {
   useEffect(() => {
     setLoading(true);
     setMessage(`Performing Relations...`);
-    relationsTable?.map(async (item) => {
+    for (const item of relationsTable) {
       if (isRelationshipChoose?.includes(item.Name)) {
         const relationships = JSON.parse(item?.RelationShips);
+        const copiedRelationstablesData = {
+          ...relationshipdata,
+        };
         let sourceTable = relationships?.[0]?.source;
-        let sourceData = relationshipdata?.[sourceTable]
-          ? relationshipdata?.[sourceTable]
+        let sourceData = copiedRelationstablesData?.[sourceTable]
+          ? copiedRelationstablesData?.[sourceTable]
           : [];
         let currentVT = [];
 
-        relationships?.map((item) => {
+        for (const rel of relationships) {
+          console.log(`first loop`);
+          if (rel?.source === "FiltersNode") {
+            console.log(`first loop inside FiltersNode`);
+            if (rel?.sourceHandle === "Blank()") {
+              console.log("First loop: Filtering data...");
+              copiedRelationstablesData[rel?.target] =
+                copiedRelationstablesData?.[rel?.target]?.filter(
+                  (row) => row?.[rel?.targetHandle] === null
+                );
+            }
+          }
+        }
+
+        for (const item of relationships) {
+          console.log("Second loop: Joining data...");
           currentVT = [];
           currentVT.push(
             ...sourceData?.map((row1) => {
-              const match = relationshipdata?.[item?.target]?.find(
+              const match = copiedRelationstablesData?.[item?.target]?.find(
                 (row2) =>
                   row1?.[item?.sourceHandle] === row2?.[item?.targetHandle]
               );
-              return { ...row1, ...match, ID: row1.ID };
+              return { ...match, ID: row1.ID, ...row1 };
             })
           );
           sourceData = currentVT;
-        });
+        }
+
         currentVT.push(sourceData);
         currentVT.pop();
+        console.log(currentVT);
         setTablesData((prev) => ({
           ...prev,
-          [item?.Name]: { name: item?.Name, data: currentVT },
+          [item?.Name]: {
+            name: item?.Name,
+            data: currentVT,
+            dataTypes: detectTableColumnTypes(currentVT),
+          },
         }));
         setCopiedTablesData((prev) => ({
           ...prev,
-          [item?.Name]: { name: item?.Name, data: currentVT },
+          [item?.Name]: {
+            name: item?.Name,
+            data: currentVT,
+            dataTypes: detectTableColumnTypes(currentVT),
+          },
         }));
       }
-    });
+    }
     setLoading(false);
   }, [relationshipdata]);
 

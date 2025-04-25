@@ -32,7 +32,7 @@ const Output = ({ data }) => {
   }, [nodeRef.current]);
   return (
     <div
-      className="bg-gray-200  border border-solid border-gray-400 -auto overflow-hidden text-logoColor"
+      className="bg-gray-200  border border-solid border-gray-400 -auto overflow-hidden text-logoColor min-w-[50px]"
       ref={nodeRef}
       style={{ height: data?.columns?.length * 10 + 20 }}
     >
@@ -47,7 +47,7 @@ const Output = ({ data }) => {
             }}
           >
             <div
-              className=" bottom-1 relative text-[6px]  text-logo-secColor"
+              className=" bottom-1 relative text-[6px]  text-logo-secColor min-w-[50px]"
               style={{
                 left:
                   data?.type === "target"
@@ -68,11 +68,62 @@ const Output = ({ data }) => {
   );
 };
 
-const nodeTypes = { Output: Output };
+const Expressions = ({ data }) => {
+  const [styles, setStyles] = useState(null);
+
+  const nodeRef = useRef(null);
+
+  useEffect(() => {
+    if (nodeRef.current)
+      setStyles(nodeRef.current && window.getComputedStyle(nodeRef.current));
+  }, [nodeRef.current]);
+
+  if (data?.expressions?.length === 0) return null;
+  return (
+    <div
+      className="bg-gray-200  border border-solid border-gray-400 -auto overflow-hidden text-logoColor min-w-[50px]"
+      ref={nodeRef}
+      style={{ height: data?.expressions?.length * 10 + 20 }}
+    >
+      {data?.expressions?.map((item, i) => (
+        <React.Fragment key={i}>
+          <Handle
+            type={data?.type}
+            position={data?.type === "target" ? Position.Left : Position.Right}
+            id={item}
+            style={{
+              top: 10 * i + 20,
+            }}
+          >
+            <div
+              className=" bottom-1 relative text-[6px]  text-logo-secColor min-w-[50px]"
+              style={{
+                left:
+                  data?.type === "target"
+                    ? "8px"
+                    : `-${parseInt(styles?.width, 10) - 8}px`,
+              }}
+            >
+              {item}
+            </div>
+          </Handle>
+        </React.Fragment>
+      ))}
+
+      <div className="px-8 p-[2px] bg-gray-300 text-[6px] font-[800] flex flex-row gap-2 justify-center items-center">
+        <p className="h-full flex justify-center items-center">{data?.name}</p>
+      </div>
+    </div>
+  );
+};
+
+const nodeTypes = { Output: Output, Expressions: Expressions };
 
 const initialNodes = [];
 
 const initialEdges = [];
+
+const filtersKeywords = ["Blank()"];
 
 const TablesRelations = () => {
   const {
@@ -80,20 +131,27 @@ const TablesRelations = () => {
     setCategoryCount,
     relationstablesData,
     setRelationsTablesData,
-    selectedTable,
+    relationsSelectedTable,
     // setCopiedTablesData,
     setRelationShips,
+    relationShipsExpressions,
+    setRelationshipsExpressions,
+    relationShips,
   } = useInitContext();
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  // const [relationShipsExpressions, setRelationshipsExpressions] = useState([]);
+  const [xPosition, setXPosition] = useState(0);
+  const [expressionsInput, setExpressionsInput] = useState("");
 
   const [isPanelDown, setIsPanelDown] = useState({});
+  const [isFilterPanel, setIsFilterPanel] = useState(false);
 
   // console.log(tablesData);
 
   useEffect(() => {
-    const tables = selectedTable;
+    const tables = relationsSelectedTable;
     let currentXPosition = 0;
     let currentYPosition = 0;
     const currentNodes = [];
@@ -114,11 +172,60 @@ const TablesRelations = () => {
       //   currentID += 1;
       currentXPosition += 200;
     });
+    setXPosition(currentXPosition);
     setNodes([...initialNodes, ...currentNodes]);
   }, [relationstablesData]);
 
   useEffect(() => {
+    if (
+      relationsSelectedTable?.length ===
+      Object.keys(relationstablesData)?.length
+    ) {
+      let currentXPosition = xPosition;
+      let currentYPosition = 0;
+      const currentExpressionsNodes = [];
+      currentExpressionsNodes.push({
+        id: `FiltersNode`,
+        position: { x: currentXPosition, y: currentYPosition },
+        type: "Expressions",
+        data: {
+          label: `FiltersNode`,
+          name: `FiltersNode`,
+          expressions: relationShipsExpressions,
+          type: "source",
+        },
+      });
+      // relationShips?.map((item) => {
+      //   let copiedRelationstablesData = { ...relationstablesData };
+      //   if (item?.source === "FiltersNode") {
+      //     copiedRelationstablesData[item?.target].data =
+      //       copiedRelationstablesData?.[item?.target]?.data?.filter(
+      //         (row) => row?.[item?.targetHandle] !== null
+      //       );
+      //     console.log(copiedRelationstablesData);
+      //     setRelationsTablesData(copiedRelationstablesData);
+      //   }
+      // });
+
+      setNodes((prev) => [...prev, ...currentExpressionsNodes]);
+      // setNodes((prev) => [...prev, ...expressions]);
+    }
+  }, [relationShipsExpressions, relationstablesData]);
+
+  useEffect(() => {
     setRelationShips(edges);
+    // console.log(edges);
+    // edges?.map((item) => {
+    //   let copiedRelationstablesData = { ...relationstablesData };
+    //   if (item?.source === "FiltersNode") {
+    //     copiedRelationstablesData[item?.target].data =
+    //       copiedRelationstablesData?.[item?.target]?.data?.filter(
+    //         (row) => row?.[item?.targetHandle] === null
+    //       );
+    //     console.log(copiedRelationstablesData);
+    //     setRelationsTablesData(copiedRelationstablesData);
+    //   }
+    // });
   }, [edges]);
 
   //   console.log(tablesData);
@@ -128,25 +235,25 @@ const TablesRelations = () => {
 
   const onConnect = useCallback(
     (params) => {
-      // console.log(params);
+      console.log(params);
       return setEdges((eds) => addEdge(params, eds));
     },
     [setEdges]
   );
 
   const onReconnectStart = useCallback(() => {
-    // console.log("starts");
+    console.log("starts");
     edgeReconnectSuccessful.current = false;
   }, []);
 
   const onReconnect = useCallback((oldEdge, newConnection) => {
-    // console.log(oldEdge, newConnection);
+    console.log(oldEdge, newConnection);
     edgeReconnectSuccessful.current = true;
     setEdges((els) => reconnectEdge(oldEdge, newConnection, els));
   }, []);
 
   const onReconnectEnd = useCallback((_, edge) => {
-    // console.log(edge);
+    console.log(edge);
     if (!edgeReconnectSuccessful.current) {
       setEdges((eds) => eds.filter((e) => e.id !== edge.id));
     }
@@ -193,7 +300,7 @@ const TablesRelations = () => {
           </div>
           <div className="w-full h-full overflow-scroll p-1 flex flex-col gap-1">
             {relationstablesData &&
-              selectedTable?.map((item, i) => (
+              relationsSelectedTable?.map((item, i) => (
                 <div key={i} className="flex flex-col w-full">
                   <div className="w-full flex flex-row gap-2 justify-start items-center bg-white rounded-[4px] p-1 text-[12px] ">
                     <div
@@ -242,13 +349,6 @@ const TablesRelations = () => {
                                 type: "source",
                               },
                             }));
-                            // setCopiedTablesData((prev) => ({
-                            //   ...prev,
-                            //   [item]: {
-                            //     ...prev?.[item],
-                            //     type: "source",
-                            //   },
-                            // }));
                           }}
                         />
                         <p>source</p>
@@ -270,13 +370,6 @@ const TablesRelations = () => {
                                 type: "target",
                               },
                             }));
-                            // setCopiedTablesData((prev) => ({
-                            //   ...prev,
-                            //   [item]: {
-                            //     ...prev?.[item],
-                            //     type: "target",
-                            //   },
-                            // }));
                           }}
                         />
                         <p>target</p>
@@ -285,6 +378,54 @@ const TablesRelations = () => {
                   )}
                 </div>
               ))}
+
+            <div className="w-full">
+              <p className="text-[10px] font-[800]">Expressions</p>
+            </div>
+            <div className="w-[100%] text-[10px]">
+              <form
+                className="w-[100%] relative"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (expressionsInput !== "") {
+                    setRelationshipsExpressions((prev) => [
+                      ...prev,
+                      expressionsInput,
+                    ]);
+                    setExpressionsInput("");
+                    setIsFilterPanel(false);
+                  }
+                }}
+              >
+                <input
+                  className="w-[100%] outline-none p-1 px-2"
+                  value={expressionsInput}
+                  onChange={(e) => setExpressionsInput(e.target.value)}
+                  onFocus={() => setIsFilterPanel(true)}
+                  // onBlur={() => setIsFilterPanel(false)}
+                />
+                {isFilterPanel && (
+                  <div className="absolute w-full bg-yellow-300 opacity-80 text-logoColor left-0 top-[34px]">
+                    {filtersKeywords?.map((filter, idx) => (
+                      <div
+                        key={filter}
+                        className="w-full p-[2px] text-[10px] hover:bg-gray-200 cursor-pointer"
+                        onClick={() => {
+                          setRelationshipsExpressions((prev) => [
+                            ...prev,
+                            filter,
+                          ]);
+                          setExpressionsInput("");
+                          setIsFilterPanel(false);
+                        }}
+                      >
+                        {filter}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </form>
+            </div>
           </div>
         </div>
       </div>

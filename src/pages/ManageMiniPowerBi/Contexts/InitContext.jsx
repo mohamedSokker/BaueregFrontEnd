@@ -22,6 +22,7 @@ export const ManagePowerPiInitContextProvider = ({ children }) => {
   const [relationshipSelectedTable, setRelationshipSelectedTable] = useState(
     []
   );
+  const [relationShipsExpressions, setRelationshipsExpressions] = useState([]);
   const [isTableCard, setIsTableCard] = useState(false);
   const [isRelationshipTableCard, setIsRelationshipTableCard] = useState(false);
   const [isTableSceneCard, setIsTableSceneCard] = useState(false);
@@ -63,6 +64,15 @@ export const ManagePowerPiInitContextProvider = ({ children }) => {
 
   const [viewName, setViewName] = useState("");
   const [viewGroup, setViewGroup] = useState("");
+
+  const [isPerview, setIsPreview] = useState(false);
+
+  const [dragItem, setDragItem] = useState(null);
+
+  const [slicersCheckedItems, setSlicersCheckedItems] = useState({});
+  const [slicerMinDates, setSlicersMinDates] = useState([]);
+  const [slicerMaxDates, setSlicersMaxDates] = useState([]);
+  const [isChatbot, setIsChatBot] = useState(false);
 
   const {
     data,
@@ -123,6 +133,8 @@ export const ManagePowerPiInitContextProvider = ({ children }) => {
         setSelectedRelationshipsTable,
         relationsSelectedTable,
         setRelationsSelectedTable,
+        relationShipsExpressions,
+        setRelationshipsExpressions,
         relationshipSelectedTable,
         setRelationshipSelectedTable,
         isTableCard,
@@ -208,6 +220,21 @@ export const ManagePowerPiInitContextProvider = ({ children }) => {
 
         closeSmallSidebar,
         usersData,
+
+        isPerview,
+        setIsPreview,
+
+        dragItem,
+        setDragItem,
+
+        slicersCheckedItems,
+        setSlicersCheckedItems,
+        slicerMinDates,
+        setSlicersMinDates,
+        slicerMaxDates,
+        setSlicersMaxDates,
+        isChatbot,
+        setIsChatBot,
       }}
     >
       {children}

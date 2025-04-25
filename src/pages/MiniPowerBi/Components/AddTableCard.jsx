@@ -8,6 +8,7 @@ import "../Styles/EditCard.css";
 import Table from "./Table";
 import { logoColor } from "../../../BauerColors";
 import { useDataContext } from "../Contexts/DataContext";
+import { detectTableColumnTypes } from "../Services/getTypes";
 
 const AddTableCard = ({
   setIsTableCard,
@@ -23,6 +24,7 @@ const AddTableCard = ({
   setIsChoose,
 }) => {
   const [isCanceled, setIsCanceled] = useState(false);
+  console.log(tablesData);
 
   const {
     DBdata,
@@ -152,11 +154,21 @@ const AddTableCard = ({
                   if (data) {
                     setTablesData((prev) => ({
                       ...prev,
-                      [item]: { ...prev[item], name: item, data: data },
+                      [item]: {
+                        ...prev[item],
+                        name: item,
+                        data: data,
+                        dataTypes: detectTableColumnTypes(data),
+                      },
                     }));
                     setCopiedTablesData((prev) => ({
                       ...prev,
-                      [item]: { ...prev[item], name: item, data: data },
+                      [item]: {
+                        ...prev[item],
+                        name: item,
+                        data: data,
+                        dataTypes: detectTableColumnTypes(data),
+                      },
                     }));
                   }
                 });

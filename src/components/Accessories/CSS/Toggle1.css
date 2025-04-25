@@ -1,0 +1,39 @@
+.toggle-switch {
+  position: relative;
+  width: calc(60px * var(--size, 1)); /* Scalable width */
+  height: calc(34px * var(--size, 1)); /* Scalable height */
+  background-color: #ccc;
+  border-radius: calc(34px * var(--size, 1)); /* Scalable border radius */
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle-switch.on {
+  background-color: #4caf50; /* Green background when toggled on */
+}
+
+.toggle-switch.off {
+  background-color: #ccc; /* Gray background when toggled off */
+}
+
+.toggle-switch .switch {
+  position: absolute;
+  top: calc(2px * var(--size, 1)); /* Scalable positioning */
+  left: calc(2px * var(--size, 1)); /* Scalable positioning */
+  width: calc(30px * var(--size, 1)); /* Scalable width */
+  height: calc(30px * var(--size, 1)); /* Scalable height */
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s;
+}
+
+.toggle-switch .switch.on {
+  transform: translateX(calc(26px * var(--size, 1))); /* Scalable translation */
+}
+
+.toggle-switch .switch.off {
+  transform: translateX(0);
+}

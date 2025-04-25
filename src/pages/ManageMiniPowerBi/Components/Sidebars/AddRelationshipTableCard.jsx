@@ -7,6 +7,7 @@ import "../../Styles/EditCard.css";
 import { logoColor } from "../../../../BauerColors";
 import { PageLoading } from "../../../../components";
 import { useDataContext } from "../../Contexts/DataContext";
+import { detectTableColumnTypes } from "../../Services/getTypes";
 
 const AddRelationshipTableCard = ({
   setIsRelationshipTableCard,
@@ -170,53 +171,72 @@ const AddRelationshipTableCard = ({
                 setIsDataReady(false);
                 setSelectedTable(isRelationshipChoose);
 
-                relationsTable?.map(async (item) => {
+                for (const item of relationsTable) {
                   if (isRelationshipChoose?.includes(item.Name)) {
                     const relationships = JSON.parse(item?.RelationShips);
+                    console.log(relationships);
+                    const copiedRelationstablesData = {
+                      ...relationshipdata,
+                    };
                     let sourceTable = relationships?.[0]?.source;
-                    // const data = await getTableData(sourceTable);
-                    let sourceData = relationshipdata?.[sourceTable]
-                      ? relationshipdata?.[sourceTable]
+                    let sourceData = copiedRelationstablesData?.[sourceTable]
+                      ? copiedRelationstablesData?.[sourceTable]
                       : [];
                     let currentVT = [];
 
-                    relationships?.map((item) => {
+                    for (const rel of relationships) {
+                      console.log(`first loop`);
+                      if (rel?.source === "FiltersNode") {
+                        console.log(`first loop inside FiltersNode`);
+                        if (rel?.sourceHandle === "Blank()") {
+                          console.log("First loop: Filtering data...");
+                          copiedRelationstablesData[rel?.target] =
+                            copiedRelationstablesData?.[rel?.target]?.filter(
+                              (row) => row?.[rel?.targetHandle] === null
+                            );
+                        }
+                      }
+                    }
+
+                    for (const item of relationships) {
+                      console.log("Second loop: Joining data...");
                       currentVT = [];
                       currentVT.push(
                         ...sourceData?.map((row1) => {
-                          const match = relationshipdata?.[item?.target]?.find(
+                          const match = copiedRelationstablesData?.[
+                            item?.target
+                          ]?.find(
                             (row2) =>
                               row1?.[item?.sourceHandle] ===
                               row2?.[item?.targetHandle]
                           );
-                          return { ...row1, ...match, ID: row1.ID };
+                          return { ...match, ID: row1.ID, ...row1 };
                         })
                       );
                       sourceData = currentVT;
-                    });
+                    }
+
                     currentVT.push(sourceData);
                     currentVT.pop();
+                    console.log(currentVT);
                     setTablesData((prev) => ({
                       ...prev,
-                      [item?.Name]: { name: item?.Name, data: currentVT },
+                      [item?.Name]: {
+                        name: item?.Name,
+                        data: currentVT,
+                        dataTypes: detectTableColumnTypes(currentVT),
+                      },
                     }));
                     setCopiedTablesData((prev) => ({
                       ...prev,
-                      [item?.Name]: { name: item?.Name, data: currentVT },
+                      [item?.Name]: {
+                        name: item?.Name,
+                        data: currentVT,
+                        dataTypes: detectTableColumnTypes(currentVT),
+                      },
                     }));
                   }
-                });
-                // isChoose?.map(async (item) => {
-                //   const data = await getTableData(item);
-                //   setTablesData((prev) => ({
-                //     ...prev,
-                //     [item]: { ...prev[item], name: item, data: data },
-                //   }));
-                //   setCopiedTablesData((prev) => ({
-                //     ...prev,
-                //     [item]: { ...prev[item], name: item, data: data },
-                //   }));
-                // });
+                }
                 setIsDataReady(true);
                 setTimeout(() => {
                   setIsRelationshipTableCard(false);

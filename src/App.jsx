@@ -8,8 +8,11 @@ import { socket } from "./socket/socket";
 import MainLoading from "./components/MainLoading";
 import { ManagePowerPiDataContextProvider } from "./pages/ManageMiniPowerBi/Contexts/DataContext";
 import { ManagePowerPiInitContextProvider } from "./pages/ManageMiniPowerBi/Contexts/InitContext";
+import { EditPowerPiDataContextProvider } from "./pages/EditMiniPowerBi/Contexts/DataContext";
+import { EditPowerPiInitContextProvider } from "./pages/EditMiniPowerBi/Contexts/InitContext";
 import { PowerPiDataContextProvider } from "./pages/MiniPowerBi/Contexts/DataContext";
 import { PowerPiInitContextProvider } from "./pages/MiniPowerBi/Contexts/InitContext";
+import { DragContextProvider } from "./pages/ManageMiniPowerBi/Components/Customs/DragContext";
 
 const Dashboard = lazy(() => import("./pages/Dashboard/view/Dashboard"));
 const ManageKanban = lazy(() => import("./pages/ManageKanban"));
@@ -57,6 +60,9 @@ const MiniPowerBiCat = lazy(() =>
 const MiniPowerBi = lazy(() => import("./pages/MiniPowerBi/View/MiniPowerBi"));
 const ManageMiniPowerBi = lazy(() =>
   import("./pages/ManageMiniPowerBi/View/ManageMiniPowerBi")
+);
+const EditMiniPowerBi = lazy(() =>
+  import("./pages/EditMiniPowerBi/View/ManageMiniPowerBi")
 );
 
 function App() {
@@ -172,7 +178,9 @@ function App() {
               element={
                 <ManagePowerPiDataContextProvider>
                   <ManagePowerPiInitContextProvider>
-                    <ManageMiniPowerBi />
+                    <DragContextProvider>
+                      <ManageMiniPowerBi />
+                    </DragContextProvider>
                   </ManagePowerPiInitContextProvider>
                 </ManagePowerPiDataContextProvider>
               }
@@ -192,6 +200,18 @@ function App() {
                     <MiniPowerBi />
                   </PowerPiInitContextProvider>
                 </PowerPiDataContextProvider>
+              }
+            />
+          </Route>
+          <Route element={<RequiredAuth allowedRole={"MiniPowerBi"} />}>
+            <Route
+              path="/MiniPowerBi/Edit/:id"
+              element={
+                <EditPowerPiDataContextProvider>
+                  <EditPowerPiInitContextProvider>
+                    <EditMiniPowerBi />
+                  </EditPowerPiInitContextProvider>
+                </EditPowerPiDataContextProvider>
               }
             />
           </Route>

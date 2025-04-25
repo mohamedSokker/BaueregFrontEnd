@@ -1,0 +1,90 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  /* position: relative; */
+}
+
+th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sort-arrow {
+  margin-left: 5px;
+}
+
+.resize-handle {
+  width: 5px;
+  height: 100%;
+  background-color: #ccc;
+  cursor: ew-resize;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.filter-icon {
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.cell-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pagination {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.search-container {
+  margin-bottom: 10px;
+  outline: none;
+}
+
+.search-container input {
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

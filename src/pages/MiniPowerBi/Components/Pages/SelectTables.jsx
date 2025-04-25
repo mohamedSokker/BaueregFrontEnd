@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ColorRing } from "react-loader-spinner";
 
 import Table from "../Table";
@@ -7,6 +7,7 @@ import { logoColor } from "../../../../BauerColors";
 import ToolsSIdebar from "../Sidebars/ToolsSIdebar";
 import { useDataContext } from "../../Contexts/DataContext";
 import { useInitContext } from "../../Contexts/InitContext";
+import TableAbstract from "../TableAbstract";
 
 const SelectTables = () => {
   const { DBdata, loading, getTableData, tableData, isChoose, setIsChoose } =
@@ -19,6 +20,8 @@ const SelectTables = () => {
     setRelationsTablesData,
     // setCopiedTablesData,
   } = useInitContext();
+
+  const [tableLoading, setTableLoading] = useState(false);
 
   const handleNext = () => {
     setRelationsSelectedTable(isChoose);
@@ -44,30 +47,10 @@ const SelectTables = () => {
               },
             };
       });
-      // setCopiedTablesData((prev) => {
-      //   return i === 0
-      //     ? {
-      //         ...prev,
-      //         [item]: {
-      //           name: prev?.[item]?.name ? prev?.[item]?.name : item,
-      //           type: "source",
-      //           data: data,
-      //         },
-      //       }
-      //     : {
-      //         ...prev,
-      //         [item]: {
-      //           name: prev?.[item]?.name ? prev?.[item]?.name : item,
-      //           type: "target",
-      //           data: data,
-      //         },
-      //       };
-      // });
     });
     setCategoryCount((prev) => prev + 1);
   };
 
-  // console.log(tableData);
   return (
     <div
       className="w-full h-full flex flex-col justify-between flex-shrink-0 flex-grow-0"
@@ -76,13 +59,19 @@ const SelectTables = () => {
         transition: `all 0.5s ease-in-out`,
       }}
     >
-      <div className="w-full h-full flex flex-row gap-8 items-start overflow-scroll">
+      <div
+        className="w-full h-full flex flex-row gap-8 items-start overflow-scroll"
+        style={{ scrollbarWidth: "none" }}
+      >
         <div className="w-full h-full flex flex-row justify-start items-start px-1">
           <ToolsSIdebar
             categoryCount={categoryCount}
             setCategoryCount={setCategoryCount}
           />
-          <div className="w-[200px] h-full bg-gray-300 overflow-x-scroll overflow-y-scroll flex flex-col gap-2 p-2">
+          <div
+            className="w-[200px] h-full bg-gray-300 overflow-x-scroll overflow-y-scroll flex flex-col gap-2 p-2"
+            style={{ scrollbarWidth: "none" }}
+          >
             {loading ? (
               <div className="flex flex-row justify-center items-center text-logoColor">
                 <ColorRing
@@ -119,17 +108,41 @@ const SelectTables = () => {
                     }
                   />
                   <div
-                    className="h-full w-full cursor-pointer"
-                    onClick={() => getTableData(item.TABLE_NAME)}
+                    className="h-full w-full cursor-pointer overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    onClick={() => {
+                      setTableLoading(true);
+                      getTableData(item.TABLE_NAME);
+                      setTimeout(() => {
+                        setTableLoading(false);
+                      }, 500);
+                    }}
                   >
-                    <p>{item?.TABLE_NAME}</p>
+                    <p className="overflow-ellipsis whitespace-nowrap overflow-hidden">
+                      {item?.TABLE_NAME}
+                    </p>
                   </div>
                 </div>
               ))
             )}
           </div>
           <div className="w-[calc(100%-100px)] overflow-x-scroll">
-            {tableData.length > 0 && <Table tableData={tableData} />}
+            {tableData.length > 0 && !tableLoading && (
+              <TableAbstract
+                data={tableData}
+                settings={{
+                  allowPaging: true,
+                  allowSorting: true,
+                  allowFiltering: true,
+                  ignoreAccent: true,
+                  filterType: "Excel",
+                  rowHeight: 30,
+                  allowResizing: true,
+                  pageCount: 12,
+                  autoFit: true,
+                }}
+              />
+              // <Table tableData={tableData} />
+            )}
           </div>
         </div>
       </div>

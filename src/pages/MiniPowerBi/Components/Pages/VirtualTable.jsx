@@ -18,6 +18,7 @@ const VirtualTable = () => {
     // setCopiedTablesData,
     virtualTables,
     setVirsualTables,
+    relationShipsExpressions,
   } = useInitContext();
 
   const axiosPrivate = useAxiosPrivate();
@@ -29,25 +30,48 @@ const VirtualTable = () => {
   const getData = async () => {
     try {
       setLoading(true);
+      console.log(relationShips);
       setMessage("Performing Relationships...");
+      const copiedRelationstablesData = { ...relationstablesData };
       let sourceTable = relationShips?.[0]?.source;
-      let sourceData = relationstablesData?.[sourceTable]?.data
-        ? relationstablesData?.[sourceTable]?.data
+      let sourceData = copiedRelationstablesData?.[sourceTable]?.data
+        ? copiedRelationstablesData?.[sourceTable]?.data
         : [];
       let currentVT = [];
 
+      relationShips?.map((item) => {
+        if (item?.source === "FiltersNode") {
+          if (item?.sourceHandle === "Blank()") {
+            copiedRelationstablesData[item?.target].data =
+              copiedRelationstablesData?.[item?.target]?.data?.filter(
+                (row) => row?.[item?.targetHandle] === null
+              );
+          }
+        }
+      });
+
       relationShips.map((item) => {
-        currentVT = [];
-        currentVT.push(
-          ...sourceData?.map((row1) => {
-            const match = relationstablesData?.[item?.target]?.data.find(
-              (row2) =>
-                row1?.[item?.sourceHandle] === row2?.[item?.targetHandle]
-            );
-            return { ...row1, ...match, ID: row1.ID };
-          })
-        );
-        sourceData = currentVT;
+        if (item?.source !== "FiltersNode") {
+          currentVT = [];
+          currentVT.push(
+            ...sourceData?.map((row1) => {
+              const match = copiedRelationstablesData?.[
+                item?.target
+              ]?.data.find(
+                (row2) =>
+                  row1?.[item?.sourceHandle] === row2?.[item?.targetHandle]
+              );
+              return { ...row1, ...match, ID: row1.ID };
+            })
+          );
+          sourceData = currentVT;
+        }
+        // else {
+        //   copiedRelationstablesData[item?.target].data =
+        //     copiedRelationstablesData?.[item?.target]?.data?.filter(
+        //       (row) => row?.[item?.targetHandle] !== null
+        //     );
+        // }
       });
       currentVT.push(sourceData);
       currentVT.pop();
@@ -61,9 +85,9 @@ const VirtualTable = () => {
 
   useEffect(() => {
     getData();
-  }, [relationstablesData, relationShips]);
+  }, [relationstablesData, relationShips, relationShipsExpressions]);
 
-  if (loading) return <PageLoading message={message} />;
+  // if (loading) return <PageLoading message={message} />;
   return (
     <div
       className="w-full h-full flex flex-col justify-between flex-shrink-0 flex-grow-0 overflow-scroll"
@@ -72,6 +96,7 @@ const VirtualTable = () => {
         transition: `all 0.5s ease-in-out`,
       }}
     >
+      {loading && <PageLoading message={message} />}
       <React.Fragment>
         <div className="flex flex-row items-center justify-between Header mb-10 ">
           <Header category="" title={`Virtual Table`} />

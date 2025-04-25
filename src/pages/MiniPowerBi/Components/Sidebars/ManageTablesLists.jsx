@@ -5,6 +5,7 @@ import {
   MdOutlinePlaylistAdd,
 } from "react-icons/md";
 import { TiDelete } from "react-icons/ti";
+import { TbSum } from "react-icons/tb";
 import { useInitContext } from "../../Contexts/InitContext";
 const ManageTablesLists = ({ setTableLoading }) => {
   const {
@@ -74,8 +75,10 @@ const ManageTablesLists = ({ setTableLoading }) => {
             }}
             onClick={() => {
               setTableLoading(true);
-              setActiveItem(item);
-              setTableLoading(false);
+              setTimeout(() => {
+                setActiveItem(item);
+                setTableLoading(false);
+              }, 0);
             }}
             onDoubleClick={() => {
               setIsEditing(true);
@@ -159,7 +162,11 @@ const ManageTablesLists = ({ setTableLoading }) => {
                 <div
                   className="w-full flex flex-row items-center gap-1 relative"
                   onClick={() => {
-                    setSelectedTableData(tablesData?.[item]?.data);
+                    setTableLoading(true);
+                    setTimeout(() => {
+                      setSelectedTableData(tablesData?.[item]?.data);
+                      setTableLoading(false);
+                    }, 0);
                   }}
                 >
                   {AddedTables?.includes(item) && (
@@ -317,9 +324,13 @@ const ManageTablesLists = ({ setTableLoading }) => {
                   ) : (
                     <div
                       className="w-full flex flex-row gap-1 items-center px-1 rounded-[4px] relative"
-                      onClick={() =>
-                        setSelectedTableData(tablesData?.[item]?.data)
-                      }
+                      onClick={() => {
+                        setTableLoading(true);
+                        setTimeout(() => {
+                          setSelectedTableData(tablesData?.[item]?.data);
+                          setTableLoading(false);
+                        }, 0);
+                      }}
                       style={{
                         borderColor:
                           activeColItem[item] === col
@@ -333,8 +344,14 @@ const ManageTablesLists = ({ setTableLoading }) => {
                       {AddedCols?.[item]?.includes(col) && (
                         <MdOutlinePlaylistAdd size={12} />
                       )}
+                      {tablesData?.[item]?.dataTypes?.[col]?.length === 1 &&
+                        tablesData?.[item]?.dataTypes?.[col]?.[0] ===
+                          "number" &&
+                        col?.toLocaleLowerCase() !== "id" && (
+                          <TbSum size={20} />
+                        )}
                       <p
-                        className="w-full p-1 rounded-[4px] text-[10px]"
+                        className="w-full p-1 rounded-[4px] text-[10px] flex flex-row gap-2 items-center"
                         // style={
                         //   {
                         //     backgroundColor:

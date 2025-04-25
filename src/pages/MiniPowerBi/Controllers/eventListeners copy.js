@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from "react";
+import { slicerProps } from "../Model/model";
 
 // import { DBData } from "../Model/model";
 

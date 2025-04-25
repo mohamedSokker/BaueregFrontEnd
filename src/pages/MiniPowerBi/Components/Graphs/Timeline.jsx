@@ -2,7 +2,7 @@ import React from "react";
 
 import GanttChart from "./GanttChart";
 
-const Timeline = ({ tableData, item, data }) => {
+const Timeline = ({ tableData, item, data, tablesData }) => {
   // useEffect(() => {
   //   let result = {};
   //   let resultArray = [];

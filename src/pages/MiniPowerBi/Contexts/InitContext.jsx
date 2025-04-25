@@ -12,7 +12,7 @@ export const PowerPiInitContextProvider = ({ children }) => {
 
   const { closeSmallSidebar, usersData } = useNavContext();
 
-  const { setLoading, message } = useDataContext();
+  const { setLoading } = useDataContext();
 
   const [selectedTable, setSelectedTable] = useState([]);
   const [selectedRelationshipsTable, setSelectedRelationshipsTable] = useState(
@@ -22,6 +22,7 @@ export const PowerPiInitContextProvider = ({ children }) => {
   const [relationshipSelectedTable, setRelationshipSelectedTable] = useState(
     []
   );
+  const [relationShipsExpressions, setRelationshipsExpressions] = useState([]);
   const [isTableCard, setIsTableCard] = useState(false);
   const [isRelationshipTableCard, setIsRelationshipTableCard] = useState(false);
   const [isTableSceneCard, setIsTableSceneCard] = useState(false);
@@ -64,6 +65,15 @@ export const PowerPiInitContextProvider = ({ children }) => {
   const [viewName, setViewName] = useState("");
   const [viewGroup, setViewGroup] = useState("");
 
+  const [isPerview, setIsPreview] = useState(false);
+
+  const [dragItem, setDragItem] = useState(null);
+
+  const [slicersCheckedItems, setSlicersCheckedItems] = useState({});
+  const [slicerMinDates, setSlicersMinDates] = useState([]);
+  const [slicerMaxDates, setSlicersMaxDates] = useState([]);
+  const [isChatbot, setIsChatBot] = useState(false);
+
   const {
     data,
     setData,
@@ -86,17 +96,23 @@ export const PowerPiInitContextProvider = ({ children }) => {
       Object.keys(tablesData)?.map((item) => {
         tableData = { ...tableData, [item]: { ...tablesData[item], data: [] } };
       });
-      console.log(tableData);
-      // await axiosPrivate(addURL, {
-      //   method: "POST",
-      //   data: JSON.stringify({
-      //     Name: viewName,
-      //     Group: viewGroup,
-      //     CreatedBy: usersData[0]?.username,
-      //     UsersToView: JSON.stringify(usersNamesData),
-      //     ViewData: JSON.stringify({ expressions: expressions, data: data }),
-      //   }),
-      // });
+      // console.log(tableData);
+      await axiosPrivate(addURL, {
+        method: "POST",
+        data: JSON.stringify({
+          Name: viewName,
+          Group: viewGroup,
+          CreatedBy: usersData[0]?.username,
+          UsersToView: JSON.stringify(usersNamesData),
+          ViewData: JSON.stringify({
+            expressions: expressions,
+            data: data,
+            tablesData: tableData,
+            isChoose: isChoose,
+            isRelationshipChoose: isRelationshipChoose,
+          }),
+        }),
+      });
       setLoading(false);
     } catch (err) {
       console.log(
@@ -117,6 +133,8 @@ export const PowerPiInitContextProvider = ({ children }) => {
         setSelectedRelationshipsTable,
         relationsSelectedTable,
         setRelationsSelectedTable,
+        relationShipsExpressions,
+        setRelationshipsExpressions,
         relationshipSelectedTable,
         setRelationshipSelectedTable,
         isTableCard,
@@ -203,7 +221,20 @@ export const PowerPiInitContextProvider = ({ children }) => {
         closeSmallSidebar,
         usersData,
 
-        message,
+        isPerview,
+        setIsPreview,
+
+        dragItem,
+        setDragItem,
+
+        slicersCheckedItems,
+        setSlicersCheckedItems,
+        slicerMinDates,
+        setSlicersMinDates,
+        slicerMaxDates,
+        setSlicersMaxDates,
+        isChatbot,
+        setIsChatBot,
       }}
     >
       {children}

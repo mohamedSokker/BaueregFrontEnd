@@ -108,7 +108,12 @@ const Graphs = ({ setIsGraph, graphData, label }) => {
                 width={"100%"}
                 options={{
                   animation: false,
-                  plugins: { legend: true },
+                  plugins: {
+                    legend: true,
+                    datalabels: {
+                      display: false, // Disable data point labels
+                    },
+                  },
                   responsive: true,
                   maintainAspectRatio: false,
                   scales: {

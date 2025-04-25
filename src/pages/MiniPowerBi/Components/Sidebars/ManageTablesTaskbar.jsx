@@ -127,6 +127,18 @@ const ManageTablesTaskbar = () => {
                 ...Object.keys(tablesData?.[activeItem]?.data?.[0]),
                 // ...Object.keys(tableData),
               ];
+              console.log(allowedKeys);
+
+              // Sanitize keys
+              const sanitizedKeys = allowedKeys.map((key) =>
+                key.replace(/[^a-zA-Z0-9_]/g, "_")
+              );
+
+              // Create a mapping object
+              const keyMapping = {};
+              allowedKeys.forEach((key, index) => {
+                keyMapping[sanitizedKeys[index]] = key;
+              });
 
               // console.log(allowedKeys);
               // // tableData?.[activeItem]?.data?.map((row, idx) => {
@@ -135,7 +147,7 @@ const ManageTablesTaskbar = () => {
               // // });
 
               const expressionFunction = new Function(
-                ...allowedKeys,
+                ...sanitizedKeys,
                 `${getHelperFunction(inputValue, isChoosedValue)};`
               );
 

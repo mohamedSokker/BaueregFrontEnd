@@ -1,3 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.nonSelect {
+  user-select: none;
+}
+
 .mainContent {
   box-shadow: 0 12px 16px rgba(0, 0, 0, 0.7);
 }
@@ -5,6 +17,27 @@
 .focused {
   color: rgb(248, 113, 113);
   font-weight: 600;
+}
+
+.table_body {
+  overflow: auto;
+  overflow: overlay;
+  user-select: none;
+}
+
+.table_body::-webkit-scrollbar {
+  width: 0.4rem;
+  height: 0.4rem;
+}
+
+.table_body::-webkit-scrollbar-thumb {
+  border-radius: 0.5rem;
+  background-color: #0004;
+  visibility: hidden;
+}
+
+.table_body:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
 }
 
 @keyframes animate-in {
@@ -24,3 +57,61 @@
     transform: scale(0);
   }
 }
+
+@keyframes rotateRight {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(90);
+  }
+}
+
+@keyframes rotateLeft {
+  from {
+    transform: rotate(90);
+  }
+  to {
+    transform: rotate(0);
+  }
+}
+
+/* @keyframes bounce {
+  0% {
+    transform: rotate(calc(var(--target-angle) - 5deg));
+  }
+  50% {
+    transform: rotate(calc(var(--target-angle) + 5deg));
+  }
+  100% {
+    transform: rotate(var(--target-angle));
+  }
+} */
+
+@keyframes bounce {
+  0% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(100deg);
+  }
+}
+
+.needle {
+  /* transform: rotate(calc(var(--target-angle) + 0deg)); */
+  transform-origin: 125px 125px;
+  animation: bounce 0.5s ease-in-out;
+}
+
+.arrow {
+  overflow: hidden;
+  transition-duration: 0.5s;
+  transition-property: transform;
+}
+/* .arrow:hover {
+  transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+} */

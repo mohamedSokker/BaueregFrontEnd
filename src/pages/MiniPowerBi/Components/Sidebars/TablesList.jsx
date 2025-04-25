@@ -6,9 +6,12 @@ import {
   MdKeyboardDoubleArrowRight,
   MdOutlinePlaylistAdd,
 } from "react-icons/md";
+import { TbSum } from "react-icons/tb";
 import { ColorRing } from "react-loader-spinner";
 import { logoColor } from "../../../../BauerColors";
 import { useInitContext } from "../../Contexts/InitContext";
+import PropertyCard from "../Customs/PropertyCard";
+import Drag from "../Customs/Drag";
 
 const TablesList = () => {
   const {
@@ -29,6 +32,8 @@ const TablesList = () => {
     setAddedTables,
     data,
     setData,
+    setIsPreview,
+    isPerview,
   } = useInitContext();
 
   const [isOpenPanel, setIsOpenPanel] = useState(true);
@@ -44,34 +49,12 @@ const TablesList = () => {
   const inputRef = useRef(null);
   const inputColRef = useRef(null);
 
-  // console.log(tablesData);
-
   const handleClick = () => {
     setIsOpenPanel((prev) => !prev);
-    // const result = [];
-    // const scale = isOpenPanel
-    //   ? (parseInt(data.containerStyles.width) + 170) /
-    //     parseInt(data.containerStyles.width)
-    //   : (parseInt(data.containerStyles.width) - 170) /
-    //     parseInt(data.containerStyles.width);
-    // data?.el?.map((item) => {
-    //   result.push({
-    //     ...item,
-    //     left: `${Math.round(parseInt(item.left) * scale)}%`,
-    //   });
-    // });
-    // setData((prev) => ({
-    //   ...prev,
-    //   el: result,
-    //   containerStyles: { ...prev.containerStyles },
-    // }));
   };
-
-  // console.log(tablesData);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
-      // Focus the input and set the cursor at the end
       const length = inputRef.current.value.length;
       inputRef.current.focus();
       inputRef.current.setSelectionRange(0, length);
@@ -80,16 +63,41 @@ const TablesList = () => {
 
   useEffect(() => {
     if (isColEditing && inputColRef.current) {
-      // Focus the input and set the cursor at the end
       const length = inputColRef.current.value.length;
       inputColRef.current.focus();
       inputColRef.current.setSelectionRange(0, length);
     }
   }, [isColEditing]);
+
+  const handleDragStart = (e, item, col) => {
+    e.dataTransfer.setData(
+      "application/json",
+      JSON.stringify({
+        category: `Fields`,
+        name: `${col}`,
+        col: `${col}`,
+        table: item,
+        targets: [`Tooltip`, `Columns`],
+      })
+    );
+
+    e.target.style.opacity = "0.4";
+  };
+  const handleDragEnd = (e) => {
+    e.target.style.opacity = "1";
+  };
   return isOpenPanel ? (
     <div
-      className="flex w-[200px] h-full flex-col border-l-[1px] overflow-y-scroll bg-gray-300 p-2"
-      style={{ transition: "width 0.5s ease-in-out" }}
+      className="flex w-[200px] h-full flex-col border-l-[1px] overflow-y-scroll bg-gray-300 p-2 relative z-[1]"
+      style={{
+        width: isPerview ? "0px" : "200px",
+        padding: isPerview ? "0px" : "8px",
+        transition: "width 0.5s ease-in-out",
+        // animation: isPerview
+        //   ? "animate-in 0.5s ease-in-out"
+        //   : "animate-out 0.5s ease-in-out",
+      }}
+      // style={{ transition: "width 0.5s ease-in-out" }}
     >
       <div className="w-full">
         <div className="w-full flex flex-row justify-between p-1">
@@ -99,7 +107,7 @@ const TablesList = () => {
           </div>
         </div>
       </div>
-      <div className="w-full p-1">
+      <div className="w-full p-1 relative z-[9]">
         <div className="w-full bg-gray-300 overflow-x-scroll flex flex-col gap-2 p-2">
           {isDataReady ? (
             [...selectedTable, ...selectedRelationshipsTable]?.map(
@@ -127,9 +135,9 @@ const TablesList = () => {
                           let copiedData = { ...tablesData };
                           copiedData[item] = {
                             ...copiedData[item],
-                            name: RenamedName,
+                            name: RenamedName.replace(/[^a-zA-Z0-9_]/g, "_"),
                           };
-
+                          console.log(copiedData);
                           setTablesData(copiedData);
                           setRenamedItem("");
                         }}
@@ -269,6 +277,7 @@ const TablesList = () => {
                                   }
 
                                   copiedData[item].data = updatedData;
+                                  // console.log(copiedData);
                                   setTablesData(copiedData);
                                   setSelectedTableData(updatedData);
                                   setRenamedColItem("");
@@ -288,8 +297,19 @@ const TablesList = () => {
                                 />
                               </form>
                             ) : (
+                              // <Drag
+                              //   category={`${tablesData?.[item]?.name}`}
+                              //   name={`${col}`}
+                              //   table={item}
+                              //   targets={[`Tooltip`, `Columns`]}
+                              // >
                               <div
-                                className="w-full flex flex-row gap-1 items-center px-1 rounded-[4px]"
+                                className="w-full flex flex-row gap-1 items-center px-1 rounded-[4px] active:border-1 active:border-gray-400 active:blur-0"
+                                draggable
+                                onDragStart={(e) =>
+                                  handleDragStart(e, item, col)
+                                }
+                                onDragEnd={handleDragEnd}
                                 style={{
                                   backgroundColor:
                                     activeColItem[item] === col
@@ -304,6 +324,13 @@ const TablesList = () => {
                                 {AddedCols?.[item]?.includes(col) && (
                                   <MdOutlinePlaylistAdd size={12} />
                                 )}
+                                {tablesData?.[item]?.dataTypes?.[col]
+                                  ?.length === 1 &&
+                                  tablesData?.[item]?.dataTypes?.[col]?.[0] ===
+                                    "number" &&
+                                  col?.toLocaleLowerCase() !== "id" && (
+                                    <TbSum size={20} />
+                                  )}
                                 <p
                                   className="w-full p-1 rounded-[4px] text-[10px] bg-white"
                                   style={{
@@ -320,6 +347,7 @@ const TablesList = () => {
                                   {col}
                                 </p>
                               </div>
+                              // </Drag>
                             )}
                           </div>
                         )
@@ -343,20 +371,26 @@ const TablesList = () => {
             </div>
           )}
         </div>
-        <div className="w-full flex flex-col gap-1">
+        {/* <div className="w-full flex flex-col gap-1 relative z-[9]">
           <button
-            className="w-full p-1 bg-green-600 text-white rounded-[8px] text-[12px]"
+            className="w-full p-1 bg-green-700 text-white rounded-[8px] text-[12px]"
             onClick={() => setIsTableCard(true)}
           >
             Add Table
           </button>
           <button
-            className="w-full p-1 bg-green-600 text-white rounded-[8px] text-[12px]"
+            className="w-full p-1 bg-orange-500 text-white rounded-[8px] text-[12px]"
             onClick={() => setIsRelationshipTableCard(true)}
           >
             Add RelationShip Table
           </button>
-        </div>
+          <button
+            className="w-full p-1 bg-logoColor text-white rounded-[8px] text-[12px]"
+            onClick={() => setIsPreview(true)}
+          >
+            Preview
+          </button>
+        </div> */}
       </div>
     </div>
   ) : (

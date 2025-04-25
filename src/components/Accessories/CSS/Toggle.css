@@ -1,67 +1,46 @@
-.switch {
-  --button-width: 3.5em;
-  --button-height: 2em;
-  --toggle-diameter: 1.5em;
-  --button-toggle-offset: calc(
-    (var(--button-height) - var(--toggle-diameter)) / 2
-  );
-  --toggle-shadow-offset: 10px;
-  --toggle-wider: 3em;
-  --color-grey: #cccccc;
-  --color-green: #4296f4;
-}
-
 .slider {
-  display: inline-block;
-  width: var(--button-width);
-  height: var(--button-height);
-  background-color: var(--color-grey);
-  border-radius: calc(var(--button-height) / 2);
+  background-color: #ffffff2b;
+  border-radius: 100px;
+  padding: 1px;
+  margin: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  align-items: center;
   position: relative;
-  transition: 0.3s all ease-in-out;
+  display: block;
+  width: 51px;
+  height: 29px;
+  box-shadow: rgba(0, 0, 0, 0.62) 0px 0px 5px inset,
+    rgba(0, 0, 0, 0.21) 0px 0px 0px 24px inset, #22cc3f 0px 0px 0px 0px inset,
+    rgba(224, 224, 224, 0.45) 0px 1px 0px 0px;
 }
 
 .slider::after {
   content: "";
-  display: inline-block;
-  width: var(--toggle-diameter);
-  height: var(--toggle-diameter);
-  background-color: #fff;
-  border-radius: calc(var(--toggle-diameter) / 2);
+  display: flex;
+  top: 2.3px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
+  background-color: #e3e3e3;
+  border-radius: 200px;
   position: absolute;
-  top: var(--button-toggle-offset);
-  transform: translateX(var(--button-toggle-offset));
-  box-shadow: var(--toggle-shadow-offset) 0
-    calc(var(--toggle-shadow-offset) * 4) rgba(0, 0, 0, 0.1);
-  transition: 0.3s all ease-in-out;
+  box-shadow: transparent 0px 0px 0px 2px, rgba(0, 0, 0, 0.3) 0px 6px 6px;
+  transition: left 300ms cubic-bezier(0.4, 0, 0.2, 1) 0s,
+    background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  will-change: left, background-color;
 }
 
 .switch input[type="checkbox"]:checked + .slider {
-  background-color: var(--color-green);
+  box-shadow: rgba(0, 0, 0, 0.62) 0px 0px 5px inset,
+    #22cc3f 0px 0px 0px 2px inset, #22cc3f 0px 0px 0px 24px inset,
+    rgba(224, 224, 224, 0.45) 0px 1px 0px 0px;
 }
 
 .switch input[type="checkbox"]:checked + .slider::after {
-  transform: translateX(
-    calc(
-      var(--button-width) - var(--toggle-diameter) - var(--button-toggle-offset)
-    )
-  );
-  box-shadow: calc(var(--toggle-shadow-offset) * -1) 0
-    calc(var(--toggle-shadow-offset) * 4) rgba(0, 0, 0, 0.1);
+  left: 24px;
 }
 
 .switch input[type="checkbox"] {
   display: none;
-}
-
-.switch input[type="checkbox"]:active + .slider::after {
-  width: var(--toggle-wider);
-}
-
-.switch input[type="checkbox"]:checked:active + .slider::after {
-  transform: translateX(
-    calc(
-      var(--button-width) - var(--toggle-wider) - var(--button-toggle-offset)
-    )
-  );
 }
