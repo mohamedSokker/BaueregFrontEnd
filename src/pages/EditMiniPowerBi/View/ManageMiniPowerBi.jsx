@@ -13,6 +13,7 @@ import PageLoading from "../../../components/PageLoading";
 import { useDataContext } from "../Contexts/DataContext";
 import { useInitContext } from "../Contexts/InitContext";
 import { detectTableColumnTypes } from "../Services/getTypes";
+import { getHelperFunction } from "../Controllers/Expressions/KeyWordsHelper.js";
 
 const ManageMiniPowerBi = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -21,6 +22,7 @@ const ManageMiniPowerBi = () => {
   const [dataExpressions, setDataExpressions] = useState([]);
 
   const {
+    setIsPreview,
     mouseMoveMove,
     mouseUpMove,
     data,
