@@ -85,17 +85,34 @@ export const handleCheckItems = ({
   slicerMaxDates,
   setSlicersMaxDates,
 }) => {
-  const slicers = [];
+  let slicers = {};
+
   Object.keys(slicersCheckedItems)?.map((item) => {
     if (slicersCheckedItems?.[item]?.checked === true) {
-      slicers.push(slicersCheckedItems?.[item]);
+      slicers = slicers?.[slicersCheckedItems?.[item]?.tree?.[0]?.selectedItem]
+        ? {
+            ...slicers,
+            [slicersCheckedItems?.[item]?.tree?.[0]?.selectedItem]: [
+              ...slicers?.[
+                slicersCheckedItems?.[item]?.tree?.[0]?.selectedItem
+              ],
+              slicersCheckedItems?.[item],
+            ],
+          }
+        : {
+            ...slicers,
+            [slicersCheckedItems?.[item]?.tree?.[0]?.selectedItem]: [
+              slicersCheckedItems?.[item],
+            ],
+          };
+      // slicers.push(slicersCheckedItems?.[item]);
     }
   });
 
   console.log(slicers);
 
   if (
-    slicers?.length === 0 &&
+    Object.keys(slicers)?.length === 0 &&
     slicerMinDates?.length === 0 &&
     slicerMaxDates?.length === 0
   ) {
@@ -107,15 +124,17 @@ export const handleCheckItems = ({
       resultData = [];
       resultData = dataToFilter[table]?.data?.filter((row) => {
         const checkedArrayCheck =
-          slicers.length === 0
+          Object.keys(slicers).length === 0
             ? true
-            : [...slicers].some(({ tree }) => {
-                return tree?.every(({ colName, item }) => {
-                  if (row[colName] === item) {
-                    return true;
-                  } else {
-                    return false;
-                  }
+            : Object.keys(slicers)?.every((group) => {
+                return [...slicers?.[group]].some(({ tree }) => {
+                  return tree?.every(({ colName, item }) => {
+                    if (row[colName] === item) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  });
                 });
               });
         const minDatesCheck =

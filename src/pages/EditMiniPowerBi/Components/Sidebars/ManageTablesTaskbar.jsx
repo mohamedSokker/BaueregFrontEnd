@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { MdDone } from "react-icons/md";
 import {
   getHelperFunction,
+  getHelperFunction1,
   getHelperText,
   keywords,
 } from "../../Controllers/Expressions/KeyWordsHelper";
@@ -11,6 +12,7 @@ import { useInitContext } from "../../Contexts/InitContext";
 const ManageTablesTaskbar = () => {
   const {
     setTablesData,
+    setCopiedTablesData,
     AddedTables,
     setAddedTables,
     setSelectedTable,
@@ -72,6 +74,7 @@ const ManageTablesTaskbar = () => {
                     : [`New Column`],
                 }));
                 setTablesData(copiedData);
+                setCopiedTablesData(copiedData);
               } else {
                 const updatedData = copiedData?.[activeItem]?.data?.map(
                   (el) => {
@@ -94,6 +97,7 @@ const ManageTablesTaskbar = () => {
 
                 copiedData[activeItem].data = updatedData;
                 setTablesData(copiedData);
+                setCopiedTablesData(copiedData);
               }
             }
           }}
@@ -107,7 +111,7 @@ const ManageTablesTaskbar = () => {
             className="w-full"
             onSubmit={(e) => {
               e.preventDefault();
-              console.log(getHelperFunction(inputValue, isChoosedValue));
+
               setIsChoosedValue("");
               setExpressions((prev) => ({
                 ...prev,
@@ -134,11 +138,12 @@ const ManageTablesTaskbar = () => {
                 key.replace(/[^a-zA-Z0-9_]/g, "_")
               );
 
+              console.log(getHelperFunction1(inputValue, sanitizedKeys));
               // Create a mapping object
-              const keyMapping = {};
-              allowedKeys.forEach((key, index) => {
-                keyMapping[sanitizedKeys[index]] = key;
-              });
+              // const keyMapping = {};
+              // allowedKeys.forEach((key, index) => {
+              //   keyMapping[sanitizedKeys[index]] = key;
+              // });
 
               // console.log(allowedKeys);
               // // tableData?.[activeItem]?.data?.map((row, idx) => {
@@ -148,7 +153,7 @@ const ManageTablesTaskbar = () => {
 
               const expressionFunction = new Function(
                 ...sanitizedKeys,
-                `${getHelperFunction(inputValue, isChoosedValue)};`
+                `${getHelperFunction1(inputValue, sanitizedKeys)};`
               );
 
               let copiedData = { ...tablesData };
@@ -162,6 +167,7 @@ const ManageTablesTaskbar = () => {
               copiedData[activeItem].data = result;
               console.log(copiedData);
               setTablesData(copiedData);
+              setCopiedTablesData(copiedData);
             }}
           >
             <input

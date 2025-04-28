@@ -24,6 +24,7 @@ const DateSlicer = ({
   setSlicersMinDates,
   slicerMaxDates,
   setSlicersMaxDates,
+  selectedItem,
 }) => {
   // const { tablesData } = useInitContext();
   // const [slicers, setSlicers] = useState([]);

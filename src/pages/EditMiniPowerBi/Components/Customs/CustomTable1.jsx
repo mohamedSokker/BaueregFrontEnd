@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 // import { determineRelationshipsAmongTables } from "../../pages/ManageMiniPowerBi/Services/getRelships.js";
-import { determineRelationshipsAmongTables } from "../../Services/getRelships";
+import { determineRelationshipsAmongTables } from "../../Services/getRelships.js";
 import "./CustomTable1.css"; // Import the CSS file for styling
 import {
   categorizeColumns,
@@ -10,6 +10,7 @@ import {
   mergeSumsWithRows,
   processRows,
 } from "../../Services/manyToMany.js";
+import { useInitContext } from "../../Contexts/InitContext.jsx";
 
 const formatter = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
@@ -30,6 +31,8 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
   const [totalRow, setTotalRow] = useState(null);
   const [tableWidth, setTableWidth] = useState(null);
 
+  const { expressions } = useInitContext();
+
   const headerRefs = useRef({});
   const tableRef = useRef(null);
   const tableHead = useRef(null);
@@ -45,7 +48,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
   const endIndex = Math.min(startIndex + visibleRows, totalRows - 1);
 
   // Handle sorting
-  const handleSort = (key, isChange) => {
+  const handleSort = (key, isChange, resultArray) => {
     if (key) {
       let direction = "asc";
       if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -55,7 +58,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
 
       setSortConfig({ key, direction });
 
-      const sortedData = [...tableData].sort((a, b) => {
+      const sortedData = [...resultArray].sort((a, b) => {
         if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
         if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
         return 0;
@@ -118,7 +121,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
     if (tableRef.current) {
       // Trigger a reflow to ensure alignment
       tableRef.current.style.display = "none";
-      // tableRef.current.offsetHeight = 0; // Trigger reflow
+      // tableRef.current.offsetHeight; // Trigger reflow
       tableRef.current.style.display = "";
     }
   }, [columnWidths]);
@@ -143,27 +146,28 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
     // console.log(item.columns);
     setIsTableLoading(true);
     try {
-      const tables = [];
+      // const tables = [];
       // Step 1: Categorize columns
       const { nonNumericColumns, numericColumns } = categorizeColumns(
         item.columns,
         data
       );
 
-      item.columns.map((el) => {
-        if (!tables.includes(el.table)) tables.push(el.table);
-      });
-      const relships = determineRelationshipsAmongTables(
-        tables.map((el) => data[el].data),
-        nonNumericColumns
-      );
+      // item.columns.map((el) => {
+      //   if (!tables.includes(el.table)) tables.push(el.table);
+      // });
+      // const relships = determineRelationshipsAmongTables(
+      //   tables.map((el) => data[el].data),
+      //   nonNumericColumns
+      // );
       // console.log(relships);
 
       const { resultArray, sumResults, totalRow } = manyToMany(
         data,
         item,
         nonNumericColumns,
-        numericColumns
+        numericColumns,
+        expressions
       );
       // resultArray.push(totalRow);
 
@@ -173,7 +177,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
       setTableData(resultArray);
       setTotalRow(totalRow); // Store the "Total" row separately
       // console.log(sortConfig);
-      handleSort(sortConfig.key, "noChange");
+      handleSort(sortConfig.key, "noChange", resultArray);
     } catch (error) {
       console.log(error);
     } finally {
@@ -275,7 +279,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
                     >
                       <div
                         className="w-full flex flex-row items-center justify-start text-[hsl(0,0%,0%)]"
-                        onClick={() => handleSort(key.name)}
+                        onClick={() => handleSort(key.name, null, tableData)}
                       >
                         <span className="par-content">{key.name}</span>
                         {sortConfig.key === key.name && (

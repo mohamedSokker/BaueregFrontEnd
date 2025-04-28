@@ -45,7 +45,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
   const endIndex = Math.min(startIndex + visibleRows, totalRows - 1);
 
   // Handle sorting
-  const handleSort = (key, isChange) => {
+  const handleSort = (key, isChange, resultArray) => {
     if (key) {
       let direction = "asc";
       if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -55,7 +55,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
 
       setSortConfig({ key, direction });
 
-      const sortedData = [...tableData].sort((a, b) => {
+      const sortedData = [...resultArray].sort((a, b) => {
         if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
         if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
         return 0;
@@ -118,7 +118,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
     if (tableRef.current) {
       // Trigger a reflow to ensure alignment
       tableRef.current.style.display = "none";
-      // tableRef.current.offsetHeight = 0; // Trigger reflow
+      // tableRef.current.offsetHeight; // Trigger reflow
       tableRef.current.style.display = "";
     }
   }, [columnWidths]);
@@ -174,7 +174,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
       setTableData(resultArray);
       setTotalRow(totalRow); // Store the "Total" row separately
       // console.log(sortConfig);
-      handleSort(sortConfig.key, "noChange");
+      handleSort(sortConfig.key, "noChange", resultArray);
     } catch (error) {
       console.log(error);
     } finally {
@@ -276,7 +276,7 @@ const ProffesionalTable = ({ item, data, defaultWidth }) => {
                     >
                       <div
                         className="w-full flex flex-row items-center justify-start text-[hsl(0,0%,0%)]"
-                        onClick={() => handleSort(key.name)}
+                        onClick={() => handleSort(key.name, null, tableData)}
                       >
                         <span className="par-content">{key.name}</span>
                         {sortConfig.key === key.name && (

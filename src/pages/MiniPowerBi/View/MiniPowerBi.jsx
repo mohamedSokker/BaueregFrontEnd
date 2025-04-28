@@ -42,6 +42,8 @@ const MiniPowerBi = () => {
     selectedRelationshipsTable,
     setSelectedTable,
     selectedTable,
+    setAddedCols,
+    setExpressions,
   } = useInitContext();
 
   // console.log(tablesData);
@@ -65,7 +67,18 @@ const MiniPowerBi = () => {
     ) {
       Object.keys(dataExpressions)?.map((table) => {
         const allowedKeys = [...Object.keys(tablesData?.[table]?.data?.[0])];
-        console.log(dataExpressions);
+
+        let added = {};
+        Object.keys(dataExpressions?.[table])?.map((col) => {
+          added = added?.[table]
+            ? { ...added, [table]: [...added?.[table], col] }
+            : { ...added, [table]: [col] };
+        });
+        console.log(added);
+        setAddedCols(added);
+        // setAddedCols(dataExpressions);
+        setExpressions(dataExpressions);
+
         const cols = Object.keys(dataExpressions?.[table]);
         cols.map((ex) => {
           const exp = dataExpressions?.[table]?.[ex];

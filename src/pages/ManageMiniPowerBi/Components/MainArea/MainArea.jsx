@@ -154,6 +154,7 @@ const MainArea = () => {
                 setSlicersMinDates={setSlicersMinDates}
                 slicerMaxDates={slicerMaxDates}
                 setSlicersMaxDates={setSlicersMaxDates}
+                selectedItem={i}
               />
             ) : (
               item.Type === "Card" && (

@@ -17,6 +17,7 @@ const Slicer = ({
   setSlicersMinDates,
   slicerMaxDates,
   setSlicersMaxDates,
+  selectedItem,
 }) => {
   return item?.slicerType === "Checks" ? (
     <CheckSlicer
@@ -34,6 +35,7 @@ const Slicer = ({
       setSlicersMinDates={setSlicersMinDates}
       slicerMaxDates={slicerMaxDates}
       setSlicersMaxDates={setSlicersMaxDates}
+      selectedItem={selectedItem}
     />
   ) : (
     <DateSlicer
@@ -51,6 +53,7 @@ const Slicer = ({
       setSlicersMinDates={setSlicersMinDates}
       slicerMaxDates={slicerMaxDates}
       setSlicersMaxDates={setSlicersMaxDates}
+      selectedItem={selectedItem}
     />
   );
 };

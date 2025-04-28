@@ -36,6 +36,7 @@ const SlicerItems = ({
   tree,
   dataFontSize,
   dataFontWeight,
+  selectedItem,
 }) => {
   const [slicers, setSlicers] = useState([]);
   const [isOpen, setIsOpen] = useState({});
@@ -106,7 +107,10 @@ const SlicerItems = ({
                 slicerMaxDates,
                 setSlicersMaxDates,
                 dataToFilter: copiedData,
-                tree: [...tree, { colName: col, item: item }],
+                tree: [
+                  ...tree,
+                  { colName: col, item: item, selectedItem: selectedItem },
+                ],
               })
             }
           />
@@ -150,7 +154,10 @@ const SlicerItems = ({
           setSlicersMaxDates={setSlicersMaxDates}
           filterdData={filteredSlicers}
           table={table}
-          tree={[...tree, { colName: col, item: item }]}
+          tree={[
+            ...tree,
+            { colName: col, item: item, selectedItem: selectedItem },
+          ]}
           dataFontSize={dataFontSize}
           dataFontWeight={dataFontWeight}
         />
@@ -174,6 +181,7 @@ const CheckSlicer = ({
   setSlicersMinDates,
   slicerMaxDates,
   setSlicersMaxDates,
+  selectedItem,
 }) => {
   const [slicers, setSlicers] = useState([]);
   const [isOpen, setIsOpen] = useState({});
@@ -298,7 +306,13 @@ const CheckSlicer = ({
                       slicerMaxDates,
                       setSlicersMaxDates,
                       dataToFilter: copiedData,
-                      tree: [{ colName: mainSlicer, item: item }],
+                      tree: [
+                        {
+                          colName: mainSlicer,
+                          item: item,
+                          selectedItem: selectedItem,
+                        },
+                      ],
                     })
                   }
                 />
@@ -345,6 +359,7 @@ const CheckSlicer = ({
                 tree={[{ colName: mainSlicer, item: item }]}
                 dataFontSize={dataFontSize}
                 dataFontWeight={dataFontWeight}
+                selectedItem={selectedItem}
                 // checkCol={checkCol}
                 // setCheckCol={setCheckCol}
               />
