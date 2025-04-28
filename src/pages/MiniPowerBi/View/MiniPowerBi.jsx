@@ -13,7 +13,10 @@ import PageLoading from "../../../components/PageLoading.jsx";
 import { useDataContext } from "../Contexts/DataContext.jsx";
 import { useInitContext } from "../Contexts/InitContext.jsx";
 
-import { getHelperFunction } from "../Controllers/Expressions/KeyWordsHelper";
+import {
+  getHelperFunction,
+  getHelperFunction1,
+} from "../Controllers/Expressions/KeyWordsHelper";
 import { detectTableColumnTypes } from "../Services/getTypes.js";
 
 const MiniPowerBi = () => {
@@ -65,9 +68,10 @@ const MiniPowerBi = () => {
         [...isChoose, ...isRelationshipChoose].length &&
       Object.keys(tablesData).length !== 0
     ) {
+      setLoading(true);
+      setMessage(`Initializing Expressions...`);
       Object.keys(dataExpressions)?.map((table) => {
         const allowedKeys = [...Object.keys(tablesData?.[table]?.data?.[0])];
-
         let added = {};
         Object.keys(dataExpressions?.[table])?.map((col) => {
           added = added?.[table]
@@ -78,7 +82,6 @@ const MiniPowerBi = () => {
         setAddedCols(added);
         // setAddedCols(dataExpressions);
         setExpressions(dataExpressions);
-
         const cols = Object.keys(dataExpressions?.[table]);
         cols.map((ex) => {
           const exp = dataExpressions?.[table]?.[ex];
@@ -86,7 +89,7 @@ const MiniPowerBi = () => {
 
           const expressionFunction = new Function(
             ...allowedKeys,
-            `${getHelperFunction(exp, isChooseValue)};`
+            `${getHelperFunction1(exp, isChooseValue)};`
           );
           let copiedData = { ...tablesData };
           const result = tablesData?.[table]?.data?.map((row) => ({
@@ -94,13 +97,18 @@ const MiniPowerBi = () => {
             [ex]: expressionFunction(...allowedKeys.map((key) => row[key])),
           }));
           copiedData[table].data = result;
+          console.log(copiedData);
           setTablesData(copiedData);
+          setCopiedTablesData(copiedData);
         });
       });
+      setLoading(false);
     }
   }, [isChoose, isRelationshipChoose, dataExpressions]);
 
   const getTablesData = async (d, rshipd) => {
+    setLoading(true);
+    setMessage(`Getting Data From Database`);
     const urls = [];
     d.map((item) => {
       urls.push(`/api/v3/${item}`);
@@ -154,19 +162,23 @@ const MiniPowerBi = () => {
       }));
     });
 
+    console.log(relData);
+
     rshipd.map((item) => {
       if (!selectedRelationshipsTable.includes(item)) {
         setSelectedRelationshipsTable((prev) => [...prev, item]);
       }
       // const content = item.split(",");
       tbles.map((el, idx) => {
-        if (el !== "")
+        if (el !== "") {
           setRelationshipData((prev) => ({
             ...prev,
             [el]: relData[idx]?.data,
           }));
+        }
       });
     });
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -175,9 +187,11 @@ const MiniPowerBi = () => {
     for (const item of relationsTable) {
       if (isRelationshipChoose?.includes(item.Name)) {
         const relationships = JSON.parse(item?.RelationShips);
+        console.log(relationships);
         const copiedRelationstablesData = {
           ...relationshipdata,
         };
+        console.log(copiedRelationstablesData);
         let sourceTable = relationships?.[0]?.source;
         let sourceData = copiedRelationstablesData?.[sourceTable]
           ? copiedRelationstablesData?.[sourceTable]
@@ -253,8 +267,12 @@ const MiniPowerBi = () => {
         (item) => Number(item.ID) === Number(id)
       );
 
+      // console.log(responseData[1]?.data);
       setRelationsTable(responseData[1]?.data);
 
+      // setViewName(targetItem?.Name);
+      // setViewGroup(targetItem?.Group);
+      // setUsersNamesData(JSON.parse(targetItem?.UsersToView));
       const viewData = JSON.parse(targetItem?.ViewData);
 
       setIsChoose(Object.keys(viewData?.tablesData));
@@ -266,7 +284,7 @@ const MiniPowerBi = () => {
 
       setData(viewData.data);
 
-      setLoading(false);
+      // setLoading(false);
     } catch (err) {
       console.log(
         err?.response?.data?.message
