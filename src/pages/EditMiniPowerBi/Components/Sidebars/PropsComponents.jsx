@@ -226,7 +226,7 @@ const PropsComponents = ({ cat }) => {
                     initialItems={
                       data?.el?.[selectedItem]?.[item?.name]
                         ? [data?.el?.[selectedItem]?.[item?.name]]
-                        : []
+                        : null
                     }
                     limit={1}
                     isSelect={item?.select}
@@ -336,13 +336,32 @@ const PropsComponents = ({ cat }) => {
                     category={`Columns`}
                     categoryKey={item.name}
                     item={item}
-                    initialItems={
-                      data?.el?.[selectedItem]?.[item?.name]
-                        ? data?.el?.[selectedItem]?.[item?.name]
-                        : []
-                    }
+                    initialItems={data?.el?.[selectedItem]?.[item?.name]}
                     limit={1}
                     isSelect={item?.select}
+                    isSeen={true}
+                    onSeenChange={(it) => {
+                      const copiedData = { ...data };
+                      const result = [];
+                      copiedData.el[selectedItem]?.[item?.name]?.map((el) => {
+                        if (
+                          typeof it === "object"
+                            ? el?.name === it?.name
+                            : el?.name === it
+                        ) {
+                          result.push({ ...el, isSeen: !el?.isSeen });
+                        } else {
+                          result.push(el);
+                        }
+                      });
+                      copiedData.el[selectedItem] = {
+                        ...copiedData.el[selectedItem],
+                        [item?.name]: result,
+                      };
+                      setData(copiedData);
+
+                      console.log(copiedData);
+                    }}
                     handleChange={(dragSource, position) => {
                       if (item?.name === "tooltips") {
                         const copiedData = { ...data };
@@ -361,6 +380,7 @@ const PropsComponents = ({ cat }) => {
                             0,
                             {
                               opType: "Sum",
+                              isSeen: true,
                               name: `Sum Of ${dragSource?.name}`,
                               col: dragSource?.name,
                               table: dragSource?.table,
@@ -373,6 +393,7 @@ const PropsComponents = ({ cat }) => {
                             0,
                             {
                               opType: "Count",
+                              isSeen: true,
                               name: `Count Of ${dragSource?.name}`,
                               col: dragSource?.name,
                               table: dragSource?.table,
@@ -399,6 +420,7 @@ const PropsComponents = ({ cat }) => {
                             0,
                             {
                               opType: "Sum",
+                              isSeen: true,
                               name: dragSource?.name,
                               col: dragSource?.name,
                               table: dragSource?.table,
@@ -411,6 +433,7 @@ const PropsComponents = ({ cat }) => {
                             0,
                             {
                               opType: "Count",
+                              isSeen: true,
                               name: dragSource?.name,
                               col: dragSource?.name,
                               table: dragSource?.table,
@@ -464,6 +487,7 @@ const PropsComponents = ({ cat }) => {
                           0,
                           {
                             opType: "Division",
+                            isSeen: true,
                             name: `${dragSource?.name} ${expressionsSigns?.Division}`,
                             firstArg: dragSource?.name,
                             secondArg: "",

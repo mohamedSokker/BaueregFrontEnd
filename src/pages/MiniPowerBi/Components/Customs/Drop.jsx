@@ -31,9 +31,11 @@ const Drop = ({
   item,
   initialItems,
   handleChange,
+  onSeenChange,
   handleChoose,
   onDelete,
   limit,
+  isSeen,
   isSelect,
   children,
   childItems,
@@ -111,6 +113,7 @@ const Drop = ({
                 tablesData?.[table]?.dataTypes?.[name]?.[0] === "number"
                   ? "Sum"
                   : "Count",
+              isSeen: true,
               name: name,
               col: col,
               table: table,
@@ -228,9 +231,11 @@ const Drop = ({
             childItems={item?.childItems}
             // key={`${item?.name}-${idx}-${selectedItem}`}
             propName={item?.name ? item?.name : item}
+            isSeen={isSeen}
             isSelect={isSelect}
             handleDelete={() => handleDelete(item?.name ? item?.name : item)}
             handleChoose={handleChoose}
+            onSeenChange={() => onSeenChange(item?.name ? item?.name : item)}
             handleInputChange={handleInputChange}
             categoryKey={categoryKey}
             droppedItems={item}

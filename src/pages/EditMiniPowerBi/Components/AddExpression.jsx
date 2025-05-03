@@ -80,6 +80,7 @@ const AddExpression = ({ setIsExpressionCard }) => {
 
     copiedData.el[selectedItem]?.expressions?.push({
       opType: operation,
+      isSeen: true,
       name: `${firstArg} ${expressionsSigns?.[operation]} ${secondArg}`,
       firstArg: firstArg,
       secondArg: secondArg,

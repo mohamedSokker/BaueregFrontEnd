@@ -23,7 +23,7 @@ const CustomTooltip = ({ active, payload, label, item }) => {
     return !isNaN(val) ? formatter.format(val) : val;
   };
 
-  const renderLine = (name) => (
+  const renderLine = (name, isSeen) => (
     <p
       key={name}
       className="text-[10px] font-[600]"
@@ -32,12 +32,12 @@ const CustomTooltip = ({ active, payload, label, item }) => {
         fontWeight: tooltipFontWeight,
       }}
     >
-      {`${name}: ${formatValue(name)}`}
+      {isSeen && `${name}: ${formatValue(name)}`}
     </p>
   );
 
   const renderExpression = (exp) => {
-    const { firstArg, secondArg, name, opType } = exp;
+    const { firstArg, secondArg, name, opType, isSeen } = exp;
     const val1 = getValue(firstArg);
     const val2 = getValue(secondArg);
     if (
@@ -70,7 +70,7 @@ const CustomTooltip = ({ active, payload, label, item }) => {
           fontWeight: tooltipFontWeight,
         }}
       >
-        {`${name}: ${formatter.format(result)}`}
+        {isSeen && `${name}: ${formatter.format(result)}`}
       </p>
     );
   };
@@ -89,8 +89,8 @@ const CustomTooltip = ({ active, payload, label, item }) => {
         {`${X_Axis}: ${label || payload[0]?.name}`}
       </p>
 
-      {Y_Axis.map(({ name }) => renderLine(name))}
-      {tooltips.map(({ name }) => renderLine(name))}
+      {Y_Axis.map(({ name, isSeen }) => renderLine(name, isSeen))}
+      {tooltips.map(({ name, isSeen }) => renderLine(name, isSeen))}
       {expressions.map(renderExpression)}
     </div>
   );

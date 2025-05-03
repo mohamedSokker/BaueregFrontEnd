@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2, RxCheck } from "react-icons/rx";
+import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 
 import { useInitContext } from "../../Contexts/InitContext";
 import { useDragContext } from "./DragContext";
@@ -58,8 +59,10 @@ const Child = ({
 
 const PropertyCard = ({
   propName = "Name",
+  isSeen,
   isSelect,
   handleDelete,
+  onSeenChange,
   handleChoose,
   handleInputChange,
   categoryKey,
@@ -357,6 +360,18 @@ const PropertyCard = ({
               </p>
             </div>
             <div className="flex flex-row gap-[2px]">
+              {isSeen && (
+                <div
+                  className="cursor-pointer hover:text-gray-700"
+                  onClick={onSeenChange}
+                >
+                  {droppedItems?.isSeen === true ? (
+                    <IoIosEye />
+                  ) : (
+                    <IoIosEyeOff />
+                  )}
+                </div>
+              )}
               {isSelect && (
                 <div
                   className="cursor-pointer hover:text-gray-700"
