@@ -16,6 +16,7 @@ const AddRelationshipTableCard = ({
   setIsDataReady,
   setTablesData,
   setCopiedTablesData,
+  setSavedTablesData,
 
   isRelationshipChoose,
   setIsRelationshipChoose,
@@ -179,7 +180,6 @@ const AddRelationshipTableCard = ({
                       ...relationshipdata,
                     };
                     let sourceTable = relationships?.[0]?.source;
-                    // const data = await getTableData(sourceTable);
                     let sourceData = copiedRelationstablesData?.[sourceTable]
                       ? copiedRelationstablesData?.[sourceTable]
                       : [];
@@ -199,37 +199,6 @@ const AddRelationshipTableCard = ({
                       }
                     }
 
-                    // console.log(copiedRelationstablesData);
-
-                    // relationships?.map((rel) => {
-                    //   if (rel?.source === "FiltersNode") {
-                    //     if (rel?.sourceHandle === "Blank()") {
-                    //       copiedRelationstablesData[rel?.target].data =
-                    //         copiedRelationstablesData?.[
-                    //           rel?.target
-                    //         ]?.data?.filter(
-                    //           (row) => row?.[rel?.targetHandle] === null
-                    //         );
-                    //     }
-                    //   }
-                    // });
-
-                    // relationships?.map((item) => {
-                    //   currentVT = [];
-                    //   currentVT.push(
-                    //     ...sourceData?.map((row1) => {
-                    //       const match = copiedRelationstablesData?.[
-                    //         item?.target
-                    //       ]?.find(
-                    //         (row2) =>
-                    //           row1?.[item?.sourceHandle] ===
-                    //           row2?.[item?.targetHandle]
-                    //       );
-                    //       return { ...row1, ...match, ID: row1.ID };
-                    //     })
-                    //   );
-                    //   sourceData = currentVT;
-                    // });
                     for (const item of relationships) {
                       console.log("Second loop: Joining data...");
                       currentVT = [];
@@ -267,19 +236,16 @@ const AddRelationshipTableCard = ({
                         dataTypes: detectTableColumnTypes(currentVT),
                       },
                     }));
+                    setSavedTablesData((prev) => ({
+                      ...prev,
+                      [item?.Name]: {
+                        name: item?.Name,
+                        data: currentVT,
+                        dataTypes: detectTableColumnTypes(currentVT),
+                      },
+                    }));
                   }
                 }
-                // isChoose?.map(async (item) => {
-                //   const data = await getTableData(item);
-                //   setTablesData((prev) => ({
-                //     ...prev,
-                //     [item]: { ...prev[item], name: item, data: data },
-                //   }));
-                //   setCopiedTablesData((prev) => ({
-                //     ...prev,
-                //     [item]: { ...prev[item], name: item, data: data },
-                //   }));
-                // });
                 setIsDataReady(true);
                 setTimeout(() => {
                   setIsRelationshipTableCard(false);

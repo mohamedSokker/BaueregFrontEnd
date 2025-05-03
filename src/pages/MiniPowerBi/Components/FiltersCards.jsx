@@ -1,6 +1,7 @@
 import React from "react";
 
 import AddTableCard from "./AddTableCard";
+import AddActions from "./AddActions";
 // import AddTableSceneCard from "./AddToScene/AddTableCard";
 // import AddBarChartCard from "./AddToScene/AddBarChart";
 // import AddCard from "./AddToScene/AddCard";
@@ -12,11 +13,16 @@ import AddTableCard from "./AddTableCard";
 import AddRelationshipTableCard from "./Sidebars/AddRelationshipTableCard";
 import { useInitContext } from "../Contexts/InitContext";
 import ConfirmDeleteCard from "../../../components/Accessories/ConfirmDeleteCard";
+import AddExpression from "./AddExpression";
 
 const FiltersCards = ({}) => {
   const {
     isTableCard,
     setIsTableCard,
+    isActionCard,
+    isExpressionCard,
+    setIsExpressionCard,
+    setIsActionCard,
     isRelationshipTableCard,
     setIsRelationshipTableCard,
     selectedTable,
@@ -36,6 +42,7 @@ const FiltersCards = ({}) => {
     isDeleteCard,
     setIsDeleteCard,
     handleSend,
+    setSavedTablesData,
   } = useInitContext();
   return (
     <>
@@ -52,7 +59,14 @@ const FiltersCards = ({}) => {
           setCopiedTablesData={setCopiedTablesData}
           isChoose={isChoose}
           setIsChoose={setIsChoose}
+          setSavedTablesData={setSavedTablesData}
         />
+      )}
+
+      {isActionCard && <AddActions setIsActionCard={setIsActionCard} />}
+
+      {isExpressionCard && (
+        <AddExpression setIsExpressionCard={setIsExpressionCard} />
       )}
 
       {isDeleteCard && (
@@ -76,6 +90,7 @@ const FiltersCards = ({}) => {
           setCopiedTablesData={setCopiedTablesData}
           isRelationshipChoose={isRelationshipChoose}
           setIsRelationshipChoose={setIsRelationshipChoose}
+          setSavedTablesData={setSavedTablesData}
         />
       )}
 

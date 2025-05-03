@@ -1,5 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { MdDone } from "react-icons/md";
+import { IoIosAdd } from "react-icons/io";
 import {
   getHelperFunction,
   getHelperFunction1,
@@ -8,15 +10,19 @@ import {
 } from "../../Controllers/Expressions/KeyWordsHelper";
 import InfoCard from "../../../../components/Accessories/InfoCard";
 import { useInitContext } from "../../Contexts/InitContext";
+import FormalDropdown from "../../../../components/Accessories/Dropdown";
 
 const ManageTablesTaskbar = () => {
   const {
+    setIsActionCard,
     setTablesData,
     setCopiedTablesData,
+    setSavedTablesData,
     AddedTables,
     setAddedTables,
     setSelectedTable,
     activeItem,
+    setActiveItem,
     activeColItem,
     setActiveColItem,
     tablesData,
@@ -32,11 +38,11 @@ const ManageTablesTaskbar = () => {
 
   const inputRef = useRef();
 
-  // console.log(expressions);
+  // console.log(activeColItem);
 
   return (
     <div className="w-full h-[78px]">
-      <div className="flex flex-row justify-start items-center text-[12px] gap-1 p-1 h-[42px]">
+      <div className="flex flex-row justify-start items-center text-[12px] gap-x-4 p-1 h-[42px]">
         {/* <div
           className="cursor-pointer bg-gray-200 rounded-md p-2 text-logoColor"
           onClick={() => {
@@ -59,51 +65,157 @@ const ManageTablesTaskbar = () => {
         >
           <p>New Table</p>
         </div> */}
-        <div
-          className="cursor-pointer bg-gray-200 rounded-md p-2 text-logoColor"
-          onClick={() => {
-            if (activeItem !== "") {
-              let copiedData = { ...tablesData };
-              if (copiedData?.[activeItem]?.data.length === 0) {
-                copiedData[activeItem].data = [{ [`New Column`]: undefined }];
-                // setAddedCols((prev) => [...prev, `New Column`]);
-                setAddedCols((prev) => ({
-                  ...prev,
-                  [activeItem]: prev?.[activeItem]
-                    ? [...prev?.[activeItem], `New Column`]
-                    : [`New Column`],
-                }));
-                setTablesData(copiedData);
-                setCopiedTablesData(copiedData);
-              } else {
-                const updatedData = copiedData?.[activeItem]?.data?.map(
-                  (el) => {
-                    const { ...rest } = el;
-                    return {
-                      ...rest,
-                      [`New Column`]: undefined,
-                    };
-                  }
-                );
-                // setAddedCols((prev) => [...prev, `New Column`]);
-                setAddedCols((prev) => ({
-                  ...prev,
-                  [activeItem]: prev?.[activeItem]
-                    ? [...prev?.[activeItem], `New Column`]
-                    : [`New Column`],
-                }));
+        <TooltipComponent content={"Add Column"} position="BottomCenter">
+          <div
+            className="cursor-pointer bg-gray-200 rounded-md p-2 text-logoColor"
+            onClick={() => {
+              if (activeItem !== "") {
+                let copiedData = { ...tablesData };
+                if (copiedData?.[activeItem]?.data.length === 0) {
+                  copiedData[activeItem].data = [{ [`New Column`]: undefined }];
+                  // setAddedCols((prev) => [...prev, `New Column`]);
+                  setAddedCols((prev) => ({
+                    ...prev,
+                    [activeItem]: prev?.[activeItem]
+                      ? [...prev?.[activeItem], `New Column`]
+                      : [`New Column`],
+                  }));
+                  setTablesData(copiedData);
+                  setCopiedTablesData(copiedData);
+                  setSavedTablesData(copiedData);
+                } else {
+                  const updatedData = copiedData?.[activeItem]?.data?.map(
+                    (el) => {
+                      const { ...rest } = el;
+                      return {
+                        ...rest,
+                        [`New Column`]: undefined,
+                      };
+                    }
+                  );
+                  // setAddedCols((prev) => [...prev, `New Column`]);
+                  setAddedCols((prev) => ({
+                    ...prev,
+                    [activeItem]: prev?.[activeItem]
+                      ? [...prev?.[activeItem], `New Column`]
+                      : [`New Column`],
+                  }));
 
-                setSelectedTableData(updatedData);
+                  setSelectedTableData(updatedData);
 
-                copiedData[activeItem].data = updatedData;
-                setTablesData(copiedData);
-                setCopiedTablesData(copiedData);
+                  copiedData[activeItem].data = updatedData;
+                  setTablesData(copiedData);
+                  setCopiedTablesData(copiedData);
+                  setSavedTablesData(copiedData);
+                }
               }
-            }
-          }}
+            }}
+          >
+            <IoIosAdd color="green" />
+            {/* <p>New Column</p> */}
+          </div>
+        </TooltipComponent>
+
+        <div
+          className="cursor-pointer bg-gray-200 rounded-md px-2 py-[2px] text-logoColor text-[10px]"
+          onClick={() => {}}
         >
-          <p>New Column</p>
+          <FormalDropdown
+            label={"Type"}
+            options={["string", "date", "datetime", "number"]}
+            value={
+              tablesData?.[activeItem]?.dataTypes?.[
+                activeColItem?.[activeItem]
+              ]?.[0]
+            }
+            onChange={(val) => {
+              try {
+                let copiedData = { ...tablesData };
+                if (val === "string") {
+                  const newtableData = [];
+                  for (const item of tablesData?.[activeItem]?.data) {
+                    newtableData.push({
+                      ...item,
+                      [activeColItem?.[activeItem]]:
+                        item?.[activeColItem?.[activeItem]].toString(),
+                    });
+                  }
+                  copiedData[activeItem].data = newtableData;
+                  copiedData[activeItem].dataTypes = {
+                    ...copiedData[activeItem].dataTypes,
+                    [activeColItem?.[activeItem]]: ["string"],
+                  };
+                } else if (val === "number") {
+                  const newtableData = [];
+                  for (const item of tablesData?.[activeItem]?.data) {
+                    newtableData.push({
+                      ...item,
+                      [activeColItem?.[activeItem]]: isNaN(
+                        Number(item?.[activeColItem?.[activeItem]])
+                      )
+                        ? item?.[activeColItem?.[activeItem]]
+                        : Number(item?.[activeColItem?.[activeItem]]),
+                    });
+                  }
+                  copiedData[activeItem].data = newtableData;
+                  copiedData[activeItem].dataTypes = {
+                    ...copiedData[activeItem].dataTypes,
+                    [activeColItem?.[activeItem]]: ["number"],
+                  };
+                } else if (val === "date") {
+                  const newtableData = [];
+                  for (const item of tablesData?.[activeItem]?.data) {
+                    newtableData.push({
+                      ...item,
+                      [activeColItem?.[activeItem]]: new Date(
+                        item?.[activeColItem?.[activeItem]]
+                      )
+                        .toISOString()
+                        .slice(0, 10),
+                    });
+                  }
+                  copiedData[activeItem].data = newtableData;
+                  copiedData[activeItem].dataTypes = {
+                    ...copiedData[activeItem].dataTypes,
+                    [activeColItem?.[activeItem]]: ["date"],
+                  };
+                } else if (val === "datetime") {
+                  const newtableData = [];
+                  for (const item of tablesData?.[activeItem]?.data) {
+                    newtableData.push({
+                      ...item,
+                      [activeColItem?.[activeItem]]: new Date(
+                        item?.[activeColItem?.[activeItem]]
+                      )
+                        .toISOString()
+                        .slice(0, 24),
+                    });
+                  }
+                  copiedData[activeItem].data = newtableData;
+                  copiedData[activeItem].dataTypes = {
+                    ...copiedData[activeItem].dataTypes,
+                    [activeColItem?.[activeItem]]: ["datetime"],
+                  };
+                }
+                setTablesData(copiedData);
+                console.log(copiedData);
+              } catch (error) {
+                console.log(error.message);
+              }
+            }}
+          />
+          {/* <p>New Column</p> */}
         </div>
+
+        <TooltipComponent content={"Add Actions"} position="BottomCenter">
+          <div
+            className="cursor-pointer bg-gray-200 rounded-md p-2 text-logoColor"
+            onClick={() => setIsActionCard(true)}
+          >
+            <IoIosAdd color="green" />
+            {/* <p>New Column</p> */}
+          </div>
+        </TooltipComponent>
       </div>
       <div className="flex flex-row gap-2 justify-center items-center w-full p-1 h-[36px] relative">
         <div className="flex flex-grow">
@@ -168,6 +280,7 @@ const ManageTablesTaskbar = () => {
               console.log(copiedData);
               setTablesData(copiedData);
               setCopiedTablesData(copiedData);
+              setSavedTablesData(copiedData);
             }}
           >
             <input

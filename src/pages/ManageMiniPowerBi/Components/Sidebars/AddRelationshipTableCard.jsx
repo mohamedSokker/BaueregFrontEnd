@@ -16,6 +16,7 @@ const AddRelationshipTableCard = ({
   setIsDataReady,
   setTablesData,
   setCopiedTablesData,
+  setSavedTablesData,
 
   isRelationshipChoose,
   setIsRelationshipChoose,
@@ -228,6 +229,14 @@ const AddRelationshipTableCard = ({
                       },
                     }));
                     setCopiedTablesData((prev) => ({
+                      ...prev,
+                      [item?.Name]: {
+                        name: item?.Name,
+                        data: currentVT,
+                        dataTypes: detectTableColumnTypes(currentVT),
+                      },
+                    }));
+                    setSavedTablesData((prev) => ({
                       ...prev,
                       [item?.Name]: {
                         name: item?.Name,

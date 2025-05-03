@@ -61,7 +61,7 @@ const SlicerItems = ({
     // setFilteredData(tableResult);
 
     setFilteredSlicer(resultArray);
-    setSlicers(Array.from(new Set(result)));
+    setSlicers(Array.from(new Set(result)).sort());
   }, []);
 
   return slicers?.map((item, idx) => (
@@ -199,15 +199,24 @@ const CheckSlicer = ({
     dataFontWeight,
   } = item;
 
+  useEffect(() => {
+    setCopiedData(tablesData);
+  }, [tablesData]);
+
   // console.log(slicersCheckedItems);
 
   useEffect(() => {
     const result = [];
-    tableData?.map((item) => {
-      result.push(item?.[mainSlicer]);
+    Object.keys(tablesData)?.map((table) => {
+      tablesData?.[table]?.data?.map((item) => {
+        result.push(item?.[mainSlicer]);
+      });
     });
-    setSlicers(Array.from(new Set(result)));
-  }, [data]);
+    // tableData?.map((item) => {
+    //   result.push(item?.[mainSlicer]);
+    // });
+    setSlicers(Array.from(new Set(result)).sort());
+  }, [data, tablesData]);
 
   return (
     <div className="w-[calc(100%-0.4rem)] h-[calc(100%-0.4rem)] flex flex-row overflow-scroll p-1 table_body">

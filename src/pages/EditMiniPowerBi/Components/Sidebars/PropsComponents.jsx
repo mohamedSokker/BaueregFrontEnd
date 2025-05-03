@@ -6,7 +6,8 @@ import { useDragContext } from "../Customs/DragContext";
 import Toggle1 from "../../../../components/Accessories/Toogle1";
 
 const PropsComponents = ({ cat }) => {
-  const { data, setData, selectedItem, tablesData } = useInitContext();
+  const { data, setData, selectedItem, tablesData, setIsExpressionCard } =
+    useInitContext();
   // const { dragItem, dragSource } = useDragContext();
 
   const [childItems, setChildItems] = useState([
@@ -115,6 +116,15 @@ const PropsComponents = ({ cat }) => {
                   onChange={(e) => handleChange(e, item)}
                 />
               )
+            )}
+
+            {item.inputType === "expressionButton" && (
+              <button
+                className="w-[70%] text-[10px] p-1 bg-[#CB1955] text-white rounded-[4px]"
+                onClick={() => setIsExpressionCard(true)}
+              >
+                Add Expression
+              </button>
             )}
 
             {/* {item?.inputType === "text" && (

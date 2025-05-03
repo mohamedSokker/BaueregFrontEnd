@@ -26,6 +26,7 @@ const MiniPowerBi = () => {
   const [dataExpressions, setDataExpressions] = useState([]);
 
   const {
+    setIsPreview,
     mouseMoveMove,
     mouseUpMove,
     data,
@@ -35,6 +36,8 @@ const MiniPowerBi = () => {
     setTablesData,
     copiedTablesData,
     setCopiedTablesData,
+    savedTablesData,
+    setSavedTablesData,
     isChoose,
     setIsChoose,
     isRelationshipChoose,
@@ -45,11 +48,22 @@ const MiniPowerBi = () => {
     selectedRelationshipsTable,
     setSelectedTable,
     selectedTable,
+    setViewName,
+    setViewGroup,
+    setUsersNamesData,
     setAddedCols,
     setExpressions,
+    isItemChecked,
+    setIsItemChecked,
+    isItemUnChecked,
+    setIsItemUnChecked,
+    isSelectAllChecked,
+    setIsSelectAllChecked,
+    colData,
+    setColData,
+    isSortChecked,
+    setIsSortChecked,
   } = useInitContext();
-
-  // console.log(tablesData);
 
   const {
     loading,
@@ -62,6 +76,30 @@ const MiniPowerBi = () => {
     setRelationsTable,
   } = useDataContext();
 
+  const sortByKey = (array, key) => {
+    return array.sort((a, b) => {
+      const valA = a[key];
+      const valB = b[key];
+
+      // Handle null or undefined
+      if (valA == null) return 1;
+      if (valB == null) return -1;
+
+      // Number
+      if (typeof valA === "number" && typeof valB === "number") {
+        return valA - valB;
+      }
+
+      // Date (ISO strings or Date objects)
+      if (valA instanceof Date || !isNaN(Date.parse(valA))) {
+        return new Date(valA) - new Date(valB);
+      }
+
+      // String (localeCompare handles case and diacritics)
+      return String(valA).localeCompare(String(valB));
+    });
+  };
+
   useEffect(() => {
     if (
       Object.keys(tablesData).length ===
@@ -70,9 +108,11 @@ const MiniPowerBi = () => {
     ) {
       setLoading(true);
       setMessage(`Initializing Expressions...`);
+      let added = {};
       Object.keys(dataExpressions)?.map((table) => {
         const allowedKeys = [...Object.keys(tablesData?.[table]?.data?.[0])];
-        let added = {};
+
+        console.log(dataExpressions);
         Object.keys(dataExpressions?.[table])?.map((col) => {
           added = added?.[table]
             ? { ...added, [table]: [...added?.[table], col] }
@@ -97,9 +137,11 @@ const MiniPowerBi = () => {
             [ex]: expressionFunction(...allowedKeys.map((key) => row[key])),
           }));
           copiedData[table].data = result;
+          copiedData[table].dataTypes = detectTableColumnTypes(result);
           console.log(copiedData);
           setTablesData(copiedData);
           setCopiedTablesData(copiedData);
+          setSavedTablesData(copiedData);
         });
       });
       setLoading(false);
@@ -160,6 +202,15 @@ const MiniPowerBi = () => {
           dataTypes: detectTableColumnTypes(data[idx].data),
         },
       }));
+      setSavedTablesData((prev) => ({
+        ...prev,
+        [item]: {
+          ...d[item],
+          data: data[idx].data,
+          name: item,
+          dataTypes: detectTableColumnTypes(data[idx].data),
+        },
+      }));
     });
 
     console.log(relData);
@@ -184,6 +235,7 @@ const MiniPowerBi = () => {
   useEffect(() => {
     setLoading(true);
     setMessage(`Performing Relations...`);
+    let result = {};
     for (const item of relationsTable) {
       if (isRelationshipChoose?.includes(item.Name)) {
         const relationships = JSON.parse(item?.RelationShips);
@@ -230,12 +282,18 @@ const MiniPowerBi = () => {
         currentVT.push(sourceData);
         currentVT.pop();
         console.log(currentVT);
+
+        // result = {
+        //   ...result,
+        //   [item?.Name]: { name: item?.Name, data: currentVT },
+        // };
         setTablesData((prev) => ({
           ...prev,
           [item?.Name]: {
             name: item?.Name,
             data: currentVT,
-            dataTypes: detectTableColumnTypes(currentVT),
+            dataTypes:
+              currentVT.length > 0 && detectTableColumnTypes(currentVT),
           },
         }));
         setCopiedTablesData((prev) => ({
@@ -243,13 +301,140 @@ const MiniPowerBi = () => {
           [item?.Name]: {
             name: item?.Name,
             data: currentVT,
-            dataTypes: detectTableColumnTypes(currentVT),
+            dataTypes:
+              currentVT.length > 0 && detectTableColumnTypes(currentVT),
+          },
+        }));
+        setSavedTablesData((prev) => ({
+          ...prev,
+          [item?.Name]: {
+            name: item?.Name,
+            data: currentVT,
+            dataTypes:
+              currentVT.length > 0 && detectTableColumnTypes(currentVT),
           },
         }));
       }
     }
     setLoading(false);
   }, [relationshipdata]);
+
+  useEffect(() => {
+    if (savedTablesData && Object.keys(savedTablesData)?.length > 0) {
+      const result = {};
+      const uncheckedResult = {};
+      const selectAllResult = {};
+      const sortResult = {};
+
+      let colFlag = false;
+
+      Object.entries(savedTablesData).forEach(([table, tableData]) => {
+        if (!isItemChecked?.[table]) {
+          const rows = tableData?.data || [];
+          const firstRow = rows[0] || {};
+
+          sortResult[table] = sortResult[table] || [];
+
+          Object.keys(firstRow).forEach((col) => {
+            selectAllResult[table] = selectAllResult[table] || {};
+            selectAllResult[table][col] = { SelectAll: true };
+
+            result[table] = result[table] || {};
+            result[table][col] = [];
+
+            uncheckedResult[table] = uncheckedResult[table] || {};
+            uncheckedResult[table][col] = [];
+
+            if (!sortResult[table].includes("ID")) {
+              sortResult[table].push("ID");
+            }
+
+            const uniqueValues = new Set();
+
+            rows.forEach((item) => {
+              const value = item[col];
+              if (!uniqueValues.has(value)) {
+                uniqueValues.add(value);
+              }
+            });
+
+            result[table][col] = Array.from(uniqueValues).sort((a, b) => {
+              if (a == null) return 1;
+              if (b == null) return -1;
+              if (!isNaN(Date.parse(a)) && !isNaN(Date.parse(b))) {
+                return new Date(a) - new Date(b);
+              }
+              if (typeof a === "number" && typeof b === "number") {
+                return a - b;
+              }
+              return String(a).localeCompare(String(b));
+            });
+          });
+          colFlag = true;
+        } else {
+          result[table] = isItemChecked[table];
+          uncheckedResult[table] = isItemUnChecked[table];
+          selectAllResult[table] = isSelectAllChecked[table];
+          sortResult[table] = isSortChecked[table];
+          colFlag = false;
+        }
+      });
+
+      if (colFlag) setColData(result);
+      setIsSelectAllChecked(selectAllResult);
+      setIsItemChecked(result);
+    }
+  }, [savedTablesData]);
+
+  useEffect(() => {
+    if (
+      Object.keys(isItemUnChecked).length > 0 &&
+      Object.keys(isSortChecked).length > 0 &&
+      Object.keys(savedTablesData).length > 0
+    ) {
+      handleApply();
+    }
+  }, [isItemUnChecked, isSortChecked, savedTablesData]);
+
+  const handleApply = () => {
+    let slicers = {};
+
+    Object.keys(isItemUnChecked || {}).forEach((table) => {
+      slicers[table] = [];
+      Object.keys(isItemUnChecked[table] || {}).forEach((col) => {
+        (isItemUnChecked[table][col] || []).forEach((item) => {
+          //   if (!slicers[table]) slicers[table] = [];
+          slicers[table].push({ colName: col, item });
+        });
+      });
+    });
+
+    console.log(slicers);
+
+    let result = { ...savedTablesData };
+    let resultData = [];
+    Object.keys(savedTablesData)?.map((table) => {
+      sortByKey(savedTablesData?.[table]?.data, isSortChecked?.[table]?.[0]);
+      resultData = [];
+      resultData = savedTablesData?.[table]?.data?.filter((row) => {
+        return slicers?.[table]?.every(({ colName, item }) => {
+          if (row[colName] === item) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      });
+      result[table] = {
+        ...result[table],
+        data: resultData,
+      };
+    });
+
+    // console.log(result);
+    setTablesData(result);
+    setCopiedTablesData(result);
+  };
 
   const getData = async () => {
     try {
@@ -270,12 +455,16 @@ const MiniPowerBi = () => {
       // console.log(responseData[1]?.data);
       setRelationsTable(responseData[1]?.data);
 
-      // setViewName(targetItem?.Name);
-      // setViewGroup(targetItem?.Group);
-      // setUsersNamesData(JSON.parse(targetItem?.UsersToView));
+      setViewName(targetItem?.Name);
+      setViewGroup(targetItem?.Group);
+      setUsersNamesData(JSON.parse(targetItem?.UsersToView));
+
       const viewData = JSON.parse(targetItem?.ViewData);
 
-      setIsChoose(Object.keys(viewData?.tablesData));
+      setIsItemUnChecked(viewData?.unCheckedItems);
+      setIsSortChecked(viewData?.sorted);
+
+      setIsChoose(viewData?.isChoose);
 
       setIsRelationshipChoose(viewData?.isRelationshipChoose);
       await getTablesData(viewData?.isChoose, viewData?.isRelationshipChoose);
@@ -286,6 +475,7 @@ const MiniPowerBi = () => {
 
       // setLoading(false);
     } catch (err) {
+      console.log(err);
       console.log(
         err?.response?.data?.message
           ? err?.response?.data?.message

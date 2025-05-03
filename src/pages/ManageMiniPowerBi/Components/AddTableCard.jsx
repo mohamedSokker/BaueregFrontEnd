@@ -20,6 +20,7 @@ const AddTableCard = ({
   setTablesData,
   copiedTablesData,
   setCopiedTablesData,
+  setSavedTablesData,
   isChoose,
   setIsChoose,
 }) => {
@@ -150,7 +151,9 @@ const AddTableCard = ({
                 setIsDataReady(false);
                 setSelectedTable(isChoose);
                 isChoose?.map(async (item) => {
-                  const data = await getTableData(item);
+                  const data = tablesData?.[item]?.data
+                    ? tablesData?.[item]?.data
+                    : await getTableData(item);
                   if (data) {
                     setTablesData((prev) => ({
                       ...prev,
@@ -162,6 +165,15 @@ const AddTableCard = ({
                       },
                     }));
                     setCopiedTablesData((prev) => ({
+                      ...prev,
+                      [item]: {
+                        ...prev[item],
+                        name: item,
+                        data: data,
+                        dataTypes: detectTableColumnTypes(data),
+                      },
+                    }));
+                    setSavedTablesData((prev) => ({
                       ...prev,
                       [item]: {
                         ...prev[item],

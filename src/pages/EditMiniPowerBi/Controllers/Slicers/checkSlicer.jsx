@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { detectTableColumnTypes } from "../../Services/getTypes";
 
 export const handleCheck = ({
   e,
@@ -126,8 +127,8 @@ export const handleCheckItems = ({
         const checkedArrayCheck =
           Object.keys(slicers).length === 0
             ? true
-            : Object.keys(slicers)?.every((group) => {
-                return [...slicers?.[group]].some(({ tree }) => {
+            : Object.keys(slicers)?.every((slicer) => {
+                return [...slicers?.[slicer]].some(({ tree }) => {
                   return tree?.every(({ colName, item }) => {
                     if (row[colName] === item) {
                       return true;
@@ -160,7 +161,10 @@ export const handleCheckItems = ({
           return false;
         }
       });
-      result[table] = { ...result[table], data: resultData };
+      result[table] = {
+        ...result[table],
+        data: resultData,
+      };
     });
     console.log(result);
     setTablesData(result);

@@ -24,6 +24,7 @@ export const PowerPiInitContextProvider = ({ children }) => {
   );
   const [relationShipsExpressions, setRelationshipsExpressions] = useState([]);
   const [isTableCard, setIsTableCard] = useState(false);
+  const [isActionCard, setIsActionCard] = useState(false);
   const [isRelationshipTableCard, setIsRelationshipTableCard] = useState(false);
   const [isTableSceneCard, setIsTableSceneCard] = useState(false);
   const [isPieChartCard, setIsPieChartCard] = useState(false);
@@ -37,6 +38,7 @@ export const PowerPiInitContextProvider = ({ children }) => {
   const [tablesData, setTablesData] = useState({});
   const [relationstablesData, setRelationsTablesData] = useState({});
   const [copiedTablesData, setCopiedTablesData] = useState({});
+  const [savedTablesData, setSavedTablesData] = useState({});
   const [isPanelDown, setIsPanelDown] = useState({});
   const [currentID, setCurrentID] = useState(0);
   const [relationShips, setRelationShips] = useState([]);
@@ -74,6 +76,16 @@ export const PowerPiInitContextProvider = ({ children }) => {
   const [slicerMaxDates, setSlicersMaxDates] = useState([]);
   const [isChatbot, setIsChatBot] = useState(false);
 
+  //Filters
+  const [isSelectAllChecked, setIsSelectAllChecked] = useState({});
+  const [isItemChecked, setIsItemChecked] = useState({});
+  const [isItemUnChecked, setIsItemUnChecked] = useState({});
+  const [colData, setColData] = useState({});
+  const [isSortChecked, setIsSortChecked] = useState({});
+
+  //AddExpression
+  const [isExpressionCard, setIsExpressionCard] = useState(false);
+
   const {
     data,
     setData,
@@ -87,6 +99,75 @@ export const PowerPiInitContextProvider = ({ children }) => {
     mouseDownLeftResize,
     mouseDownRightResize,
   } = useEvenetListener();
+
+  // useEffect(() => {
+  //   if (savedTablesData && Object.keys(savedTablesData)?.length > 0) {
+  //     const result = {};
+  //     const uncheckedResult = {};
+  //     const selectAllResult = {};
+  //     const sortResult = {};
+
+  //     let colFlag = false;
+
+  //     Object.entries(savedTablesData).forEach(([table, tableData]) => {
+  //       if (!isItemChecked?.[table]) {
+  //         const rows = tableData?.data || [];
+  //         const firstRow = rows[0] || {};
+
+  //         sortResult[table] = sortResult[table] || [];
+
+  //         Object.keys(firstRow).forEach((col) => {
+  //           selectAllResult[table] = selectAllResult[table] || {};
+  //           selectAllResult[table][col] = { SelectAll: true };
+
+  //           result[table] = result[table] || {};
+  //           result[table][col] = [];
+
+  //           uncheckedResult[table] = uncheckedResult[table] || {};
+  //           uncheckedResult[table][col] = [];
+
+  //           if (!sortResult[table].includes("ID")) {
+  //             sortResult[table].push("ID");
+  //           }
+
+  //           const uniqueValues = new Set();
+
+  //           rows.forEach((item) => {
+  //             const value = item[col];
+  //             if (!uniqueValues.has(value)) {
+  //               uniqueValues.add(value);
+  //             }
+  //           });
+
+  //           result[table][col] = Array.from(uniqueValues).sort((a, b) => {
+  //             if (a == null) return 1;
+  //             if (b == null) return -1;
+  //             if (!isNaN(Date.parse(a)) && !isNaN(Date.parse(b))) {
+  //               return new Date(a) - new Date(b);
+  //             }
+  //             if (typeof a === "number" && typeof b === "number") {
+  //               return a - b;
+  //             }
+  //             return String(a).localeCompare(String(b));
+  //           });
+  //         });
+  //         colFlag = true;
+  //       } else {
+  //         result[table] = isItemChecked[table];
+  //         uncheckedResult[table] = isItemUnChecked[table];
+  //         selectAllResult[table] = isSelectAllChecked[table];
+  //         sortResult[table] = isSortChecked[table];
+  //         colFlag = false;
+  //       }
+  //     });
+
+  //     if (colFlag) setColData(result);
+  //     setIsSelectAllChecked(selectAllResult);
+  //     setIsItemChecked(result);
+  //     setIsItemUnChecked(uncheckedResult);
+  //     setIsSortChecked(sortResult);
+  //   }
+  // }, [savedTablesData]);
 
   const handleSend = async () => {
     try {
@@ -139,6 +220,8 @@ export const PowerPiInitContextProvider = ({ children }) => {
         setRelationshipSelectedTable,
         isTableCard,
         setIsTableCard,
+        isActionCard,
+        setIsActionCard,
         isRelationshipTableCard,
         setIsRelationshipTableCard,
         isTableSceneCard,
@@ -235,6 +318,22 @@ export const PowerPiInitContextProvider = ({ children }) => {
         setSlicersMaxDates,
         isChatbot,
         setIsChatBot,
+
+        isItemChecked,
+        setIsItemChecked,
+        isItemUnChecked,
+        setIsItemUnChecked,
+        isSelectAllChecked,
+        setIsSelectAllChecked,
+        savedTablesData,
+        setSavedTablesData,
+        colData,
+        setColData,
+        isSortChecked,
+        setIsSortChecked,
+
+        isExpressionCard,
+        setIsExpressionCard,
       }}
     >
       {children}

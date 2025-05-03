@@ -63,6 +63,38 @@ const ManageTablesLists = ({ setTableLoading }) => {
       inputColRef.current.setSelectionRange(0, length);
     }
   }, [isColEditing]);
+
+  useEffect(() => {
+    if (Object.keys(tablesData).length > 0) {
+      // console.log(
+      //   Object.keys(tablesData?.[Object.keys(tablesData)?.[0]]?.data?.[0])?.[0]
+      // );
+      // console.log(activeColItem);
+      // console.log(tablesData?.[Object.keys(tablesData)?.[0]]?.data);
+      if (activeItem === "" || !activeItem) {
+        setTableLoading(true);
+        setTimeout(() => {
+          setActiveItem(Object.keys(tablesData)?.[0]);
+          setSelectedTableData(
+            tablesData?.[Object.keys(tablesData)?.[0]]?.data
+          );
+          setTableLoading(false);
+        }, 0);
+        // setActiveItem(Object.keys(tablesData)?.[0]);
+      }
+      if (
+        activeColItem === "" ||
+        !activeColItem ||
+        Object.keys(activeColItem).length === 0
+      ) {
+        setActiveColItem({
+          [Object.keys(tablesData)?.[0]]: Object.keys(
+            tablesData?.[Object.keys(tablesData)?.[0]]?.data?.[0]
+          )?.[0],
+        });
+      }
+    }
+  }, [tablesData]);
   return (
     <div className="flex w-[200px] h-full flex-col bg-gray-200 border-l-[1px] overflow-y-scroll p-2 gap-2">
       {[...selectedTable, ...selectedRelationshipsTable]?.map((item, idx) => (

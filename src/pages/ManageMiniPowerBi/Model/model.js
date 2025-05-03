@@ -209,6 +209,11 @@ export const barProps = [
     select: true,
     category: "Data",
   },
+  {
+    name: "addExpressions",
+    inputType: "expressionButton",
+    category: "Data",
+  },
   { name: "xFontSize", inputType: "number", unit: "px", category: "Fonts" },
   { name: "xFontWeight", inputType: "number", unit: "", category: "Fonts" },
   { name: "yFontSize", inputType: "number", unit: "px", category: "Fonts" },

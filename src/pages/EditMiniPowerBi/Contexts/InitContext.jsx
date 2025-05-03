@@ -24,6 +24,7 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
   );
   const [relationShipsExpressions, setRelationshipsExpressions] = useState([]);
   const [isTableCard, setIsTableCard] = useState(false);
+  const [isActionCard, setIsActionCard] = useState(false);
   const [isRelationshipTableCard, setIsRelationshipTableCard] = useState(false);
   const [isTableSceneCard, setIsTableSceneCard] = useState(false);
   const [isPieChartCard, setIsPieChartCard] = useState(false);
@@ -37,6 +38,7 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
   const [tablesData, setTablesData] = useState({});
   const [relationstablesData, setRelationsTablesData] = useState({});
   const [copiedTablesData, setCopiedTablesData] = useState({});
+  const [savedTablesData, setSavedTablesData] = useState({});
   const [isPanelDown, setIsPanelDown] = useState({});
   const [currentID, setCurrentID] = useState(0);
   const [relationShips, setRelationShips] = useState([]);
@@ -74,6 +76,16 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
   const [slicerMaxDates, setSlicersMaxDates] = useState([]);
   const [isChatbot, setIsChatBot] = useState(false);
 
+  //Filters
+  const [isSelectAllChecked, setIsSelectAllChecked] = useState({});
+  const [isItemChecked, setIsItemChecked] = useState({});
+  const [isItemUnChecked, setIsItemUnChecked] = useState({});
+  const [colData, setColData] = useState({});
+  const [isSortChecked, setIsSortChecked] = useState({});
+
+  //AddExpression
+  const [isExpressionCard, setIsExpressionCard] = useState(false);
+
   const {
     data,
     setData,
@@ -110,6 +122,8 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
             tablesData: tableData,
             isChoose: isChoose,
             isRelationshipChoose: isRelationshipChoose,
+            unCheckedItems: isItemUnChecked,
+            sorted: isSortChecked,
           }),
         }),
       });
@@ -139,6 +153,8 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
         setRelationshipSelectedTable,
         isTableCard,
         setIsTableCard,
+        isActionCard,
+        setIsActionCard,
         isRelationshipTableCard,
         setIsRelationshipTableCard,
         isTableSceneCard,
@@ -235,6 +251,22 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
         setSlicersMaxDates,
         isChatbot,
         setIsChatBot,
+
+        isItemChecked,
+        setIsItemChecked,
+        isItemUnChecked,
+        setIsItemUnChecked,
+        isSelectAllChecked,
+        setIsSelectAllChecked,
+        savedTablesData,
+        setSavedTablesData,
+        colData,
+        setColData,
+        isSortChecked,
+        setIsSortChecked,
+
+        isExpressionCard,
+        setIsExpressionCard,
       }}
     >
       {children}

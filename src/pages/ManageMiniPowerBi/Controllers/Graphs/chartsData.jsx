@@ -11,6 +11,37 @@ import {
   maxData,
 } from "../../Services/chartsOperations";
 
+const addExpressionsToData = (data, expressions) => {
+  return data.map((row) => {
+    const newRow = { ...row };
+
+    expressions?.forEach((expr) => {
+      const { name, firstArg, secondArg, opType } = expr;
+      const val1 = parseFloat(row[firstArg]);
+      const val2 = parseFloat(row[secondArg]);
+
+      if (isNaN(val1) || isNaN(val2)) return;
+
+      switch (opType) {
+        case "Division":
+          newRow[name] = val2 !== 0 ? val1 / val2 : null;
+          break;
+        case "Multiply":
+          newRow[name] = val1 * val2;
+          break;
+        case "Sum":
+          newRow[name] = val1 + val2;
+          break;
+        case "Subtraction":
+        default:
+          newRow[name] = val1 - val2;
+      }
+    });
+
+    return newRow;
+  });
+};
+
 const useChartsData = ({ tableData, item, data, tablesData }) => {
   const [chartData, setChartData] = useState(null);
 
@@ -58,6 +89,9 @@ const useChartsData = ({ tableData, item, data, tablesData }) => {
     // });
 
     resultArray = getResultArray(result, tooltips, Y_Axis, count);
+    if (item?.expressions?.length) {
+      resultArray = addExpressionsToData(resultArray, item.expressions);
+    }
 
     setChartData(resultArray);
   }, [tableData, data]);
