@@ -100,142 +100,173 @@ const ManageMiniPowerBi = () => {
   };
 
   useEffect(() => {
-    if (
-      Object.keys(tablesData).length ===
-        [...isChoose, ...isRelationshipChoose].length &&
-      Object.keys(tablesData).length !== 0
-    ) {
-      setLoading(true);
-      setMessage(`Initializing Expressions...`);
-      let added = {};
-      Object.keys(dataExpressions)?.map((table) => {
-        const allowedKeys = [...Object.keys(tablesData?.[table]?.data?.[0])];
+    const processExpressions = () => {
+      const copiedData = { ...tablesData };
+      const added = {};
 
-        Object.keys(dataExpressions?.[table])?.map((col) => {
-          added = added?.[table]
-            ? { ...added, [table]: [...added?.[table], col] }
-            : { ...added, [table]: [col] };
+      Object.keys(dataExpressions || {}).forEach((table) => {
+        const tableData = copiedData[table]?.data;
+        if (!tableData || !Array.isArray(tableData)) return;
+
+        const allowedKeys = Object.keys(tableData[0] || {});
+        const expressionsForTable = dataExpressions[table] || {};
+        const cols = Object.keys(expressionsForTable);
+
+        // Initialize added columns
+        if (!added[table]) added[table] = [];
+        cols.forEach((col) => {
+          if (!added[table].includes(col)) added[table].push(col);
         });
-        // console.log(added);
-        setAddedCols(added);
-        // setAddedCols(dataExpressions);
-        setExpressions(dataExpressions);
-        const cols = Object.keys(dataExpressions?.[table]);
-        cols.map((ex) => {
-          const exp = dataExpressions?.[table]?.[ex];
-          const isChooseValue = exp.split("(")[0];
 
-          const expressionFunction = new Function(
-            ...allowedKeys,
-            `${getHelperFunction1(exp, isChooseValue)};`
-          );
-          let copiedData = { ...tablesData };
-          const result = tablesData?.[table]?.data?.map((row) => ({
-            ...row,
-            [ex]: expressionFunction(...allowedKeys.map((key) => row[key])),
-          }));
-          copiedData[table].data = result;
-          copiedData[table].dataTypes = detectTableColumnTypes(result);
-          // console.log(copiedData);
-          setTablesData(copiedData);
-          setCopiedTablesData(copiedData);
-          setSavedTablesData(copiedData);
+        // Process each expression column
+        cols.forEach((col) => {
+          const exp = expressionsForTable[col];
+          const funcBody = getHelperFunction1(exp, exp.split("(")[0]);
+
+          try {
+            const expressionFunction = new Function(...allowedKeys, funcBody);
+
+            copiedData[table].data = tableData.map((row) => ({
+              ...row,
+              [col]: expressionFunction(...allowedKeys.map((key) => row[key])),
+            }));
+
+            // Update data types after adding new column
+            copiedData[table].dataTypes = detectTableColumnTypes(
+              copiedData[table].data
+            );
+          } catch (error) {
+            console.error(
+              `Error evaluating expression "${exp}" for ${table}.${col}:`,
+              error
+            );
+          }
         });
       });
+
+      // Batch state updates
+      setAddedCols(added);
+      setExpressions(dataExpressions);
+      setTablesData(copiedData);
+      setCopiedTablesData(copiedData);
+      setSavedTablesData(copiedData);
+    };
+
+    const shouldProcess =
+      Object.keys(tablesData).length > 0 &&
+      Object.keys(tablesData).length ===
+        [...isChoose, ...isRelationshipChoose].length;
+
+    if (shouldProcess) {
+      setLoading(true);
+      setMessage("Initializing Expressions...");
+      processExpressions();
       setLoading(false);
     }
   }, [isChoose, isRelationshipChoose, dataExpressions]);
 
-  const getTablesData = async (d, rshipd) => {
+  const getTablesData = async (selectedTables, relationshipTables) => {
     setLoading(true);
-    setMessage(`Getting Data From Database`);
+    setMessage("Getting Data From Database");
+
+    // Step 1: Prepare URLs
     const urls = [];
-    d.map((item) => {
-      urls.push(`/api/v3/${item}`);
-      if (!selectedTable.includes(item)) {
-        setSelectedTable((prev) => [...prev, item]);
+    const tablesToFetch = [];
+
+    selectedTables.forEach((table) => {
+      urls.push(`/api/v3/${table}`);
+      if (!selectedTable.includes(table)) {
+        setSelectedTable((prev) => [...prev, table]);
       }
+      tablesToFetch.push(table);
     });
 
     const relUrls = [];
-    const tbles = [];
-    rshipd.map((item) => {
-      const content = item.split(",");
-      content.map((el) => {
-        if (el !== "" && !relUrls.includes(`/api/v3/${el}`)) {
+    const relTables = [];
+
+    relationshipTables.forEach((item) => {
+      item.split(",").forEach((el) => {
+        if (el && !relUrls.includes(`/api/v3/${el}`)) {
           relUrls.push(`/api/v3/${el}`);
-          tbles.push(el);
+          relTables.push(el);
         }
       });
     });
 
-    const data = await Promise.all(
-      urls.map((url) => {
-        return axiosPrivate(url, { method: "GET" });
-      })
-    );
+    try {
+      // Step 2: Fetch Table Data
+      const [tableResponses, relResponses] = await Promise.all([
+        Promise.allSettled(
+          urls.map((url) => axiosPrivate(url, { method: "GET" }))
+        ),
+        Promise.allSettled(
+          relUrls.map((url) => axiosPrivate(url, { method: "GET" }))
+        ),
+      ]);
 
-    const relData = await Promise.all(
-      relUrls.map((url) => {
-        return axiosPrivate(url, { method: "GET" });
-      })
-    );
+      // Step 3: Process Table Data
+      const newTablesData = {};
+      const newCopiedTablesData = {};
+      const newSavedTablesData = {};
 
-    d.map((item, idx) => {
-      setTablesData((prev) => ({
-        ...prev,
-        [item]: {
-          ...d[item],
-          data: data[idx].data,
-          name: item,
-          dataTypes: detectTableColumnTypes(data[idx].data),
-        },
-      }));
-      setCopiedTablesData((prev) => ({
-        ...prev,
-        [item]: {
-          ...d[item],
-          data: data[idx].data,
-          name: item,
-          dataTypes: detectTableColumnTypes(data[idx].data),
-        },
-      }));
-      setSavedTablesData((prev) => ({
-        ...prev,
-        [item]: {
-          ...d[item],
-          data: data[idx].data,
-          name: item,
-          dataTypes: detectTableColumnTypes(data[idx].data),
-        },
-      }));
-    });
+      tableResponses.forEach((res, index) => {
+        if (res.status === "fulfilled") {
+          const table = tablesToFetch[index];
+          const data = res.value?.data || [];
+          const dataTypes = detectTableColumnTypes(data);
 
-    // console.log(relData);
-
-    rshipd.map((item) => {
-      if (!selectedRelationshipsTable.includes(item)) {
-        setSelectedRelationshipsTable((prev) => [...prev, item]);
-      }
-      // const content = item.split(",");
-      let relshData = {};
-      tbles.map((el, idx) => {
-        if (el !== "") {
-          relshData = { ...relshData, [el]: relData[idx]?.data };
-          // setRelationshipData((prev) => ({
-          //   ...prev,
-          //   [el]: relData[idx]?.data,
-          // }));
+          newTablesData[table] = {
+            data,
+            name: table,
+            dataTypes,
+          };
+          newCopiedTablesData[table] = {
+            data,
+            name: table,
+            dataTypes,
+          };
+          newSavedTablesData[table] = {
+            data,
+            name: table,
+            dataTypes,
+          };
         }
       });
-      setRelationshipData(relshData);
-    });
-    setLoading(false);
+
+      setTablesData(newTablesData);
+      setCopiedTablesData(newCopiedTablesData);
+      setSavedTablesData(newSavedTablesData);
+
+      // Step 4: Process Relationship Data
+      const relDataMap = {};
+      relResponses.forEach((res, index) => {
+        if (res.status === "fulfilled") {
+          relDataMap[relTables[index]] = res.value?.data || [];
+        }
+      });
+
+      setRelationshipData(relDataMap);
+
+      // Step 5: Handle Selected Relationships
+      relationshipTables.forEach((item) => {
+        if (!selectedRelationshipsTable.includes(item)) {
+          setSelectedRelationshipsTable((prev) => [...prev, item]);
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+      setMessage("Failed to load data from database.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     setLoading(true);
     setMessage(`Performing Relations...`);
+    const updatedTables = {};
+    const updatedCopiedTables = {};
+    const updatedSavedTables = {};
     for (const item of relationsTable) {
       if (isRelationshipChoose?.includes(item.Name)) {
         const relationships = JSON.parse(item?.RelationShips);
@@ -282,35 +313,59 @@ const ManageMiniPowerBi = () => {
         currentVT.push(sourceData);
         currentVT.pop();
         // console.log(currentVT);
-        setTablesData((prev) => ({
-          ...prev,
-          [item?.Name]: {
-            name: item?.Name,
-            data: currentVT,
-            dataTypes:
-              currentVT.length > 0 && detectTableColumnTypes(currentVT),
-          },
-        }));
-        setCopiedTablesData((prev) => ({
-          ...prev,
-          [item?.Name]: {
-            name: item?.Name,
-            data: currentVT,
-            dataTypes:
-              currentVT.length > 0 && detectTableColumnTypes(currentVT),
-          },
-        }));
-        setSavedTablesData((prev) => ({
-          ...prev,
-          [item?.Name]: {
-            name: item?.Name,
-            data: currentVT,
-            dataTypes:
-              currentVT.length > 0 && detectTableColumnTypes(currentVT),
-          },
-        }));
+
+        updatedTables[item.Name] = {
+          name: item.Name,
+          data: sourceData,
+          dataTypes:
+            sourceData.length > 0 ? detectTableColumnTypes(sourceData) : {},
+        };
+
+        updatedCopiedTables[item.Name] = {
+          name: item.Name,
+          data: sourceData,
+          dataTypes:
+            sourceData.length > 0 ? detectTableColumnTypes(sourceData) : {},
+        };
+
+        updatedSavedTables[item.Name] = {
+          name: item.Name,
+          data: sourceData,
+          dataTypes:
+            sourceData.length > 0 ? detectTableColumnTypes(sourceData) : {},
+        };
+        // setTablesData((prev) => ({
+        //   ...prev,
+        //   [item?.Name]: {
+        //     name: item?.Name,
+        //     data: currentVT,
+        //     dataTypes:
+        //       currentVT.length > 0 && detectTableColumnTypes(currentVT),
+        //   },
+        // }));
+        // setCopiedTablesData((prev) => ({
+        //   ...prev,
+        //   [item?.Name]: {
+        //     name: item?.Name,
+        //     data: currentVT,
+        //     dataTypes:
+        //       currentVT.length > 0 && detectTableColumnTypes(currentVT),
+        //   },
+        // }));
+        // setSavedTablesData((prev) => ({
+        //   ...prev,
+        //   [item?.Name]: {
+        //     name: item?.Name,
+        //     data: currentVT,
+        //     dataTypes:
+        //       currentVT.length > 0 && detectTableColumnTypes(currentVT),
+        //   },
+        // }));
       }
     }
+    setTablesData((prev) => ({ ...prev, ...updatedTables }));
+    setCopiedTablesData((prev) => ({ ...prev, ...updatedCopiedTables }));
+    setSavedTablesData((prev) => ({ ...prev, ...updatedSavedTables }));
     setLoading(false);
   }, [relationshipdata]);
 
