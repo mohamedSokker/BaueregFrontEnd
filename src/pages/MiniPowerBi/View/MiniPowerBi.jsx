@@ -20,7 +20,7 @@ import {
   getHelperFunction1,
 } from "../Controllers/Expressions/KeyWordsHelper";
 import { detectTableColumnTypes } from "../Services/getTypes.js";
-import { useNavContext } from "../../../contexts/NavContext.jsx";
+import { useNavContext } from "../../../contexts/NavContext";
 
 const MiniPowerBi = () => {
   const axiosPrivate = useAxiosPrivate();

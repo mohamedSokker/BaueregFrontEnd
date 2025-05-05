@@ -19,7 +19,7 @@ import {
   getHelperFunction,
   getHelperFunction1,
 } from "../Controllers/Expressions/KeyWordsHelper.js";
-import { useNavContext } from "../../../contexts/NavContext.jsx";
+import { useNavContext } from "../../../contexts/NavContext";
 
 const ManageMiniPowerBi = () => {
   const axiosPrivate = useAxiosPrivate();
