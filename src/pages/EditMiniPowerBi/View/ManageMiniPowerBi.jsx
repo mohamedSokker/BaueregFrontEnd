@@ -99,59 +99,60 @@ const ManageMiniPowerBi = () => {
     });
   };
 
-  useEffect(() => {
-    const processExpressions = () => {
-      const copiedData = { ...tablesData };
-      const added = {};
+  const processExpressions = async () => {
+    const copiedData = { ...tablesData };
+    const added = {};
 
-      Object.keys(dataExpressions || {}).forEach((table) => {
-        const tableData = copiedData[table]?.data;
-        if (!tableData || !Array.isArray(tableData)) return;
+    Object.keys(dataExpressions || {}).forEach((table) => {
+      const tableData = copiedData[table]?.data;
+      if (!tableData || !Array.isArray(tableData)) return;
 
-        const allowedKeys = Object.keys(tableData[0] || {});
-        const expressionsForTable = dataExpressions[table] || {};
-        const cols = Object.keys(expressionsForTable);
+      const allowedKeys = Object.keys(tableData[0] || {});
+      const expressionsForTable = dataExpressions[table] || {};
+      const cols = Object.keys(expressionsForTable);
 
-        // Initialize added columns
-        if (!added[table]) added[table] = [];
-        cols.forEach((col) => {
-          if (!added[table].includes(col)) added[table].push(col);
-        });
-
-        // Process each expression column
-        cols.forEach((col) => {
-          const exp = expressionsForTable[col];
-          const funcBody = getHelperFunction1(exp, exp.split("(")[0]);
-
-          try {
-            const expressionFunction = new Function(...allowedKeys, funcBody);
-
-            copiedData[table].data = tableData.map((row) => ({
-              ...row,
-              [col]: expressionFunction(...allowedKeys.map((key) => row[key])),
-            }));
-
-            // Update data types after adding new column
-            copiedData[table].dataTypes = detectTableColumnTypes(
-              copiedData[table].data
-            );
-          } catch (error) {
-            console.error(
-              `Error evaluating expression "${exp}" for ${table}.${col}:`,
-              error
-            );
-          }
-        });
+      // Initialize added columns
+      if (!added[table]) added[table] = [];
+      cols.forEach((col) => {
+        if (!added[table].includes(col)) added[table].push(col);
       });
 
-      // Batch state updates
-      setAddedCols(added);
-      setExpressions(dataExpressions);
-      setTablesData(copiedData);
-      setCopiedTablesData(copiedData);
-      setSavedTablesData(copiedData);
-    };
+      // Process each expression column
+      cols.forEach((col) => {
+        const exp = expressionsForTable[col];
+        const funcBody = getHelperFunction1(exp, exp.split("(")[0]);
+        const tableData = copiedData[table]?.data;
 
+        try {
+          const expressionFunction = new Function(...allowedKeys, funcBody);
+
+          copiedData[table].data = tableData.map((row) => ({
+            ...row,
+            [col]: expressionFunction(...allowedKeys.map((key) => row[key])),
+          }));
+
+          // Update data types after adding new column
+          copiedData[table].dataTypes = detectTableColumnTypes(
+            copiedData[table].data
+          );
+        } catch (error) {
+          console.error(
+            `Error evaluating expression "${exp}" for ${table}.${col}:`,
+            error
+          );
+        }
+      });
+    });
+
+    // Batch state updates
+    setAddedCols(added);
+    setExpressions(dataExpressions);
+    setTablesData(copiedData);
+    setCopiedTablesData(copiedData);
+    setSavedTablesData(copiedData);
+  };
+
+  useEffect(() => {
     const shouldProcess =
       Object.keys(tablesData).length > 0 &&
       Object.keys(tablesData).length ===
@@ -261,7 +262,7 @@ const ManageMiniPowerBi = () => {
     }
   };
 
-  useEffect(() => {
+  const performRelations = async () => {
     setLoading(true);
     setMessage(`Performing Relations...`);
     const updatedTables = {};
@@ -334,42 +335,19 @@ const ManageMiniPowerBi = () => {
           dataTypes:
             sourceData.length > 0 ? detectTableColumnTypes(sourceData) : {},
         };
-        // setTablesData((prev) => ({
-        //   ...prev,
-        //   [item?.Name]: {
-        //     name: item?.Name,
-        //     data: currentVT,
-        //     dataTypes:
-        //       currentVT.length > 0 && detectTableColumnTypes(currentVT),
-        //   },
-        // }));
-        // setCopiedTablesData((prev) => ({
-        //   ...prev,
-        //   [item?.Name]: {
-        //     name: item?.Name,
-        //     data: currentVT,
-        //     dataTypes:
-        //       currentVT.length > 0 && detectTableColumnTypes(currentVT),
-        //   },
-        // }));
-        // setSavedTablesData((prev) => ({
-        //   ...prev,
-        //   [item?.Name]: {
-        //     name: item?.Name,
-        //     data: currentVT,
-        //     dataTypes:
-        //       currentVT.length > 0 && detectTableColumnTypes(currentVT),
-        //   },
-        // }));
       }
     }
     setTablesData((prev) => ({ ...prev, ...updatedTables }));
     setCopiedTablesData((prev) => ({ ...prev, ...updatedCopiedTables }));
     setSavedTablesData((prev) => ({ ...prev, ...updatedSavedTables }));
     setLoading(false);
-  }, [relationshipdata]);
+  };
 
   useEffect(() => {
+    performRelations();
+  }, [relationshipdata]);
+
+  const performSelects = async () => {
     if (savedTablesData && Object.keys(savedTablesData)?.length > 0) {
       const result = {};
       const uncheckedResult = {};
@@ -434,6 +412,10 @@ const ManageMiniPowerBi = () => {
       setIsSelectAllChecked(selectAllResult);
       setIsItemChecked(result);
     }
+  };
+
+  useEffect(() => {
+    performSelects();
   }, [savedTablesData]);
 
   useEffect(() => {
