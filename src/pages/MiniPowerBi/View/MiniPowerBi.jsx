@@ -1,5 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { CiWarning } from "react-icons/ci";
+
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 import Analysis from "../Components/Pages/Analysis.jsx";
@@ -18,12 +20,14 @@ import {
   getHelperFunction1,
 } from "../Controllers/Expressions/KeyWordsHelper";
 import { detectTableColumnTypes } from "../Services/getTypes.js";
+import { useNavContext } from "../../../contexts/NavContext.jsx";
 
 const MiniPowerBi = () => {
   const axiosPrivate = useAxiosPrivate();
   const { id } = useParams();
 
   const [dataExpressions, setDataExpressions] = useState([]);
+  const [isAuth, setIsAuth] = useState(false);
 
   const {
     setIsPreview,
@@ -75,6 +79,8 @@ const MiniPowerBi = () => {
     relationsTable,
     setRelationsTable,
   } = useDataContext();
+
+  const { usersData } = useNavContext();
 
   const sortByKey = (array, key) => {
     return array.sort((a, b) => {
@@ -492,6 +498,12 @@ const MiniPowerBi = () => {
       setViewGroup(targetItem?.Group);
       setUsersNamesData(JSON.parse(targetItem?.UsersToView));
 
+      const userstoView = JSON.parse(targetItem?.UsersToView)?.Users;
+      if (
+        [targetItem?.CreatedBy, ...userstoView]?.includes(usersData[0].username)
+      )
+        setIsAuth(true);
+
       const viewData = JSON.parse(targetItem?.ViewData);
 
       setIsItemUnChecked(viewData?.unCheckedItems);
@@ -536,6 +548,31 @@ const MiniPowerBi = () => {
       },
     }));
   }, []);
+
+  if (!isAuth)
+    return (
+      <div
+        id="Main--Page"
+        className=" dark:bg-background-logoColor relative bg-white overflow-x-hidden"
+        style={{
+          width: "100vw",
+          height: "92vh",
+        }}
+        onClick={closeSmallSidebar}
+      >
+        <div className="w-full h-full flex justify-center p-4">
+          <div
+            className=" bg-red-600 h-20 flex justify-center items-center flex-row mb-5 mt-2 rounded-lg"
+            style={{ color: "white", width: "90%" }}
+          >
+            <CiWarning className="text-[40px] font-extrabold" />
+            <p className="ml-5 text-xl font-semibold">
+              Unauthorized to see this page!
+            </p>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div
