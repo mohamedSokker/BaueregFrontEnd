@@ -38,10 +38,25 @@ const CustomTooltip = ({ active, payload, label, item }) => {
 
   const renderExpression = (exp) => {
     const { firstArg, secondArg, name, opType, isSeen } = exp;
-    const val1 = getValue(firstArg);
-    const val2 = getValue(secondArg);
+    let val1 = firstArg;
+    let val2 = secondArg;
+    const numericValue1 = Number(val1);
+    const numericValue2 = Number(val2);
+
+    if (!isNaN(numericValue1)) {
+      val1 = numericValue1;
+    } else {
+      val1 = getValue(firstArg);
+    }
+
+    if (!isNaN(numericValue2)) {
+      val2 = numericValue2;
+    } else {
+      val2 = getValue(secondArg);
+    }
+
     if (
-      [firstArg, secondArg].some((arg) => !arg || isNaN(getValue(arg))) ||
+      [firstArg, secondArg].some((arg) => !arg) ||
       (opType === "Division" && val2 === 0)
     )
       return null;

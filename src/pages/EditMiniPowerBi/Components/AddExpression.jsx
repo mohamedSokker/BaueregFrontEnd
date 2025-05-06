@@ -102,7 +102,7 @@ const AddExpression = ({ setIsExpressionCard }) => {
         style={{ backdropFilter: "blur(2px)", opacity: 0.8 }}
       ></div>
       <div
-        className={`md:w-[20%] w-[20%] aspect-square flex flex-col justify-between items-center bg-white relative z-[1001] mainContent overflow-y-scroll`}
+        className={`md:w-[25%] w-[25%] aspect-square flex flex-col justify-between items-center bg-white relative z-[1001] mainContent overflow-y-scroll`}
         style={{
           animation: !isCanceled
             ? "animate-in 0.5s ease-in-out"

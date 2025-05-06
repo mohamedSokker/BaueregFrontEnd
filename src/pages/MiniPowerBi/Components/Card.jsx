@@ -4,70 +4,137 @@ import { DataFormater } from "../Services/FormatNumbers";
 const Card = ({ tableData, item, data }) => {
   const {
     Y_Axis,
+    tooltips,
+    expressions,
     text,
     operationType,
+    Format,
     headerFontSize,
     headerFontWeight,
     dataFontSize,
     dataFontWeight,
   } = item;
 
+  const formatter = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  // const getValue = (name) => payload?.[0]?.payload?.[name];
+
+  const formatValue = (val) => {
+    // const val = getValue(name);
+    return !isNaN(val) ? formatter.format(val) : val;
+  };
+
   const [result, setResult] = useState(0);
   // console.log(Y_Axis);
 
+  const addExpressionsToData = (data, expressions) => {
+    return data.map((row) => {
+      const newRow = { ...row };
+
+      expressions?.forEach((expr) => {
+        const { name, firstArg, secondArg, opType } = expr;
+        let val1 = firstArg;
+        let val2 = secondArg;
+        const numericValue1 = Number(val1);
+        const numericValue2 = Number(val2);
+
+        if (!isNaN(numericValue1)) {
+          val1 = numericValue1;
+        } else {
+          val1 = parseFloat(row[firstArg]);
+        }
+
+        if (!isNaN(numericValue2)) {
+          val2 = numericValue2;
+        } else {
+          val2 = parseFloat(row[secondArg]);
+        }
+
+        if (isNaN(val1) || isNaN(val2)) return;
+
+        switch (opType) {
+          case "Division":
+            newRow[name] = val2 !== 0 ? val1 / val2 : null;
+            break;
+          case "Multiply":
+            newRow[name] = val1 * val2;
+            break;
+          case "Sum":
+            newRow[name] = val1 + val2;
+            break;
+          case "Subtraction":
+          default:
+            newRow[name] = val1 - val2;
+        }
+      });
+
+      return newRow;
+    });
+  };
+
   useEffect(() => {
     let total = 0;
+    let resultArray = [];
+    if (item?.expressions?.length) {
+      resultArray = addExpressionsToData(tableData, item.expressions);
+    }
 
-    if (Y_Axis?.[0]?.opType === "Count") {
-      tableData?.map((row) => {
+    console.log(resultArray, item.expressions);
+
+    if (operationType === "Count") {
+      resultArray?.map((row) => {
         total += 1;
       });
-    } else if (Y_Axis?.[0]?.opType === "Sum") {
-      tableData?.map((row) => {
-        total += Number(row?.[Y_Axis?.[0]?.name]);
+    } else if (operationType === "Sum") {
+      resultArray?.map((row) => {
+        total += Number(row?.[expressions?.[0]?.name]);
       });
-    } else if (Y_Axis?.[0]?.opType === "Average") {
+    } else if (operationType === "Average") {
       let sum = 0;
       let count = 0;
-      tableData?.map((row) => {
-        sum += Number(row?.[Y_Axis?.[0]?.name]);
+      resultArray?.map((row) => {
+        sum += Number(row?.[expressions?.[0]?.name]);
         count += 1;
       });
       total = Number(sum / count).toFixed(2);
-    } else if (Y_Axis?.[0]?.opType === "First Of Type") {
-      let target = null;
-      tableData?.map((row) => {
-        if (!target) {
-          total = row?.[Y_Axis?.[0]?.name];
-          target = row?.[Y_Axis?.[0]?.name];
-        }
-      });
-    } else if (Y_Axis?.[0]?.opType === "Last Of Type") {
-      tableData?.map((row) => {
-        total = row?.[Y_Axis?.[0]?.name];
-      });
-    } else if (Y_Axis?.[0]?.opType === "Min") {
-      tableData?.map((row, i) => {
+    } else if (operationType === "First") {
+      total = resultArray?.[0]?.[expressions?.[0]?.name];
+      // let target = null;
+      // resultArray?.map((row) => {
+      //   if (!target) {
+      //     total = row?.[expressions?.[0]?.name];
+      //     target = row?.[expressions?.[0]?.name];
+      //   }
+      // });
+    } else if (operationType === "Last") {
+      total = resultArray?.[resultArray?.length - 1]?.[expressions?.[0]?.name];
+      // resultArray?.map((row) => {
+      //   total = row?.[expressions?.[0]?.name];
+      // });
+    } else if (operationType === "Min") {
+      resultArray?.map((row, i) => {
         if (i === 0) {
-          total = row?.[Y_Axis?.[0]?.name];
+          total = row?.[expressions?.[0]?.name];
         } else {
-          if (total > row?.[Y_Axis?.[0]?.name]) {
-            total = row?.[Y_Axis?.[0]?.name];
+          if (total > row?.[expressions?.[0]?.name]) {
+            total = row?.[expressions?.[0]?.name];
           }
         }
       });
-    } else if (Y_Axis?.[0]?.opType === "Max") {
-      tableData?.map((row, i) => {
+    } else if (operationType === "Max") {
+      resultArray?.map((row, i) => {
         if (i === 0) {
-          total = row?.[Y_Axis?.[0]?.name];
+          total = row?.[expressions?.[0]?.name];
         } else {
-          if (total < row?.[Y_Axis?.[0]?.name]) {
-            total = row?.[Y_Axis?.[0]?.name];
+          if (total < row?.[expressions?.[0]?.name]) {
+            total = row?.[expressions?.[0]?.name];
           }
         }
       });
     }
-    console.log(total);
     setResult(total);
   }, [tableData, data]);
   return (
@@ -80,7 +147,7 @@ const Card = ({ tableData, item, data }) => {
           className="text-[40px] font-[800] flex justify-center items-center text-center"
           style={{ fontSize: `${dataFontSize}px`, fontWeight: dataFontWeight }}
         >
-          {DataFormater(result)}
+          {Format === "en-US" ? formatValue(result) : DataFormater(result)}
         </p>
         <p
           className="text-[12px] font-[600] absolute bottom-0"
