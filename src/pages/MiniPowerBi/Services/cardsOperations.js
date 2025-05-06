@@ -193,16 +193,9 @@ export const getResultArray = (result, tooltipProps, Y_Axis, count) => {
       } else if (prop?.opType === "Average") {
         toolTipsObj = {
           ...toolTipsObj,
-          [`${prop?.name}`]:
-            result[key]?.[`${prop?.name}`]?.count &&
-            result[key]?.[`${prop?.name}`]?.count !== 0
-              ? Number(
-                  Number(
-                    result[key]?.[`${prop?.name}`]?.sum /
-                      result[key]?.[`${prop?.name}`]?.count
-                  ).toFixed(1)
-                )
-              : 0,
+          [`${prop?.name}`]: Number(result[key]?.[`${prop?.name}`])
+            ? Number(Number(result[key]?.[`${prop?.name}`]).toFixed(1))
+            : 0,
         };
       } else if (prop?.opType === "First") {
         toolTipsObj = {
@@ -243,16 +236,9 @@ export const getResultArray = (result, tooltipProps, Y_Axis, count) => {
       } else if (prop?.opType === "Average") {
         yAxisObj = {
           ...yAxisObj,
-          [`${prop?.name}`]:
-            result[key]?.[`${prop?.name}`]?.count &&
-            result[key]?.[`${prop?.name}`]?.count !== 0
-              ? Number(
-                  Number(
-                    result[key]?.[`${prop?.name}`]?.sum /
-                      result[key]?.[`${prop?.name}`]?.count
-                  ).toFixed(1)
-                )
-              : 0,
+          [`${prop?.name}`]: Number(result[key]?.[`${prop?.name}`])
+            ? Number(Number(result[key]?.[`${prop?.name}`]).toFixed(1))
+            : 0,
         };
       } else if (prop?.opType === "First") {
         yAxisObj = {

@@ -75,11 +75,11 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
     let avResult = {};
     // tableData?.forEach((v) => {
     Y_Axis?.map((prop) => {
-      if (operationType === "Count") {
+      if (prop?.opType === "Count") {
         countData(result, prop, X_Axis, prop?.name, tablesData, operationType);
-      } else if (operationType === "Sum") {
+      } else if (prop?.opType === "Sum") {
         sumData(result, prop, X_Axis, prop?.name, tablesData, operationType);
-      } else if (operationType === "Average") {
+      } else if (prop?.opType === "Average") {
         averageData(
           result,
           prop,
@@ -89,7 +89,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           operationType,
           avResult
         );
-      } else if (operationType === "First") {
+      } else if (prop?.opType === "First") {
         firstData(
           result,
           prop,
@@ -98,7 +98,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           tablesData,
           operationType
         );
-      } else if (operationType === "Last") {
+      } else if (prop?.opType === "Last") {
         lastData(
           result,
           prop,
@@ -107,7 +107,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           tablesData,
           operationType
         );
-      } else if (operationType === "Min") {
+      } else if (prop?.opType === "Min") {
         minData(
           result,
           prop,
@@ -116,7 +116,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           tablesData,
           operationType
         );
-      } else if (operationType === "Max") {
+      } else if (prop?.opType === "Max") {
         maxData(
           result,
           prop,
@@ -129,7 +129,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
     });
 
     tooltips?.map((prop) => {
-      if (operationType === "Count") {
+      if (prop?.opType === "Count") {
         countData(
           result,
           prop,
@@ -138,7 +138,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           tablesData,
           operationType
         );
-      } else if (operationType === "Sum") {
+      } else if (prop?.opType === "Sum") {
         sumData(
           result,
           prop,
@@ -147,7 +147,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           tablesData,
           operationType
         );
-      } else if (operationType === "Average") {
+      } else if (prop?.opType === "Average") {
         averageData(
           result,
           prop,
@@ -157,7 +157,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           operationType,
           avResult
         );
-      } else if (operationType === "First") {
+      } else if (prop?.opType === "First") {
         firstData(
           result,
           prop,
@@ -166,7 +166,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           tablesData,
           operationType
         );
-      } else if (operationType === "Last") {
+      } else if (prop?.opType === "Last") {
         lastData(
           result,
           prop,
@@ -175,7 +175,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           tablesData,
           operationType
         );
-      } else if (operationType === "Min") {
+      } else if (prop?.opType === "Min") {
         minData(
           result,
           prop,
@@ -184,7 +184,7 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           tablesData,
           operationType
         );
-      } else if (operationType === "Max") {
+      } else if (prop?.opType === "Max") {
         maxData(
           result,
           prop,
@@ -196,10 +196,14 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
       }
     });
     // });
+    console.log(result);
     resultArray = getResultArray(result, tooltips, Y_Axis, count);
+    console.log(resultArray);
     if (item?.expressions?.length) {
       resultArray = addExpressionsToData(resultArray, item.expressions);
     }
+
+    console.log(resultArray);
 
     setChartData(resultArray);
   }, [tableData, data]);
