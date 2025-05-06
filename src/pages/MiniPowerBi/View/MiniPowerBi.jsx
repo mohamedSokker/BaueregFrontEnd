@@ -27,7 +27,7 @@ const MiniPowerBi = () => {
   const { id } = useParams();
 
   const [dataExpressions, setDataExpressions] = useState([]);
-  const [isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(true);
 
   const {
     setIsPreview,
@@ -501,8 +501,11 @@ const MiniPowerBi = () => {
       const userstoView = JSON.parse(targetItem?.UsersToView)?.Users;
       if (
         [targetItem?.CreatedBy, ...userstoView]?.includes(usersData[0].username)
-      )
+      ) {
         setIsAuth(true);
+      } else {
+        setIsAuth(false);
+      }
 
       const viewData = JSON.parse(targetItem?.ViewData);
 

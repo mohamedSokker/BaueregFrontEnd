@@ -1,102 +1,169 @@
-export const countData = (result, prop, X_Axis, itemName, tableData) => {
+export const countData = (
+  result,
+  prop,
+  X_Axis,
+  itemName,
+  tableData,
+  operationType
+) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    result[v?.[X_Axis]] = {
-      ...result[v?.[X_Axis]],
+    result[operationType] = {
+      ...result[operationType],
       [itemName]:
         v?.[itemName] !== null && v?.[itemName] !== "" && v?.[itemName] !== 0
-          ? (result[v?.[X_Axis]]?.[`${itemName}`] || 0) + 1
-          : (result[v?.[X_Axis]]?.[`${itemName}`] || 0) + 0,
+          ? (result[operationType]?.[`${itemName}`] || 0) + 1
+          : (result[operationType]?.[`${itemName}`] || 0) + 0,
     };
   });
 };
 
-export const sumData = (result, prop, X_Axis, itemName, tableData) => {
+export const sumData = (
+  result,
+  prop,
+  X_Axis,
+  itemName,
+  tableData,
+  operationType
+) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    result[v?.[X_Axis]] = {
-      ...result[v?.[X_Axis]],
+    result[operationType] = {
+      ...result[operationType],
       [itemName]:
-        (result[v?.[X_Axis]]?.[`${itemName}`] || 0) +
+        (result[operationType]?.[`${itemName}`] || 0) +
         (Number(v?.[`${prop?.col}`]) || 0),
     };
   });
 };
 
-export const averageData = (result, prop, X_Axis, itemName, tableData) => {
+export const averageData = (
+  result,
+  prop,
+  X_Axis,
+  itemName,
+  tableData,
+  operationType,
+  avResult
+) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    result[v?.[X_Axis]] = {
-      ...result[v?.[X_Axis]],
+    avResult[operationType] = {
+      ...avResult[operationType],
       [itemName]: {
         count:
           v?.[itemName] !== null && v?.[itemName] !== "" && v?.[itemName] !== 0
-            ? (result[v?.[X_Axis]]?.[`${itemName}`]?.count || 0) + 1
-            : (result[v?.[X_Axis]]?.[`${itemName}`]?.count || 0) + 0,
+            ? (avResult[operationType]?.[`${itemName}`]?.count || 0) + 1
+            : (avResult[operationType]?.[`${itemName}`]?.count || 0) + 0,
         sum:
-          (result[v?.[X_Axis]]?.[`${itemName}`]?.sum || 0) +
+          (avResult[operationType]?.[`${itemName}`]?.sum || 0) +
           (Number(v?.[`${prop?.col}`]) || 0),
       },
     };
   });
+  result[operationType] = {
+    ...result[operationType],
+    [itemName]:
+      avResult[operationType]?.[itemName]?.count &&
+      avResult[operationType]?.[itemName]?.count !== 0
+        ? Number(
+            Number(
+              avResult[operationType]?.[itemName]?.sum /
+                avResult[operationType]?.[itemName]?.count
+            ).toFixed(1)
+          )
+        : 0,
+  };
 };
 
-export const firstData = (result, prop, X_Axis, itemName, tableData) => {
+export const firstData = (
+  result,
+  prop,
+  X_Axis,
+  itemName,
+  tableData,
+  operationType
+) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    if (!result[v?.[X_Axis]]?.[itemName]) {
-      result[v?.[X_Axis]] = {
-        ...result[v?.[X_Axis]],
+    if (
+      !result[operationType]?.[itemName] &&
+      result[operationType]?.[`${itemName}`] !== 0
+    ) {
+      result[operationType] = {
+        ...result[operationType],
         [itemName]: v?.[`${prop?.col}`],
       };
     }
   });
 };
 
-export const lastData = (result, prop, X_Axis, itemName, tableData) => {
+export const lastData = (
+  result,
+  prop,
+  X_Axis,
+  itemName,
+  tableData,
+  operationType
+) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    result[v?.[X_Axis]] = {
-      ...result[v?.[X_Axis]],
+    result[operationType] = {
+      ...result[operationType],
       [itemName]: v?.[`${prop?.col}`],
     };
   });
 };
 
-export const minData = (result, prop, X_Axis, itemName, tableData) => {
+export const minData = (
+  result,
+  prop,
+  X_Axis,
+  itemName,
+  tableData,
+  operationType
+) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
     if (
-      !result[v?.[X_Axis]]?.[`${itemName}`] &&
-      result[v?.[X_Axis]]?.[`${itemName}`] !== 0
+      !result[operationType]?.[`${itemName}`] &&
+      result[operationType]?.[`${itemName}`] !== 0
     ) {
-      result[v?.[X_Axis]] = {
-        ...result[v?.[X_Axis]],
-        [itemName]: Number(v?.[`${prop?.col}`]) || 0,
+      result[operationType] = {
+        ...result[operationType],
+        [itemName]: v?.[`${prop?.col}`],
       };
     } else {
       if (
-        Number(v?.[`${prop?.col}`]) < Number(result[v?.[X_Axis]]?.[itemName])
+        Number(v?.[`${prop?.col}`]) <
+        Number(result[operationType]?.[`${itemName}`])
       ) {
-        result[v?.[X_Axis]] = {
-          ...result[v?.[X_Axis]],
-          [itemName]: Number(v?.[`${prop?.col}`]),
+        result[operationType] = {
+          ...result[operationType],
+          [itemName]: v?.[`${prop?.col}`],
         };
       }
     }
   });
 };
 
-export const maxData = (result, prop, X_Axis, itemName, tableData) => {
+export const maxData = (
+  result,
+  prop,
+  X_Axis,
+  itemName,
+  tableData,
+  operationType
+) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
     if (
-      !result[v?.[X_Axis]]?.[itemName] &&
+      !result[operationType]?.[itemName] &&
       result[v?.[X_Axis]]?.[`${itemName}`] !== 0
     ) {
-      result[v?.[X_Axis]] = {
-        ...result[v?.[X_Axis]],
+      result[operationType] = {
+        ...result[operationType],
         [itemName]: v?.[`${prop?.col}`],
       };
     } else {
       if (
-        Number(v?.[`${prop?.col}`]) > Number(result[v?.[X_Axis]]?.[itemName])
+        Number(v?.[`${prop?.col}`]) > Number(result[operationType]?.[itemName])
       ) {
-        result[v?.[X_Axis]] = {
-          ...result[v?.[X_Axis]],
+        result[operationType] = {
+          ...result[operationType],
           [itemName]: v?.[`${prop?.col}`],
         };
       }

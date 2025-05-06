@@ -27,7 +27,7 @@ export const averageData = (result, prop, X_Axis, itemName, tableData) => {
       ...result[v?.[X_Axis]],
       [itemName]: {
         count:
-          v?.[itemName] !== null && v?.[itemName] !== ""
+          v?.[itemName] !== null && v?.[itemName] !== "" && v?.[itemName] !== 0
             ? (result[v?.[X_Axis]]?.[`${itemName}`]?.count || 0) + 1
             : (result[v?.[X_Axis]]?.[`${itemName}`]?.count || 0) + 0,
         sum:
@@ -60,19 +60,21 @@ export const lastData = (result, prop, X_Axis, itemName, tableData) => {
 
 export const minData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    if (!result[v?.[X_Axis]]?.[`${itemName}`]) {
+    if (
+      !result[v?.[X_Axis]]?.[`${itemName}`] &&
+      result[v?.[X_Axis]]?.[`${itemName}`] !== 0
+    ) {
       result[v?.[X_Axis]] = {
         ...result[v?.[X_Axis]],
-        [itemName]: v?.[`${prop?.col}`],
+        [itemName]: Number(v?.[`${prop?.col}`]) || 0,
       };
     } else {
       if (
-        (Number(v?.[`${prop?.col}`]) || 0) <
-        (Number(result[v?.[X_Axis]]?.[`${itemName}`]) || 0)
+        Number(v?.[`${prop?.col}`]) < Number(result[v?.[X_Axis]]?.[itemName])
       ) {
         result[v?.[X_Axis]] = {
           ...result[v?.[X_Axis]],
-          [itemName]: v?.[`${prop?.col}`],
+          [itemName]: Number(v?.[`${prop?.col}`]),
         };
       }
     }
@@ -81,7 +83,10 @@ export const minData = (result, prop, X_Axis, itemName, tableData) => {
 
 export const maxData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    if (!result[v?.[X_Axis]]?.[itemName]) {
+    if (
+      !result[v?.[X_Axis]]?.[itemName] &&
+      result[v?.[X_Axis]]?.[`${itemName}`] !== 0
+    ) {
       result[v?.[X_Axis]] = {
         ...result[v?.[X_Axis]],
         [itemName]: v?.[`${prop?.col}`],

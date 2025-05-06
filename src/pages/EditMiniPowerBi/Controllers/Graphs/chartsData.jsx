@@ -17,6 +17,9 @@ const addExpressionsToData = (data, expressions) => {
 
     expressions?.forEach((expr) => {
       const { name, firstArg, secondArg, opType } = expr;
+      // console.log(newRow);
+      // console.log(name);
+      // console.log(newRow[name]);
       let val1 = firstArg;
       let val2 = secondArg;
       const numericValue1 = Number(val1);
@@ -33,6 +36,10 @@ const addExpressionsToData = (data, expressions) => {
       } else {
         val2 = parseFloat(row[secondArg]);
       }
+
+      // console.log(expressions);
+      // console.log(data);
+      // console.log(firstArg, secondArg, val1, val2);
 
       if (isNaN(val1) || isNaN(val2)) return;
 
@@ -106,6 +113,8 @@ const useChartsData = ({ tableData, item, data, tablesData }) => {
     if (item?.expressions?.length) {
       resultArray = addExpressionsToData(resultArray, item.expressions);
     }
+
+    console.log(resultArray);
 
     setChartData(resultArray);
   }, [tableData, data]);

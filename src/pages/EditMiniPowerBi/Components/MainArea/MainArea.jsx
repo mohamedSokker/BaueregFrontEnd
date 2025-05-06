@@ -162,6 +162,7 @@ const MainArea = () => {
                   item={item}
                   tableData={tablesData?.[item?.name]?.data}
                   data={data}
+                  tablesData={tablesData}
                 />
               )
             )}
