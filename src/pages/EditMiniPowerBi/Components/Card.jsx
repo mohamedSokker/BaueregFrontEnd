@@ -162,12 +162,8 @@ const Card = ({ tableData, item, data, tablesData }) => {
           style={{ fontSize: `${dataFontSize}px`, fontWeight: dataFontWeight }}
         >
           {Format === "en-US"
-            ? formatValue(
-                chartData?.[0]?.[expressions?.[expressions?.length - 1]?.name]
-              )
-            : DataFormater(
-                chartData?.[0]?.[expressions?.[expressions?.length - 1]?.name]
-              )}
+            ? formatValue(chartData)
+            : DataFormater(chartData)}
         </p>
         <p
           className="text-[12px] font-[600] absolute bottom-0"

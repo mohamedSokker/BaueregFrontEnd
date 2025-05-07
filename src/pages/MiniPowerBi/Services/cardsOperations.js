@@ -1,169 +1,102 @@
-export const countData = (
-  result,
-  prop,
-  X_Axis,
-  itemName,
-  tableData,
-  operationType
-) => {
+export const countData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    result[operationType] = {
-      ...result[operationType],
+    result[v?.[X_Axis]] = {
+      ...result[v?.[X_Axis]],
       [itemName]:
         v?.[itemName] !== null && v?.[itemName] !== "" && v?.[itemName] !== 0
-          ? (result[operationType]?.[`${itemName}`] || 0) + 1
-          : (result[operationType]?.[`${itemName}`] || 0) + 0,
+          ? (result[v?.[X_Axis]]?.[`${itemName}`] || 0) + 1
+          : (result[v?.[X_Axis]]?.[`${itemName}`] || 0) + 0,
     };
   });
 };
 
-export const sumData = (
-  result,
-  prop,
-  X_Axis,
-  itemName,
-  tableData,
-  operationType
-) => {
+export const sumData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    result[operationType] = {
-      ...result[operationType],
+    result[v?.[X_Axis]] = {
+      ...result[v?.[X_Axis]],
       [itemName]:
-        (result[operationType]?.[`${itemName}`] || 0) +
+        (result[v?.[X_Axis]]?.[`${itemName}`] || 0) +
         (Number(v?.[`${prop?.col}`]) || 0),
     };
   });
 };
 
-export const averageData = (
-  result,
-  prop,
-  X_Axis,
-  itemName,
-  tableData,
-  operationType,
-  avResult
-) => {
+export const averageData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    avResult[operationType] = {
-      ...avResult[operationType],
+    result[v?.[X_Axis]] = {
+      ...result[v?.[X_Axis]],
       [itemName]: {
         count:
           v?.[itemName] !== null && v?.[itemName] !== "" && v?.[itemName] !== 0
-            ? (avResult[operationType]?.[`${itemName}`]?.count || 0) + 1
-            : (avResult[operationType]?.[`${itemName}`]?.count || 0) + 0,
+            ? (result[v?.[X_Axis]]?.[`${itemName}`]?.count || 0) + 1
+            : (result[v?.[X_Axis]]?.[`${itemName}`]?.count || 0) + 0,
         sum:
-          (avResult[operationType]?.[`${itemName}`]?.sum || 0) +
+          (result[v?.[X_Axis]]?.[`${itemName}`]?.sum || 0) +
           (Number(v?.[`${prop?.col}`]) || 0),
       },
     };
   });
-  result[operationType] = {
-    ...result[operationType],
-    [itemName]:
-      avResult[operationType]?.[itemName]?.count &&
-      avResult[operationType]?.[itemName]?.count !== 0
-        ? Number(
-            Number(
-              avResult[operationType]?.[itemName]?.sum /
-                avResult[operationType]?.[itemName]?.count
-            ).toFixed(1)
-          )
-        : 0,
-  };
 };
 
-export const firstData = (
-  result,
-  prop,
-  X_Axis,
-  itemName,
-  tableData,
-  operationType
-) => {
+export const firstData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    if (
-      !result[operationType]?.[itemName] &&
-      result[operationType]?.[`${itemName}`] !== 0
-    ) {
-      result[operationType] = {
-        ...result[operationType],
+    if (!result[v?.[X_Axis]]?.[itemName]) {
+      result[v?.[X_Axis]] = {
+        ...result[v?.[X_Axis]],
         [itemName]: v?.[`${prop?.col}`],
       };
     }
   });
 };
 
-export const lastData = (
-  result,
-  prop,
-  X_Axis,
-  itemName,
-  tableData,
-  operationType
-) => {
+export const lastData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
-    result[operationType] = {
-      ...result[operationType],
+    result[v?.[X_Axis]] = {
+      ...result[v?.[X_Axis]],
       [itemName]: v?.[`${prop?.col}`],
     };
   });
 };
 
-export const minData = (
-  result,
-  prop,
-  X_Axis,
-  itemName,
-  tableData,
-  operationType
-) => {
+export const minData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
     if (
-      !result[operationType]?.[`${itemName}`] &&
-      result[operationType]?.[`${itemName}`] !== 0
+      !result[v?.[X_Axis]]?.[`${itemName}`] &&
+      result[v?.[X_Axis]]?.[`${itemName}`] !== 0
     ) {
-      result[operationType] = {
-        ...result[operationType],
-        [itemName]: v?.[`${prop?.col}`],
+      result[v?.[X_Axis]] = {
+        ...result[v?.[X_Axis]],
+        [itemName]: Number(v?.[`${prop?.col}`]) || 0,
       };
     } else {
       if (
-        Number(v?.[`${prop?.col}`]) <
-        Number(result[operationType]?.[`${itemName}`])
+        Number(v?.[`${prop?.col}`]) < Number(result[v?.[X_Axis]]?.[itemName])
       ) {
-        result[operationType] = {
-          ...result[operationType],
-          [itemName]: v?.[`${prop?.col}`],
+        result[v?.[X_Axis]] = {
+          ...result[v?.[X_Axis]],
+          [itemName]: Number(v?.[`${prop?.col}`]),
         };
       }
     }
   });
 };
 
-export const maxData = (
-  result,
-  prop,
-  X_Axis,
-  itemName,
-  tableData,
-  operationType
-) => {
+export const maxData = (result, prop, X_Axis, itemName, tableData) => {
   tableData?.[prop?.table]?.data?.forEach((v) => {
     if (
-      !result[operationType]?.[itemName] &&
+      !result[v?.[X_Axis]]?.[itemName] &&
       result[v?.[X_Axis]]?.[`${itemName}`] !== 0
     ) {
-      result[operationType] = {
-        ...result[operationType],
+      result[v?.[X_Axis]] = {
+        ...result[v?.[X_Axis]],
         [itemName]: v?.[`${prop?.col}`],
       };
     } else {
       if (
-        Number(v?.[`${prop?.col}`]) > Number(result[operationType]?.[itemName])
+        Number(v?.[`${prop?.col}`]) > Number(result[v?.[X_Axis]]?.[itemName])
       ) {
-        result[operationType] = {
-          ...result[operationType],
+        result[v?.[X_Axis]] = {
+          ...result[v?.[X_Axis]],
           [itemName]: v?.[`${prop?.col}`],
         };
       }
@@ -193,9 +126,16 @@ export const getResultArray = (result, tooltipProps, Y_Axis, count) => {
       } else if (prop?.opType === "Average") {
         toolTipsObj = {
           ...toolTipsObj,
-          [`${prop?.name}`]: Number(result[key]?.[`${prop?.name}`])
-            ? Number(Number(result[key]?.[`${prop?.name}`]).toFixed(1))
-            : 0,
+          [`${prop?.name}`]:
+            result[key]?.[`${prop?.name}`]?.count &&
+            result[key]?.[`${prop?.name}`]?.count !== 0
+              ? Number(
+                  Number(
+                    result[key]?.[`${prop?.name}`]?.sum /
+                      result[key]?.[`${prop?.name}`]?.count
+                  ).toFixed(1)
+                )
+              : 0,
         };
       } else if (prop?.opType === "First") {
         toolTipsObj = {
@@ -236,9 +176,16 @@ export const getResultArray = (result, tooltipProps, Y_Axis, count) => {
       } else if (prop?.opType === "Average") {
         yAxisObj = {
           ...yAxisObj,
-          [`${prop?.name}`]: Number(result[key]?.[`${prop?.name}`])
-            ? Number(Number(result[key]?.[`${prop?.name}`]).toFixed(1))
-            : 0,
+          [`${prop?.name}`]:
+            result[key]?.[`${prop?.name}`]?.count &&
+            result[key]?.[`${prop?.name}`]?.count !== 0
+              ? Number(
+                  Number(
+                    result[key]?.[`${prop?.name}`]?.sum /
+                      result[key]?.[`${prop?.name}`]?.count
+                  ).toFixed(1)
+                )
+              : 0,
         };
       } else if (prop?.opType === "First") {
         yAxisObj = {

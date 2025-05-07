@@ -17,9 +17,9 @@ const addExpressionsToData = (data, expressions) => {
 
     expressions?.forEach((expr) => {
       const { name, firstArg, secondArg, opType } = expr;
-      //   console.log(newRow);
-      //   console.log(name);
-      //   console.log(newRow[name]);
+      // console.log(newRow);
+      // console.log(name);
+      // console.log(newRow[name]);
       let val1 = firstArg;
       let val2 = secondArg;
       const numericValue1 = Number(val1);
@@ -39,8 +39,7 @@ const addExpressionsToData = (data, expressions) => {
 
       // console.log(expressions);
       // console.log(data);
-      //   console.log(row);
-      //   console.log(firstArg, secondArg, val1, val2);
+      // console.log(firstArg, secondArg, val1, val2);
 
       if (isNaN(val1) || isNaN(val2)) return;
 
@@ -67,145 +66,114 @@ const addExpressionsToData = (data, expressions) => {
 const useCardsData = ({ tableData, item, data, tablesData }) => {
   const [chartData, setChartData] = useState(null);
 
-  const { X_Axis, tooltipProps, tooltips, count, Y_Axis, operationType } = item;
+  const {
+    X_Axis,
+    tooltipProps,
+    tooltips,
+    count,
+    Y_Axis,
+    operationType,
+    expressions,
+  } = item;
 
   useEffect(() => {
     let result = {};
     let resultArray = [];
-    let avResult = {};
     // tableData?.forEach((v) => {
     Y_Axis?.map((prop) => {
       if (prop?.opType === "Count") {
-        countData(result, prop, X_Axis, prop?.name, tablesData, operationType);
+        countData(result, prop, X_Axis, prop?.name, tablesData);
       } else if (prop?.opType === "Sum") {
-        sumData(result, prop, X_Axis, prop?.name, tablesData, operationType);
+        sumData(result, prop, X_Axis, prop?.name, tablesData);
       } else if (prop?.opType === "Average") {
-        averageData(
-          result,
-          prop,
-          X_Axis,
-          prop?.name,
-          tablesData,
-          operationType,
-          avResult
-        );
+        averageData(result, prop, X_Axis, prop?.name, tablesData);
       } else if (prop?.opType === "First") {
-        firstData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        firstData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "Last") {
-        lastData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        lastData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "Min") {
-        minData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        minData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "Max") {
-        maxData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        maxData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       }
     });
 
     tooltips?.map((prop) => {
       if (prop?.opType === "Count") {
-        countData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        countData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "Sum") {
-        sumData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        sumData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "Average") {
-        averageData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType,
-          avResult
-        );
+        averageData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "First") {
-        firstData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        firstData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "Last") {
-        lastData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        lastData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "Min") {
-        minData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        minData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       } else if (prop?.opType === "Max") {
-        maxData(
-          result,
-          prop,
-          X_Axis,
-          `${prop?.name}`,
-          tablesData,
-          operationType
-        );
+        maxData(result, prop, X_Axis, `${prop?.name}`, tablesData);
       }
     });
     // });
-    console.log(result);
+
+    // console.log(result);
     resultArray = getResultArray(result, tooltips, Y_Axis, count);
-    console.log(resultArray);
+    // console.log(resultArray);
     if (item?.expressions?.length) {
       resultArray = addExpressionsToData(resultArray, item.expressions);
     }
+    let total = 0;
+    if (operationType === "Count") {
+      resultArray?.map((item) => {
+        total += 1;
+      });
+    } else if (operationType === "Sum") {
+      resultArray?.map((item) => {
+        total += !isNaN(item?.[expressions?.[expressions?.length - 1]?.name])
+          ? item?.[expressions?.[expressions?.length - 1]?.name]
+          : 0;
+      });
+    } else if (operationType === "Average") {
+      let count = 0;
+      let sum = 0;
+      resultArray?.map((item) => {
+        count += 1;
+        sum += !isNaN(item?.[expressions?.[expressions?.length - 1]?.name])
+          ? item?.[expressions?.[expressions?.length - 1]?.name]
+          : 0;
+      });
+      total = count !== 0 ? sum / count : null;
+    } else if (operationType === "First") {
+      total = resultArray?.[0]?.[expressions?.[expressions?.length - 1]?.name];
+    } else if (operationType === "Last") {
+      total =
+        resultArray?.[resultArray?.length - 1]?.[
+          expressions?.[expressions?.length - 1]?.name
+        ];
+    } else if (operationType === "Min") {
+      console.log(resultArray);
+      total = resultArray?.[0]?.[expressions?.[expressions?.length - 1]?.name];
+      resultArray?.map((item) => {
+        const target = !isNaN(
+          item?.[expressions?.[expressions?.length - 1]?.name]
+        )
+          ? item?.[expressions?.[expressions?.length - 1]?.name]
+          : 0;
+        if (Number(target) < total) total = Number(target);
+      });
+    } else if (operationType === "Max") {
+      resultArray?.map((item) => {
+        const target = !isNaN(
+          item?.[expressions?.[expressions?.length - 1]?.name]
+        )
+          ? item?.[expressions?.[expressions?.length - 1]?.name]
+          : 0;
+        if (Number(target) > total) total = Number(target);
+      });
+    }
 
-    console.log(resultArray);
-
-    setChartData(resultArray);
+    setChartData(total);
   }, [tableData, data]);
   return { chartData };
 };
