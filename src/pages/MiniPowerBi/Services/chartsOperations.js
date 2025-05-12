@@ -133,7 +133,7 @@ export const getResultArray = (result, tooltipProps, Y_Axis, count) => {
                   Number(
                     result[key]?.[`${prop?.name}`]?.sum /
                       result[key]?.[`${prop?.name}`]?.count
-                  ).toFixed(1)
+                  )
                 )
               : 0,
         };
@@ -183,7 +183,7 @@ export const getResultArray = (result, tooltipProps, Y_Axis, count) => {
                   Number(
                     result[key]?.[`${prop?.name}`]?.sum /
                       result[key]?.[`${prop?.name}`]?.count
-                  ).toFixed(1)
+                  )
                 )
               : 0,
         };

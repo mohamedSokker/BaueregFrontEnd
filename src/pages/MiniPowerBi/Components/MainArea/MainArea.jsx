@@ -80,20 +80,21 @@ const MainArea = () => {
               height: item?.height,
               top: item?.top,
               left: item?.left,
-              borderColor: selectedItem === i ? "orange" : "transparent",
-              borderWidth: selectedItem === i ? "1px" : "0",
+              borderColor:
+                selectedItem === i ? "rgba(0,0,0,0.1)" : "rgba(0,0,0,0.1)",
+              borderWidth: selectedItem === i ? "1px" : "1px",
               // transition: "all 0.5s ease-in-out",
             }}
             id={`resizable${i}`}
             onClick={() => setSelectedItem(i)}
           >
-            <div
+            {/* <div
               className="absolute p-[2px] -right-4 -top-0 z-[2] bg-gray-400 cursor-move opacity-60"
               onMouseDown={(e) => mouseDownMove(e, i)}
             >
               <FiMove size={12} color={logoColor} />
-            </div>
-            <div
+            </div> */}
+            {/* <div
               className="absolute p-[2px] -right-4 top-5 z-[2] bg-gray-400 cursor-pointer opacity-60"
               onClick={() =>
                 setData((prev) => ({
@@ -103,8 +104,8 @@ const MainArea = () => {
               }
             >
               <CiSquareRemove size={12} color={logoColor} />
-            </div>
-            <div
+            </div> */}
+            {/* <div
               className="resizer absolute bg-white cursor-col-resize h-[100%] left-0 top-0 w-[4px] rl z-[2]"
               onMouseDown={(e) => mouseDownLeftResize(e, i)}
             ></div>
@@ -119,7 +120,7 @@ const MainArea = () => {
             <div
               className="resizer absolute bg-white cursor-row-resize h-[4px] left-0 bottom-0 w-[100%] rb z-[2]"
               onMouseDown={(e) => mouseDownBottomResize(e, i)}
-            ></div>
+            ></div> */}
             {item.Type === "Table" ? (
               <ProffesionalTable
                 data={tablesData}

@@ -86,6 +86,11 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
   //AddExpression
   const [isExpressionCard, setIsExpressionCard] = useState(false);
 
+  //Add Excel
+  const [isExcelCard, setIsExcelCard] = useState(false);
+
+  const [selectedRefTable, setSelectedRefTable] = useState({});
+
   const {
     data,
     setData,
@@ -124,6 +129,7 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
             isRelationshipChoose: isRelationshipChoose,
             unCheckedItems: isItemUnChecked,
             sorted: isSortChecked,
+            selectedRefTable: selectedRefTable,
           }),
         }),
       });
@@ -267,6 +273,12 @@ export const EditPowerPiInitContextProvider = ({ children }) => {
 
         isExpressionCard,
         setIsExpressionCard,
+
+        isExcelCard,
+        setIsExcelCard,
+
+        selectedRefTable,
+        setSelectedRefTable,
       }}
     >
       {children}

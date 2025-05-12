@@ -151,7 +151,7 @@ const Drop = ({
           : data?.el[selectedItem]?.[categoryKey]
       );
     }
-  }, [data]);
+  }, [data, tablesData]);
 
   const dropAction = (table, name, col, category, position) => {
     if (category === "Fields") {

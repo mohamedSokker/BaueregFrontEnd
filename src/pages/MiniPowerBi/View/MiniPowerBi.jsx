@@ -67,6 +67,9 @@ const MiniPowerBi = () => {
     setColData,
     isSortChecked,
     setIsSortChecked,
+    setAddedTables,
+    selectedRefTable,
+    setSelectedRefTable,
   } = useInitContext();
 
   const {
@@ -107,14 +110,32 @@ const MiniPowerBi = () => {
   };
 
   const processExpressions = async () => {
-    const copiedData = { ...tablesData };
+    let copiedData = { ...tablesData };
     const added = {};
-
+    const addedTables = [];
+    //Initialize added tables
+    const tablesKeys = Object.keys(copiedData);
+    const expKeys = Object.keys(dataExpressions);
+    expKeys?.forEach((table) => {
+      if (!tablesKeys?.includes(table)) {
+        addedTables.push(table);
+        copiedData = {
+          ...copiedData,
+          [table]: { name: table, data: [] },
+        };
+      }
+    });
     Object.keys(dataExpressions || {}).forEach((table) => {
       const tableData = copiedData[table]?.data;
       if (!tableData || !Array.isArray(tableData)) return;
 
-      const allowedKeys = Object.keys(tableData[0] || {});
+      const allowedKeys = Object.keys(
+        tableData[0] ||
+          copiedData[
+            selectedRefTable[table][Object.keys(selectedRefTable[table])[0]]
+          ]?.data[0] ||
+          {}
+      );
       const expressionsForTable = dataExpressions[table] || {};
       const cols = Object.keys(expressionsForTable);
 
@@ -126,25 +147,67 @@ const MiniPowerBi = () => {
 
       // Process each expression column
       cols.forEach((col) => {
-        const exp = expressionsForTable[col];
-        const funcBody = getHelperFunction1(exp, exp.split("(")[0]);
-        const tableData = copiedData[table]?.data;
-
         try {
-          const expressionFunction = new Function(...allowedKeys, funcBody);
+          console.log(addedTables?.includes(table));
+          if (!addedTables?.includes(table)) {
+            console.log("if");
+            const exp = expressionsForTable[col];
+            const funcBody = getHelperFunction1(exp, tablesData);
+            const tableData = copiedData[table]?.data;
+            const expressionFunction = new Function(...allowedKeys, funcBody);
 
-          copiedData[table].data = tableData.map((row) => ({
-            ...row,
-            [col]: expressionFunction(...allowedKeys.map((key) => row[key])),
-          }));
+            copiedData[table].data = tableData.map((row) => ({
+              ...row,
+              [col]: expressionFunction(...allowedKeys.map((key) => row[key])),
+            }));
 
-          // Update data types after adding new column
-          copiedData[table].dataTypes = detectTableColumnTypes(
-            copiedData[table].data
-          );
+            // Update data types after adding new column
+            copiedData[table].dataTypes = detectTableColumnTypes(
+              copiedData[table].data
+            );
+          } else {
+            console.log("else");
+            let copiedData1 = { ...copiedData };
+            let tablesData = copiedData1;
+            console.log(copiedData1);
+            console.log(tablesData);
+
+            const sanitizedKeys = allowedKeys.map((key) =>
+              key.replace(/[^a-zA-Z0-9_]/g, "_")
+            );
+            const exp = expressionsForTable[col];
+            const expressionFunction = new Function(
+              "tablesData",
+              ...sanitizedKeys,
+              `${getHelperFunction1(exp, tablesData)};`
+            );
+
+            // Loop through the table and add the new column based on the expression
+            const result = copiedData1?.[
+              selectedRefTable?.[table]?.[col]
+            ]?.data?.flatMap((row) => {
+              const newValue = expressionFunction(
+                copiedData1,
+                ...allowedKeys.map((key) => row[key])
+              );
+
+              if (Array.isArray(newValue)) {
+                return newValue.map((item, i) => {
+                  return { ...item };
+                });
+              } else {
+                return {
+                  ...row,
+                  [col]: newValue,
+                };
+              }
+            });
+            copiedData1[table].data = result;
+            copiedData1[table].dataTypes = detectTableColumnTypes(result);
+          }
         } catch (error) {
           console.error(
-            `Error evaluating expression "${exp}" for ${table}.${col}:`,
+            `Error evaluating expression for ${table}.${col}:`,
             error
           );
         }
@@ -152,6 +215,7 @@ const MiniPowerBi = () => {
     });
 
     // Batch state updates
+    setAddedTables(addedTables);
     setAddedCols(added);
     setExpressions(dataExpressions);
     setTablesData(copiedData);
@@ -160,10 +224,14 @@ const MiniPowerBi = () => {
   };
 
   useEffect(() => {
-    const shouldProcess =
-      Object.keys(tablesData).length > 0 &&
-      Object.keys(tablesData).length ===
-        [...isChoose, ...isRelationshipChoose].length;
+    const shouldProcess = selectedRefTable
+      ? Object.keys(tablesData).length > 0 &&
+        Object.keys(tablesData).length ===
+          [...isChoose, ...isRelationshipChoose].length &&
+        Object.keys(selectedRefTable).length > 0
+      : Object.keys(tablesData).length > 0 &&
+        Object.keys(tablesData).length ===
+          [...isChoose, ...isRelationshipChoose].length;
 
     if (shouldProcess) {
       setLoading(true);
@@ -171,7 +239,7 @@ const MiniPowerBi = () => {
       processExpressions();
       setLoading(false);
     }
-  }, [isChoose, isRelationshipChoose, dataExpressions]);
+  }, [isChoose, isRelationshipChoose, dataExpressions, selectedRefTable]);
 
   const getTablesData = async (selectedTables, relationshipTables) => {
     setLoading(true);
@@ -515,6 +583,7 @@ const MiniPowerBi = () => {
       setIsChoose(viewData?.isChoose);
 
       setIsRelationshipChoose(viewData?.isRelationshipChoose);
+      setSelectedRefTable(viewData?.selectedRefTable);
       await getTablesData(viewData?.isChoose, viewData?.isRelationshipChoose);
 
       setDataExpressions(viewData?.expressions);

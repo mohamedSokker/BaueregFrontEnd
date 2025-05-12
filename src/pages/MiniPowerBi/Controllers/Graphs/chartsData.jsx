@@ -114,8 +114,6 @@ const useChartsData = ({ tableData, item, data, tablesData }) => {
       resultArray = addExpressionsToData(resultArray, item.expressions);
     }
 
-    console.log(resultArray);
-
     setChartData(resultArray);
   }, [tableData, data]);
   return { chartData };

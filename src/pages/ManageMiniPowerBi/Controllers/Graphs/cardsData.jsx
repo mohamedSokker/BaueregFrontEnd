@@ -117,7 +117,6 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
     });
     // });
 
-    // console.log(result);
     resultArray = getResultArray(result, tooltips, Y_Axis, count);
     // console.log(resultArray);
     if (item?.expressions?.length) {
@@ -152,7 +151,6 @@ const useCardsData = ({ tableData, item, data, tablesData }) => {
           expressions?.[expressions?.length - 1]?.name
         ];
     } else if (operationType === "Min") {
-      console.log(resultArray);
       total = resultArray?.[0]?.[expressions?.[expressions?.length - 1]?.name];
       resultArray?.map((item) => {
         const target = !isNaN(

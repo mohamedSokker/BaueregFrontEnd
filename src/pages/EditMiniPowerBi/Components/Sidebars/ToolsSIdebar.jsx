@@ -9,6 +9,7 @@ import { GrTableAdd } from "react-icons/gr";
 import { TiFlowChildren } from "react-icons/ti";
 import { VscPreview } from "react-icons/vsc";
 import { SiProbot } from "react-icons/si";
+import { BsFileEarmarkExcelFill } from "react-icons/bs";
 
 import { logoColor } from "../../../../BauerColors";
 import { useInitContext } from "../../Contexts/InitContext";
@@ -21,6 +22,7 @@ const ToolsSIdebar = () => {
     setCategoryCount,
     setIsTableCard,
     setIsRelationshipTableCard,
+    setIsExcelCard,
     setIsPreview,
     isPerview,
     isChatbot,
@@ -102,6 +104,17 @@ const ToolsSIdebar = () => {
         </div>
 
         <div className="w-full h-[1px] bg-gray-400"></div>
+
+        <div
+          className="w-full hover:cursor-pointer hover:text-gray-400 text-logoColor flex justify-center items-center flex-row gap-1 p-2 rounded-md"
+          onClick={() => {
+            setIsExcelCard(true);
+            // setCategoryCount(4);
+          }}
+        >
+          <BsFileEarmarkExcelFill size={16} />
+          {/* <p className="text-[10px] text-logoColor">Relations</p> */}
+        </div>
 
         <div
           className="w-full hover:cursor-pointer hover:text-gray-400 text-logoColor flex justify-center items-center flex-row gap-1 p-2 rounded-md"

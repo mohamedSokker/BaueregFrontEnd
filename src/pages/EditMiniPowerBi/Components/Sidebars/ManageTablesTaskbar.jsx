@@ -26,48 +26,58 @@ const ManageTablesTaskbar = () => {
     activeColItem,
     setActiveColItem,
     tablesData,
+    AddedCols,
     setAddedCols,
     setSelectedTableData,
     expressions,
     setExpressions,
     inputValue,
     setInputValue,
+    selectedRefTable,
+    setSelectedRefTable,
   } = useInitContext();
   const [isChoosed, setIsChoosed] = useState(false);
   const [isChoosedValue, setIsChoosedValue] = useState("");
 
   const inputRef = useRef();
 
+  // console.log(AddedTables);
+  // console.log(AddedCols);
+  // console.log(selectedRefTable);
   // console.log(activeColItem);
+  // console.log(expressions);
 
   return (
     <div className="w-full h-[78px]">
       <div className="flex flex-row justify-start items-center text-[12px] gap-x-4 p-1 h-[42px]">
-        {/* <div
-          className="cursor-pointer bg-gray-200 rounded-md p-2 text-logoColor"
-          onClick={() => {
-            setTablesData((prev) => ({
-              ...prev,
-              [`New Table${AddedTables.length + 1}`]: {
-                name: `New Table${AddedTables.length + 1}`,
-                data: [],
-              },
-            }));
-            setSelectedTable((prev) => [
-              ...prev,
-              `New Table${AddedTables.length + 1}`,
-            ]);
-            setAddedTables((prev) => [
-              ...prev,
-              `New Table${AddedTables.length + 1}`,
-            ]);
-          }}
-        >
-          <p>New Table</p>
-        </div> */}
+        <TooltipComponent content={"Add Table"} position="BottomCenter">
+          <div
+            className="cursor-pointer bg-gray-200 rounded-md p-1 px-2 text-logoColor flex flex-col justify-center items-center"
+            onClick={() => {
+              setTablesData((prev) => ({
+                ...prev,
+                [`New Table${AddedTables.length + 1}`]: {
+                  name: `New Table${AddedTables.length + 1}`,
+                  data: [],
+                },
+              }));
+              // setSelectedTable((prev) => [
+              //   ...prev,
+              //   `New Table${AddedTables.length + 1}`,
+              // ]);
+              setAddedTables((prev) => [
+                ...prev,
+                `New Table${AddedTables.length + 1}`,
+              ]);
+            }}
+          >
+            <IoIosAdd color="green" />
+            <p>New Table</p>
+          </div>
+        </TooltipComponent>
         <TooltipComponent content={"Add Column"} position="BottomCenter">
           <div
-            className="cursor-pointer bg-gray-200 rounded-md p-2 text-logoColor"
+            className="cursor-pointer bg-gray-200 rounded-md p-1 px-2 text-logoColor flex flex-col justify-center items-center"
             onClick={() => {
               if (activeItem !== "") {
                 let copiedData = { ...tablesData };
@@ -112,7 +122,7 @@ const ManageTablesTaskbar = () => {
             }}
           >
             <IoIosAdd color="green" />
-            {/* <p>New Column</p> */}
+            <p>New Column</p>
           </div>
         </TooltipComponent>
 
@@ -209,11 +219,11 @@ const ManageTablesTaskbar = () => {
 
         <TooltipComponent content={"Add Actions"} position="BottomCenter">
           <div
-            className="cursor-pointer bg-gray-200 rounded-md p-2 text-logoColor"
+            className="cursor-pointer bg-gray-200 rounded-md p-1 px-2 text-logoColor flex flex-col justify-center items-center"
             onClick={() => setIsActionCard(true)}
           >
             <IoIosAdd color="green" />
-            {/* <p>New Column</p> */}
+            <p>Add Actions</p>
           </div>
         </TooltipComponent>
       </div>
@@ -225,62 +235,102 @@ const ManageTablesTaskbar = () => {
               e.preventDefault();
 
               setIsChoosedValue("");
-              setExpressions((prev) => ({
-                ...prev,
-                [activeItem]: {
-                  ...prev?.[activeItem],
-                  [activeColItem[activeItem]]: inputValue,
-                },
-              }));
+              if (!AddedTables?.includes(activeItem)) {
+                setExpressions((prev) => ({
+                  ...prev,
+                  [activeItem]: {
+                    ...prev?.[activeItem],
+                    [activeColItem[activeItem]]: inputValue,
+                  },
+                }));
 
-              // const expressionFunction = new Function(
-              //   `const fn = (tableData) => {${inputValue}}; return fn`
-              // )();
+                const allowedKeys = [
+                  ...Object.keys(tablesData?.[activeItem]?.data?.[0]),
+                ];
+                console.log(allowedKeys);
 
-              // console.log(expressionFunction(tableData));
+                // Sanitize keys
+                const sanitizedKeys = allowedKeys.map((key) =>
+                  key.replace(/[^a-zA-Z0-9_]/g, "_")
+                );
 
-              const allowedKeys = [
-                ...Object.keys(tablesData?.[activeItem]?.data?.[0]),
-                // ...Object.keys(tableData),
-              ];
-              console.log(allowedKeys);
+                console.log(getHelperFunction1(inputValue, tablesData));
 
-              // Sanitize keys
-              const sanitizedKeys = allowedKeys.map((key) =>
-                key.replace(/[^a-zA-Z0-9_]/g, "_")
-              );
+                const expressionFunction = new Function(
+                  ...sanitizedKeys,
+                  `${getHelperFunction1(inputValue, tablesData)};`
+                );
 
-              console.log(getHelperFunction1(inputValue, sanitizedKeys));
-              // Create a mapping object
-              // const keyMapping = {};
-              // allowedKeys.forEach((key, index) => {
-              //   keyMapping[sanitizedKeys[index]] = key;
-              // });
+                let copiedData = { ...tablesData };
+                // Loop through the table and add the new column based on the expression
+                const result = tablesData?.[activeItem]?.data?.map((row) => ({
+                  ...row,
+                  [activeColItem[activeItem]]: expressionFunction(
+                    ...allowedKeys.map((key) => row[key])
+                  ),
+                }));
+                copiedData[activeItem].data = result;
+                console.log(copiedData);
+                setTablesData(copiedData);
+                setCopiedTablesData(copiedData);
+                setSavedTablesData(copiedData);
+              } else {
+                setExpressions((prev) => ({
+                  ...prev,
+                  [activeItem]: {
+                    ...prev?.[activeItem],
+                    [activeColItem[activeItem]]: inputValue,
+                  },
+                }));
 
-              // console.log(allowedKeys);
-              // // tableData?.[activeItem]?.data?.map((row, idx) => {
-              // //   if (idx === 0)
-              // //     console.log(...allowedKeys.map((key) => row[key]));
-              // // });
+                const allowedKeys = [
+                  ...Object.keys(
+                    tablesData?.[
+                      selectedRefTable?.[activeItem]?.[
+                        activeColItem[activeItem]
+                      ]
+                    ]?.data?.[0]
+                  ),
+                ];
+                console.log(allowedKeys);
 
-              const expressionFunction = new Function(
-                ...sanitizedKeys,
-                `${getHelperFunction1(inputValue, sanitizedKeys)};`
-              );
+                // Sanitize keys
+                const sanitizedKeys = allowedKeys.map((key) =>
+                  key.replace(/[^a-zA-Z0-9_]/g, "_")
+                );
 
-              let copiedData = { ...tablesData };
-              // Loop through the table and add the new column based on the expression
-              const result = tablesData?.[activeItem]?.data?.map((row) => ({
-                ...row,
-                [activeColItem[activeItem]]: expressionFunction(
-                  ...allowedKeys.map((key) => row[key])
-                ),
-              }));
-              copiedData[activeItem].data = result;
-              console.log(copiedData);
-              setTablesData(copiedData);
-              setCopiedTablesData(copiedData);
-              setSavedTablesData(copiedData);
+                console.log(getHelperFunction1(inputValue, tablesData));
+
+                const expressionFunction = new Function(
+                  "tablesData",
+                  ...sanitizedKeys,
+                  `${getHelperFunction1(inputValue, tablesData)};`
+                );
+
+                let copiedData = { ...tablesData };
+                // Loop through the table and add the new column based on the expression
+                const result = tablesData?.[
+                  selectedRefTable?.[activeItem]?.[activeColItem[activeItem]]
+                ]?.data?.flatMap((row) => {
+                  const newValue = expressionFunction(
+                    tablesData,
+                    ...allowedKeys.map((key) => row[key])
+                  );
+
+                  if (Array.isArray(newValue)) {
+                    return newValue.map((item, i) => {
+                      return { ...item };
+                    });
+                  } else {
+                    return { ...row, [activeColItem[activeItem]]: newValue };
+                  }
+                });
+                copiedData[activeItem].data = result;
+                console.log(result);
+                setTablesData(copiedData);
+                setCopiedTablesData(copiedData);
+                setSavedTablesData(copiedData);
+              }
             }}
           >
             <input

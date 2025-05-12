@@ -14,6 +14,7 @@ import AddRelationshipTableCard from "./Sidebars/AddRelationshipTableCard";
 import { useInitContext } from "../Contexts/InitContext";
 import ConfirmDeleteCard from "../../../components/Accessories/ConfirmDeleteCard";
 import AddExpression from "./AddExpression";
+import AddExcel from "./AddExcel";
 
 const FiltersCards = ({}) => {
   const {
@@ -22,6 +23,8 @@ const FiltersCards = ({}) => {
     isActionCard,
     isExpressionCard,
     setIsExpressionCard,
+    isExcelCard,
+    setIsExcelCard,
     setIsActionCard,
     isRelationshipTableCard,
     setIsRelationshipTableCard,
@@ -64,6 +67,8 @@ const FiltersCards = ({}) => {
       )}
 
       {isActionCard && <AddActions setIsActionCard={setIsActionCard} />}
+
+      {isExcelCard && <AddExcel setIsExcelCard={setIsExcelCard} />}
 
       {isExpressionCard && (
         <AddExpression setIsExpressionCard={setIsExpressionCard} />

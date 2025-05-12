@@ -7,19 +7,13 @@ export const keywords = [
   "CALC",
   "CALCIF",
   "CALCIFS",
-  //   "COUNT",
-  //   "COUNTA",
-  //   "COUNTIF",
-  //   "COUNTIFS",
-  //   "AVERAGE",
-  //   "AVERAGEIF",
-  //   "AVERAGEIFS",
-  //   "VLOOKUP",
-  //   "HLOOKUP",
-  //   "XLOOKUP",
+  "EXPANDDATES",
+  "EXPANDDATETIME",
+  "VLOOKUP",
   "Blank()",
   "Today()",
   "YEAR",
+  "DATE",
 ];
 
 export const getHelperText = (text) => {
@@ -42,26 +36,6 @@ export const getHelperText = (text) => {
       return `CALCIFS(Conditions, Expression if true, Expression if False)`;
     case "YEAR":
       return `YEAR(Date)`;
-    // case "COUNT":
-    //   return `COUNT('Column')`;
-    // case "COUNTA":
-    //   return `COUNTA('Column')`;
-    // case "COUNTIF":
-    //   return `COUNTIF('Column', Condition)`;
-    // case "COUNTIFS":
-    //   return `COUNTIFS('Column', Conditions)`;
-    // case "AVERAGE":
-    //   return `AVERAGE('Column')`;
-    // case "AVERAGEIF":
-    //   return `AVERAGEIF('Column', Condition)`;
-    // case "AVERAGEIFS":
-    //   return `AVERAGEIFS('Column', Conditions)`;
-    // case "VLOOKUP":
-    //   return `VLOOKUP('Value', Table, Col_index, IsExact)`;
-    // case "HLOOKUP":
-    //   return `HLOOKUP('Value', Table, Col_index, IsExact)`;
-    // case "XLOOKUP":
-    //   return `XLOOKUP('Value', Table, Col_index, IsExact)`;
     default:
       return `Write Valid expression`;
   }
@@ -71,7 +45,7 @@ export const getHelperText = (text) => {
 //   return
 //  }
 
-export const getHelperFunction1 = (input) => {
+export const getHelperFunction1 = (input, tablesData) => {
   const smartSplit = (str) => {
     let result = [];
     let current = "";
@@ -112,9 +86,22 @@ export const getHelperFunction1 = (input) => {
         );
       }
 
-      const condition = parseExpression(parts[0]);
+      const rawCondition = parts[0];
       const valueIfTrue = parseExpression(parts[1]);
       const valueIfFalse = parseExpression(parts[2]);
+
+      // Break condition into operands and operator, e.g. A > B
+      const binaryMatch = rawCondition.match(/(.+?)([<>=!]=?|===|!==)(.+)/);
+
+      let condition;
+      if (binaryMatch) {
+        const left = parseExpression(binaryMatch[1].trim());
+        const op = binaryMatch[2].trim();
+        const right = parseExpression(binaryMatch[3].trim());
+        condition = `${left} ${op} ${right}`;
+      } else {
+        condition = parseExpression(rawCondition);
+      }
 
       return `((${condition}) ? (${valueIfTrue}) : (${valueIfFalse}))`;
     } else if (expr?.startsWith("IFS(")) {
@@ -131,13 +118,51 @@ export const getHelperFunction1 = (input) => {
       const valueIfTrue = parseExpression(parts[1]);
       const valueIfFalse = parseExpression(parts[2]);
 
-      const condition = rawCondition
-        .replace(/\*/g, "&&")
-        .replace(/\+/g, "||")
-        .replace(/=/g, "===")
-        .replace(/Blank\(\)/g, "null")
-        .replace(/Today\(\)/g, "new window.Date().toISOString()");
+      // Split condition on * (AND) and + (OR) while respecting parentheses
+      const logicalSplit = (condition) => {
+        const result = [];
+        let current = "";
+        let depth = 0;
+        for (let i = 0; i < condition.length; i++) {
+          const char = condition[i];
+          if (char === "(") depth++;
+          if (char === ")") depth--;
+          if ((char === "*" || char === "+") && depth === 0) {
+            result.push(current.trim());
+            result.push(char); // preserve operator
+            current = "";
+          } else {
+            current += char;
+          }
+        }
+        if (current) result.push(current.trim());
+        return result;
+      };
 
+      const conditionParts = logicalSplit(rawCondition);
+
+      const parsedConditions = [];
+      for (let i = 0; i < conditionParts.length; i++) {
+        const part = conditionParts[i];
+        if (part === "*") {
+          parsedConditions.push("&&");
+        } else if (part === "+") {
+          parsedConditions.push("||");
+        } else {
+          // Handle binary operators inside each sub-condition
+          const match = part.match(/(.+?)([<>=!]=?|===|!==)(.+)/);
+          if (match) {
+            const left = parseExpression(match[1].trim());
+            const op = match[2].trim().replace(/^=$/, "==="); // convert = to ===
+            const right = parseExpression(match[3].trim());
+            parsedConditions.push(`(${left} ${op} ${right})`);
+          } else {
+            parsedConditions.push(parseExpression(part));
+          }
+        }
+      }
+
+      const condition = parsedConditions.join(" ");
       return `((${condition}) ? (${valueIfTrue}) : (${valueIfFalse}))`;
     } else if (expr?.startsWith("SUM(")) {
       const inside = expr?.slice(4, -1); // remove SUM( and final )
@@ -170,7 +195,7 @@ export const getHelperFunction1 = (input) => {
       return `((${condition}) ? (${sum}) : (0))`;
     } else if (expr?.startsWith("CALC(")) {
       const inside = expr?.slice(5, -1);
-      return `(${inside})`;
+      return `(${parseExpression(inside)})`;
     } else if (expr?.startsWith("CALCIF(")) {
       const inside = expr?.slice(7, -1);
       const parts = smartSplit(inside);
@@ -196,9 +221,272 @@ export const getHelperFunction1 = (input) => {
     } else if (expr?.startsWith("YEAR(")) {
       const inside = expr?.slice(5, -1);
       return `((${inside} !== null) ? (new window.Date(${inside}).getFullYear()) : (new window.Date().getFullYear()))`;
+    } else if (expr?.startsWith("DATE(")) {
+      const inside = expr?.slice(5, -1).trim();
+      return `((${inside} !== null) ? (new window.Date(${parseExpression(
+        inside
+      )})) : (new window.Date()))`;
     } else if (expr?.startsWith("MONTH(")) {
       const inside = expr?.slice(6, -1);
       return `((${inside} !== null) ? (new window.Date(${inside}).getMonth() + 1) : (new window.Date().getMonth() + 1))`;
+    } else if (expr?.startsWith("EXPANDDATES(")) {
+      const inside = expr.slice(12, -1); // remove EXPANDDATES( and final )
+      const parts = smartSplit(inside);
+      if (parts.length !== 2) throw new Error(`Invalid EXPANDDATES expression`);
+
+      const from = parts[0];
+      const to = parts[1];
+
+      return `(function() {
+    const start = new Date(${from});
+    const end = new Date(${to});
+    const dates = [];
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      dates.push(d.toISOString().split('T')[0] );
+    }
+    return dates;
+  })()`;
+    } else if (expr?.startsWith("EXPANDAVPLAN(")) {
+      const inside = expr.slice(13, -1);
+      const parts = smartSplit(inside);
+      if (parts.length !== 2)
+        throw new Error(`Invalid EXPANDAVPLAN expression`);
+
+      const from = parts[0];
+      const to = parts[1];
+
+      return `(function() {
+    const start = new Date(${from});
+    const end = new Date(${to});
+    const location = Location;
+    const valueMap = {Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday};
+    const dates = [];
+
+    const eqsLocData = (tablesData?.["Equipments_Location"]?.data || []).filter(
+      item =>
+        item?.Location === location &&
+        (item?.Equipment_Type === "Trench_Cutting_Machine" || item?.Equipment_Type === "Drilling_Machine")
+    );
+
+    const maintData = (tablesData?.["Maintenance"]?.data || []).filter(
+      item => item?.Location === location
+    );
+
+    function getUTCDateStr(dt) {
+      return dt.getUTCFullYear() + "-" +
+             String(dt.getUTCMonth() + 1).padStart(2, "0") + "-" +
+             String(dt.getUTCDate()).padStart(2, "0");
+    }
+
+    function getStartOfUTCDate(date) {
+      return new Date(Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate()
+      ));
+    }
+
+    function getEndOfUTCDate(date) {
+      return new Date(Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        23, 59, 59, 999
+      ));
+    }
+
+    // Main loop over each UTC date from start to end
+    for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+      const dateStr = getUTCDateStr(d);
+      const dayName = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()))
+                       .toLocaleDateString("en-US", { weekday: "long" });
+      const totalTimeHours = valueMap[dayName] ?? 0;
+
+      const eqsLocFiltered = eqsLocData.filter(item => {
+        const startDate = new Date(item?.Start_Date);
+        const endDate = item?.End_Date ? new Date(item?.End_Date) : new Date();
+        return d >= startDate && d < endDate;
+      });
+
+      const dateFilteredMaint = maintData.filter(el => {
+        const startFrom = getUTCDateStr(new Date(el?.Problem_start_From));
+        const endTo = getUTCDateStr(new Date(el?.Problem_End_To));
+        return startFrom <= dateStr && endTo >= dateStr;
+      });
+
+      eqsLocFiltered.forEach((item) => {
+        const equipment = item?.Equipment;
+        const relatedMaint = dateFilteredMaint.filter(el => el?.Equipment === equipment);
+
+        let breakdowns = 0;
+        let perMaint = 0;
+
+        for (const el of relatedMaint) {
+          const problemStart = new Date(el?.Problem_start_From);
+          const problemEnd = new Date(el?.Problem_End_To);
+
+          let currentDate = getStartOfUTCDate(new Date(problemStart));
+
+          while (currentDate <= problemEnd) {
+            const nextDay = new Date(currentDate);
+            nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+
+            const overlapStart = problemStart > currentDate ? problemStart : currentDate;
+            const overlapEnd = problemEnd < nextDay ? problemEnd : nextDay;
+
+            if (overlapStart < overlapEnd) {
+              const minutes = Math.max(0, (overlapEnd - overlapStart) / (1000 * 60));
+              const curDateStr = getUTCDateStr(overlapStart);
+
+              if (curDateStr === dateStr) {
+                if (el?.Breakdown_Type === 'Periodic Maintenance') {
+                  perMaint += minutes;
+                } else {
+                  breakdowns += minutes;
+                }
+              }
+            }
+
+            currentDate = nextDay;
+          }
+        }
+
+        const maxMins = totalTimeHours;
+        breakdowns = Math.min(breakdowns, maxMins);
+        perMaint = Math.min(perMaint, maxMins);
+
+        const AvailableTime = maxMins - breakdowns - perMaint;
+        const MaintAvailability = (maxMins - perMaint) !== 0
+          ? AvailableTime / (maxMins - perMaint)
+          : 0;
+        const Month = new Date(dateStr).getFullYear() + "-" + (Number(new Date(dateStr).getMonth()) + 1)
+
+        dates.push({
+          Date: dateStr,
+          Location: location,
+          TotalTime: totalTimeHours,
+          Equipment: equipment,
+          Breakdown_Time: breakdowns ,
+          Periodic_Maintenance: perMaint ,
+          AvailableTime: AvailableTime ,
+          MaintAvailability: MaintAvailability,
+          Month: Month
+        });
+      });
+    }
+
+    return dates;
+  })()`;
+    } else if (expr?.startsWith("EXPANDDATETIME(")) {
+      const inside = expr.slice(15, -1); // remove EXPANDDATETIME( and final )
+      const parts = smartSplit(inside);
+      if (parts.length !== 2)
+        throw new Error(`Invalid EXPANDDATETIME expression`);
+
+      const startExpr = parts[0];
+      const endExpr = parts[1];
+
+      return `(function() {
+    const start = new Date(${startExpr});
+    const end = new Date(${endExpr});
+    const result = [];
+    const current = new Date(start);
+
+    while (current < end) {
+      const dateKey = current.toISOString().split("T")[0];
+      const endOfDay = new Date(dateKey + "T23:59:59.999Z");
+      const next = new Date(Math.min(end.getTime(), endOfDay.getTime()));
+      const hours = (next - current) / (1000 * 60 * 60);
+      const mins = hours * 60
+
+      result.push({ date: dateKey, hours: parseFloat(hours.toFixed(2)), mins: parseFloat(hours.toFixed(0)) });
+      current.setUTCDate(current.getUTCDate() + 1);
+      current.setUTCHours(0, 0, 0, 0);
+    }
+    return result;
+  })()`;
+    } else if (expr?.startsWith("VLOOKUP(")) {
+      const inside = expr.slice(8, -1); // Remove 'VLOOKUP(' and ')'
+      const parts = smartSplit(inside);
+      if (parts.length !== 3) throw new Error(`Invalid VLOOKUP expression`);
+
+      const rawCondition = parts[0];
+      const tableName = parts[1].trim();
+      const returnKey = parts[2].replace(/['"]/g, "");
+
+      // Utility function to split the condition by logical operators
+      const logicalSplit = (condition) => {
+        const result = [];
+        let current = "";
+        let depth = 0;
+        for (let i = 0; i < condition.length; i++) {
+          const char = condition[i];
+          if (char === "(") depth++;
+          if (char === ")") depth--;
+          if ((char === "*" || char === "+") && depth === 0) {
+            result.push(current.trim());
+            result.push(char); // Keep logical operator
+            current = "";
+          } else {
+            current += char;
+          }
+        }
+        if (current) result.push(current.trim());
+        return result;
+      };
+
+      // Split the condition by logical operators ('+' and '*')
+      const conditionParts = logicalSplit(rawCondition);
+
+      const parsedConditions = [];
+      for (let i = 0; i < conditionParts.length; i++) {
+        const part = conditionParts[i];
+        if (part === "*") {
+          parsedConditions.push("&&");
+        } else if (part === "+") {
+          parsedConditions.push("||");
+        } else {
+          // Remove outer parentheses (if any)
+          const conditionWithoutParens = part.replace(/^\((.*)\)$/, "$1");
+
+          // Handle binary operators within each condition
+          const match = conditionWithoutParens.match(
+            /(.+?)([<>=!]=?|===|!==)(.+)/
+          );
+          if (match) {
+            const leftRaw = match[1].trim();
+            const op = match[2].trim().replace(/^=$/, "===");
+            const rightRaw = match[3].trim();
+
+            const left = parseExpression(
+              leftRaw.startsWith("DATE(") || leftRaw.startsWith("Today(")
+                ? leftRaw
+                : `row[${JSON.stringify(leftRaw)}]`
+            );
+            const right = parseExpression(rightRaw);
+
+            parsedConditions.push(`(${left} ${op} ${right})`);
+          } else {
+            parsedConditions.push(
+              parseExpression(`row[${JSON.stringify(conditionWithoutParens)}]`)
+            );
+          }
+        }
+      }
+
+      // Join the parsed conditions with logical operators
+      const finalCondition = parsedConditions.join(" ");
+
+      return `(function() {
+    const rows = (tablesData?.["${tableName}"]?.data || []);
+    const matches = rows.filter(row => ${finalCondition});   
+    if (matches.length === 0) return null;
+    const sample = matches[0]["${returnKey}"];
+    if (typeof sample === "number") {
+      return matches.reduce((sum, row) => sum + (row["${returnKey}"] || 0), 0);
+    }
+    return sample;
+  })()`;
     } else {
       return expr
         ?.replace(/=/g, "===")

@@ -86,6 +86,8 @@ export const ManagePowerPiInitContextProvider = ({ children }) => {
   //AddExpression
   const [isExpressionCard, setIsExpressionCard] = useState(false);
 
+  const [selectedRefTable, setSelectedRefTable] = useState({});
+
   const {
     data,
     setData,
@@ -193,6 +195,7 @@ export const ManagePowerPiInitContextProvider = ({ children }) => {
             isRelationshipChoose: isRelationshipChoose,
             unCheckedItems: isItemUnChecked,
             sorted: isSortChecked,
+            selectedRefTable: selectedRefTable,
           }),
         }),
       });
@@ -336,6 +339,9 @@ export const ManagePowerPiInitContextProvider = ({ children }) => {
 
         isExpressionCard,
         setIsExpressionCard,
+
+        selectedRefTable,
+        setSelectedRefTable,
       }}
     >
       {children}
