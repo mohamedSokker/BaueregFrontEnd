@@ -63,7 +63,8 @@
     "socket.io-client": "^4.6.1",
     "styled-components": "^6.0.7",
     "three": "^0.168.0",
-    "vnc-rfb-client": "^0.2.0"
+    "vnc-rfb-client": "^0.2.0",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false react-scripts start",
