@@ -305,6 +305,10 @@ const ManageMiniPowerBi = () => {
       // --- STEP 3: Perform Selects ---
       const selectsResult = await runWorkerTask("PERFORM_SELECTS", {
         savedTablesData: copiedData,
+        isItemChecked: isItemChecked,
+        isItemUnChecked: viewData.unCheckedItems,
+        isSelectAllChecked: isSelectAllChecked,
+        isSortChecked: viewData.sorted,
       });
 
       setMessage(`Applying Filters...`);

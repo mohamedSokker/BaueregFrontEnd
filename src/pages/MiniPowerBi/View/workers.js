@@ -281,7 +281,13 @@ const performRelations = ({
   return { updatedTables };
 };
 
-const performSelects = ({ savedTablesData, isItemChecked }) => {
+const performSelects = ({
+  savedTablesData,
+  isItemChecked,
+  isItemUnChecked,
+  isSelectAllChecked,
+  isSortChecked,
+}) => {
   const result = {};
   const uncheckedResult = {};
   const selectAllResult = {};
