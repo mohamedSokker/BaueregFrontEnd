@@ -9,7 +9,7 @@ export function processRows(data, columns, nonNumericColumns, numericColumns) {
   });
   columns.forEach((c) => {
     const tabData = data?.[c.table]?.data;
-    tabData.forEach((row) => {
+    tabData?.forEach((row) => {
       const uniqueKey = JSON.stringify(pick(row, nonNumericColumns));
       if (!seen.has(uniqueKey)) {
         uniqueRows.push(pick(row, nonNumericColumns));
@@ -47,8 +47,8 @@ export function categorizeColumns(columns, data) {
   const nonNumericColumns = [];
   const numericColumns = [];
   columns?.forEach((col) => {
-    const dataTypes = data[col?.table]?.dataTypes;
-    if (dataTypes[col?.name]?.[0] !== "number" || col?.name === "ID") {
+    const dataTypes = data?.[col?.table]?.dataTypes;
+    if (dataTypes?.[col?.name]?.[0] !== "number" || col?.name === "ID") {
       nonNumericColumns.push(col?.name);
     } else {
       numericColumns.push(col?.name);

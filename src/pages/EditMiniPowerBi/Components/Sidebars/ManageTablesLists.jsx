@@ -446,7 +446,11 @@ const ManageTablesLists = ({ setTableLoading }) => {
                                 }));
                               }
 
-                              if (Object.keys(selectedRefTable).length > 0) {
+                              if (
+                                Object.keys(selectedRefTable).length > 0 &&
+                                Object.keys(selectedRefTable).includes(item)
+                              ) {
+                                console.log(selectedRefTable);
                                 const { [col]: oldValue, ...rest } =
                                   selectedRefTable[item];
                                 copiedRefTables[item] = { ...rest };

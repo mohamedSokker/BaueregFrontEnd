@@ -28,6 +28,8 @@ const MiniPowerBi = () => {
 
   const [dataExpressions, setDataExpressions] = useState([]);
   const [isAuth, setIsAuth] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("Initializing...");
 
   const {
     setIsPreview,
@@ -47,7 +49,6 @@ const MiniPowerBi = () => {
     isRelationshipChoose,
     setIsRelationshipChoose,
     closeSmallSidebar,
-    message,
     setSelectedRelationshipsTable,
     selectedRelationshipsTable,
     setSelectedTable,
@@ -73,9 +74,6 @@ const MiniPowerBi = () => {
   } = useInitContext();
 
   const {
-    loading,
-    setLoading,
-    setMessage,
     getTableData,
     setRelationshipData,
     relationshipdata,
@@ -85,164 +83,76 @@ const MiniPowerBi = () => {
 
   const { usersData } = useNavContext();
 
-  const sortByKey = (array, key) => {
-    return array.sort((a, b) => {
-      const valA = a[key];
-      const valB = b[key];
-
-      // Handle null or undefined
-      if (valA == null) return 1;
-      if (valB == null) return -1;
-
-      // Number
-      if (typeof valA === "number" && typeof valB === "number") {
-        return valA - valB;
-      }
-
-      // Date (ISO strings or Date objects)
-      if (valA instanceof Date || !isNaN(Date.parse(valA))) {
-        return new Date(valA) - new Date(valB);
-      }
-
-      // String (localeCompare handles case and diacritics)
-      return String(valA).localeCompare(String(valB));
+  const [worker] = useState(() => {
+    return new Worker(new URL("./workers.js", import.meta.url), {
+      type: "module",
     });
-  };
-
-  const processExpressions = async () => {
-    let copiedData = { ...tablesData };
-    const added = {};
-    const addedTables = [];
-    //Initialize added tables
-    const tablesKeys = Object.keys(copiedData);
-    const expKeys = Object.keys(dataExpressions);
-    expKeys?.forEach((table) => {
-      if (!tablesKeys?.includes(table)) {
-        addedTables.push(table);
-        copiedData = {
-          ...copiedData,
-          [table]: { name: table, data: [] },
-        };
-      }
-    });
-    Object.keys(dataExpressions || {}).forEach((table) => {
-      const tableData = copiedData[table]?.data;
-      if (!tableData || !Array.isArray(tableData)) return;
-
-      const allowedKeys = Object.keys(
-        tableData[0] ||
-          copiedData[
-            selectedRefTable[table][Object.keys(selectedRefTable[table])[0]]
-          ]?.data[0] ||
-          {}
-      );
-      const expressionsForTable = dataExpressions[table] || {};
-      const cols = Object.keys(expressionsForTable);
-
-      // Initialize added columns
-      if (!added[table]) added[table] = [];
-      cols.forEach((col) => {
-        if (!added[table].includes(col)) added[table].push(col);
-      });
-
-      // Process each expression column
-      cols.forEach((col) => {
-        try {
-          console.log(addedTables?.includes(table));
-          if (!addedTables?.includes(table)) {
-            console.log("if");
-            const exp = expressionsForTable[col];
-            const funcBody = getHelperFunction1(exp, tablesData);
-            const tableData = copiedData[table]?.data;
-            const expressionFunction = new Function(...allowedKeys, funcBody);
-
-            copiedData[table].data = tableData.map((row) => ({
-              ...row,
-              [col]: expressionFunction(...allowedKeys.map((key) => row[key])),
-            }));
-
-            // Update data types after adding new column
-            copiedData[table].dataTypes = detectTableColumnTypes(
-              copiedData[table].data
-            );
-          } else {
-            console.log("else");
-            let copiedData1 = { ...copiedData };
-            let tablesData = copiedData1;
-            console.log(copiedData1);
-            console.log(tablesData);
-
-            const sanitizedKeys = allowedKeys.map((key) =>
-              key.replace(/[^a-zA-Z0-9_]/g, "_")
-            );
-            const exp = expressionsForTable[col];
-            const expressionFunction = new Function(
-              "tablesData",
-              ...sanitizedKeys,
-              `${getHelperFunction1(exp, tablesData)};`
-            );
-
-            // Loop through the table and add the new column based on the expression
-            const result = copiedData1?.[
-              selectedRefTable?.[table]?.[col]
-            ]?.data?.flatMap((row) => {
-              const newValue = expressionFunction(
-                copiedData1,
-                ...allowedKeys.map((key) => row[key])
-              );
-
-              if (Array.isArray(newValue)) {
-                return newValue.map((item, i) => {
-                  return { ...item };
-                });
-              } else {
-                return {
-                  ...row,
-                  [col]: newValue,
-                };
-              }
-            });
-            copiedData1[table].data = result;
-            copiedData1[table].dataTypes = detectTableColumnTypes(result);
-          }
-        } catch (error) {
-          console.error(
-            `Error evaluating expression for ${table}.${col}:`,
-            error
-          );
-        }
-      });
-    });
-
-    // Batch state updates
-    setAddedTables(addedTables);
-    setAddedCols(added);
-    setExpressions(dataExpressions);
-    setTablesData(copiedData);
-    setCopiedTablesData(copiedData);
-    setSavedTablesData(copiedData);
-  };
+  });
 
   useEffect(() => {
-    const shouldProcess = selectedRefTable
-      ? Object.keys(tablesData).length > 0 &&
-        Object.keys(tablesData).length ===
-          [...isChoose, ...isRelationshipChoose].length &&
-        Object.keys(selectedRefTable).length > 0
-      : Object.keys(tablesData).length > 0 &&
-        Object.keys(tablesData).length ===
-          [...isChoose, ...isRelationshipChoose].length;
+    const listener = (e) => {
+      const { status, type, data } = e.data;
+      switch (type) {
+        case "PROCESS_EXPRESSIONS":
+          if (status === "done") {
+            setTablesData(data.copiedData);
+            setCopiedTablesData(data.copiedData);
+            setSavedTablesData(data.copiedData);
+            setAddedCols(data.added);
+            setExpressions(data.expressions);
+            setAddedTables(data.addedTables);
+          }
+          break;
 
-    if (shouldProcess) {
-      setLoading(true);
-      setMessage("Initializing Expressions...");
-      processExpressions();
-      setLoading(false);
-    }
-  }, [isChoose, isRelationshipChoose, dataExpressions, selectedRefTable]);
+        case "PERFORM_RELATIONS":
+          if (status === "done") {
+            setTablesData((prev) => ({ ...prev, ...data.updatedTables }));
+            setCopiedTablesData((prev) => ({ ...prev, ...data.updatedTables }));
+            setSavedTablesData((prev) => ({ ...prev, ...data.updatedTables }));
+          }
+          break;
+
+        case "HANDLE_APPLY":
+          if (status === "done") {
+            setTablesData(data.result);
+            setCopiedTablesData(data.result);
+            setSavedTablesData(data.result);
+          }
+          break;
+
+        case "PERFORM_SELECTS":
+          if (status === "done") {
+            if (data.colFlag) setColData(data.result);
+            setIsSelectAllChecked(data.selectAllResult);
+            setIsItemChecked(data.result);
+            setIsItemUnChecked(data.uncheckedResult);
+            setIsSortChecked(data.sortResult);
+          }
+          break;
+
+        default:
+          console.log("Unhandled worker message:", type);
+      }
+    };
+
+    worker.addEventListener("message", listener);
+    return () => worker.removeEventListener("message", listener);
+  }, []);
+
+  const runWorkerTask = (taskType, payload) => {
+    return new Promise((resolve) => {
+      const listener = (e) => {
+        if (e.data.type === taskType && e.data.status === "done") {
+          worker.removeEventListener("message", listener);
+          resolve(e.data.data);
+        }
+      };
+      worker.addEventListener("message", listener);
+      worker.postMessage({ type: taskType, payload });
+    });
+  };
 
   const getTablesData = async (selectedTables, relationshipTables) => {
-    setLoading(true);
     setMessage("Getting Data From Database");
 
     // Step 1: Prepare URLs
@@ -282,8 +192,6 @@ const MiniPowerBi = () => {
 
       // Step 3: Process Table Data
       const newTablesData = {};
-      const newCopiedTablesData = {};
-      const newSavedTablesData = {};
 
       tableResponses.forEach((res, index) => {
         if (res.status === "fulfilled") {
@@ -296,22 +204,12 @@ const MiniPowerBi = () => {
             name: table,
             dataTypes,
           };
-          newCopiedTablesData[table] = {
-            data,
-            name: table,
-            dataTypes,
-          };
-          newSavedTablesData[table] = {
-            data,
-            name: table,
-            dataTypes,
-          };
         }
       });
 
       setTablesData(newTablesData);
-      setCopiedTablesData(newCopiedTablesData);
-      setSavedTablesData(newSavedTablesData);
+      setCopiedTablesData(newTablesData);
+      setSavedTablesData(newTablesData);
 
       // Step 4: Process Relationship Data
       const relDataMap = {};
@@ -324,223 +222,18 @@ const MiniPowerBi = () => {
       setRelationshipData(relDataMap);
 
       // Step 5: Handle Selected Relationships
+      const relTablesMap = [];
       relationshipTables.forEach((item) => {
         if (!selectedRelationshipsTable.includes(item)) {
-          setSelectedRelationshipsTable((prev) => [...prev, item]);
+          relTablesMap.push(item);
         }
       });
+      setSelectedRelationshipsTable((prev) => relTablesMap);
+      return { newTablesData, relDataMap };
     } catch (error) {
       console.error("Error fetching table data:", error);
       setMessage("Failed to load data from database.");
-    } finally {
-      setLoading(false);
     }
-  };
-
-  const performRelations = async () => {
-    setLoading(true);
-    setMessage(`Performing Relations...`);
-    const updatedTables = {};
-    const updatedCopiedTables = {};
-    const updatedSavedTables = {};
-    for (const item of relationsTable) {
-      if (isRelationshipChoose?.includes(item.Name)) {
-        const relationships = JSON.parse(item?.RelationShips);
-        // console.log(relationships);
-        const copiedRelationstablesData = {
-          ...relationshipdata,
-        };
-        // console.log(copiedRelationstablesData);
-        let sourceTable = relationships?.[0]?.source;
-        let sourceData = copiedRelationstablesData?.[sourceTable]
-          ? copiedRelationstablesData?.[sourceTable]
-          : [];
-        let currentVT = [];
-
-        for (const rel of relationships) {
-          console.log(`first loop`);
-          if (rel?.source === "FiltersNode") {
-            console.log(`first loop inside FiltersNode`);
-            if (rel?.sourceHandle === "Blank()") {
-              console.log("First loop: Filtering data...");
-              copiedRelationstablesData[rel?.target] =
-                copiedRelationstablesData?.[rel?.target]?.filter(
-                  (row) => row?.[rel?.targetHandle] === null
-                );
-            }
-          }
-        }
-
-        for (const item of relationships) {
-          console.log("Second loop: Joining data...");
-          currentVT = [];
-          currentVT.push(
-            ...sourceData?.map((row1) => {
-              const match = copiedRelationstablesData?.[item?.target]?.find(
-                (row2) =>
-                  row1?.[item?.sourceHandle] === row2?.[item?.targetHandle]
-              );
-              return { ...match, ID: row1.ID, ...row1 };
-            })
-          );
-          sourceData = currentVT;
-        }
-
-        currentVT.push(sourceData);
-        currentVT.pop();
-        // console.log(currentVT);
-
-        updatedTables[item.Name] = {
-          name: item.Name,
-          data: sourceData,
-          dataTypes:
-            sourceData.length > 0 ? detectTableColumnTypes(sourceData) : {},
-        };
-
-        updatedCopiedTables[item.Name] = {
-          name: item.Name,
-          data: sourceData,
-          dataTypes:
-            sourceData.length > 0 ? detectTableColumnTypes(sourceData) : {},
-        };
-
-        updatedSavedTables[item.Name] = {
-          name: item.Name,
-          data: sourceData,
-          dataTypes:
-            sourceData.length > 0 ? detectTableColumnTypes(sourceData) : {},
-        };
-      }
-    }
-    setTablesData((prev) => ({ ...prev, ...updatedTables }));
-    setCopiedTablesData((prev) => ({ ...prev, ...updatedCopiedTables }));
-    setSavedTablesData((prev) => ({ ...prev, ...updatedSavedTables }));
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    performRelations();
-  }, [relationshipdata]);
-
-  const performSelects = async () => {
-    if (savedTablesData && Object.keys(savedTablesData)?.length > 0) {
-      const result = {};
-      const uncheckedResult = {};
-      const selectAllResult = {};
-      const sortResult = {};
-
-      let colFlag = false;
-
-      Object.entries(savedTablesData).forEach(([table, tableData]) => {
-        if (!isItemChecked?.[table]) {
-          const rows = tableData?.data || [];
-          const firstRow = rows[0] || {};
-
-          sortResult[table] = sortResult[table] || [];
-
-          Object.keys(firstRow).forEach((col) => {
-            selectAllResult[table] = selectAllResult[table] || {};
-            selectAllResult[table][col] = { SelectAll: true };
-
-            result[table] = result[table] || {};
-            result[table][col] = [];
-
-            uncheckedResult[table] = uncheckedResult[table] || {};
-            uncheckedResult[table][col] = [];
-
-            if (!sortResult[table].includes("ID")) {
-              sortResult[table].push("ID");
-            }
-
-            const uniqueValues = new Set();
-
-            rows.forEach((item) => {
-              const value = item[col];
-              if (!uniqueValues.has(value)) {
-                uniqueValues.add(value);
-              }
-            });
-
-            result[table][col] = Array.from(uniqueValues).sort((a, b) => {
-              if (a == null) return 1;
-              if (b == null) return -1;
-              if (!isNaN(Date.parse(a)) && !isNaN(Date.parse(b))) {
-                return new Date(a) - new Date(b);
-              }
-              if (typeof a === "number" && typeof b === "number") {
-                return a - b;
-              }
-              return String(a).localeCompare(String(b));
-            });
-          });
-          colFlag = true;
-        } else {
-          result[table] = isItemChecked[table];
-          uncheckedResult[table] = isItemUnChecked[table];
-          selectAllResult[table] = isSelectAllChecked[table];
-          sortResult[table] = isSortChecked[table];
-          colFlag = false;
-        }
-      });
-
-      if (colFlag) setColData(result);
-      setIsSelectAllChecked(selectAllResult);
-      setIsItemChecked(result);
-    }
-  };
-
-  useEffect(() => {
-    performSelects();
-  }, [savedTablesData]);
-
-  useEffect(() => {
-    if (
-      Object.keys(isItemUnChecked).length > 0 &&
-      Object.keys(isSortChecked).length > 0 &&
-      Object.keys(savedTablesData).length > 0
-    ) {
-      handleApply();
-    }
-  }, [isItemUnChecked, isSortChecked, savedTablesData]);
-
-  const handleApply = () => {
-    let slicers = {};
-
-    Object.keys(isItemUnChecked || {}).forEach((table) => {
-      slicers[table] = [];
-      Object.keys(isItemUnChecked[table] || {}).forEach((col) => {
-        (isItemUnChecked[table][col] || []).forEach((item) => {
-          //   if (!slicers[table]) slicers[table] = [];
-          slicers[table].push({ colName: col, item });
-        });
-      });
-    });
-
-    // console.log(slicers);
-
-    let result = { ...savedTablesData };
-    let resultData = [];
-    Object.keys(savedTablesData)?.map((table) => {
-      sortByKey(savedTablesData?.[table]?.data, isSortChecked?.[table]?.[0]);
-      resultData = [];
-      resultData = savedTablesData?.[table]?.data?.filter((row) => {
-        return slicers?.[table]?.every(({ colName, item }) => {
-          if (row[colName] === item) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      });
-      result[table] = {
-        ...result[table],
-        data: resultData,
-      };
-    });
-
-    // console.log(result);
-    setTablesData(result);
-    setCopiedTablesData(result);
   };
 
   const getData = async () => {
@@ -567,15 +260,18 @@ const MiniPowerBi = () => {
       setUsersNamesData(JSON.parse(targetItem?.UsersToView));
 
       const userstoView = JSON.parse(targetItem?.UsersToView)?.Users;
-      if (
-        [targetItem?.CreatedBy, ...userstoView]?.includes(usersData[0].username)
-      ) {
-        setIsAuth(true);
-      } else {
-        setIsAuth(false);
+      const isAuthorized = [targetItem?.CreatedBy, ...userstoView]?.includes(
+        usersData[0].username
+      );
+      setIsAuth(isAuthorized);
+
+      if (!isAuthorized) {
+        setLoading(false);
+        return; // Or handle unauthorized case differently
       }
 
       const viewData = JSON.parse(targetItem?.ViewData);
+      console.log(viewData?.expressions);
 
       setIsItemUnChecked(viewData?.unCheckedItems);
       setIsSortChecked(viewData?.sorted);
@@ -584,13 +280,47 @@ const MiniPowerBi = () => {
 
       setIsRelationshipChoose(viewData?.isRelationshipChoose);
       setSelectedRefTable(viewData?.selectedRefTable);
-      await getTablesData(viewData?.isChoose, viewData?.isRelationshipChoose);
+      const { newTablesData, relDataMap } = await getTablesData(
+        viewData?.isChoose,
+        viewData?.isRelationshipChoose
+      );
+
+      setMessage(`Performing Relations...`);
+      // --- STEP 1: Run Relations ---
+      const { updatedTables } = await runWorkerTask("PERFORM_RELATIONS", {
+        relDataMap,
+        relationsTable: responseData[1]?.data,
+        isRelationshipChoose: viewData.isRelationshipChoose,
+        tablesData: newTablesData,
+      });
+
+      setMessage(`Processing Expressions...`);
+      // --- STEP 2: Process Expressions ---
+      const { copiedData } = await runWorkerTask("PROCESS_EXPRESSIONS", {
+        tablesData: updatedTables,
+        expressions: viewData.expressions,
+        selectedRefTable: viewData.selectedRefTable,
+      });
+
+      setMessage(`Performing Selects...`);
+      // --- STEP 3: Perform Selects ---
+      const selectsResult = await runWorkerTask("PERFORM_SELECTS", {
+        savedTablesData: copiedData,
+      });
+
+      setMessage(`Applying Filters...`);
+      // --- STEP 4: Apply Filters ---
+      const applyResult = await runWorkerTask("HANDLE_APPLY", {
+        isItemUnChecked: viewData.unCheckedItems,
+        isSortChecked: viewData.sorted,
+        savedTablesData: copiedData,
+      });
 
       setDataExpressions(viewData?.expressions);
 
       setData(viewData.data);
 
-      // setLoading(false);
+      setLoading(false);
     } catch (err) {
       console.log(err);
       console.log(
