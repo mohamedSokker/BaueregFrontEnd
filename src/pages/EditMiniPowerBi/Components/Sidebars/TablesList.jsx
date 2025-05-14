@@ -8,6 +8,8 @@ import {
 } from "react-icons/md";
 import { TbSum } from "react-icons/tb";
 import { ColorRing } from "react-loader-spinner";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+
 import { logoColor } from "../../../../BauerColors";
 import { useInitContext } from "../../Contexts/InitContext";
 import PropertyCard from "../Customs/PropertyCard";
@@ -115,253 +117,248 @@ const TablesList = () => {
               ...selectedRelationshipsTable,
               ...AddedTables,
             ]?.map((item, idx) => (
-              <div className="flex flex-col w-full gap-1" key={idx}>
-                <div
-                  className="w-full flex flex-row justify-start items-center bg-white rounded-[4px] text-[12px] cursor-pointer overflow-hidden pr-[22px]"
-                  style={{
-                    backgroundColor: activeItem === item ? "#CB1955" : "white",
-                    color: activeItem === item ? "white" : "black",
-                  }}
-                  onClick={() => setActiveItem(item)}
-                  onDoubleClick={() => {
-                    setIsEditing(true);
-                    setRenamedItem(item);
-                    setRenamedName(tablesData?.[item]?.name);
-                  }}
-                >
-                  {renamedItem === item ? (
-                    <form
-                      className="w-full p-1"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        let copiedData = { ...tablesData };
-                        copiedData[RenamedName] = {
-                          ...copiedData[item],
-                          name: RenamedName,
-                          data: copiedData[item]?.data,
-                        };
-                        delete copiedData[item];
+              <TooltipComponent key={idx} content={item} position="LeftTop">
+                <div className="flex flex-col w-full gap-1">
+                  <div
+                    className="w-full flex flex-row justify-start items-center bg-white rounded-[4px] text-[12px] cursor-pointer overflow-hidden pr-[22px]"
+                    style={{
+                      backgroundColor:
+                        activeItem === item ? "#CB1955" : "white",
+                      color: activeItem === item ? "white" : "black",
+                    }}
+                    onClick={() => setActiveItem(item)}
+                    onDoubleClick={() => {
+                      setIsEditing(true);
+                      setRenamedItem(item);
+                      setRenamedName(tablesData?.[item]?.name);
+                    }}
+                  >
+                    {renamedItem === item ? (
+                      <form
+                        className="w-full p-1"
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          let copiedData = { ...tablesData };
+                          copiedData[RenamedName] = {
+                            ...copiedData[item],
+                            name: RenamedName,
+                            data: copiedData[item]?.data,
+                          };
+                          delete copiedData[item];
 
-                        if (AddedTables?.includes(item)) {
-                          let result = [];
-                          const res = [...AddedTables];
-                          result = res.filter((element) => element !== item);
-                          result.push(RenamedName);
-                          setAddedTables(result);
-                        }
-                        setTablesData(copiedData);
-                        setRenamedItem("");
-                      }}
-                    >
-                      <input
-                        className="text-[12px] w-full outline-none text-black"
-                        ref={inputRef}
-                        value={RenamedName}
-                        onChange={(e) => {
-                          setRenamedName(e.target.value);
-                        }}
-                        onBlur={() => {
+                          if (AddedTables?.includes(item)) {
+                            let result = [];
+                            const res = [...AddedTables];
+                            result = res.filter((element) => element !== item);
+                            result.push(RenamedName);
+                            setAddedTables(result);
+                          }
+                          setTablesData(copiedData);
                           setRenamedItem("");
-                          setIsEditing(false);
-                        }}
-                      />
-                    </form>
-                  ) : (
-                    <div className="w-full flex flex-row justify-start items-center cursor-pointer h-full">
-                      {isPanelDown?.[item] ? (
-                        <div
-                          className="hover:bg-gray-300 bg-gray-100 p-1 cursor-pointer flex items-center h-full"
-                          style={{
-                            backgroundColor:
-                              activeItem === item ? "#CB1955" : "white",
-                            color: activeItem === item ? "white" : "black",
-                          }}
-                          onClick={() =>
-                            setIsPanelDown((prev) =>
-                              prev?.[item]
-                                ? {
-                                    ...prev,
-                                    [item]: !prev?.[item],
-                                  }
-                                : { ...prev, [item]: true }
-                            )
-                          }
-                        >
-                          <MdKeyboardArrowDown size={14} />
-                        </div>
-                      ) : (
-                        <div
-                          className="hover:bg-gray-300 bg-gray-100 p-1 cursor-pointer flex items-center h-full"
-                          style={{
-                            backgroundColor:
-                              activeItem === item ? "#CB1955" : "white",
-                            color: activeItem === item ? "white" : "black",
-                          }}
-                          onClick={() =>
-                            setIsPanelDown((prev) =>
-                              prev?.[item]
-                                ? {
-                                    ...prev,
-                                    [item]: !prev?.[item],
-                                  }
-                                : { ...prev, [item]: true }
-                            )
-                          }
-                        >
-                          <MdKeyboardArrowRight size={14} />
-                        </div>
-                      )}
-                      <div
-                        className="w-full flex flex-row items-center gap-1"
-                        onClick={() => {
-                          setSelectedTableData(tablesData?.[item]?.data);
                         }}
                       >
-                        {AddedTables?.includes(item) && (
-                          <MdOutlinePlaylistAdd size={14} />
+                        <input
+                          className="text-[12px] w-full outline-none text-black"
+                          ref={inputRef}
+                          value={RenamedName}
+                          onChange={(e) => {
+                            setRenamedName(e.target.value);
+                          }}
+                          onBlur={() => {
+                            setRenamedItem("");
+                            setIsEditing(false);
+                          }}
+                        />
+                      </form>
+                    ) : (
+                      <div className="w-full flex flex-row justify-start items-center cursor-pointer h-full">
+                        {isPanelDown?.[item] ? (
+                          <div
+                            className="hover:bg-gray-300 bg-gray-100 p-1 cursor-pointer flex items-center h-full"
+                            style={{
+                              backgroundColor:
+                                activeItem === item ? "#CB1955" : "white",
+                              color: activeItem === item ? "white" : "black",
+                            }}
+                            onClick={() =>
+                              setIsPanelDown((prev) =>
+                                prev?.[item]
+                                  ? {
+                                      ...prev,
+                                      [item]: !prev?.[item],
+                                    }
+                                  : { ...prev, [item]: true }
+                              )
+                            }
+                          >
+                            <MdKeyboardArrowDown size={14} />
+                          </div>
+                        ) : (
+                          <div
+                            className="hover:bg-gray-300 bg-gray-100 p-1 cursor-pointer flex items-center h-full"
+                            style={{
+                              backgroundColor:
+                                activeItem === item ? "#CB1955" : "white",
+                              color: activeItem === item ? "white" : "black",
+                            }}
+                            onClick={() =>
+                              setIsPanelDown((prev) =>
+                                prev?.[item]
+                                  ? {
+                                      ...prev,
+                                      [item]: !prev?.[item],
+                                    }
+                                  : { ...prev, [item]: true }
+                              )
+                            }
+                          >
+                            <MdKeyboardArrowRight size={14} />
+                          </div>
                         )}
-                        <p className="w-full overflow-ellipsis whitespace-nowrap overflow-hidden p-1">
-                          {tablesData?.[item]?.name}
-                        </p>
+                        <div
+                          className="w-full flex flex-row items-center gap-1"
+                          onClick={() => {
+                            setSelectedTableData(tablesData?.[item]?.data);
+                          }}
+                        >
+                          {AddedTables?.includes(item) && (
+                            <MdOutlinePlaylistAdd size={14} />
+                          )}
+                          <p className="w-full overflow-ellipsis whitespace-nowrap overflow-hidden p-1">
+                            {tablesData?.[item]?.name}
+                          </p>
+                        </div>
                       </div>
+                    )}
+                  </div>
+
+                  {isPanelDown?.[item] && tablesData?.[item]?.data?.[0] && (
+                    <div className="w-full flex flex-col gap-1 cursor-pointer">
+                      {Object.keys(tablesData?.[item]?.data?.[0])?.map(
+                        (col, i) => (
+                          <TooltipComponent
+                            key={i}
+                            content={col}
+                            position="LeftCenter"
+                          >
+                            <div
+                              className="w-full flex flex-row gap-2 pl-3"
+                              onClick={() => setActiveColItem({ [item]: col })}
+                              onDoubleClick={() => {
+                                setIsColEditing(true);
+                                setRenamedColItem(col);
+                                setRenamedColName(col);
+                              }}
+                            >
+                              {renamedColItem === col ? (
+                                <form
+                                  className="w-full"
+                                  onSubmit={(e) => {
+                                    e.preventDefault();
+                                    let copiedData = { ...tablesData };
+                                    const keys = Object.keys(
+                                      tablesData?.[item]?.data?.[0]
+                                    ).map((key) =>
+                                      key === col ? RenamedColName : key
+                                    );
+                                    const updatedData = copiedData?.[
+                                      item
+                                    ]?.data?.map((el) => {
+                                      const reorderedObject = keys.reduce(
+                                        (acc, key) => {
+                                          acc[key] =
+                                            key === RenamedColName
+                                              ? el[col]
+                                              : el[
+                                                  key === col
+                                                    ? RenamedColName
+                                                    : key
+                                                ];
+                                          return acc;
+                                        },
+                                        {}
+                                      );
+
+                                      return reorderedObject;
+                                    });
+
+                                    if (AddedCols?.[item]?.includes(col)) {
+                                      let result = [];
+                                      const res = [...AddedCols?.[item]];
+                                      result = res.filter(
+                                        (element) => element !== col
+                                      );
+                                      result.push(RenamedColName);
+                                      setAddedCols((prev) => ({
+                                        ...prev,
+                                        [item]: [...prev[item], ...result],
+                                      }));
+                                    }
+
+                                    copiedData[item].data = updatedData;
+                                    setTablesData(copiedData);
+                                    setSelectedTableData(updatedData);
+                                    setRenamedColItem("");
+                                  }}
+                                >
+                                  <input
+                                    className="w-full outline-none p-1 rounded-[4px] text-[10px] bg-white text-black"
+                                    ref={inputColRef}
+                                    value={RenamedColName}
+                                    onChange={(e) => {
+                                      setRenamedColName(e.target.value);
+                                    }}
+                                    onBlur={() => {
+                                      setRenamedColItem("");
+                                      setIsColEditing(false);
+                                    }}
+                                  />
+                                </form>
+                              ) : (
+                                <div
+                                  className="w-full flex flex-row gap-1 items-center px-1 rounded-[4px] active:border-1 active:border-gray-400 active:blur-0"
+                                  draggable
+                                  onDragStart={(e) =>
+                                    handleDragStart(e, item, col)
+                                  }
+                                  onDragEnd={handleDragEnd}
+                                  style={{
+                                    backgroundColor:
+                                      activeColItem[item] === col
+                                        ? "#CB1955"
+                                        : "white",
+                                    color:
+                                      activeColItem[item] === col
+                                        ? "white"
+                                        : "black",
+                                  }}
+                                >
+                                  {AddedCols?.[item]?.includes(col) && (
+                                    <MdOutlinePlaylistAdd size={12} />
+                                  )}
+                                  {tablesData?.[item]?.dataTypes?.[col]
+                                    ?.length === 1 &&
+                                    tablesData?.[item]?.dataTypes?.[
+                                      col
+                                    ]?.[0] === "number" &&
+                                    col?.toLocaleLowerCase() !== "id" && (
+                                      <TbSum size={20} />
+                                    )}
+                                  <div className="w-[50%] p-1 rounded-[4px] text-[10px] flex flex-row gap-2 items-center overflow-ellipsis whitespace-nowrap overflow-hidden">
+                                    <p className="overflow-ellipsis whitespace-nowrap overflow-hidden">
+                                      {col}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </TooltipComponent>
+                        )
+                      )}
                     </div>
                   )}
                 </div>
-
-                {isPanelDown?.[item] && tablesData?.[item]?.data?.[0] && (
-                  <div className="w-full flex flex-col gap-1 cursor-pointer">
-                    {Object.keys(tablesData?.[item]?.data?.[0])?.map(
-                      (col, i) => (
-                        <div
-                          key={i}
-                          className="w-full flex flex-row gap-2 pl-3"
-                          onClick={() => setActiveColItem({ [item]: col })}
-                          onDoubleClick={() => {
-                            setIsColEditing(true);
-                            setRenamedColItem(col);
-                            setRenamedColName(col);
-                          }}
-                        >
-                          {renamedColItem === col ? (
-                            <form
-                              className="w-full"
-                              onSubmit={(e) => {
-                                e.preventDefault();
-                                let copiedData = { ...tablesData };
-                                const keys = Object.keys(
-                                  tablesData?.[item]?.data?.[0]
-                                ).map((key) =>
-                                  key === col ? RenamedColName : key
-                                );
-                                const updatedData = copiedData?.[
-                                  item
-                                ]?.data?.map((el) => {
-                                  const reorderedObject = keys.reduce(
-                                    (acc, key) => {
-                                      acc[key] =
-                                        key === RenamedColName
-                                          ? el[col]
-                                          : el[
-                                              key === col ? RenamedColName : key
-                                            ];
-                                      return acc;
-                                    },
-                                    {}
-                                  );
-
-                                  return reorderedObject;
-                                });
-
-                                if (AddedCols?.[item]?.includes(col)) {
-                                  let result = [];
-                                  const res = [...AddedCols?.[item]];
-                                  result = res.filter(
-                                    (element) => element !== col
-                                  );
-                                  result.push(RenamedColName);
-                                  setAddedCols((prev) => ({
-                                    ...prev,
-                                    [item]: [...prev[item], ...result],
-                                  }));
-                                }
-
-                                copiedData[item].data = updatedData;
-                                // console.log(copiedData);
-                                setTablesData(copiedData);
-                                setSelectedTableData(updatedData);
-                                setRenamedColItem("");
-                              }}
-                            >
-                              <input
-                                className="w-full outline-none p-1 rounded-[4px] text-[10px] bg-white text-black"
-                                ref={inputColRef}
-                                value={RenamedColName}
-                                onChange={(e) => {
-                                  setRenamedColName(e.target.value);
-                                }}
-                                onBlur={() => {
-                                  setRenamedColItem("");
-                                  setIsColEditing(false);
-                                }}
-                              />
-                            </form>
-                          ) : (
-                            // <Drag
-                            //   category={`${tablesData?.[item]?.name}`}
-                            //   name={`${col}`}
-                            //   table={item}
-                            //   targets={[`Tooltip`, `Columns`]}
-                            // >
-                            <div
-                              className="w-full flex flex-row gap-1 items-center px-1 rounded-[4px] active:border-1 active:border-gray-400 active:blur-0"
-                              draggable
-                              onDragStart={(e) => handleDragStart(e, item, col)}
-                              onDragEnd={handleDragEnd}
-                              style={{
-                                backgroundColor:
-                                  activeColItem[item] === col
-                                    ? "#CB1955"
-                                    : "white",
-                                color:
-                                  activeColItem[item] === col
-                                    ? "white"
-                                    : "black",
-                              }}
-                            >
-                              {AddedCols?.[item]?.includes(col) && (
-                                <MdOutlinePlaylistAdd size={12} />
-                              )}
-                              {tablesData?.[item]?.dataTypes?.[col]?.length ===
-                                1 &&
-                                tablesData?.[item]?.dataTypes?.[col]?.[0] ===
-                                  "number" &&
-                                col?.toLocaleLowerCase() !== "id" && (
-                                  <TbSum size={20} />
-                                )}
-                              <p
-                                className="w-full p-1 rounded-[4px] text-[10px] bg-white"
-                                style={{
-                                  backgroundColor:
-                                    activeColItem[item] === col
-                                      ? "#CB1955"
-                                      : "white",
-                                  color:
-                                    activeColItem[item] === col
-                                      ? "white"
-                                      : "black",
-                                }}
-                              >
-                                {col}
-                              </p>
-                            </div>
-                            // </Drag>
-                          )}
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
-              </div>
+              </TooltipComponent>
             ))
           ) : (
             <div className="flex flex-row justify-center items-center text-logoColor">

@@ -51,7 +51,7 @@ onmessage = function (e) {
 };
 
 const sortByKey = (array, key) => {
-  return array.sort((a, b) => {
+  return array?.sort((a, b) => {
     const valA = a[key];
     const valB = b[key];
 
@@ -75,7 +75,6 @@ const sortByKey = (array, key) => {
 };
 
 const processExpressions = ({ tablesData, expressions, selectedRefTable }) => {
-  console.log(expressions);
   let copiedData = { ...tablesData };
   const added = {};
   const addedTables = [];
@@ -91,16 +90,19 @@ const processExpressions = ({ tablesData, expressions, selectedRefTable }) => {
       };
     }
   });
-  Object.keys(expressions || {}).forEach((table) => {
-    const tableData = copiedData[table]?.data;
+  Object.keys(expressions || {})?.forEach((table) => {
+    const tableData = copiedData?.[table]?.data;
     if (!tableData || !Array.isArray(tableData)) return;
 
     const allowedKeys = Object.keys(
       tableData[0] ||
         copiedData[
-          selectedRefTable[table][Object.keys(selectedRefTable[table])[0]]
+          selectedRefTable?.[table]?.[Object.keys(selectedRefTable[table])[0]]
         ]?.data[0] ||
         {}
+    );
+    const sanitizedKeys = allowedKeys.map((key) =>
+      key.replace(/[^a-zA-Z0-9_]/g, "_")
     );
     const expressionsForTable = expressions[table] || {};
     const cols = Object.keys(expressionsForTable);
@@ -112,45 +114,21 @@ const processExpressions = ({ tablesData, expressions, selectedRefTable }) => {
     });
 
     // Process each expression column
-    cols.forEach((col) => {
+    cols?.forEach((col) => {
       try {
-        console.log(addedTables?.includes(table));
         if (!addedTables?.includes(table)) {
-          const sanitizedKeys = allowedKeys.map((key) =>
-            /^(date|Date|Array|Object|String|Number)$/i.test(key)
-              ? `${key}_`
-              : key
-          );
-
-          const exp = expressionsForTable[col];
-          const funcBody = getHelperFunctionWorker(exp, tablesData).replace(
-            /Today\(\)/g,
-            "new Date().toISOString()"
-          );
+          const exp = expressionsForTable[col].replace(/\bDate\b/g, "Date_");
+          const funcBody = getHelperFunctionWorker(exp, tablesData);
           const tableData = copiedData[table]?.data;
           const expressionFunction = new Function(
-            "Date",
             ...sanitizedKeys,
-            funcBody
+            `${getHelperFunctionWorker(exp, tablesData)};`
           );
 
-          copiedData[table].data = tableData.map((row) => {
-            const args = sanitizedKeys.map((key, i) => {
-              const originalKey = allowedKeys[i];
-              return row[originalKey];
-            });
-
-            const value = expressionFunction(Date, ...args);
-            return {
-              ...row,
-              [col]: value,
-            };
-          });
-
-          // copiedData[table].data = tableData.map((row) => ({
-          //   ...row,
-          //   [col]: expressionFunction(...allowedKeys.map((key) => row[key])),
-          // }));
+          copiedData[table].data = tableData.map((row) => ({
+            ...row,
+            [col]: expressionFunction(...allowedKeys.map((key) => row[key])),
+          }));
 
           // Update data types after adding new column
           copiedData[table].dataTypes = detectTableColumnTypes(
@@ -175,6 +153,7 @@ const processExpressions = ({ tablesData, expressions, selectedRefTable }) => {
           const expressionFunction = new Function(
             "tablesData",
             ...sanitizedKeys,
+            "Date",
             funcBody
           );
 
@@ -187,7 +166,7 @@ const processExpressions = ({ tablesData, expressions, selectedRefTable }) => {
               return row[originalKey];
             });
 
-            const newValue = expressionFunction(copiedData1, ...args);
+            const newValue = expressionFunction(copiedData1, ...args, Date);
 
             if (Array.isArray(newValue)) {
               return newValue.map((item, i) => {
@@ -225,11 +204,9 @@ const performRelations = ({
   for (const item of relationsTable) {
     if (isRelationshipChoose?.includes(item.Name)) {
       const relationships = JSON.parse(item?.RelationShips);
-      // console.log(relationships);
       const copiedRelationstablesData = {
         ...relDataMap,
       };
-      // console.log(copiedRelationstablesData);
       let sourceTable = relationships?.[0]?.source;
       let sourceData = copiedRelationstablesData?.[sourceTable]
         ? copiedRelationstablesData?.[sourceTable]
@@ -237,11 +214,8 @@ const performRelations = ({
       let currentVT = [];
 
       for (const rel of relationships) {
-        console.log(`first loop`);
         if (rel?.source === "FiltersNode") {
-          console.log(`first loop inside FiltersNode`);
           if (rel?.sourceHandle === "Blank()") {
-            console.log("First loop: Filtering data...");
             copiedRelationstablesData[rel?.target] =
               copiedRelationstablesData?.[rel?.target]?.filter(
                 (row) => row?.[rel?.targetHandle] === null
@@ -251,7 +225,6 @@ const performRelations = ({
       }
 
       for (const item of relationships) {
-        console.log("Second loop: Joining data...");
         currentVT = [];
         currentVT.push(
           ...sourceData?.map((row1) => {
@@ -267,7 +240,6 @@ const performRelations = ({
 
       currentVT.push(sourceData);
       currentVT.pop();
-      // console.log(currentVT);
 
       updatedTables[item.Name] = {
         name: item.Name,
@@ -362,8 +334,6 @@ const handleApply = ({ isItemUnChecked, isSortChecked, savedTablesData }) => {
       });
     });
   });
-
-  // console.log(slicers);
 
   let result = { ...savedTablesData };
   let resultData = [];

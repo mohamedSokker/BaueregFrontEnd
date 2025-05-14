@@ -83,6 +83,36 @@ const MiniPowerBi = () => {
 
   const { usersData } = useNavContext();
 
+  const RENAME_MAP = {
+    Date: "Date_",
+    String: "String_",
+    Number: "Number_",
+    Object: "Object_",
+  };
+
+  async function renameReservedKeys(tablesData) {
+    const result = {};
+
+    for (const tableKey in tablesData) {
+      const table = tablesData[tableKey];
+      const renamedTable = {
+        ...table,
+        data: table?.data?.map((row) => {
+          const newRow = {};
+          for (const key in row) {
+            const newKey = RENAME_MAP[key] || key;
+            newRow[newKey] = row[key];
+          }
+          return newRow;
+        }),
+      };
+
+      result[tableKey] = renamedTable;
+    }
+
+    return result;
+  }
+
   const [worker] = useState(() => {
     return new Worker(new URL("./workers.js", import.meta.url), {
       type: "module",
@@ -294,10 +324,12 @@ const MiniPowerBi = () => {
         tablesData: newTablesData,
       });
 
+      const copiedDataSanitized = await renameReservedKeys(updatedTables);
+
       setMessage(`Processing Expressions...`);
       // --- STEP 2: Process Expressions ---
       const { copiedData } = await runWorkerTask("PROCESS_EXPRESSIONS", {
-        tablesData: updatedTables,
+        tablesData: copiedDataSanitized,
         expressions: viewData.expressions,
         selectedRefTable: viewData.selectedRefTable,
       });
@@ -319,6 +351,12 @@ const MiniPowerBi = () => {
         isSortChecked: viewData.sorted,
         savedTablesData: copiedData,
       });
+
+      setMessage(`Finalizing...`);
+      const result = await renameReservedKeys(applyResult.result);
+      setTablesData(result);
+      setCopiedTablesData(result);
+      setSavedTablesData(result);
 
       setDataExpressions(viewData?.expressions);
 
