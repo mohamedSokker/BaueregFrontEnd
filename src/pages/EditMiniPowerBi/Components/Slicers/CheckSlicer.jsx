@@ -61,7 +61,19 @@ const SlicerItems = ({
     // setFilteredData(tableResult);
 
     setFilteredSlicer(resultArray);
-    setSlicers(Array.from(new Set(result)).sort());
+    setSlicers(
+      Array.from(new Set(result)).sort((a, b) => {
+        if (a == null) return 1;
+        if (b == null) return -1;
+        if (!isNaN(Date.parse(a)) && !isNaN(Date.parse(b))) {
+          return new Date(a) - new Date(b);
+        }
+        if (typeof a === "number" && typeof b === "number") {
+          return a - b;
+        }
+        return String(a).localeCompare(String(b));
+      })
+    );
   }, []);
 
   return slicers?.map((item, idx) => (
@@ -215,7 +227,19 @@ const CheckSlicer = ({
     // tableData?.map((item) => {
     //   result.push(item?.[mainSlicer]);
     // });
-    setSlicers(Array.from(new Set(result)).sort());
+    setSlicers(
+      Array.from(new Set(result)).sort((a, b) => {
+        if (a == null) return 1;
+        if (b == null) return -1;
+        if (!isNaN(Date.parse(a)) && !isNaN(Date.parse(b))) {
+          return new Date(a) - new Date(b);
+        }
+        if (typeof a === "number" && typeof b === "number") {
+          return a - b;
+        }
+        return String(a).localeCompare(String(b));
+      })
+    );
   }, [data, tablesData]);
 
   return (

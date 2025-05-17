@@ -9,6 +9,8 @@ import { logoColor } from "../../../../BauerColors";
 import Slicer from "../Slicers/Slicer";
 import { useInitContext } from "../../Contexts/InitContext";
 import ProffesionalTable from "../Customs/CustomTable1";
+import Scheduler from "../Graphs/Scheduler";
+
 import "../../Styles/EditCard.css";
 
 const MainArea = () => {
@@ -156,6 +158,13 @@ const MainArea = () => {
                 slicerMaxDates={slicerMaxDates}
                 setSlicersMaxDates={setSlicersMaxDates}
                 selectedItem={i}
+              />
+            ) : item.Type === "Scheduler" ? (
+              <Scheduler
+                item={item}
+                tableData={tablesData?.[item?.name]?.data}
+                data={data}
+                tablesData={tablesData}
               />
             ) : (
               item.Type === "Card" && (

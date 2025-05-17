@@ -39,6 +39,14 @@ const PropsComponents = ({ cat }) => {
     ],
   };
 
+  const JsonItems = [
+    "Title",
+    "Description",
+    "Location",
+    "StartTime",
+    "EndTime",
+  ];
+
   const expressionsSigns = {
     Multiply: "*",
     Sum: "+",
@@ -498,6 +506,23 @@ const PropsComponents = ({ cat }) => {
                         );
                         console.log(copiedData);
                         setData(copiedData);
+                      } else if (JsonItems.includes(item?.name)) {
+                        const copiedData = { ...data };
+                        copiedData.el[selectedItem] = {
+                          ...copiedData.el[selectedItem],
+                          table: dragSource?.table,
+                          name: dragSource?.table,
+                        };
+                        copiedData.el[selectedItem]?.[item?.name]?.splice(
+                          position,
+                          0,
+                          {
+                            name: dragSource?.name,
+                            table: dragSource?.table,
+                          }
+                        );
+                        console.log(copiedData);
+                        setData(copiedData);
                       } else {
                         const copiedData = { ...data };
                         copiedData.el[selectedItem] = {
@@ -561,6 +586,23 @@ const PropsComponents = ({ cat }) => {
                           expressions: result,
                         };
                         console.log(copiedData);
+                        setData(copiedData);
+                      } else if (JsonItems.includes(item?.name)) {
+                        const copiedData = { ...data };
+                        const result = [];
+                        copiedData.el[selectedItem]?.[item?.name]?.map(
+                          (prop) => {
+                            if (prop?.name === propertyName) {
+                              result.push({ ...prop, opType: it });
+                            } else {
+                              result.push(prop);
+                            }
+                          }
+                        );
+                        copiedData.el[selectedItem] = {
+                          ...copiedData.el[selectedItem],
+                          [item?.name]: result,
+                        };
                         setData(copiedData);
                       } else {
                         const copiedData = { ...data };
@@ -635,6 +677,17 @@ const PropsComponents = ({ cat }) => {
                         console.log(copiedData);
                         setData(copiedData);
                       } else if (item.name === "expressions") {
+                        const copiedData = { ...data };
+                        const result = copiedData.el[selectedItem][
+                          item?.name
+                        ]?.filter((el) => el?.name !== it);
+                        copiedData.el[selectedItem] = {
+                          ...copiedData.el[selectedItem],
+                          [item?.name]: result,
+                        };
+                        console.log(copiedData);
+                        setData(copiedData);
+                      } else if (JsonItems.includes(item?.name)) {
                         const copiedData = { ...data };
                         const result = copiedData.el[selectedItem][
                           item?.name

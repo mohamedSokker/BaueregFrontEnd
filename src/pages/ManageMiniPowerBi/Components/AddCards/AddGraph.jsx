@@ -4,6 +4,8 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { PiGauge, PiTableFill } from "react-icons/pi";
 import { BsCardText } from "react-icons/bs";
 import { CiFilter } from "react-icons/ci";
+import { SlCalender } from "react-icons/sl";
+
 import {
   FcBarChart,
   FcPieChart,
@@ -19,6 +21,7 @@ import {
   gaugeOptions,
   lineOptions,
   pieOptions,
+  schedulerOptions,
   slicerOptions,
   tablesOptions,
   timelineOptions,
@@ -37,7 +40,7 @@ const AddGraph = ({
   setData,
 }) => {
   return (
-    <div className="w-full p-2">
+    <div className="w-full p-1">
       <div className="w-full border-[1px] border-gray-400 flex flex-row flex-wrap justify-center items-center gap-4 p-1">
         <TooltipComponent content={`Bar Chart`} position="BottomCenter">
           <div
@@ -310,6 +313,37 @@ const AddGraph = ({
             }}
           >
             <CiFilter size={20} />
+          </div>
+        </TooltipComponent>
+        <TooltipComponent content={`Scheduler`} position="BottomCenter">
+          <div
+            className="cursor-pointer"
+            // onClick={() => setIsSlicerCard(true)}
+            onClick={() => {
+              // const container = document.getElementById("Main-Area");
+              // const containerStyles = window.getComputedStyle(container);
+              const currentData = {
+                ID: data.el?.length,
+                ...JSON.parse(JSON.stringify(schedulerOptions)),
+                width: `${
+                  ((data.containerStyles.scale * 200) /
+                    parseFloat(data.containerStyles.width)) *
+                  100
+                }%`,
+                height: `${
+                  ((data.containerStyles.scale * 200) /
+                    parseFloat(data.containerStyles.height)) *
+                  100
+                }%`,
+              };
+              setData((prev) => ({
+                ...prev,
+                el: [...prev?.el, { ...currentData }],
+                // containerStyles: containerStyles,
+              }));
+            }}
+          >
+            <SlCalender size={20} />
           </div>
         </TooltipComponent>
       </div>

@@ -43,9 +43,9 @@ const ManageTablesTaskbar = () => {
 
   // console.log(AddedTables);
   // console.log(AddedCols);
-  console.log(selectedRefTable);
+  // console.log(selectedRefTable);
   // console.log(activeColItem);
-  console.log(expressions);
+  // console.log(expressions);
 
   return (
     <div className="w-full h-[78px]">
@@ -236,6 +236,7 @@ const ManageTablesTaskbar = () => {
 
               setIsChoosedValue("");
               if (!AddedTables?.includes(activeItem)) {
+                console.log("if");
                 setExpressions((prev) => ({
                   ...prev,
                   [activeItem]: {
@@ -275,6 +276,7 @@ const ManageTablesTaskbar = () => {
                 setCopiedTablesData(copiedData);
                 setSavedTablesData(copiedData);
               } else {
+                console.log("else");
                 setExpressions((prev) => ({
                   ...prev,
                   [activeItem]: {
@@ -309,22 +311,23 @@ const ManageTablesTaskbar = () => {
 
                 let copiedData = { ...tablesData };
                 // Loop through the table and add the new column based on the expression
-                const result = tablesData?.[
-                  selectedRefTable?.[activeItem]?.[activeColItem[activeItem]]
-                ]?.data?.flatMap((row) => {
-                  const newValue = expressionFunction(
-                    tablesData,
-                    ...allowedKeys.map((key) => row[key])
-                  );
+                // const result = tablesData?.[
+                //   selectedRefTable?.[activeItem]?.[activeColItem[activeItem]]
+                // ]?.data?.flatMap((row) => {
+                //   const newValue = expressionFunction(
+                //     tablesData,
+                //     ...allowedKeys.map((key) => row[key])
+                //   );
 
-                  if (Array.isArray(newValue)) {
-                    return newValue.map((item, i) => {
-                      return { ...item };
-                    });
-                  } else {
-                    return { ...row, [activeColItem[activeItem]]: newValue };
-                  }
-                });
+                //   if (Array.isArray(newValue)) {
+                //     return newValue.map((item, i) => {
+                //       return { ...item };
+                //     });
+                //   } else {
+                //     return { ...row, [activeColItem[activeItem]]: newValue };
+                //   }
+                // });
+                const result = expressionFunction(tablesData, ...allowedKeys);
                 copiedData[activeItem].data = result;
                 console.log(result);
                 setTablesData(copiedData);

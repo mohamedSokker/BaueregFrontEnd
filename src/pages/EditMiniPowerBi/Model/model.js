@@ -423,6 +423,71 @@ export const lineProps = [
   },
 ];
 
+export const schedulerProps = [
+  { name: "width", unit: "%", inputType: "number", category: "Position" },
+  { name: "height", unit: "%", inputType: "number", category: "Position" },
+  { name: "top", unit: "%", inputType: "number", category: "Position" },
+  { name: "left", unit: "%", inputType: "number", category: "Position" },
+  { name: "xFontSize", inputType: "number", unit: "px", category: "Fonts" },
+  { name: "xFontWeight", inputType: "number", unit: "", category: "Fonts" },
+  { name: "yFontSize", inputType: "number", unit: "px", category: "Fonts" },
+  { name: "yFontWeight", inputType: "number", unit: "", category: "Fonts" },
+  // {
+  //   name: "X_Axis",
+  //   inputType: "select",
+  //   dataType: "ref",
+  //   ref: "columns",
+  //   category: "Data",
+  // },
+  // {
+  //   name: "Y_Axis",
+  //   inputType: "listDropsRefColumns",
+  //   select: true,
+  //   category: "Data",
+  // },
+  {
+    name: "Title",
+    inputType: "listDropsRefColumns",
+    select: true,
+    category: "Data",
+  },
+  {
+    name: "Description",
+    inputType: "listDropsRefColumns",
+    select: true,
+    category: "Data",
+  },
+  {
+    name: "Location",
+    inputType: "listDropsRefColumns",
+    select: true,
+    category: "Data",
+  },
+  {
+    name: "StartTime",
+    inputType: "listDropsRefColumns",
+    select: true,
+    category: "Data",
+  },
+  {
+    name: "EndTime",
+    inputType: "listDropsRefColumns",
+    select: true,
+    category: "Data",
+  },
+  // {
+  //   name: "expressions",
+  //   inputType: "listDropsRefColumns",
+  //   select: true,
+  //   category: "Data",
+  // },
+  // {
+  //   name: "addExpressions",
+  //   inputType: "expressionButton",
+  //   category: "Data",
+  // },
+];
+
 export const slicerProps = [
   // {
   //   name: "table",
@@ -748,6 +813,26 @@ export const lineOptions = {
   isCurveSlicer: false,
   props: lineProps,
   Colors: [...COLORS],
+};
+
+export const schedulerOptions = {
+  name: null,
+  Title: [],
+  Description: [],
+  Location: [],
+  StartTime: [],
+  EndTime: [],
+  // expressions: [],
+  width: "200px",
+  height: "200px",
+  xFontSize: "10",
+  xFontWeight: "500",
+  yFontSize: "10",
+  yFontWeight: "500",
+  top: 0,
+  left: 0,
+  Type: "Scheduler",
+  props: schedulerProps,
 };
 
 export const slicerOptions = {

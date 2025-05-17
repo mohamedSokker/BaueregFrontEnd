@@ -247,135 +247,207 @@ export const getHelperFunction1 = (input, tablesData) => {
     return dates;
   })()`;
     } else if (expr?.startsWith("EXPANDAVPLAN(")) {
-      const inside = expr.slice(13, -1);
-      const parts = smartSplit(inside);
-      if (parts.length !== 2)
-        throw new Error(`Invalid EXPANDAVPLAN expression`);
-
-      const from = parts[0];
-      const to = parts[1];
-
       return `(function() {
-    const start = new Date(${from});
-    const end = new Date(${to});
-    const location = Location;
-    const valueMap = {Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday};
-    const dates = [];
+      const dates = [];
+      tablesData?.["Availability_Plan"]?.data?.flatMap((row) => { 
+        const start = new Date(row?.DateFrom);
+        const end = new Date(row?.DateTo);
+        const location = row?.Location;
+        const valueMap = {Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday};
+        
 
-    const eqsLocData = (tablesData?.["Equipments_Location"]?.data || []).filter(
-      item =>
-        item?.Location === location &&
-        (item?.Equipment_Type === "Trench_Cutting_Machine" || item?.Equipment_Type === "Drilling_Machine")
-    );
+        const eqsLocData = (tablesData?.["Equipments_Location"]?.data || []).filter(
+          item =>
+            item?.Location === location &&
+            (item?.Equipment_Type === "Trench_Cutting_Machine" || item?.Equipment_Type === "Drilling_Machine")
+        );
 
-    const maintData = (tablesData?.["Maintenance"]?.data || []).filter(
-      item => item?.Location === location
-    );
+        const maintData = (tablesData?.["Maintenance"]?.data || []).filter(
+          item => item?.Location === location
+        );
 
-    function getUTCDateStr(dt) {
-      return dt.getUTCFullYear() + "-" +
-             String(dt.getUTCMonth() + 1).padStart(2, "0") + "-" +
-             String(dt.getUTCDate()).padStart(2, "0");
-    }
+        function getUTCDateStr(dt) {
+          return dt.getUTCFullYear() + "-" +
+                String(dt.getUTCMonth() + 1).padStart(2, "0") + "-" +
+                String(dt.getUTCDate()).padStart(2, "0");
+        }
 
-    function getStartOfUTCDate(date) {
-      return new Date(Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate()
-      ));
-    }
+        function getStartOfUTCDate(date) {
+          return new Date(Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate()
+          ));
+        }
 
-    function getEndOfUTCDate(date) {
-      return new Date(Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        23, 59, 59, 999
-      ));
-    }
+        function getEndOfUTCDate(date) {
+          return new Date(Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            23, 59, 59, 999
+          ));
+        }
 
-    // Main loop over each UTC date from start to end
-    for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
-      const dateStr = getUTCDateStr(d);
-      const dayName = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()))
-                       .toLocaleDateString("en-US", { weekday: "long" });
-      const totalTimeHours = valueMap[dayName] ?? 0;
+        // Main loop over each UTC date from start to end
+        for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+          const dateStr = getUTCDateStr(d);
+          const dayName = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()))
+                          .toLocaleDateString("en-US", { weekday: "long" });
+          const totalTimeHours = row[dayName] ?? 0;
 
-      const eqsLocFiltered = eqsLocData.filter(item => {
-        const startDate = new Date(item?.Start_Date);
-        const endDate = item?.End_Date ? new Date(item?.End_Date) : new Date();
-        return d >= startDate && d < endDate;
-      });
+          const eqsLocFiltered = eqsLocData.filter(item => {
+            const startDate = new Date(item?.Start_Date);
+            const endDate = item?.End_Date ? new Date(item?.End_Date) : new Date();
+            return d >= startDate && d < endDate;
+          });
 
-      const dateFilteredMaint = maintData.filter(el => {
-        const startFrom = getUTCDateStr(new Date(el?.Problem_start_From));
-        const endTo = getUTCDateStr(new Date(el?.Problem_End_To));
-        return startFrom <= dateStr && endTo >= dateStr;
-      });
+          const dateFilteredMaint = maintData.filter(el => {
+            const startFrom = getUTCDateStr(new Date(el?.Problem_start_From));
+            const endTo = getUTCDateStr(new Date(el?.Problem_End_To));
+            return startFrom <= dateStr && endTo >= dateStr;
+          });
 
-      eqsLocFiltered.forEach((item) => {
-        const equipment = item?.Equipment;
-        const relatedMaint = dateFilteredMaint.filter(el => el?.Equipment === equipment);
+          eqsLocFiltered.forEach((item) => {
+            const equipment = item?.Equipment;
+            const relatedMaint = dateFilteredMaint.filter(el => el?.Equipment === equipment);
 
-        let breakdowns = 0;
-        let perMaint = 0;
+            let breakdowns = 0;
+            let perMaint = 0;
 
-        for (const el of relatedMaint) {
-          const problemStart = new Date(el?.Problem_start_From);
-          const problemEnd = new Date(el?.Problem_End_To);
+            for (const el of relatedMaint) {
+              const problemStart = new Date(el?.Problem_start_From);
+              const problemEnd = new Date(el?.Problem_End_To);
 
-          let currentDate = getStartOfUTCDate(new Date(problemStart));
+              let currentDate = getStartOfUTCDate(new Date(problemStart));
 
-          while (currentDate <= problemEnd) {
-            const nextDay = new Date(currentDate);
-            nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+              while (currentDate <= problemEnd) {
+                const nextDay = new Date(currentDate);
+                nextDay.setUTCDate(nextDay.getUTCDate() + 1);
 
-            const overlapStart = problemStart > currentDate ? problemStart : currentDate;
-            const overlapEnd = problemEnd < nextDay ? problemEnd : nextDay;
+                const overlapStart = problemStart > currentDate ? problemStart : currentDate;
+                const overlapEnd = problemEnd < nextDay ? problemEnd : nextDay;
 
-            if (overlapStart < overlapEnd) {
-              const minutes = Math.max(0, (overlapEnd - overlapStart) / (1000 * 60));
-              const curDateStr = getUTCDateStr(overlapStart);
+                if (overlapStart < overlapEnd) {
+                  const minutes = Math.max(0, (overlapEnd - overlapStart) / (1000 * 60));
+                  const curDateStr = getUTCDateStr(overlapStart);
 
-              if (curDateStr === dateStr) {
-                if (el?.Breakdown_Type === 'Periodic Maintenance') {
-                  perMaint += minutes;
-                } else {
-                  breakdowns += minutes;
+                  if (curDateStr === dateStr) {
+                    if (el?.Breakdown_Type === 'Periodic Maintenance') {
+                      perMaint += minutes;
+                    } else {
+                      breakdowns += minutes;
+                    }
+                  }
                 }
+
+                currentDate = nextDay;
               }
             }
 
-            currentDate = nextDay;
-          }
+            const maxMins = totalTimeHours;
+            breakdowns = Math.min(breakdowns, maxMins);
+            perMaint = Math.min(perMaint, maxMins);
+
+            const AvailableTime = maxMins - breakdowns - perMaint;
+            const MaintAvailability = (maxMins - perMaint) !== 0
+              ? AvailableTime / (maxMins - perMaint)
+              : 0;
+            const Month = new Date(dateStr).getFullYear() + "-" + (Number(new Date(dateStr).getMonth()) + 1)
+
+            dates.push({
+              Date: dateStr,
+              Location: location,
+              TotalTime: totalTimeHours,
+              Equipment: equipment,
+              Breakdown_Time: breakdowns ,
+              Periodic_Maintenance: perMaint ,
+              AvailableTime: AvailableTime ,
+              MaintAvailability: MaintAvailability,
+              Month: Month
+            });
+          });
         }
-
-        const maxMins = totalTimeHours;
-        breakdowns = Math.min(breakdowns, maxMins);
-        perMaint = Math.min(perMaint, maxMins);
-
-        const AvailableTime = maxMins - breakdowns - perMaint;
-        const MaintAvailability = (maxMins - perMaint) !== 0
-          ? AvailableTime / (maxMins - perMaint)
-          : 0;
-        const Month = new Date(dateStr).getFullYear() + "-" + (Number(new Date(dateStr).getMonth()) + 1)
-
-        dates.push({
-          Date: dateStr,
-          Location: location,
-          TotalTime: totalTimeHours,
-          Equipment: equipment,
-          Breakdown_Time: breakdowns ,
-          Periodic_Maintenance: perMaint ,
-          AvailableTime: AvailableTime ,
-          MaintAvailability: MaintAvailability,
-          Month: Month
-        });
-      });
-    }
+      })
+    
 
     return dates;
+  })()`;
+    } else if (expr?.startsWith("EXPANDMAINTSTOCKS(")) {
+      return `(function() {
+    const spareParts = [];
+    const history = {};
+    const allData = {};
+    const LeadTime = 1;
+
+    let targetData = tablesData?.["Maintenance"]?.data?.filter(item => 
+      new Date(item?.Date_Time) >= new Date("2022-10-17")
+    ).sort((a, b) => 
+      new Date(a?.Date_Time) - new Date(b?.Date_Time)
+    );
+
+    targetData?.forEach(row => {
+      const rowItems = row?.Spare_part?.split(",") || [];
+
+      rowItems.forEach(item => {
+        const partDetails = item.split("(");
+        const rowSparePart = partDetails?.[0]?.trim();
+        const contentInside = partDetails?.[1]?.split(")") || [];
+        const rowQuantity = parseFloat(contentInside?.[0]?.trim() || "0");
+        const rowDesc = contentInside?.[1]?.trim() || "";
+
+        const equipment = row?.Equipment;
+        const lastWH = history?.[rowSparePart]?.[equipment]?.Last_WH || 0;
+        const lastDate = history?.[rowSparePart]?.[equipment]?.LastDate_Changed || null;
+        const hours = lastWH ? Number(row?.Working_Hours) - Number(lastWH) : 0;
+
+        const TotalEqWH = Number(history?.[rowSparePart]?.[equipment]?.Total_Eq_WH || 0) + hours;
+        const TotalWH = Number(allData?.[rowSparePart]?.Total_WH || 0) + hours;
+        const TotalQ = hours > 0 ? Number(allData?.[rowSparePart]?.Total_Quantity || 0) + rowQuantity : Number(allData?.[rowSparePart]?.Total_Quantity || 0);
+
+        const AvCons = TotalWH > 0 ? ((TotalQ / TotalWH) * 24 * 30).toFixed(2) : 0;
+        const currentCons = lastDate ? hours > 0 ? (rowQuantity / hours) : 20 : 0;
+
+        const MaxCons = (Math.max(currentCons, allData?.[rowSparePart]?.Max_Consumption || 0, TotalWH > 0 ? (TotalQ / TotalWH) : 0) * 24 * 30).toFixed(2);
+        const MinQuantity = Math.ceil(AvCons * LeadTime);
+        const MaxQuantity = Math.ceil(MaxCons * LeadTime);
+
+        spareParts.push({
+          Date: row?.Date_Time,
+          Location: row?.Location,
+          Equipment_Type: row?.Equipment_Type,
+          Equipment_Model: row?.Equipment_Model,
+          Equipment: equipment,
+          sparePart_Code: rowSparePart,
+          sparePart_Quantity: rowQuantity,
+          Description: rowDesc,
+          Working_Hours: row?.Working_Hours,
+          Last_WH: lastWH,
+          LastDate_Changed: lastDate,
+          Hours: hours,
+          AverageConsumption: AvCons,
+          MaxConsumption: MaxCons,
+          MinQuantity,
+          MaxQuantity,
+        });
+
+        if (rowSparePart) {
+          history[rowSparePart] = history[rowSparePart] || {};
+          allData[rowSparePart] = {
+            Total_Quantity: TotalQ,
+            Max_Consumption: currentCons,
+            Total_WH: TotalWH,
+          };
+          history[rowSparePart][equipment] = {
+            Last_WH: row?.Working_Hours,
+            LastDate_Changed: row?.Date_Time,
+            Total_Eq_WH: TotalEqWH,
+          };
+        }
+      });
+    });
+
+    return spareParts;
   })()`;
     } else if (expr?.startsWith("EXPANDDATETIME(")) {
       const inside = expr.slice(15, -1); // remove EXPANDDATETIME( and final )

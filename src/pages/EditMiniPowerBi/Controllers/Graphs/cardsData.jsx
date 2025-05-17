@@ -15,6 +15,7 @@ const addExpressionsToData = (data, expressions) => {
   return data.map((row) => {
     const newRow = { ...row };
 
+    // console.log(expressions);
     expressions?.forEach((expr) => {
       const { name, firstArg, secondArg, opType } = expr;
       // console.log(newRow);
@@ -22,26 +23,36 @@ const addExpressionsToData = (data, expressions) => {
       // console.log(newRow[name]);
       let val1 = firstArg;
       let val2 = secondArg;
-      const numericValue1 = Number(val1);
-      const numericValue2 = Number(val2);
+      const numericValue1 = Number(newRow[firstArg]);
+      const numericValue2 = Number(newRow[secondArg]);
 
+      // console.log(
+      //   firstArg,
+      //   secondArg,
+      //   newRow[firstArg],
+      //   newRow[secondArg],
+      //   !isNaN(numericValue1)
+      // );
       if (!isNaN(numericValue1)) {
-        val1 = numericValue1;
+        val1 = parseFloat(numericValue1);
       } else {
-        val1 = parseFloat(newRow[firstArg]);
+        val1 = newRow[firstArg];
       }
 
       if (!isNaN(numericValue2)) {
-        val2 = numericValue2;
+        val2 = parseFloat(numericValue2);
       } else {
-        val2 = parseFloat(newRow[secondArg]);
+        val2 = newRow[secondArg];
       }
 
       // console.log(expressions);
       // console.log(data);
       // console.log(firstArg, secondArg, val1, val2);
 
-      if (isNaN(val1) || isNaN(val2)) return;
+      if (isNaN(val1) || isNaN(val2)) {
+        newRow[name] = val1;
+        return;
+      }
 
       switch (opType) {
         case "Division":

@@ -158,27 +158,29 @@ const processExpressions = ({ tablesData, expressions, selectedRefTable }) => {
           );
 
           // Loop through the table and add the new column based on the expression
-          const result = copiedData1?.[
-            selectedRefTable?.[table]?.[col]
-          ]?.data?.flatMap((row) => {
-            const args = sanitizedKeys.map((key, i) => {
-              const originalKey = allowedKeys[i];
-              return row[originalKey];
-            });
+          // const result = copiedData1?.[
+          //   selectedRefTable?.[table]?.[col]
+          // ]?.data?.flatMap((row) => {
+          //   const args = sanitizedKeys.map((key, i) => {
+          //     const originalKey = allowedKeys[i];
+          //     return row[originalKey];
+          //   });
 
-            const newValue = expressionFunction(copiedData1, ...args, Date);
+          //   const newValue = expressionFunction(copiedData1, ...args, Date);
 
-            if (Array.isArray(newValue)) {
-              return newValue.map((item, i) => {
-                return { ...item };
-              });
-            } else {
-              return {
-                ...row,
-                [col]: newValue,
-              };
-            }
-          });
+          //   if (Array.isArray(newValue)) {
+          //     return newValue.map((item, i) => {
+          //       return { ...item };
+          //     });
+          //   } else {
+          //     return {
+          //       ...row,
+          //       [col]: newValue,
+          //     };
+          //   }
+          // });
+          const result = expressionFunction(copiedData1, ...allowedKeys, Date);
+          // console.log(result);
           copiedData1[table].data = result;
           copiedData1[table].dataTypes = detectTableColumnTypes(result);
         }
