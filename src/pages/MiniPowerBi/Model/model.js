@@ -11,6 +11,10 @@ export const COLORS = [
   "#88D3E5",
 ];
 
+export const MAXCOLOR = "red";
+
+export const MINCOLOR = "green";
+
 export const tableProps = [
   // {
   //   name: "table",
@@ -225,6 +229,8 @@ export const barProps = [
     inputType: "expressionButton",
     category: "Data",
   },
+  { name: "max", inputType: "number", unit: "", category: "Data" },
+  { name: "min", inputType: "number", unit: "", category: "Data" },
   { name: "xFontSize", inputType: "number", unit: "px", category: "Fonts" },
   { name: "xFontWeight", inputType: "number", unit: "", category: "Fonts" },
   { name: "yFontSize", inputType: "number", unit: "px", category: "Fonts" },
@@ -736,6 +742,8 @@ export const barOptions = {
   yFontWeight: "500",
   tooltipFontSize: "10",
   tooltipFontWeight: "500",
+  max: 300,
+  min: 0,
   // legendFontSize: "10px",
   // legendFontWeight: "500",
   // count: 1,
