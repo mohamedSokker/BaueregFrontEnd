@@ -83,60 +83,60 @@ const MiniPowerBi = () => {
 
   const { usersData } = useNavContext();
 
-  const RENAME_MAP = {
-    Date: "Date_",
-    // Add other reserved keys here if needed
-  };
+  // const RENAME_MAP = {
+  //   Date: "Date_",
+  //   // Add other reserved keys here if needed
+  // };
 
-  function renameKeys(obj) {
-    if (Array.isArray(obj)) {
-      return obj.map((item) => renameKeys(item));
-    } else if (obj !== null && typeof obj === "object") {
-      return Object.keys(obj).reduce((acc, key) => {
-        const newKey = RENAME_MAP[key] || key;
-        acc[newKey] = renameKeys(obj[key]);
-        return acc;
-      }, {});
-    }
-    return obj;
-  }
+  // function renameKeys(obj) {
+  //   if (Array.isArray(obj)) {
+  //     return obj.map((item) => renameKeys(item));
+  //   } else if (obj !== null && typeof obj === "object") {
+  //     return Object.keys(obj).reduce((acc, key) => {
+  //       const newKey = RENAME_MAP[key] || key;
+  //       acc[newKey] = renameKeys(obj[key]);
+  //       return acc;
+  //     }, {});
+  //   }
+  //   return obj;
+  // }
 
-  function renameReservedKeys(inputData) {
-    if (Array.isArray(inputData)) {
-      // If it's a plain array like ['Av'], just return it as-is
-      return inputData;
-    }
+  // function renameReservedKeys(inputData) {
+  //   if (Array.isArray(inputData)) {
+  //     // If it's a plain array like ['Av'], just return it as-is
+  //     return inputData;
+  //   }
 
-    const result = {};
+  //   const result = {};
 
-    for (const key in inputData) {
-      const value = inputData[key];
+  //   for (const key in inputData) {
+  //     const value = inputData[key];
 
-      // Case: value is an array (could be ["Date"] or [] or table.data)
-      if (Array.isArray(value)) {
-        // Check if elements are objects (like row data), otherwise treat as string[]
-        const hasObjects = value.some(
-          (item) => typeof item === "object" && item !== null
-        );
+  //     // Case: value is an array (could be ["Date"] or [] or table.data)
+  //     if (Array.isArray(value)) {
+  //       // Check if elements are objects (like row data), otherwise treat as string[]
+  //       const hasObjects = value.some(
+  //         (item) => typeof item === "object" && item !== null
+  //       );
 
-        if (hasObjects) {
-          // It's tabular object data -> rename each object's keys
-          result[key] = renameKeys(value);
-        } else {
-          // It's an array of primitives (e.g., ["Date"])
-          result[key] = value.map((k) => RENAME_MAP[k] || k);
-        }
-      } else if (value !== null && typeof value === "object") {
-        // Plain object (like { Date: "..." }) -> rename its keys
-        result[key] = renameKeys(value);
-      } else {
-        // Fallback for unexpected values
-        result[key] = value;
-      }
-    }
+  //       if (hasObjects) {
+  //         // It's tabular object data -> rename each object's keys
+  //         result[key] = renameKeys(value);
+  //       } else {
+  //         // It's an array of primitives (e.g., ["Date"])
+  //         result[key] = value.map((k) => RENAME_MAP[k] || k);
+  //       }
+  //     } else if (value !== null && typeof value === "object") {
+  //       // Plain object (like { Date: "..." }) -> rename its keys
+  //       result[key] = renameKeys(value);
+  //     } else {
+  //       // Fallback for unexpected values
+  //       result[key] = value;
+  //     }
+  //   }
 
-    return result;
-  }
+  //   return result;
+  // }
 
   const [worker] = useState(() => {
     return new Worker(new URL("./workers.js", import.meta.url), {
@@ -150,13 +150,13 @@ const MiniPowerBi = () => {
       switch (type) {
         case "PROCESS_EXPRESSIONS":
           if (status === "done") {
-            const addedSanitized = renameReservedKeys(data.added);
-            const addedTablesSanitized = renameReservedKeys(data.addedTables);
+            // const addedSanitized = renameReservedKeys(data.added);
+            // const addedTablesSanitized = renameReservedKeys(data.addedTables);
             setTablesData(data.copiedData);
             setCopiedTablesData(data.copiedData);
             setSavedTablesData(data.copiedData);
-            setAddedCols(addedSanitized);
-            setAddedTables(addedTablesSanitized);
+            setAddedCols(data.added);
+            setAddedTables(data.addedTables);
           }
           break;
 
@@ -195,32 +195,32 @@ const MiniPowerBi = () => {
     return () => worker.removeEventListener("message", listener);
   }, []);
 
-  const performDataChange = (obj) => {
-    if (Array.isArray(obj)) {
-      return obj.map((item) => performDataChange(item));
-    } else if (typeof obj === "object" && obj !== null) {
-      const newObj = {};
-      for (const key in obj) {
-        // Rename key if it contains "Date"
-        const newKey = key.includes("Date")
-          ? key.replace("Date", "Date_")
-          : key;
+  // const performDataChange = (obj) => {
+  //   if (Array.isArray(obj)) {
+  //     return obj.map((item) => performDataChange(item));
+  //   } else if (typeof obj === "object" && obj !== null) {
+  //     const newObj = {};
+  //     for (const key in obj) {
+  //       // Rename key if it contains "Date"
+  //       const newKey = key.includes("Date")
+  //         ? key.replace("Date", "Date_")
+  //         : key;
 
-        // Recursively process the value
-        const value = obj[key];
-        const newValue = performDataChange(value);
+  //       // Recursively process the value
+  //       const value = obj[key];
+  //       const newValue = performDataChange(value);
 
-        newObj[newKey] = newValue;
-      }
-      return newObj;
-    } else if (typeof obj === "string" && obj === "Date") {
-      // Replace the value only if it's exactly "Date"
-      return "Date_";
-    }
-    return obj;
-    // console.log(result);
-    // setData(result);
-  };
+  //       newObj[newKey] = newValue;
+  //     }
+  //     return newObj;
+  //   } else if (typeof obj === "string" && obj === "Date") {
+  //     // Replace the value only if it's exactly "Date"
+  //     return "Date_";
+  //   }
+  //   return obj;
+  //   // console.log(result);
+  //   // setData(result);
+  // };
 
   const runWorkerTask = (taskType, payload) => {
     return new Promise((resolve) => {
@@ -356,8 +356,8 @@ const MiniPowerBi = () => {
       const viewData = JSON.parse(targetItem?.ViewData);
 
       setIsItemUnChecked(viewData?.unCheckedItems);
-      const sortDataSanitized = renameReservedKeys(viewData?.sorted);
-      setIsSortChecked(sortDataSanitized);
+      // const sortDataSanitized = renameReservedKeys(viewData?.sorted);
+      setIsSortChecked(viewData?.sorted);
 
       setIsChoose(viewData?.isChoose);
 
@@ -377,12 +377,12 @@ const MiniPowerBi = () => {
         tablesData: newTablesData,
       });
 
-      const copiedDataSanitized = renameReservedKeys(updatedTables);
+      // const copiedDataSanitized = renameReservedKeys(updatedTables);
 
       setMessage(`Processing Expressions...`);
       // --- STEP 2: Process Expressions ---
       const { copiedData } = await runWorkerTask("PROCESS_EXPRESSIONS", {
-        tablesData: copiedDataSanitized,
+        tablesData: updatedTables,
         expressions: viewData.expressions,
         selectedRefTable: viewData.selectedRefTable,
       });
@@ -394,30 +394,30 @@ const MiniPowerBi = () => {
         isItemChecked: isItemChecked,
         isItemUnChecked: viewData.unCheckedItems,
         isSelectAllChecked: isSelectAllChecked,
-        isSortChecked: sortDataSanitized,
+        isSortChecked: viewData?.sorted,
       });
 
       setMessage(`Applying Filters...`);
       // --- STEP 4: Apply Filters ---
       const applyResult = await runWorkerTask("HANDLE_APPLY", {
         isItemUnChecked: viewData.unCheckedItems,
-        isSortChecked: sortDataSanitized,
+        isSortChecked: viewData?.sorted,
         savedTablesData: copiedData,
       });
 
       setMessage(`Finalizing...`);
-      const result = renameReservedKeys(applyResult.result);
-      setTablesData(result);
-      setCopiedTablesData(result);
-      setSavedTablesData(result);
+      // const result = renameReservedKeys(applyResult.result);
+      setTablesData(applyResult.result);
+      setCopiedTablesData(applyResult.result);
+      setSavedTablesData(applyResult.result);
 
-      const expressionsSanitized = renameReservedKeys(viewData?.expressions);
+      // const expressionsSanitized = renameReservedKeys(viewData?.expressions);
 
-      const dataChange = performDataChange(viewData.data);
-      console.log(dataChange);
-      setExpressions(expressionsSanitized);
+      // const dataChange = performDataChange(viewData.data);
+      // console.log(dataChange);
+      setExpressions(viewData?.expressions);
 
-      setData(dataChange);
+      setData(viewData.data);
 
       setLoading(false);
     } catch (err) {

@@ -11,6 +11,7 @@ import { useInitContext } from "../../Contexts/InitContext";
 import ProffesionalTable from "../Customs/CustomTable1";
 import "../../Styles/EditCard.css";
 import Scheduler from "../Graphs/Scheduler";
+import { barOptions, barProps } from "../../Model/model";
 
 const MainArea = () => {
   const {

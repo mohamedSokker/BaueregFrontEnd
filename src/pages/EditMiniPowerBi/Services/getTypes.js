@@ -104,10 +104,18 @@ export function detectTableColumnTypes(table) {
     });
   });
 
+  let result = {};
   // Convert Sets to arrays for readability
   for (const column in columnTypes) {
-    columnTypes[column] = Array.from(columnTypes[column]);
+    const types = Array.from(columnTypes[column]);
+    // columnTypes[column] = Array.from(columnTypes[column]);
+
+    if (types.length === 1) {
+      result[column] = [types[0]];
+    } else {
+      result[column] = ["string"];
+    }
   }
 
-  return columnTypes;
+  return result;
 }

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useInitContext } from "../../Contexts/InitContext";
 import Drop from "../Customs/Drop";
 import { useDragContext } from "../Customs/DragContext";
 import Toggle1 from "../../../../components/Accessories/Toogle1";
+import { barOptions, barProps } from "../../Model/model";
 
 const PropsComponents = ({ cat }) => {
   const { data, setData, selectedItem, tablesData, setIsExpressionCard } =
@@ -54,6 +55,21 @@ const PropsComponents = ({ cat }) => {
     };
     setData(copiedData);
   };
+
+  // useEffect(() => {
+  //   const copiedData = { ...data };
+  //   if (copiedData?.el[selectedItem]?.Type === "Graph") {
+  //     if (copiedData?.el[selectedItem]?.graphType === "Bar") {
+  //       copiedData.el[selectedItem] = {
+  //         ...barOptions,
+  //         ...data?.el?.[selectedItem],
+  //       };
+  //       copiedData.el[selectedItem].props = [...barProps];
+  //     }
+  //   }
+  //   setData(copiedData);
+  // }, []);
+
   return data?.el?.[selectedItem]?.props?.map(
     (item, idx) =>
       item.category === cat && (

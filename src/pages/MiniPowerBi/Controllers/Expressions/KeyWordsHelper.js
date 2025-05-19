@@ -404,9 +404,11 @@ export const getHelperFunctionWorker = (input, tablesData) => {
         const AvCons = TotalWH > 0 ? ((TotalQ / TotalWH) * 24 * 30).toFixed(2) : 0;
         const currentCons = lastDate ? hours > 0 ? (rowQuantity / hours) : 20 : 0;
 
-        const MaxCons = (Math.max(currentCons, allData?.[rowSparePart]?.Max_Consumption || 0, TotalWH > 0 ? (TotalQ / TotalWH) : 0) * 24 * 30).toFixed(2);
+        const MaxCons = Math.max(currentCons, allData?.[rowSparePart]?.Max_Consumption || 0, TotalWH > 0 ? (TotalQ / TotalWH) : 0);
         const MinQuantity = Math.ceil(AvCons * LeadTime);
-        const MaxQuantity = Math.ceil(MaxCons * LeadTime);
+        const MaxQuantity = Math.ceil(MaxCons * 24 * 30 * LeadTime);
+        const Month = new Date(row?.Date_Time).getFullYear() + "-" + (Number(new Date(row?.Date_Time).getMonth()) + 1);
+        const Year = new Date(row?.Date_Time).getFullYear();
 
         spareParts.push({
           Date: row?.Date_Time,
@@ -422,16 +424,18 @@ export const getHelperFunctionWorker = (input, tablesData) => {
           LastDate_Changed: lastDate,
           Hours: hours,
           AverageConsumption: AvCons,
-          MaxConsumption: MaxCons,
+          MaxConsumption: Number(MaxCons * 24 * 30)?.toFixed(2),
           MinQuantity,
           MaxQuantity,
+          Month,
+          Year
         });
 
         if (rowSparePart) {
           history[rowSparePart] = history[rowSparePart] || {};
           allData[rowSparePart] = {
             Total_Quantity: TotalQ,
-            Max_Consumption: currentCons,
+            Max_Consumption: MaxCons,
             Total_WH: TotalWH,
           };
           history[rowSparePart][equipment] = {
@@ -929,9 +933,11 @@ export const getHelperFunction1 = (input, tablesData) => {
         const AvCons = TotalWH > 0 ? ((TotalQ / TotalWH) * 24 * 30).toFixed(2) : 0;
         const currentCons = lastDate ? hours > 0 ? (rowQuantity / hours) : 20 : 0;
 
-        const MaxCons = (Math.max(currentCons, allData?.[rowSparePart]?.Max_Consumption || 0, TotalWH > 0 ? (TotalQ / TotalWH) : 0) * 24 * 30).toFixed(2);
+        const MaxCons = Math.max(currentCons, allData?.[rowSparePart]?.Max_Consumption || 0, TotalWH > 0 ? (TotalQ / TotalWH) : 0);
         const MinQuantity = Math.ceil(AvCons * LeadTime);
-        const MaxQuantity = Math.ceil(MaxCons * LeadTime);
+        const MaxQuantity = Math.ceil(MaxCons * 24 * 30 * LeadTime);
+        const Month = new Date(row?.Date_Time).getFullYear() + "-" + (Number(new Date(row?.Date_Time).getMonth()) + 1);
+        const Year = new Date(row?.Date_Time).getFullYear();
 
         spareParts.push({
           Date: row?.Date_Time,
@@ -947,16 +953,18 @@ export const getHelperFunction1 = (input, tablesData) => {
           LastDate_Changed: lastDate,
           Hours: hours,
           AverageConsumption: AvCons,
-          MaxConsumption: MaxCons,
+          MaxConsumption: Number(MaxCons * 24 * 30)?.toFixed(2),
           MinQuantity,
           MaxQuantity,
+          Month,
+          Year
         });
 
         if (rowSparePart) {
           history[rowSparePart] = history[rowSparePart] || {};
           allData[rowSparePart] = {
             Total_Quantity: TotalQ,
-            Max_Consumption: currentCons,
+            Max_Consumption: MaxCons,
             Total_WH: TotalWH,
           };
           history[rowSparePart][equipment] = {

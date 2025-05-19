@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -14,6 +14,7 @@ import useChartsData from "../../Controllers/Graphs/chartsData";
 import CustomTooltip from "../../Controllers/Graphs/CustomTooltip";
 import CustomBar from "../../Controllers/Graphs/CustomBar";
 import { DataFormater } from "../../Services/FormatNumbers";
+import { MAXCOLOR, MINCOLOR } from "../../Model/model";
 
 const PieChart = ({ tableData, item, data, tablesData }) => {
   const {
@@ -27,6 +28,9 @@ const PieChart = ({ tableData, item, data, tablesData }) => {
     yFontSize,
     yFontWeight,
     name,
+    max,
+    min,
+    expressions,
   } = item;
 
   const { chartData } = useChartsData({ tableData, item, data, tablesData });
@@ -61,15 +65,32 @@ const PieChart = ({ tableData, item, data, tablesData }) => {
 
               {Y_Axis?.map((item, idx) => (
                 <Bar
-                  key={idx}
-                  dataKey={item?.name}
+                  key={item.name}
+                  dataKey={item.name}
                   stackId="a"
-                  fill={Colors[idx % Colors.length]}
                   barSize={100}
                   label={
                     isLabel && <CustomBar color={Colors[idx % Colors.length]} />
                   }
-                />
+                >
+                  {chartData.map((entry, index) => {
+                    const value = entry[expressions?.[0]?.name]; // Get the current bar's value
+                    let color;
+                    if (expressions.length > 0) {
+                      if (value > max) {
+                        color = MAXCOLOR;
+                      } else if (value < min) {
+                        color = MINCOLOR;
+                      } else {
+                        color = Colors[idx % Colors.length];
+                      }
+                    } else {
+                      color = Colors[idx % Colors.length];
+                    }
+
+                    return <Cell key={`cell-${index}`} fill={color} />;
+                  })}
+                </Bar>
               ))}
             </BarChart>
           </ResponsiveContainer>
