@@ -179,7 +179,7 @@ const processExpressions = ({ tablesData, expressions, selectedRefTable }) => {
           //     };
           //   }
           // });
-          const result = expressionFunction(copiedData1, ...allowedKeys, Date);
+          const result = expressionFunction(tablesData, ...allowedKeys, Date);
           // console.log(result);
           copiedData1[table].data = result;
           copiedData1[table].dataTypes = detectTableColumnTypes(result);
@@ -337,12 +337,17 @@ const handleApply = ({ isItemUnChecked, isSortChecked, savedTablesData }) => {
     });
   });
 
+  // console.log(slicers);
+
   let result = { ...savedTablesData };
   let resultData = [];
   Object.keys(savedTablesData)?.map((table) => {
     sortByKey(savedTablesData?.[table]?.data, isSortChecked?.[table]?.[0]);
     resultData = [];
     resultData = savedTablesData?.[table]?.data?.filter((row) => {
+      if (slicers?.[table]?.length === 0) {
+        return true;
+      }
       return slicers?.[table]?.every(({ colName, item }) => {
         if (row[colName] === item) {
           return false;

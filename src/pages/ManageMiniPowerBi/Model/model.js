@@ -773,7 +773,7 @@ export const timelineOptions = {
   label: null,
   start: null,
   end: null,
-  barHeight: 2500,
+  barHeight: 0,
   category: null,
   count: 10,
   datakeys: ["value"],

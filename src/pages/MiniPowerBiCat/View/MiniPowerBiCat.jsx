@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { PageLoading } from "../../../components";
@@ -109,12 +110,16 @@ const MiniPowerBiCat = () => {
                   className="w-full text-black text-[10px] flex flex-row items-center justify-between"
                 >
                   <div
-                    className="hover:bg-white w-full px-3 p-1 cursor-pointer"
+                    className="hover:bg-white w-full px-3 p-1 cursor-pointer overflow-ellipsis whitespace-nowrap overflow-hidden"
                     onClick={() => {
                       navigate(`/MiniPowerBi/${item?.id}`);
                     }}
                   >
-                    <p>{item?.name}</p>
+                    <TooltipComponent content={item?.name} position="LeftTop">
+                      <p className="overflow-ellipsis whitespace-nowrap overflow-hidden">
+                        {item?.name}
+                      </p>
+                    </TooltipComponent>
                   </div>
 
                   {[item.createdBy].includes(usersData[0].username) && (

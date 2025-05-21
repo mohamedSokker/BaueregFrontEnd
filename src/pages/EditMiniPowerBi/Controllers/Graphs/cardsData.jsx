@@ -23,8 +23,8 @@ const addExpressionsToData = (data, expressions) => {
       // console.log(newRow[name]);
       let val1 = firstArg;
       let val2 = secondArg;
-      const numericValue1 = Number(newRow[firstArg]);
-      const numericValue2 = Number(newRow[secondArg]);
+      const numericValue1 = Number(firstArg);
+      const numericValue2 = Number(secondArg);
 
       // console.log(
       //   firstArg,
@@ -34,13 +34,13 @@ const addExpressionsToData = (data, expressions) => {
       //   !isNaN(numericValue1)
       // );
       if (!isNaN(numericValue1)) {
-        val1 = parseFloat(numericValue1);
+        val1 = numericValue1;
       } else {
         val1 = newRow[firstArg];
       }
 
       if (!isNaN(numericValue2)) {
-        val2 = parseFloat(numericValue2);
+        val2 = numericValue2;
       } else {
         val2 = newRow[secondArg];
       }

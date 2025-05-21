@@ -83,60 +83,114 @@ const MiniPowerBi = () => {
 
   const { usersData } = useNavContext();
 
-  // const RENAME_MAP = {
-  //   Date: "Date_",
-  //   // Add other reserved keys here if needed
-  // };
+  const RENAME_MAP = {
+    Date: "Date_",
+    // Add other reserved keys here if needed
+  };
 
-  // function renameKeys(obj) {
-  //   if (Array.isArray(obj)) {
-  //     return obj.map((item) => renameKeys(item));
-  //   } else if (obj !== null && typeof obj === "object") {
-  //     return Object.keys(obj).reduce((acc, key) => {
-  //       const newKey = RENAME_MAP[key] || key;
-  //       acc[newKey] = renameKeys(obj[key]);
-  //       return acc;
-  //     }, {});
-  //   }
-  //   return obj;
-  // }
+  const RETRUN_RENAME_MAP = {
+    Date_: "Date",
+  };
 
-  // function renameReservedKeys(inputData) {
-  //   if (Array.isArray(inputData)) {
-  //     // If it's a plain array like ['Av'], just return it as-is
-  //     return inputData;
-  //   }
+  function renameKeys(obj) {
+    if (Array.isArray(obj)) {
+      return obj.map((item) => renameKeys(item));
+    } else if (obj !== null && typeof obj === "object") {
+      return Object.keys(obj).reduce((acc, key) => {
+        const newKey = RENAME_MAP[key] || key;
+        acc[newKey] = renameKeys(obj[key]);
+        return acc;
+      }, {});
+    }
+    return obj;
+  }
 
-  //   const result = {};
+  function renameReservedKeys(inputData) {
+    if (Array.isArray(inputData)) {
+      // If it's a plain array like ['Av'], just return it as-is
+      return inputData;
+    }
 
-  //   for (const key in inputData) {
-  //     const value = inputData[key];
+    const result = {};
 
-  //     // Case: value is an array (could be ["Date"] or [] or table.data)
-  //     if (Array.isArray(value)) {
-  //       // Check if elements are objects (like row data), otherwise treat as string[]
-  //       const hasObjects = value.some(
-  //         (item) => typeof item === "object" && item !== null
-  //       );
+    for (const key in inputData) {
+      const value = inputData[key];
 
-  //       if (hasObjects) {
-  //         // It's tabular object data -> rename each object's keys
-  //         result[key] = renameKeys(value);
-  //       } else {
-  //         // It's an array of primitives (e.g., ["Date"])
-  //         result[key] = value.map((k) => RENAME_MAP[k] || k);
-  //       }
-  //     } else if (value !== null && typeof value === "object") {
-  //       // Plain object (like { Date: "..." }) -> rename its keys
-  //       result[key] = renameKeys(value);
-  //     } else {
-  //       // Fallback for unexpected values
-  //       result[key] = value;
-  //     }
-  //   }
+      // Case: value is an array (could be ["Date"] or [] or table.data)
+      if (Array.isArray(value)) {
+        // Check if elements are objects (like row data), otherwise treat as string[]
+        const hasObjects = value.some(
+          (item) => typeof item === "object" && item !== null
+        );
 
-  //   return result;
-  // }
+        if (hasObjects) {
+          // It's tabular object data -> rename each object's keys
+          result[key] = renameKeys(value);
+        } else {
+          // It's an array of primitives (e.g., ["Date"])
+          result[key] = value.map((k) => RENAME_MAP[k] || k);
+        }
+      } else if (value !== null && typeof value === "object") {
+        // Plain object (like { Date: "..." }) -> rename its keys
+        result[key] = renameKeys(value);
+      } else {
+        // Fallback for unexpected values
+        result[key] = value;
+      }
+    }
+
+    return result;
+  }
+
+  function returnRenameKeys(obj) {
+    if (Array.isArray(obj)) {
+      return obj.map((item) => returnRenameKeys(item));
+    } else if (obj !== null && typeof obj === "object") {
+      return Object.keys(obj).reduce((acc, key) => {
+        const newKey = RETRUN_RENAME_MAP[key] || key;
+        acc[newKey] = returnRenameKeys(obj[key]);
+        return acc;
+      }, {});
+    }
+    return obj;
+  }
+
+  function returnRenameReservedKeys(inputData) {
+    if (Array.isArray(inputData)) {
+      // If it's a plain array like ['Av'], just return it as-is
+      return inputData;
+    }
+
+    const result = {};
+
+    for (const key in inputData) {
+      const value = inputData[key];
+
+      // Case: value is an array (could be ["Date"] or [] or table.data)
+      if (Array.isArray(value)) {
+        // Check if elements are objects (like row data), otherwise treat as string[]
+        const hasObjects = value.some(
+          (item) => typeof item === "object" && item !== null
+        );
+
+        if (hasObjects) {
+          // It's tabular object data -> rename each object's keys
+          result[key] = returnRenameKeys(value);
+        } else {
+          // It's an array of primitives (e.g., ["Date"])
+          result[key] = value.map((k) => RETRUN_RENAME_MAP[k] || k);
+        }
+      } else if (value !== null && typeof value === "object") {
+        // Plain object (like { Date: "..." }) -> rename its keys
+        result[key] = returnRenameKeys(value);
+      } else {
+        // Fallback for unexpected values
+        result[key] = value;
+      }
+    }
+
+    return result;
+  }
 
   const [worker] = useState(() => {
     return new Worker(new URL("./workers.js", import.meta.url), {
@@ -376,35 +430,42 @@ const MiniPowerBi = () => {
         isRelationshipChoose: viewData.isRelationshipChoose,
         tablesData: newTablesData,
       });
+      // console.log(updatedTables);
 
-      // const copiedDataSanitized = renameReservedKeys(updatedTables);
+      const copiedDataSanitized = renameReservedKeys(updatedTables);
 
       setMessage(`Processing Expressions...`);
       // --- STEP 2: Process Expressions ---
       const { copiedData } = await runWorkerTask("PROCESS_EXPRESSIONS", {
-        tablesData: updatedTables,
+        tablesData: copiedDataSanitized,
         expressions: viewData.expressions,
         selectedRefTable: viewData.selectedRefTable,
       });
 
+      const returnedCopiedData = returnRenameReservedKeys(copiedData);
+
       setMessage(`Performing Selects...`);
       // --- STEP 3: Perform Selects ---
       const selectsResult = await runWorkerTask("PERFORM_SELECTS", {
-        savedTablesData: copiedData,
+        savedTablesData: returnedCopiedData,
         isItemChecked: isItemChecked,
         isItemUnChecked: viewData.unCheckedItems,
         isSelectAllChecked: isSelectAllChecked,
         isSortChecked: viewData?.sorted,
       });
 
+      // console.log(viewData?.unCheckedItems);
+      // console.log(viewData?.sorted);
+      // console.log(returnedCopiedData);
       setMessage(`Applying Filters...`);
       // --- STEP 4: Apply Filters ---
       const applyResult = await runWorkerTask("HANDLE_APPLY", {
         isItemUnChecked: viewData.unCheckedItems,
         isSortChecked: viewData?.sorted,
-        savedTablesData: copiedData,
+        savedTablesData: returnedCopiedData,
       });
 
+      // console.log(applyResult);
       setMessage(`Finalizing...`);
       // const result = renameReservedKeys(applyResult.result);
       setTablesData(applyResult.result);
