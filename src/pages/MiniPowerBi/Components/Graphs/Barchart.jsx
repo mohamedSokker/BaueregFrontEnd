@@ -48,7 +48,7 @@ const PieChart = ({ tableData, item, data, tablesData }) => {
             height={`100%`}
             className="text-[10px]"
           >
-            <BarChart data={chartData} title="Name">
+            <BarChart data={chartData}>
               <CartesianGrid stroke="#f5f5f5" />
               <XAxis
                 dataKey="label"
