@@ -19,11 +19,12 @@ const RequiredAuth = ({ allowedRole }) => {
 
   console.log(errorData);
 
-  return usersData &&
+  return (usersData &&
     (usersData[0]?.roles.Editor[allowedRole] === true ||
       usersData[0]?.roles.Editor[allowedRole]?.length > 0 ||
       usersData[0]?.roles.User[allowedRole] === true ||
-      usersData[0]?.roles.User[allowedRole]?.length > 0) ? (
+      usersData[0]?.roles.User[allowedRole]?.length > 0)) ||
+    allowedRole === true ? (
     <div className={currentMode === "Dark" ? "dark" : ""}>
       <div className="flex w-screen h-screen relative dark:bg-main-dark-bg m-0 p-0">
         <div

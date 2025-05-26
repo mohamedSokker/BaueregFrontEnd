@@ -15,6 +15,7 @@ import { PowerPiInitContextProvider } from "./pages/MiniPowerBi/Contexts/InitCon
 import { DragContextProvider } from "./pages/ManageMiniPowerBi/Components/Customs/DragContext";
 
 const Dashboard = lazy(() => import("./pages/Dashboard/view/Dashboard"));
+const Home = lazy(() => import("./pages/Home/View/Home"));
 const ManageKanban = lazy(() => import("./pages/ManageKanban"));
 const Kanban = lazy(() => import("./pages/Kanban"));
 const Login = lazy(() => import("./pages/Login"));
@@ -93,8 +94,10 @@ function App() {
         <Route path="/Vnc/:tableName" element={<Vnc socket={socket} />} />
         <Route path="/UnAuthorized" element={<UnAuthorized />} />
         <Route element={<PersistLogin />}>
+          <Route element={<RequiredAuth allowedRole={true} />}>
+            <Route path="/" element={<Home socket={socket} />} />
+          </Route>
           <Route element={<RequiredAuth allowedRole={"Dashboard"} />}>
-            <Route path="/" element={<Dashboard socket={socket} />} />
             <Route path="/Dashboard" element={<Dashboard socket={socket} />} />
           </Route>
 

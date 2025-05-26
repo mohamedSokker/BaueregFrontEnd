@@ -49,11 +49,15 @@ const SlicerItems = ({
     // let tableResult = { ...copiedData };
     if (rel && relCol) {
       resultArray?.map((item) => {
-        result.push(item?.[col]);
+        item?.[col] !== null &&
+          item?.[col] !== undefined &&
+          result.push(item?.[col]);
       });
     } else {
       filteredSlicers?.map((item) => {
-        result.push(item?.[col]);
+        item?.[col] !== null &&
+          item?.[col] !== undefined &&
+          result.push(item?.[col]);
       });
     }
 
@@ -61,7 +65,19 @@ const SlicerItems = ({
     // setFilteredData(tableResult);
 
     setFilteredSlicer(resultArray);
-    setSlicers(Array.from(new Set(result)).sort());
+    setSlicers(
+      Array.from(new Set(result)).sort((a, b) => {
+        if (a == null) return 1;
+        if (b == null) return -1;
+        if (!isNaN(Date.parse(a)) && !isNaN(Date.parse(b))) {
+          return new Date(a) - new Date(b);
+        }
+        if (typeof a === "number" && typeof b === "number") {
+          return a - b;
+        }
+        return String(a).localeCompare(String(b));
+      })
+    );
   }, []);
 
   return slicers?.map((item, idx) => (
@@ -209,13 +225,28 @@ const CheckSlicer = ({
     const result = [];
     Object.keys(tablesData)?.map((table) => {
       tablesData?.[table]?.data?.map((item) => {
-        result.push(item?.[mainSlicer]);
+        item?.[mainSlicer] !== null &&
+          item?.[mainSlicer] !== undefined &&
+          // item?.[mainSlicer] !== "" &&
+          result.push(item?.[mainSlicer]);
       });
     });
     // tableData?.map((item) => {
     //   result.push(item?.[mainSlicer]);
     // });
-    setSlicers(Array.from(new Set(result)).sort());
+    setSlicers(
+      Array.from(new Set(result)).sort((a, b) => {
+        if (a == null) return 1;
+        if (b == null) return -1;
+        if (!isNaN(Date.parse(a)) && !isNaN(Date.parse(b))) {
+          return new Date(a) - new Date(b);
+        }
+        if (typeof a === "number" && typeof b === "number") {
+          return a - b;
+        }
+        return String(a).localeCompare(String(b));
+      })
+    );
   }, [data, tablesData]);
 
   return (

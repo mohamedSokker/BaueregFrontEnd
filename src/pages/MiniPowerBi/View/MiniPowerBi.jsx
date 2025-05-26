@@ -226,7 +226,7 @@ const MiniPowerBi = () => {
           if (status === "done") {
             setTablesData(data.result);
             setCopiedTablesData(data.result);
-            setSavedTablesData(data.result);
+            // setSavedTablesData(data.result);
           }
           break;
 
@@ -466,11 +466,11 @@ const MiniPowerBi = () => {
       });
 
       // console.log(applyResult);
-      setMessage(`Finalizing...`);
+      // setMessage(`Finalizing...`);
       // const result = renameReservedKeys(applyResult.result);
-      setTablesData(applyResult.result);
-      setCopiedTablesData(applyResult.result);
-      setSavedTablesData(applyResult.result);
+      // setTablesData(applyResult.result);
+      // setCopiedTablesData(applyResult.result);
+      // setSavedTablesData(applyResult.result);
 
       // const expressionsSanitized = renameReservedKeys(viewData?.expressions);
 

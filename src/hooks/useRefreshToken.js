@@ -19,7 +19,7 @@ const useRefreshToken = () => {
       user.roles.Editor["ManageUsers"] = [
         { name: "Add User", icon: <FiUserPlus />, dest: "AddUser" },
         { name: "Edit User", icon: <FiUserCheck />, dest: "EditUser" },
-        { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteUser" },
+        // { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteUser" },
       ];
       user.roles.User["ManageUsers"] = [];
     } else {
@@ -30,7 +30,7 @@ const useRefreshToken = () => {
       user.roles.Editor["ManageAppUsers"] = [
         { name: "Add User", icon: <FiUserPlus />, dest: "AddAppUser" },
         { name: "Edit User", icon: <FiUserCheck />, dest: "EditAppUser" },
-        { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteAppUser" },
+        // { name: "Delete User", icon: <FiUserMinus />, dest: "DeleteAppUser" },
       ];
       user.roles.User["ManageAppUsers"] = [];
     } else {

@@ -14,6 +14,7 @@ import { BiListPlus, BiTestTube } from "react-icons/bi";
 import { BiLineChart } from "react-icons/bi";
 import { MdOutlineFireTruck, MdManageAccounts } from "react-icons/md";
 import { BsDatabaseFillGear } from "react-icons/bs";
+import { AiOutlineHome } from "react-icons/ai";
 import { Cookies } from "react-cookie";
 import { dataEntry } from "./dataEntry";
 import CustomDataEntry from "../pages/CustomDataEntry/View/CustomDataEntry";
@@ -21,6 +22,7 @@ import ManageCustomDataEntry from "../pages/ManageCustomDataEntry/View/ManageCus
 import ManageMiniPowerBi from "../pages/ManageMiniPowerBi/View/ManageMiniPowerBi";
 import MiniPowerBi from "../pages/MiniPowerBi/View/MiniPowerBi";
 
+const Home = lazy(() => import("../pages/Home/View/Home"));
 const Dashboard = lazy(() => import("../pages/Dashboard/view/Dashboard"));
 const ManageKanban = lazy(() => import("../pages/ManageKanban"));
 const Orders = lazy(() => import("../pages/Orders"));
@@ -69,16 +71,23 @@ export const allDataTitles = [
 
 export const links = [
   {
+    title: "Home",
+    name: "Home",
+    dest: "/",
+    elem: <Home />,
+    icon: <AiOutlineHome size={20} />,
+  },
+  {
     title: "Dashboard",
     name: "Dashboard",
-    dest: "/dashboard",
+    dest: "/Dashboard",
     elem: <Dashboard />,
     icon: <BiLineChart size={20} />,
   },
   {
     title: "Task Manager",
     name: "Kanban",
-    dest: "/kanban",
+    dest: "/Kanban",
     elem: <ManageKanban />,
     icon: <BiListPlus size={20} />,
   },
@@ -92,7 +101,7 @@ export const links = [
   {
     title: "Sites",
     name: "Sites",
-    dest: "/sites",
+    dest: "/Sites",
     elem: <Locations />,
     icon: <GiCrane size={20} />,
     data: [],
@@ -100,7 +109,7 @@ export const links = [
   {
     title: "Equipments",
     name: "Equipments",
-    dest: "/equipments",
+    dest: "/Equipments",
     elem: <Equipments />,
     icon: <GiCargoCrane size={20} />,
     data: [],
@@ -115,7 +124,7 @@ export const links = [
   {
     title: "Orders",
     name: "Orders",
-    dest: "/orders",
+    dest: "/Orders",
     elem: <Orders />,
     icon: <TiShoppingCart size={20} />,
     data: [],
@@ -123,7 +132,7 @@ export const links = [
   {
     title: "Stocks",
     name: "Stocks",
-    dest: "/stocks",
+    dest: "/Stocks",
     elem: <Stocks />,
     icon: <SiLinuxcontainers size={20} />,
     data: [],
@@ -161,7 +170,7 @@ export const links = [
   {
     title: "Catalogues",
     name: "Catalogues",
-    dest: "/catalogues",
+    dest: "/Catalogues",
     elem: <Catalogues />,
     icon: <RiBookLine size={20} />,
   },
@@ -217,11 +226,11 @@ export const links = [
         dest: "/EditUser",
         icon: <FiUserCheck size={16} />,
       },
-      {
-        name: "Delete User",
-        dest: "/DeleteUser",
-        icon: <FiUserMinus size={16} />,
-      },
+      // {
+      //   name: "Delete User",
+      //   dest: "/DeleteUser",
+      //   icon: <FiUserMinus size={16} />,
+      // },
     ],
   },
   {
@@ -241,11 +250,11 @@ export const links = [
         dest: "/EditAppUser",
         icon: <FiUserCheck size={16} />,
       },
-      {
-        name: "Delete User",
-        dest: "/DeleteAppUser",
-        icon: <FiUserMinus size={16} />,
-      },
+      // {
+      //   name: "Delete User",
+      //   dest: "/DeleteAppUser",
+      //   icon: <FiUserMinus size={16} />,
+      // },
     ],
   },
 ];

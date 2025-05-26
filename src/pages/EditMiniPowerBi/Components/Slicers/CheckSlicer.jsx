@@ -49,11 +49,15 @@ const SlicerItems = ({
     // let tableResult = { ...copiedData };
     if (rel && relCol) {
       resultArray?.map((item) => {
-        result.push(item?.[col]);
+        item?.[col] !== null &&
+          item?.[col] !== undefined &&
+          result.push(item?.[col]);
       });
     } else {
       filteredSlicers?.map((item) => {
-        result.push(item?.[col]);
+        item?.[col] !== null &&
+          item?.[col] !== undefined &&
+          result.push(item?.[col]);
       });
     }
 
@@ -221,7 +225,10 @@ const CheckSlicer = ({
     const result = [];
     Object.keys(tablesData)?.map((table) => {
       tablesData?.[table]?.data?.map((item) => {
-        result.push(item?.[mainSlicer]);
+        item?.[mainSlicer] !== null &&
+          item?.[mainSlicer] !== undefined &&
+          // item?.[mainSlicer] !== "" &&
+          result.push(item?.[mainSlicer]);
       });
     });
     // tableData?.map((item) => {

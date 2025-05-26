@@ -41,7 +41,7 @@ const PieChart = ({ tableData, item, data, tablesData }) => {
         <div className="text-[10px] font-semibold mb-2 text-center">{name}</div>
       )} */}
 
-      <div className="flex-1">
+      <div className="flex-1 w-full h-full">
         {chartData && (
           <ResponsiveContainer
             width={"100%"}
@@ -60,7 +60,14 @@ const PieChart = ({ tableData, item, data, tablesData }) => {
                 fontSize={`${yFontSize}px`}
                 fontWeight={yFontWeight}
               />
-              {isTooltip && <Tooltip content={<CustomTooltip item={item} />} />}
+              {isTooltip && (
+                <Tooltip
+                  labelStyle={{ fontSize: "8px" }}
+                  itemStyle={{ fontSize: "12px" }}
+                  wrapperStyle={{ fontSize: "6px" }}
+                  content={<CustomTooltip item={item} />}
+                />
+              )}
               {isLegend && <Legend />}
 
               {Y_Axis?.map((item, idx) => (

@@ -60,7 +60,14 @@ const PieChart = ({ tableData, item, data, tablesData }) => {
                 fontSize={`${yFontSize}px`}
                 fontWeight={yFontWeight}
               />
-              {isTooltip && <Tooltip content={<CustomTooltip item={item} />} />}
+              {isTooltip && (
+                <Tooltip
+                  labelStyle={{ fontSize: "8px" }}
+                  itemStyle={{ fontSize: "12px" }}
+                  wrapperStyle={{ fontSize: "6px" }}
+                  content={<CustomTooltip item={item} />}
+                />
+              )}
               {isLegend && <Legend />}
 
               {Y_Axis?.map((item, idx) => (
