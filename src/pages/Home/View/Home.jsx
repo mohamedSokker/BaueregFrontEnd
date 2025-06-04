@@ -43,6 +43,7 @@ const Home = () => {
   const [isProdTrench, setIsProdTrench] = useState(false);
   const [isWire, setIsWire] = useState(false);
   const [isKelly, setIsKelly] = useState(false);
+  const [isOilSamples, setIsOilSamples] = useState(false);
 
   // console.log(usersData?.[0]?.roles?.Editor?.Sites);
 
@@ -55,36 +56,113 @@ const Home = () => {
   const getData = async () => {
     try {
       setLoading(true);
-      const url = `/api/v3/home`;
-      const response = await axiosPrivate(url, {
-        method: "POST",
-        data: JSON.stringify({ Sites: usersData?.[0]?.roles?.Editor?.Sites }),
-      });
-      console.log(response.data?.data);
-      setData(response.data?.data);
-      setFilteredData(response.data?.data);
+      const URLs = [
+        "/api/v3/homeFuelCons",
+        "/api/v3/homeOilCons",
+        "/api/v3/homeProdGrouting",
+        "/api/v3/homeProdPiles",
+        "/api/v3/homeProdTrench",
+        "/api/v3/homeDailyWH",
+        "/api/v3/homeEqsLoc",
+        "/api/v3/homeMachLoc",
+        "/api/v3/homeWire",
+        "/api/v3/homeLocGBTrench",
+        "/api/v3/homeLocGBDrill",
+        "/api/v3/homeLocMudPump",
+        "/api/v3/homeLocKelly",
+        "/api/v3/homeLocDiesel",
+        "/api/v3/homeLocTrGB",
+        "/api/v3/homeOilSamples",
+        "/api/v3/homeMaint",
+        "/api/v3/homePerMaint",
+      ];
+
+      const responseData = await Promise.all(
+        URLs.map((url) => {
+          return axiosPrivate(url, {
+            method: "POST",
+            data: JSON.stringify({
+              Sites: usersData?.[0]?.roles?.Editor?.Sites,
+            }),
+          });
+        })
+      );
+      const homeFuelCons = responseData?.[0]?.data || [];
+      const homeOilCons = responseData?.[1]?.data || [];
+      const homeProdGrouting = responseData?.[2]?.data || [];
+      const homeProdPiles = responseData?.[3]?.data || [];
+      const homeProdTrench = responseData?.[4]?.data || [];
+      const homeDailyWH = responseData?.[5]?.data || [];
+      const homeEqsLoc = responseData?.[6]?.data || [];
+      const homeMachLoc = responseData?.[7]?.data || [];
+      const homeWire = responseData?.[8]?.data || [];
+      const homeLocGBTrench = responseData?.[9]?.data || [];
+      const homeLocGBDrill = responseData?.[10]?.data || [];
+      const homeLocMudPump = responseData?.[11]?.data || [];
+      const homeLocKelly = responseData?.[12]?.data || [];
+      const homeLocDiesel = responseData?.[13]?.data || [];
+      const homeLocTrGB = responseData?.[14]?.data || [];
+      const homeOilSamples = responseData?.[15]?.data || [];
+      const homeMaint = responseData?.[16]?.data || [];
+      const homePerMaint = responseData?.[17]?.data || [];
+      // const maintenance = responseData?.[15]?.data || [];
+      const response = {
+        data: {
+          FuelConsumption: homeFuelCons,
+          OilConsumption: homeOilCons,
+          ProductionGrouting: homeProdGrouting,
+          Production_Piles: homeProdPiles,
+          Production_TrenchCutting: homeProdTrench,
+          DailyWH: homeDailyWH,
+          Equipments_Location: homeEqsLoc,
+          Machinary_Location: homeMachLoc,
+          Wire: homeWire,
+          Location_GearboxTrench: homeLocGBTrench,
+          Location_GearboxDrilling: homeLocGBDrill,
+          Location_Mudpump: homeLocMudPump,
+          Locations_Kelly: homeLocKelly,
+          Location_DieselMotor: homeLocDiesel,
+          Location_TravelingGearbox: homeLocTrGB,
+          Maintenance: homeMaint,
+          OilSamples: homeOilSamples,
+          PerMaint: homePerMaint,
+        },
+      };
+      // const url = `/api/v3/home`;
+      // const response = await axiosPrivate(url, {
+      //   method: "POST",
+      //   data: JSON.stringify({ Sites: usersData?.[0]?.roles?.Editor?.Sites }),
+      // });
+      console.log(response?.data);
+      setData(response.data);
+      setFilteredData(response.data);
       const activeSites = [];
       const eqs = [];
       let eqsActiveSites = {};
-      response.data?.data?.Equipments_Location?.forEach((row) => {
+      homeEqsLoc?.forEach((row) => {
         if (!activeSites.includes(row?.Location)) {
           activeSites.push(row?.Location);
         }
-        if (!eqs.includes(row?.Equipment)) {
+        if (
+          !eqs.includes(row?.Equipment) &&
+          !row?.Equipment?.startsWith("GRC")
+        ) {
           eqs.push(row?.Equipment);
         }
-        eqsActiveSites = eqsActiveSites[row?.Location]
-          ? {
-              ...eqsActiveSites,
-              [row?.Location]: [
-                ...eqsActiveSites[row?.Location],
-                row?.Equipment,
-              ],
-            }
-          : {
-              ...eqsActiveSites,
-              [row?.Location]: [row?.Equipment],
-            };
+        if (!row?.Equipment?.startsWith("GRC")) {
+          eqsActiveSites = eqsActiveSites[row?.Location]
+            ? {
+                ...eqsActiveSites,
+                [row?.Location]: [
+                  ...eqsActiveSites[row?.Location],
+                  row?.Equipment,
+                ],
+              }
+            : {
+                ...eqsActiveSites,
+                [row?.Location]: [row?.Equipment],
+              };
+        }
       });
       setActiveSites(activeSites);
       setEqs(eqs);
@@ -134,6 +212,7 @@ const Home = () => {
     },
     { label: "Wire", value: isWire, setValue: setIsWire },
     { label: "Kelly", value: isKelly, setValue: setIsKelly },
+    { label: "OilSamples", value: isOilSamples, setValue: setIsOilSamples },
   ];
 
   const handleSearch = (e) => {
@@ -286,6 +365,7 @@ const Home = () => {
               isProdTrench={isProdTrench}
               isWire={isWire}
               isKelly={isKelly}
+              isOilSamples={isOilSamples}
             />
           ) : (
             <Timeline data={data} usersData={usersData} />

@@ -135,41 +135,43 @@ export const calculateProdGrouting = (data, filters, site, eq) => {
   return formatter.format(prod);
 };
 
-export const calculatePerMaintDate = (data, filters, site, eq) => {
+export const calculatePerMaint = (data, filters, site, eq) => {
   let perMaint = null;
-  data?.Maintenance?.sort(
-    (a, b) => new Date(a.Date_Time) - new Date(b?.Date_Time)
-  )?.forEach((row) => {
-    if (
-      row?.Breakdown_Type === "Periodic Maintenance" &&
-      row?.Equipment === eq
-    ) {
-      if (filters === "Today") {
-        const today = new Date();
-        const rowDate = new Date(row?.Date_Time);
-        if (rowDate.toDateString() === today.toDateString()) {
-          perMaint = row?.Date_Time;
-        }
-      } else if (filters === "Last Week") {
-        const today = new Date();
-        const lastWeek = new Date(today);
-        lastWeek.setDate(today.getDate() - 7);
-        const rowDate = new Date(row?.Date_Time);
-        if (rowDate >= lastWeek && rowDate <= today) {
-          perMaint = row?.Date_Time;
-        }
-      } else if (filters === "Last Month") {
-        const today = new Date();
-        const lastMonth = new Date(today);
-        lastMonth.setMonth(today.getMonth() - 1);
-        const rowDate = new Date(row?.Date_Time);
-        if (rowDate >= lastMonth && rowDate <= today) {
-          perMaint = row?.Date_Time;
-        }
+  let wh = null;
+  let dieselPerMaint = null;
+  let dieselwh = null;
+  let PerMaintInt = null;
+  let nextPerMaintInt = null;
+  let DiselPerMaintInt = null;
+  data?.PerMaint?.forEach((row) => {
+    if (row?.Equipment === eq) {
+      if (row?.Type === "Diesel") {
+        dieselPerMaint = row?.Date;
+        dieselwh = row?.WH;
+        DiselPerMaintInt = row?.interval;
+      } else {
+        perMaint = row?.Date;
+        wh = row?.WH;
+        PerMaintInt = row?.interval;
+        const predict =
+          Math.round((row?.WH - row?.lastKnownWH) / 250) * 250 +
+          250 +
+          row?.lastKnown;
+        nextPerMaintInt = predict > 2000 ? predict - 2000 : predict;
       }
+
+      // Problem = row?.Problem;
     }
   });
-  return perMaint ? perMaint.slice(0, 10) : null;
+  return {
+    Date: perMaint ? perMaint.slice(0, 10) : null,
+    WH: wh,
+    PerMaintInt,
+    nextPerMaintInt,
+    DieselDate: dieselPerMaint ? dieselPerMaint?.slice(0, 10) : null,
+    DiselPerMaintInt,
+    DieselWH: dieselwh,
+  };
 };
 
 export const calculatePerMaintWH = (data, filters, site, eq) => {
@@ -438,6 +440,31 @@ export const calculateKelly = (data, filters, site, eq) => {
         Code: row?.KellyCode,
         Status: row?.Status,
         StartDate: row?.StartDate,
+      });
+    }
+  });
+  return diesel;
+};
+export const calculateOilSamples = (data, filters, site, eq) => {
+  let diesel = [];
+  data?.OilSamples?.sort(
+    (a, b) => new Date(a?.Date) - new Date(b?.Date)
+  )?.forEach((row) => {
+    if (row?.Equipment === eq.split(" ").join("")) {
+      let cat = "";
+      if (row?.Category === "NUMBER 1") {
+        cat = "Drilling Gearbox";
+      } else if (row?.Category === "NUMBER 2") {
+        cat = "Grouting Gearbox";
+      } else {
+        cat = row?.Category;
+      }
+      diesel.push({
+        Date: new Date(row?.Date).toISOString().slice(0, 10),
+        url: row?.URL,
+        Category: cat,
+        OilType: row?.OilType,
+        SampleResult: row?.SampleResult,
       });
     }
   });
