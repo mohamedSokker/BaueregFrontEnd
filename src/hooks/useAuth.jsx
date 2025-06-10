@@ -53,12 +53,12 @@ const RequiredAuth = ({ allowedRole }) => {
 
         {/* Navbar + MainPage */}
         <div
-          className={`dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 bg-main-bg min-h-screen w-full `}
+          className={`dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 bg-main-bg min-h-[100vh] w-full `}
         >
           {/* Navbar */}
           <div
-            className="fixed md:static flex dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 bg-gray-100 items-center h-[8vh] navbar"
-            style={{ width: "100vw" }}
+            className="static flex dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 bg-gray-100 items-center navbar"
+            style={{ width: "100vw", height: "40px" }}
           >
             <Navbar />
           </div>
@@ -66,10 +66,10 @@ const RequiredAuth = ({ allowedRole }) => {
           {/* Main page */}
           <div
             id="Main--Page"
-            className=" dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 relative bg-white overflow-x-hidden"
+            className=" dark:bg-[rgb(0,0,0,0.7)] dark:text-gray-500 relative bg-white overflow-x-hidden h-[calc(100vh-40px)] top-0"
             style={{
               width: "100vw",
-              height: "92vh",
+              // height: "calc()",
             }}
             onClick={closeSmallSidebar}
           >

@@ -67,36 +67,39 @@ const Sidebar = () => {
                 data-cat={item.title}
                 className={`flex items-center justify-between w-full mb-1 cursor-pointer rounded-md h-9 px-1 transition-colors duration-200 ${"hover:bg-gray-200 dark:hover:bg-gray-700"}`}
               >
-                <button
-                  id={`${item.title}-sidebar`}
-                  className={`flex items-center justify-between w-full h-full py-1 px-3 font-medium text-sm ${
-                    !hasSubMenu
-                      ? "hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-                      : ""
-                  }`}
-                  onClick={(e) => {
-                    if (!hasSubMenu) {
-                      handleCloseSidebar();
-                      navigate(`${item.dest}`);
-                    } else {
-                      toggleSubMenu(item.title);
-                    }
-                  }}
-                >
-                  <div className="flex items-center">
-                    <span className="text-lg">{item.icon}</span>
-                    <span className="ml-2">{item.title}</span>
-                  </div>
-                  {hasSubMenu && (
+                {!hasSubMenu ? (
+                  <Link
+                    id={`${item.title}-sidebar`}
+                    to={item.dest}
+                    className="flex items-center justify-between w-full h-full py-1 px-3 font-medium text-sm hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                    onClick={handleCloseSidebar}
+                  >
+                    <div className="flex items-center">
+                      <span className="text-lg">{item.icon}</span>
+                      <span className="ml-2">{item.title}</span>
+                    </div>
+                  </Link>
+                ) : (
+                  <button
+                    id={`${item.title}-sidebar`}
+                    className="flex items-center justify-between w-full h-full py-1 px-3 font-medium text-sm"
+                    onClick={() => toggleSubMenu(item.title)}
+                    aria-expanded={isActive(item.title)}
+                    aria-controls={`submenu-${item.title}`}
+                  >
+                    <div className="flex items-center">
+                      <span className="text-lg">{item.icon}</span>
+                      <span className="ml-2">{item.title}</span>
+                    </div>
                     <span className="text-xl">
-                      {itemActive ? (
+                      {isActive(item.title) ? (
                         <MdKeyboardArrowUp />
                       ) : (
                         <MdKeyboardArrowDown />
                       )}
                     </span>
-                  )}
-                </button>
+                  </button>
+                )}
               </div>
 
               {/* Submenu Items */}

@@ -1,13 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { IoFilter } from "react-icons/io5";
-import {
-  PieChart as Pie1Chart,
-  Pie,
-  Legend,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from "recharts";
+import { PieChart, Pie, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 import useBd from "../controller/bdController";
 
@@ -24,57 +17,89 @@ const COLORS = [
   "#88D3E5",
 ];
 
+// 🎨 Custom Legend Component – Positioned Vertically on Right
+const CustomLegend = ({ payload }) => (
+  <ul className="flex flex-col gap-2 text-xs text-gray-600 w-32">
+    {payload.map((entry, index) => (
+      <li
+        key={`legend-item-${index}`}
+        className="flex items-center gap-2 truncate"
+      >
+        <span
+          className="inline-block w-3 h-3"
+          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+        ></span>
+        <span title={entry.value} className="truncate">
+          {entry.label}
+        </span>
+      </li>
+    ))}
+  </ul>
+);
+
+// 📊 Main Card Component
 const FuelConsCard = ({ title, data, setIsBdFilterCard }) => {
   const { chartData } = useBd({ data });
 
   return (
-    <div className="min-w-[200px] h-full px-2 py-1 flex flex-col items-center justify-start flex-1 rounded-[8px] bg-white border-1 border-gray-300">
-      <div className="w-full h-[26px] flex flex-row justify-between gap-1 items-center ">
-        <div className="flex flex-row gap-1 items-center">
-          <div className="w-3 h-3 rounded-full border-1 border-violet-600 flex justify-center items-center">
-            <div className="w-0 h-0 border-1 border-violet-600 rounded-full"></div>
-          </div>
-          <p className="text-gray-400 font-bold">{title}</p>
+    <div className="min-w-[350px] h-full px-4 py-3 flex flex-col justify-between rounded-xl bg-white shadow-md border border-gray-200 transition-transform duration-200 hover:shadow-lg hover:-translate-y-1">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-violet-500 ring-2 ring-violet-200"></div>
+          <h3 className="text-sm font-semibold text-gray-600">{title}</h3>
         </div>
-        <div
-          className="flex flex-row cursor-pointer"
-          onClick={() => setIsBdFilterCard(true)}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsBdFilterCard(true);
+          }}
+          className="p-1 rounded-full hover:bg-gray-100 text-gray-500 transition"
+          aria-label="Open filter"
         >
-          <IoFilter />
-        </div>
+          <IoFilter size={18} />
+        </button>
       </div>
 
+      {/* Chart + Legend Layout */}
       {data && (
-        <div className="w-full h-[calc(100%-26px)] flex flex-row items-center justify-start">
-          <ResponsiveContainer
-            width={"100%"}
-            height={`100%`}
-            className="text-[10px]"
-          >
-            <Pie1Chart>
-              <Pie
-                dataKey={`value`}
-                data={chartData}
-                label
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-              >
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip
-                labelStyle={{ fontSize: "8px" }}
-                itemStyle={{ fontSize: "12px" }}
-                wrapperStyle={{ fontSize: "6px" }}
-              />
-              <Legend verticalAlign="top" height={40} fontSize={"10px"} />
-            </Pie1Chart>
-          </ResponsiveContainer>
+        <div className="flex-1 flex items-center gap-4 mt-2 overflow-hidden">
+          {/* Pie Chart Area */}
+          <div className="w-1/2 h-full">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              className="text-[10px]"
+            >
+              <PieChart>
+                <Pie
+                  dataKey="value"
+                  data={chartData}
+                  label
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={70}
+                  isAnimationActive={true}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip
+                  labelStyle={{ fontSize: "10px" }}
+                  itemStyle={{ fontSize: "12px" }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Scrollable Legend - Right Side */}
+          <div className="w-1/2 h-full overflow-y-auto pr-1">
+            <CustomLegend payload={chartData} />
+          </div>
         </div>
       )}
     </div>

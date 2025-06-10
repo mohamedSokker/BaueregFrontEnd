@@ -1,0 +1,14 @@
+.filters__cont::-webkit-scrollbar {
+  width: 0.5em;
+  height: 0.5rem;
+}
+
+.filters__cont::-webkit-scrollbar-thumb {
+  border-radius: 0.5rem;
+  background-color: #0004;
+  visibility: hidden;
+}
+
+.filters__cont:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+}

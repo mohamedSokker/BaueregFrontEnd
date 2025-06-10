@@ -8,6 +8,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import { FaFilePdf } from "react-icons/fa";
 import { GrDocumentMissing } from "react-icons/gr";
 
+// Calculation Functions
 import {
   calculateBreakdowns,
   calculateDailyWH,
@@ -29,9 +30,7 @@ import {
 } from "../Services/calculations";
 
 const Separator = () => (
-  <div className="w-full flex justify-center items-center">
-    <div className="w-[100%] border-b border-gray-400"></div>
-  </div>
+  <div className="w-full my-1 border-t border-gray-200"></div>
 );
 
 const Category = ({
@@ -59,15 +58,17 @@ const Category = ({
   isOilSamples,
 }) => {
   const [isPanelOpen, setIsPanelOpen] = useState({});
+
   return (
-    <div className="w-full h-full flex flex-col justify-start items-center p-2 gap-2 overflow-y-scroll">
-      {Object.keys(filteredEqsActiveSites)?.map((site) => (
+    <div className="w-full p-4 bg-gray-50 overflow-y-auto">
+      {Object.keys(filteredEqsActiveSites).map((site) => (
         <React.Fragment key={site}>
-          <div className="w-full flex flex-row justify-start items-center gap-2 p-2 border-b border-gray-200 text-[12px] font-[700]">
+          <h2 className="text-[16px] font-semibold text-gray-800 my-3">
             {site}
-          </div>
-          <div className="w-full flex flex-row flex-wrap justify-start items-start gap-2">
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filteredEqsActiveSites[site]?.map((eq) => {
+              // All Calculations
               const breakdowns = calculateBreakdowns(
                 filteredData,
                 filters,
@@ -117,12 +118,6 @@ const Category = ({
                 eq
               );
               const dailyWH = calculateDailyWH(filteredData, filters, site, eq);
-              const perMaintWHDiff =
-                dailyWH && perMaint?.WH ? dailyWH - perMaint?.WH : null;
-              const dieselPerMaintWHDiff =
-                dailyWH && perMaint?.DieselWH
-                  ? dailyWH - perMaint?.DieselWH
-                  : null;
               const dailyWHDate = calculateDailyWHDate(
                 filteredData,
                 filters,
@@ -151,277 +146,261 @@ const Category = ({
                 site,
                 eq
               );
+
+              const perMaintWHDiff =
+                dailyWH && perMaint?.WH ? dailyWH - perMaint?.WH : null;
+              const dieselPerMaintWHDiff =
+                dailyWH && perMaint?.DieselWH
+                  ? dailyWH - perMaint?.DieselWH
+                  : null;
+
               return (
                 <div
                   key={eq}
-                  className="w-[180px] flex flex-col rounded-[4px] overflow-hidden"
+                  className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
                 >
-                  <div className="w-full flex flex-row justify-between items-center bg-logoColor text-white text-[10px] px-1 py-1 overflow-ellipsis whitespace-nowrap overflow-hidden">
-                    <p className="overflow-ellipsis whitespace-nowrap overflow-hidden">
-                      {eq}
-                    </p>
-                    <div
-                      className="cursor-pointer"
-                      onClick={() =>
-                        setIsPanelOpen((prev) => ({
-                          ...prev,
-                          [eq]: !prev?.[eq],
-                        }))
-                      }
-                    >
-                      {!isPanelOpen?.[eq] ? (
-                        <IoIosArrowDown />
-                      ) : (
-                        <IoIosArrowForward />
-                      )}
-                    </div>
+                  {/* Header */}
+                  <div
+                    className="flex justify-between items-center px-4 py-2 bg-blue-600 text-white cursor-pointer"
+                    onClick={() =>
+                      setIsPanelOpen((prev) => ({
+                        ...prev,
+                        [eq]: !prev[eq],
+                      }))
+                    }
+                  >
+                    <span className="font-bold truncate text-[12px]">{eq}</span>
+                    {!isPanelOpen[eq] ? (
+                      <IoIosArrowDown />
+                    ) : (
+                      <IoIosArrowForward />
+                    )}
                   </div>
-                  {!isPanelOpen?.[eq] && (
-                    <>
+
+                  {/* Content Panel */}
+                  <div
+                    className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                      !isPanelOpen[eq] ? "max-h-[999px]" : "max-h-0"
+                    }`}
+                  >
+                    <div className="p-3 space-y-2 text-[12px]">
+                      {/* Breakdown */}
                       {isBreakdown && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">
-                          {`Breakdowns: ${breakdowns} Hours`} <Separator />
-                        </div>
+                        <>
+                          <div>🕒 Breakdowns: {breakdowns} Hours</div>
+                          <Separator />
+                        </>
                       )}
 
-                      {(eq?.startsWith("BC") ||
-                        eq?.startsWith("MC") ||
-                        eq?.startsWith("BG")) && (
+                      {/* Per Maint Info */}
+                      {(eq.startsWith("BC") ||
+                        eq.startsWith("MC") ||
+                        eq.startsWith("BG")) && (
                         <>
                           {isPerMaint && (
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Per Maint Date: ${perMaint?.Date}`}</div>
-                          )}
-
-                          {isPerMaint && (
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Per Maint WH: ${perMaint?.WH} Hours`}</div>
-                          )}
-
-                          {isPerMaint && (
-                            <div
-                              className="w-full text-[10px] p-1 bg-gray-300 flex flex-row justify-between items-center pr-2"
-                              style={{
-                                color: perMaintWHDiff > 300 ? "red" : "black",
-                              }}
-                            >
-                              <p>{`Per Maint Dur: ${perMaintWHDiff} Hours`}</p>
-                              {perMaintWHDiff > 300 ? (
-                                <IoWarningOutline size={14} color="red" />
-                              ) : perMaintWHDiff !== null ? (
-                                <IoIosCheckmarkCircleOutline
-                                  size={14}
-                                  color="green"
-                                />
-                              ) : (
-                                <GrDocumentMissing size={14} color="orange" />
-                              )}
-                            </div>
-                          )}
-
-                          {isPerMaint && (
-                            <div className="w-full text-[10px] p-1 bg-gray-300">
-                              {`Per Maint Interval: ${perMaint?.PerMaintInt}`}
-                            </div>
-                          )}
-
-                          {isPerMaint && (
-                            <div className="w-full text-[10px] p-1 bg-gray-300">
-                              {`Next Per Maint: ${perMaint?.nextPerMaintInt}`}
+                            <>
+                              <div>📅 Per Maint Date: {perMaint?.Date}</div>
+                              <div>🔧 Per Maint WH: {perMaint?.WH} Hours</div>
+                              <div className="flex justify-between items-center">
+                                <span>
+                                  ⏳ Per Maint Dur: {perMaintWHDiff} Hours
+                                </span>
+                                {perMaintWHDiff > 300 ? (
+                                  <IoWarningOutline size={16} color="red" />
+                                ) : perMaintWHDiff !== null ? (
+                                  <IoIosCheckmarkCircleOutline
+                                    size={16}
+                                    color="green"
+                                  />
+                                ) : (
+                                  <GrDocumentMissing size={16} color="orange" />
+                                )}
+                              </div>
+                              <div>
+                                🔁 Per Maint Interval: {perMaint?.PerMaintInt}
+                              </div>
+                              <div>
+                                🔜 Next Per Maint: {perMaint?.nextPerMaintInt}
+                              </div>
                               <Separator />
-                            </div>
+                            </>
                           )}
                         </>
                       )}
 
-                      {/* {isPerMaint && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">{`Problem: ${perMaint?.Problem}`}</div>
-                      )} */}
-
+                      {/* Diesel Maint Info */}
                       {isPerMaint && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">{`Diesel Maint Date: ${perMaint?.DieselDate}`}</div>
-                      )}
-
-                      {isPerMaint && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">{`Diesel Maint WH: ${perMaint?.DieselWH} Hours`}</div>
-                      )}
-
-                      {isPerMaint && (
-                        <div
-                          className="w-full text-[10px] p-1 bg-gray-300 flex flex-row justify-between items-center pr-2"
-                          style={{
-                            color: dieselPerMaintWHDiff > 250 ? "red" : "black",
-                          }}
-                        >
-                          <p>{`Diesel Maint Dur: ${dieselPerMaintWHDiff} Hours`}</p>
-                          {dieselPerMaintWHDiff > 250 ? (
-                            <IoWarningOutline size={14} color="red" />
-                          ) : dieselPerMaintWHDiff !== null ? (
-                            <IoIosCheckmarkCircleOutline
-                              size={14}
-                              color="green"
-                            />
-                          ) : (
-                            <GrDocumentMissing size={14} color="orange" />
-                          )}
-                        </div>
-                      )}
-
-                      {isPerMaint && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">
-                          {`Diesel Maint Interval: ${perMaint?.DiselPerMaintInt}`}
-                          <Separator />
-                        </div>
-                      )}
-
-                      {isFuelConsmption && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">
-                          {`Fuel Consumption: ${fuel} L`}
-                          <Separator />
-                        </div>
-                      )}
-
-                      {isOilConsumption && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">
-                          {`Oil Consumption: ${oil} L`}
-                          <Separator />
-                        </div>
-                      )}
-
-                      {(eq?.startsWith("MC") || eq?.startsWith("BC")) &&
-                        isProdTrench && (
-                          <div className="w-full text-[10px] p-1 bg-gray-300">
-                            {`Production: ${prodTrench} m3`}
-                            <Separator />
+                        <>
+                          <div>
+                            📅 Diesel Maint Date: {perMaint?.DieselDate}
                           </div>
+                          <div>
+                            ⛽ Diesel Maint WH: {perMaint?.DieselWH} Hours
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span>
+                              ⏱️ Diesel Maint Dur: {dieselPerMaintWHDiff} Hours
+                            </span>
+                            {dieselPerMaintWHDiff > 250 ? (
+                              <IoWarningOutline size={16} color="red" />
+                            ) : dieselPerMaintWHDiff !== null ? (
+                              <IoIosCheckmarkCircleOutline
+                                size={16}
+                                color="green"
+                              />
+                            ) : (
+                              <GrDocumentMissing size={16} color="orange" />
+                            )}
+                          </div>
+                          <div>
+                            🔁 Diesel Maint Interval:{" "}
+                            {perMaint?.DiselPerMaintInt}
+                          </div>
+                          <Separator />
+                        </>
+                      )}
+
+                      {/* Fuel Consumption */}
+                      {isFuelConsmption && (
+                        <>
+                          <div>⛽ Fuel Consumption: {fuel} L</div>
+                          <Separator />
+                        </>
+                      )}
+
+                      {/* Oil Consumption */}
+                      {isOilConsumption && (
+                        <>
+                          <div>🛢️ Oil Consumption: {oil} L</div>
+                          <Separator />
+                        </>
+                      )}
+
+                      {/* Production Trench */}
+                      {(eq.startsWith("MC") || eq.startsWith("BC")) &&
+                        isProdTrench && (
+                          <>
+                            <div>⛏️ Production Trench: {prodTrench} m³</div>
+                            <Separator />
+                          </>
                         )}
 
-                      {eq?.startsWith("BG") && isProdPiles && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">
-                          {`Production Drill: ${prodPiles} ml`}
+                      {/* Production Drill */}
+                      {eq.startsWith("BG") && isProdPiles && (
+                        <>
+                          <div>🪨 Production Drill: {prodPiles} ml</div>
                           <Separator />
-                        </div>
+                        </>
                       )}
 
-                      {eq?.startsWith("BG") && isProdGrouting && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">
-                          {`Production Groutng: ${prodGrouting} ml`}
+                      {/* Production Grouting */}
+                      {eq.startsWith("BG") && isProdGrouting && (
+                        <>
+                          <div>🧱 Production Grouting: {prodGrouting} ml</div>
                           <Separator />
-                        </div>
+                        </>
                       )}
 
+                      {/* Daily WH */}
                       {isDailyWH && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">{`Daily WH: ${dailyWH} Hours`}</div>
-                      )}
-
-                      {isDailyWH && (
-                        <div className="w-full text-[10px] p-1 bg-gray-300">
-                          {`Daily WH Date: ${dailyWHDate}`}
+                        <>
+                          <div>⏰ Daily WH: {dailyWH} Hours</div>
+                          <div>📅 Daily WH Date: {dailyWHDate}</div>
                           <Separator />
-                        </div>
+                        </>
                       )}
 
+                      {/* Wire Logs */}
                       {isWire &&
-                        wire?.map((wire, idx) => (
-                          <React.Fragment key={idx}>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Wire Code: ${wire?.Code}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Wire Date: ${wire?.StartDate?.slice(
-                              0,
-                              10
-                            )}`}</div>
-                            {/* <div className="w-full text-[10px] p-1 bg-gray-300">{`Wire Diameter: ${wire?.Diameter}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Wire Length: ${wire?.Length}`}</div> */}
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Wire Rope: ${wire?.Replacement_Wire_Rope}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Wire WH: ${wire?.WH}`}</div>
-                            <Separator />
-                          </React.Fragment>
-                        ))}
-
-                      {isDiesel &&
-                        diesel?.map((wire, idx) => (
-                          <React.Fragment key={idx}>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Diesel Code: ${wire?.Code}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Diesel Date: ${wire?.StartDate?.slice(
-                              0,
-                              10
-                            )}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Diesel WH: ${wire?.WH}`}</div>
-                            <Separator />
-                          </React.Fragment>
-                        ))}
-
-                      {isGearboxDrill &&
-                        GBDrill?.map((wire, idx) => (
-                          <React.Fragment key={idx}>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Gearbox Code: ${wire?.Code}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Gearbox Date: ${wire?.StartDate?.slice(
-                              0,
-                              10
-                            )}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Gearbox WH: ${wire?.WH}`}</div>
-                            <Separator />
-                          </React.Fragment>
-                        ))}
-
-                      {isGearboxTrench &&
-                        GBTrench?.map((wire, idx) => (
-                          <React.Fragment key={idx}>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Gearbox Code: ${wire?.Code}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Gearbox Side: ${wire?.GearboxSide}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Gearbox Date: ${wire?.StartDate?.slice(
-                              0,
-                              10
-                            )}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Gearbox WH: ${wire?.WH}`}</div>
-                            <Separator />
-                          </React.Fragment>
-                        ))}
-
-                      {isMudPump &&
-                        mud?.map((wire, idx) => (
-                          <React.Fragment key={idx}>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`MudPump Code: ${wire?.Code}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`MudPump Status: ${wire?.Status}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`MudPump Date: ${wire?.StartDate?.slice(
-                              0,
-                              10
-                            )}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`MudPump WH: ${wire?.WH}`}</div>
-                            <Separator />
-                          </React.Fragment>
-                        ))}
-
-                      {isKelly &&
-                        kelly?.map((wire, idx) => (
-                          <React.Fragment key={idx}>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Kelly Code: ${wire?.Code}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Kelly Status: ${wire?.Status}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Kelly Date: ${wire?.StartDate?.slice(
-                              0,
-                              10
-                            )}`}</div>
-                            <Separator />
-                          </React.Fragment>
-                        ))}
-
-                      {isOilSamples &&
-                        oilSamples?.map((wire, idx) => (
-                          <React.Fragment key={idx}>
-                            <div
-                              className="w-full text-[10px] p-1 pr-2 bg-gray-300 underline cursor-pointer hover:text-logoColor flex flex-row justify-between items-center"
-                              onClick={() => {
-                                window.open(wire.url, "_blank");
-                              }}
-                            >
-                              <p>{`Date: ${wire?.Date}`}</p>
-                              <FaFilePdf size={14} color="red" />
+                        wire.map((item, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <div>
+                              🔗 Replacement: {item.Replacement_Wire_Rope}
                             </div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Category: ${wire?.Category}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Oil Type: ${wire?.OilType}`}</div>
-                            <div className="w-full text-[10px] p-1 bg-gray-300">{`Status: ${wire?.SampleResult}`}</div>
+                            <div>📏 Diameter: {item.Diameter} mm</div>
+                            <div>📏 Length: {item.Length} m</div>
+                            <div>📅 Date: {item.StartDate.slice(0, 10)}</div>
+                            <div>⏱️ WH: {item.WH} Hours</div>
                             <Separator />
-                          </React.Fragment>
+                          </div>
                         ))}
-                    </>
-                  )}
+
+                      {/* Diesel Logs */}
+                      {isDiesel &&
+                        diesel.map((item, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <div>⛽ Code: {item.Code}</div>
+                            <div>📅 Date: {item.StartDate.slice(0, 10)}</div>
+                            <div>⏱️ WH: {item.WH} Hours</div>
+                            <Separator />
+                          </div>
+                        ))}
+
+                      {/* Gearbox Drilling */}
+                      {isGearboxDrill &&
+                        GBDrill.map((item, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <div>⚙️ Code: {item.Code}</div>
+                            <div>📅 Date: {item.StartDate.slice(0, 10)}</div>
+                            <div>⏱️ WH: {item.WH} Hours</div>
+                            <Separator />
+                          </div>
+                        ))}
+
+                      {/* Gearbox Trench */}
+                      {isGearboxTrench &&
+                        GBTrench.map((item, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <div>⚙️ Code: {item.Code}</div>
+                            <div>🧭 Side: {item.GearboxSide}</div>
+                            <div>📅 Date: {item.StartDate.slice(0, 10)}</div>
+                            <div>⏱️ WH: {item.WH} Hours</div>
+                            <Separator />
+                          </div>
+                        ))}
+
+                      {/* Mud Pump */}
+                      {isMudPump &&
+                        mud.map((item, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <div>💧 Code: {item.Code}</div>
+                            <div>🚦 Status: {item.Status}</div>
+                            <div>📅 Date: {item.StartDate.slice(0, 10)}</div>
+                            <div>⏱️ WH: {item.WH} Hours</div>
+                            <Separator />
+                          </div>
+                        ))}
+
+                      {/* Kelly */}
+                      {isKelly &&
+                        kelly.map((item, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <div>🛠️ Code: {item.Code}</div>
+                            <div>🚦 Status: {item.Status}</div>
+                            <div>📅 Date: {item.StartDate.slice(0, 10)}</div>
+                            <Separator />
+                          </div>
+                        ))}
+
+                      {/* Oil Samples */}
+                      {isOilSamples &&
+                        oilSamples.map((item, idx) => (
+                          <div key={idx} className="space-y-1">
+                            <div
+                              className="flex justify-between items-center text-blue-600 hover:text-blue-800 cursor-pointer"
+                              onClick={() => window.open(item.url, "_blank")}
+                            >
+                              <span>📄 Report: {item.Date}</span>
+                              <FaFilePdf size={16} color="red" />
+                            </div>
+                            <div>🔖 Category: {item.Category}</div>
+                            <div>🛢️ Oil Type: {item.OilType}</div>
+                            <div>Status: {item.SampleResult}</div>
+                            <Separator />
+                          </div>
+                        ))}
+                    </div>
+                  </div>
                 </div>
               );
             })}

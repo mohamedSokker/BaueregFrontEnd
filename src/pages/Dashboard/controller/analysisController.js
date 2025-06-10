@@ -145,6 +145,18 @@ const useAnalysis = ({ data }) => {
           prod: result[item]?.prod ? result[item]?.prod : 0,
         });
       });
+
+      const Y_Axis = [`fuelCons`, `oilCons`, `prod`];
+
+      resultArray = resultArray.sort((a, b) => {
+        let sortingSumA = 0;
+        let sortingSumB = 0;
+        Y_Axis.map((datakey) => {
+          sortingSumA += Number(a[datakey]);
+          sortingSumB += Number(b[datakey]);
+        });
+        return sortingSumB - sortingSumA;
+      });
       setChartData(resultArray);
     }
   }, [data]);

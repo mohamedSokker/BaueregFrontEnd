@@ -459,8 +459,11 @@ export const calculateOilSamples = (data, filters, site, eq) => {
       } else {
         cat = row?.Category;
       }
+      const originalDate = new Date(row?.Date);
+      originalDate.setDate(originalDate.getDate() + 1);
+      const result = originalDate.toISOString().slice(0, 10);
       diesel.push({
-        Date: new Date(row?.Date).toISOString().slice(0, 10),
+        Date: result,
         url: row?.URL,
         Category: cat,
         OilType: row?.OilType,

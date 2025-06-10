@@ -118,7 +118,8 @@ const useFilter = ({ copiedData, setData, count, setCount }) => {
           new Date(items.Time.data.currentDate.start) &&
         new Date(item.Date_Time) <= new Date(items.Time.data.currentDate.end) &&
         (eqsCheck.includes(item.Equipment) ||
-          sitesCheck.includes(item.Location))
+          sitesCheck.includes(item.Location)) &&
+        item.Equipment.startsWith("BG")
     );
     filterData.sort((a, b) => new Date(a.Date_Time) - new Date(b.Date_Time));
     setFilteredData(filterData);
