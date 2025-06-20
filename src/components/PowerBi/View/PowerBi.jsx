@@ -14,7 +14,7 @@ import { useDataContext } from "../Contexts/DataContext.jsx";
 import { useInitContext } from "../Contexts/InitContext.jsx";
 import { detectTableColumnTypes } from "../Services/getTypes.js";
 import { useNavContext } from "../../../contexts/NavContext";
-import useAxiosPrivate from "../../../hooks/useAxiosPrivate.jsx";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import {
   barOptions,
   barProps,
