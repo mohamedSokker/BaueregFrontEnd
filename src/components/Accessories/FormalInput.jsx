@@ -39,7 +39,7 @@ const FormalInputField = ({
     <div className="flex flex-col space-y-2">
       {/* Label */}
       {label && (
-        <label className="text-sm font-medium text-gray-700">
+        <label className="text-sm font-medium text-gray-700 dark:text-white">
           {label}
           {required && <span className="text-red-500"> *</span>}
         </label>
@@ -53,10 +53,10 @@ const FormalInputField = ({
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+        className={`px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 dark:bg-gray-700 ${
           !isValid && isTouched
             ? "border-red-500 focus:ring-red-500"
-            : "border-gray-300 focus:ring-blue-500"
+            : "border-gray-300 dark:border-gray-700 focus:ring-blue-500"
         }`}
       />
 

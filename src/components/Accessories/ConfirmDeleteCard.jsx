@@ -25,7 +25,7 @@ const ConfirmDeleteCard = ({
             : "animate-out 0.5s ease-in-out",
         }}
       >
-        <div className="group select-none w-[250px] flex flex-col p-4 relative items-center justify-center bg-gray-800 border border-gray-800 shadow-lg rounded-2xl">
+        <div className="group select-none w-[250px] md:w-[460px]  flex flex-col p-4 relative items-center justify-center bg-gray-200 dark:bg-gray-800 dark:border-gray-800 border border-gray-200 shadow-lg rounded-2xl">
           <div className="">
             <div className="text-center p-3 flex-auto justify-center">
               {deleteIcon && (
@@ -43,7 +43,7 @@ const ConfirmDeleteCard = ({
                 </svg>
               )}
 
-              <h2 className="text-xl font-bold py-4 text-gray-200">
+              <h2 className="text-xl font-bold py-4 text-gray-800 dark:text-gray-200">
                 Are you sure?
               </h2>
               <p class="font-bold text-sm text-gray-500 px-2">
@@ -53,7 +53,7 @@ const ConfirmDeleteCard = ({
             </div>
             <div className="p-2 mt-2 text-center space-x-1 md:block">
               <button
-                className="mb-2 md:mb-0 bg-gray-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-gray-600 hover:border-gray-700 text-gray-300 rounded-full hover:shadow-lg hover:bg-gray-800 transition ease-in duration-300"
+                className="mb-2 md:mb-0 bg-gray-300 dark:bg-gray-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-gray-400 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:shadow-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition ease-in duration-300"
                 onClick={() => {
                   setIsCanceled(true);
                   setTimeout(() => {

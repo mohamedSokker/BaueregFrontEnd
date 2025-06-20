@@ -17,7 +17,7 @@ const RequiredAuth = ({ allowedRole }) => {
   } = useNavContext();
   const location = useLocation();
 
-  console.log(errorData);
+  // console.log(errorData);
 
   return (usersData &&
     (usersData[0]?.roles.Editor[allowedRole] === true ||

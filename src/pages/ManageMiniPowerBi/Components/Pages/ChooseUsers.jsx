@@ -1,5 +1,4 @@
 import Dropdown from "../UsersDropdown";
-// import useTablesData from "../../Controllers/TablesData";
 import ToolsSIdebar from "../Sidebars/ToolsSIdebar";
 import { useDataContext } from "../../Contexts/DataContext";
 import { useInitContext } from "../../Contexts/InitContext";
@@ -10,7 +9,7 @@ import DragComponent from "../../../../components/Accessories/Drag";
 import DropComponent from "../../../../components/Accessories/Drop";
 import PropertyCard from "../Customs/PropertyCard";
 
-const ChooseUsers = () => {
+const ChooseUsers = ({ reportID }) => {
   const {
     categoryCount,
     setCategoryCount,
@@ -33,10 +32,10 @@ const ChooseUsers = () => {
     ) {
       setIsDeleteCard(true);
     } else {
-      handleSend();
+      handleSend({ reportID });
     }
   };
-  // console.log(usersNamesData);
+
   return (
     <div
       className="w-full h-full flex flex-col justify-between flex-shrink-0 flex-grow-0"
@@ -51,8 +50,9 @@ const ChooseUsers = () => {
           setCategoryCount={setCategoryCount}
         />
 
-        <div className="flex flex-col w-full h-full p-1">
-          <div className="max-w-[200px] p-1">
+        <div className="flex flex-col w-full p-2 space-y-4 h-full overflow-hidden">
+          {/* Inputs */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <FormalInputField
               label={`Name`}
               onChange={setViewName}
@@ -60,9 +60,9 @@ const ChooseUsers = () => {
               value={viewName}
               errorMessage="Please Enter Valid File Name"
               validationRegex={regix.text}
+              inputClassName="text-xs"
+              labelClassName="text-xs"
             />
-          </div>
-          <div className="max-w-[200px] p-1">
             <FormalInputField
               label={`Group`}
               onChange={setViewGroup}
@@ -70,11 +70,14 @@ const ChooseUsers = () => {
               value={viewGroup}
               errorMessage="Please Enter Valid File Group Name"
               validationRegex={regix.text}
+              inputClassName="text-xs"
+              labelClassName="text-xs"
             />
           </div>
 
-          <div className="w-full h-[90%] flex flex-row gap-8 items-start">
-            <div className="w-[30vw] h-full flex flex-col justify-center items-center">
+          {/* Users Selection Area */}
+          <div className="flex flex-col gap-4 h-full">
+            <div className="w-full flex flex-col flex-grow min-h-0">
               <Dropdown
                 multiple={true}
                 label="Users"
@@ -82,22 +85,26 @@ const ChooseUsers = () => {
                 localData={allData?.Users}
                 data={usersNamesData}
                 setData={setUsersNamesData}
+                containerClassName="w-full"
+                labelClassName="text-sm font-medium"
+                dropdownClassName="text-xs"
               />
             </div>
-            <div
-              className=" flex flex-col p-4 max-h-[90%] min-w-[250px] gap-4 border-red-300 border-1 items-start overflow-y-scroll"
-              style={{ scrollbarWidth: "none" }}
-            >
-              <p className="text-blue-500 font-[700] text-[20]">
+
+            {/* Selected Users List */}
+            <div className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md bg-white overflow-auto max-h-[25vh] p-3">
+              <p className="text-blue-500 dark:text-blue-300 font-semibold text-sm mb-2">
                 Choosed Users
               </p>
               {usersNamesData?.Users?.length === 0 ? (
-                <div className="text-red-700 text-[12px]">No Users Choosed</div>
+                <div className="text-red-600 dark:text-red-400 text-xs">
+                  No Users Choosed
+                </div>
               ) : (
-                usersNamesData?.Users?.map((item, i) => (
+                usersNamesData.Users.map((item, i) => (
                   <div
-                    className="w-full text-[12px] border-b-1 border-gray-300"
                     key={i}
+                    className="text-xs border-b border-gray-200 py-1 last:border-0"
                   >
                     {item}
                   </div>
@@ -105,44 +112,15 @@ const ChooseUsers = () => {
               )}
             </div>
           </div>
-
-          {/* <div className="w-full flex flex-row items-center ">
-            <div className="p-1 bg-white max-h-[200px] overflow-auto flex flex-col gap-1">
-              {allData?.Users?.map((user) => (
-                <DragComponent name={user?.UserName} target={`Users`}>
-                  <div className="w-full p-1 px-2 flex flex-row items-center justify-between bg-gray-400 opacity-60 border-gray-500 border rounded-md relative">
-                    <div className="flex flex-grow text-[10px]">
-                      <p className="overflow-ellipsis whitespace-nowrap overflow-hidden">
-                        {user?.UserName}
-                      </p>
-                    </div>
-                  </div>
-                </DragComponent>
-              ))}
-            </div>
-            <div className="">
-              <DropComponent name={`Users`} target={`Users`} />
-            </div>
-          </div> */}
         </div>
       </div>
 
-      <div className="p-1 w-[100%] flex items-center justify-center">
-        <FormalButton onClick={handleSave} className="w-[90%]">
+      {/* Save Button - Sticky at bottom on mobile */}
+      <div className="p-3 shadow-inner md:shadow-none w-full flex justify-center sticky bottom-0 z-10">
+        <FormalButton onClick={handleSave} className="w-[100%]">
           Save
         </FormalButton>
       </div>
-
-      {/* <div className="w-full p-2">
-        <button
-          className="w-full p-2 bg-green-600 text-white rounded-[4px]"
-          onClick={() => {
-            setCategoryCount((prev) => prev + 1);
-          }}
-        >
-          Next
-        </button>
-      </div> */}
     </div>
   );
 };

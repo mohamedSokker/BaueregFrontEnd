@@ -15,15 +15,19 @@ const Dropdown = ({ label, column, localData, data, setData, multiple }) => {
 
   return (
     <div className="w-full h-full p-2 flex flex-col justify-center items-center bg-gray-100 ">
-      <p className="w-full h-6 text-[14px] text-gray-400 flex flex-row justify-start">{`Select ${label}`}</p>
+      <p className="w-full h-6 text-[14px] text-gray-400 dark:text-white dark:bg-gray-700 flex flex-row justify-start">{`Select ${label}`}</p>
       <div
         className={`w-full flex flex-row gap-2 items-center relative  h-full`}
       >
         {/* <p style={{ width: "40%" }}>{label}</p> */}
         <select
-          className="p-2 w-full h-full bg-gray-100 border-b-1 border-logoColor appearance-none text-[14px] focus:border-[rgb(248,113,113)]"
+          className={`p-2 w-full h-full bg-gray-100 dark:bg-gray-700 dark:text-white border-b-1 border-logoColor appearance-none text-[14px] focus:border-[rgb(248,113,113)] ${
+            data[label] === ""
+              ? "text-[rgb(156,163,175)] dark:text-white"
+              : "text-black dark:text-white"
+          }`}
           style={{
-            color: data[label] === "" ? "rgb(156 163 175)" : "black",
+            // color: data[label] === "" ? "rgb(156 163 175)" : "black",
             scrollbarWidth: "none",
           }}
           onClick={handleClick}

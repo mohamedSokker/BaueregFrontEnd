@@ -75,17 +75,20 @@ const FormalDropdown = ({
   const isValid = selectedValue !== ""; // Only validate based on selectedValue
 
   return (
-    <div className="w-full flex flex-col gap-1 text-[10px]" ref={dropdownRef}>
+    <div
+      className="w-full flex flex-col gap-1 text-[10px] dark:bg-gray-700"
+      ref={dropdownRef}
+    >
       {/* Label */}
       {label && (
-        <label className="font-medium text-gray-700">
+        <label className="font-medium text-gray-700 dark:text-white">
           {label}
           {required && <span className="text-red-500"> *</span>}
         </label>
       )}
 
       {/* Dropdown Input */}
-      <div className="relative">
+      <div className="relative flex justify-between items-center gap-1">
         <input
           type="text"
           value={selectedValue || search}
@@ -103,7 +106,7 @@ const FormalDropdown = ({
           aria-haspopup="listbox"
           className={
             !inputClassName
-              ? `w-full px-3 py-1 border rounded-sm focus:outline-none focus:ring-1 ${
+              ? `w-full px-3 py-1 border rounded-sm focus:outline-none focus:ring-1 dark:bg-gray-700 dark:text-white ${
                   !isValid && isTouched && required
                     ? "border-red-500 focus:ring-red-500"
                     : "border-gray-300 focus:ring-[#CB1955]"
@@ -114,7 +117,7 @@ const FormalDropdown = ({
         {isOpen && (
           <ul
             role="listbox"
-            className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow max-h-48 overflow-y-auto text-[10px]"
+            className="absolute top-6 z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow max-h-48 overflow-y-auto text-[10px]"
           >
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (
@@ -126,8 +129,8 @@ const FormalDropdown = ({
                   ref={(el) => (listRef.current[index] = el)} // Refs for scrolling
                   className={`px-3 py-[2px] cursor-pointer ${
                     highlightedIndex === index
-                      ? "bg-pink-100"
-                      : "hover:bg-pink-50"
+                      ? "bg-pink-100 dark:bg-[#CB1955]"
+                      : "hover:bg-pink-50 dark:hover:bg-[#CB1955]"
                   }`}
                 >
                   {option}
@@ -138,11 +141,12 @@ const FormalDropdown = ({
             )}
           </ul>
         )}
+        {!isValid && isTouched && required && (
+          <p className="mt-1 text-red-500 text-xs min-w-[120px] truncate">
+            {errorMessage}
+          </p>
+        )}
       </div>
-
-      {!isValid && isTouched && required && (
-        <p className="mt-1 text-red-500 text-xs">{errorMessage}</p>
-      )}
     </div>
   );
 };

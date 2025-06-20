@@ -41,17 +41,17 @@ const Visualization = () => {
     setIsOpenPanel((prev) => !prev);
   };
 
-  const handleSave = () => {
-    if (
-      usersNamesData?.Users.length === 0 ||
-      viewName === "" ||
-      viewGroup === ""
-    ) {
-      setIsDeleteCard(true);
-    } else {
-      handleSend();
-    }
-  };
+  // const handleSave = () => {
+  //   if (
+  //     usersNamesData?.Users.length === 0 ||
+  //     viewName === "" ||
+  //     viewGroup === ""
+  //   ) {
+  //     setIsDeleteCard(true);
+  //   } else {
+  //     handleSend();
+  //   }
+  // };
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -70,21 +70,32 @@ const Visualization = () => {
   return isOpenPanel ? (
     <div
       id="prop-panel"
-      className="flex w-[200px] h-full flex-col overflow-y-scroll bg-gray-300 p-2 relative z-[1]"
-      style={{
-        width: isPerview ? "0px" : "200px",
-        padding: isPerview ? "0px" : "8px",
-        transition: "width 0.5s ease-in-out",
-        // animation: isPerview
-        //   ? "animate-in 0.5s ease-in-out"
-        //   : "animate-out 0.5s ease-in-out",
-      }}
+      className={`flex flex-col h-full bg-gray-300 dark:bg-gray-700 z-[1] transition-[width] duration-500 ease-in-out overflow-y-auto ${
+        isPerview ? "w-0 p-0" : "w-[100px] md:w-[200px] lg:w-[200px] p-2"
+      }`}
+      style={{ scrollbarWidth: "none" }}
+      // className="flex w-[200px] h-full flex-col overflow-y-scroll bg-gray-300 p-2 relative z-[1]"
+      // style={
+      //   {
+      //     // width: isPerview ? "0px" : "200px",
+      //     // padding: isPerview ? "0px" : "8px",
+      //     // transition: "width 0.5s ease-in-out",
+      //     // animation: isPerview
+      //     //   ? "animate-in 0.5s ease-in-out"
+      //     //   : "animate-out 0.5s ease-in-out",
+      //   }
+      // }
       // style={{ transition: "width 0.5s ease-in-out" }}
     >
       <div className="w-full">
         <div className="w-full flex flex-row justify-between p-1">
-          <p className="text-[12px] font-[800]">Visualization</p>
-          <div className="cursor-pointer" onClick={handleClick}>
+          <p className="text-[12px] font-[800] text-gray-800 dark:text-gray-200">
+            Visualization
+          </p>
+          <div
+            className="cursor-pointer text-gray-600 dark:text-gray-400 dark:hover:text-gray-100 hover:text-gray-900 transition-colors"
+            onClick={handleClick}
+          >
             <MdKeyboardDoubleArrowDown size={15} />
           </div>
         </div>
@@ -151,14 +162,19 @@ const Visualization = () => {
     </div>
   ) : (
     <div
-      className="flex flex-col h-full justify-start items-center gap-8 bg-gray-300 p-2 w-[30px]"
-      style={{ transition: "width 0.5s ease-in-out" }}
+      // className="flex flex-col h-full justify-start items-center gap-8 bg-gray-300 p-2 w-[30px]"
+      className="flex flex-col h-full justify-start items-center gap-4 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200  transition-all duration-500 ease-in-out"
+      style={{
+        width: isPerview ? "0px" : "32px",
+        padding: isPerview ? "0px" : "8px",
+        transition: "width 0.5s ease-in-out",
+      }}
     >
       <div className="hover:cursor-pointer" onClick={handleClick}>
         <MdKeyboardDoubleArrowRight size={15} />
       </div>
       <div
-        className="text-black font-[800] text-[12px]"
+        className="text-gray-800 dark:text-gray-200 font-[800] text-[12px]"
         style={{ writingMode: "vertical-lr" }}
       >
         {`Visualization`}

@@ -5,7 +5,6 @@ import TableAbstract from "../TableAbstract";
 import ManageTablesLists from "../Sidebars/ManageTablesLists";
 import ManageTablesTaskbar from "../Sidebars/ManageTablesTaskbar";
 import { useInitContext } from "../../Contexts/InitContext";
-import ProffesionalTable from "../../../../CustomLib/Table/CustomTable1";
 
 const ManageTables = () => {
   const { categoryCount, setCategoryCount, selectedTableData } =

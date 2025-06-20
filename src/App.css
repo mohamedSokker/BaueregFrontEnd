@@ -1,4 +1,5 @@
-@import url("https://cdn.syncfusion.com/ej2/material.css");
+/* @import url("https://cdn.syncfusion.com/ej2/material.css"); */
+/* @import "./node_modules/@syncfusion/ej2/tailwind-dark.css"; */
 
 /* .e-grid .e-toolbar,
 .e-grid .e-toolbar .e-toolbar-items,
@@ -108,4 +109,24 @@
 .e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left),
 .e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left) {
   border: none;
+}
+
+e-tooltip-wrap.dark .e-popup {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+select option:checked {
+  background-color: #bfdbfe !important; /* Tailwind's blue-200 */
+  color: #1e40af !important; /* Tailwind's blue-900 */
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
 }

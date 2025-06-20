@@ -1,6 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 
+import tailwindLightRaw from "@syncfusion/ej2/tailwind.css?raw";
+import tailwindDarkRaw from "@syncfusion/ej2/tailwind-dark.css?raw";
+
 import { useNavContext } from "./contexts/NavContext";
 import "./App.css";
 import logo from "./assets/logoblue.jpg";
@@ -67,7 +70,50 @@ const EditMiniPowerBi = lazy(() =>
 );
 
 function App() {
-  const { token, usersData } = useNavContext();
+  const { token, usersData, currentMode } = useNavContext();
+
+  // Apply theme dynamically
+  useEffect(() => {
+    let styleElement = document.getElementById("syncfusion-theme");
+    const isDarkMode = currentMode === "Dark" ? true : false;
+
+    if (!styleElement) {
+      styleElement = document.createElement("style");
+      styleElement.id = "syncfusion-theme";
+      styleElement.type = "text/css";
+      document.head.appendChild(styleElement);
+    }
+
+    // Inject appropriate CSS
+    styleElement.textContent = isDarkMode ? tailwindDarkRaw : tailwindLightRaw;
+
+    // Optional: Add class for dark mode consistency
+    if (isDarkMode) {
+      document.body.classList.add("e-dark");
+      document.documentElement.classList.add("dark");
+    } else {
+      document.body.classList.remove("e-dark");
+      document.documentElement.classList.remove("dark");
+    }
+
+    return () => {
+      // Cleanup - optional
+      if (styleElement && styleElement.parentNode) {
+        styleElement.parentNode.removeChild(styleElement);
+      }
+    };
+  }, [currentMode]);
+
+  useEffect(() => {
+    const currentMode = localStorage.getItem("backgroundTheme");
+    if (currentMode === "Dark") {
+      document.documentElement.classList.add("dark");
+      // document.body.classList.add("e-dark-mode");
+    } else {
+      document.documentElement.classList.remove("dark");
+      // document.documentElement.classList.remove("e-dark-mode");
+    }
+  }, []);
 
   useEffect(() => {
     if (!socket.connected && token && usersData) {
