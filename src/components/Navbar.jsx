@@ -128,7 +128,7 @@ const Navbar = () => {
   // Set user data
   useEffect(() => {
     if (usersData.length > 0) {
-      setImgPath(`${import.meta.env.VITE_BASE_URL}/${usersData[0]?.img}`);
+      setImgPath(`${process.env.REACT_APP_BASE_URL}/${usersData[0]?.img}`);
       setUser(usersData[0]?.username);
     }
   }, [usersData]);
@@ -158,9 +158,7 @@ const Navbar = () => {
     for (let i = 0; i <= AllTables.length - 1; i++) {
       setCurrentTable(AllTables[i]);
       await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/mongoBackup?tableName=${
-          AllTables[i]
-        }`
+        `${process.env.REACT_APP_BASE_URL}/api/v1/mongoBackup?tableName=${AllTables[i]}`
       );
     }
     setLoading(false);
@@ -252,7 +250,7 @@ const Navbar = () => {
           <TooltipComponent content="Profile" position="BottomCenter">
             <div className="flex items-center gap-2 cursor-pointer group">
               <img
-                src={`${import.meta.env.VITE_BASE_URL}/${usersData[0]?.img}`}
+                src={`${process.env.REACT_APP_BASE_URL}/${usersData[0]?.img}`}
                 alt="Profile"
                 className="w-8 h-8 object-contain rounded-full border-2 border-logoColor blur-sm transition-all duration-300 ease-in-out"
                 onLoad={(e) => e.target.classList.remove("blur-sm")}
