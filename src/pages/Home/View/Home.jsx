@@ -146,15 +146,17 @@ const Home = () => {
       setData(response.data);
       setFilteredData(response.data);
 
+      const userSites = usersData?.[0]?.roles?.Editor?.Sites?.map((site) => site.name ? site?.name : site)
+
       const activeSites = [];
       const eqs = [];
       let eqsActiveSites = {};
 
       response.data.Equipments_Location.forEach((row) => {
-        if (!activeSites.includes(row.Location)) activeSites.push(row.Location);
+        if (!activeSites.includes(row.Location) && userSites.includes(row?.Location)) activeSites.push(row.Location);
         if (!eqs.includes(row.Equipment) && !row.Equipment.startsWith("GRC"))
           eqs.push(row.Equipment);
-        if (!row.Equipment.startsWith("GRC")) {
+        if (!row.Equipment.startsWith("GRC") && userSites.includes(row?.Location)) {
           eqsActiveSites[row.Location] = eqsActiveSites[row.Location]
             ? [...eqsActiveSites[row.Location], row.Equipment]
             : [row.Equipment];
