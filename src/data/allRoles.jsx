@@ -4,6 +4,8 @@ import { AllTables } from "./AllTables";
 import { AllStocks } from "./Tablesdata";
 import { dataEntrtArray } from "./dataEntry";
 import fetchDataOnly from "../Functions/fetchDataOnly";
+import axios from "axios";
+import { axiosPrivate } from "../api/axios";
 
 let allEqs = [];
 let allSites = [];
