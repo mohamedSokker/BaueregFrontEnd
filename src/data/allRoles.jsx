@@ -11,6 +11,7 @@ let allTablesWithName = [];
 let allStocksWithName = [];
 let allEqsWithName = [];
 let allSitesWithName = [];
+const allTables = [];
 
 export const allSitesEqsdata = async (token) => {
   try {
@@ -57,8 +58,28 @@ export const allSitesEqsdata = async (token) => {
   // }
 };
 
+const getAllTables = async (token) => {
+  const url = `/api/v3/AllTables`;
+  const data = await axiosPrivate(url, { method: "GET" });
+  allTablesWithName = [];
+  const tableData = data?.data;
+  for (let j = 0; j < tableData.length; j++) {
+    console.log(tableData[j]);
+    if (!allTables?.includes(tableData[j].TABLE_NAME))
+      allTables.push(tableData[j].TABLE_NAME);
+  }
+
+  allTables?.sort((a, b) => {
+    if (a == null) return 1;
+    if (b == null) return -1;
+
+    return String(a).localeCompare(String(b));
+  });
+};
+
 export const allData = async (token) => {
   await allSitesEqsdata(token);
+  await getAllTables(token);
   return {
     Dashboard: ["true"],
     DataEntry: dataEntrtArray,
@@ -83,7 +104,7 @@ export const allData = async (token) => {
       "Stocks Consumption",
     ],
     StocksList: AllStocks,
-    Tables: AllTables,
+    Tables: allTables,
     Catalogues: ["true"],
     OilSamples: ["true"],
     OilSamplesAnalyzed: ["true"],
