@@ -103,11 +103,13 @@ const EditTables = ({ socket }) => {
       setLoading(true);
       const url = `/api/v3/${tableName}`;
       const data = await axiosPrivate(url, { method: "GET" });
-      setTableData(data?.data);
+      const userSites = usersData?.[0]?.roles?.Editor?.Sites?.map((site) => site.name ? site?.name : site)
+      const filteredData = data?.data?.filter((row) => row?.Location && userSites.includes(row?.Location))
+      setTableData(filteredData);
       setTableGrid([]);
-      data?.data &&
-        data?.data[0] &&
-        Object.keys(data?.data[0]).map((item) => {
+      filteredData &&
+        filteredData[0] &&
+        Object.keys(filteredData[0]).map((item) => {
           setTableGrid((prev) => [
             ...prev,
             {
