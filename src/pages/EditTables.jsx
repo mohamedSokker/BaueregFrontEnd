@@ -42,7 +42,13 @@ const EditTables = ({ socket }) => {
       const url = `/api/v3/${tableName}`;
       const data = await axiosPrivate(url, { method: "GET" });
       const userSites = usersData?.[0]?.roles?.Editor?.Sites?.map((site) => site.name ? site?.name : site)
-      const filteredData = data?.data?.filter((row) => row?.Location && userSites.includes(row?.Location))
+      const filteredData = data?.data?.filter((row) => {
+        if(row?.Location) {
+          return userSites.includes(row?.Location)
+        } else {
+          return true
+        }
+      })
       setTableData(filteredData);
       setTableGrid([]);
       Object.keys(filteredData[0]).map((item) => {
@@ -104,7 +110,13 @@ const EditTables = ({ socket }) => {
       const url = `/api/v3/${tableName}`;
       const data = await axiosPrivate(url, { method: "GET" });
       const userSites = usersData?.[0]?.roles?.Editor?.Sites?.map((site) => site.name ? site?.name : site)
-      const filteredData = data?.data?.filter((row) => row?.Location && userSites.includes(row?.Location))
+      const filteredData = data?.data?.filter((row) => {
+        if(row?.Location) {
+          return userSites.includes(row?.Location)
+        } else {
+          return true
+        }
+      })
       setTableData(filteredData);
       setTableGrid([]);
       filteredData &&
